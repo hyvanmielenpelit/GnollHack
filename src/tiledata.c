@@ -356,7 +356,7 @@ uchar* tilemapflags;
 //                    Sprintf(eos(buf), ",%d,%d,%s", (int)mons[i].mcolor, tile_template_idx, monster_tile_template_name_array[tile_template_idx]);
  
                     Sprintf(eos(buf), "\n");
-                    (void)write(fd, buf, strlen(buf));
+                    IGNORE_RESULT write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
                 {
@@ -513,7 +513,7 @@ uchar* tilemapflags;
                                 "generic", "scroll", 
                                 missile_tile_num == 1 ? "generic" : base_missile_direction_name_array[n], 
                                 objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
-                            (void)write(fd, buf, strlen(buf));
+                            IGNORE_RESULT write(fd, buf, strlen(buf));
                             tile_count++;
                         }
                     }
@@ -532,7 +532,7 @@ uchar* tilemapflags;
                             Sprintf(eos(buf), ",1,1,0");
                         Sprintf(eos(buf), ",%d,%d,%s,%d", objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
                         Sprintf(eos(buf), "\n");
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                         tile_count++;
                     }
                 }
@@ -651,7 +651,7 @@ uchar* tilemapflags;
                             Sprintf(buf, "%s,%s,%s,%s,%s,%s,1,1,0,%d,%d,%s,%d\n", tile_section_name, set_name, oclass_name, 
                                 "mail", "envelope", 
                                 missile_tile_num == 1 ? "generic" : base_missile_direction_name_array[n], objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
-                            (void)write(fd, buf, strlen(buf));
+                            IGNORE_RESULT write(fd, buf, strlen(buf));
                             if(missile_tile_num != 1)
                                 tile_count++;
                         }
@@ -661,7 +661,7 @@ uchar* tilemapflags;
                     else
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%s,0,1,1,0,%d,%d,%s,%d\n", tile_section_name, set_name, oclass_name, "mail", "envelope", objects[i].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(i));
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                         tile_count++;
                     }
                 }
@@ -783,7 +783,7 @@ uchar* tilemapflags;
                             no_description ? "no description" : obj_descr[objects[i].oc_name_idx].oc_descr,
                             missile_tile_num == 1 ? "generic" : base_missile_direction_name_array[n], 
                             objects[orig_idx].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(orig_idx));
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                         tile_count++;
                     }
                 }
@@ -805,7 +805,7 @@ uchar* tilemapflags;
                         Sprintf(eos(buf), ",1,1,0");
                     Sprintf(eos(buf), ",%d,%d,%s,%d", objects[orig_idx].oc_color, objects[i].oc_subtyp, get_otyp_subtype_name(i), has_otyp_floor_tile(orig_idx));
                     Sprintf(eos(buf), "\n");
-                    (void)write(fd, buf, strlen(buf));
+                    IGNORE_RESULT write(fd, buf, strlen(buf));
                     tile_count++;
                 }
             }
@@ -1020,7 +1020,7 @@ uchar* tilemapflags;
                             artilist[i].ocolor, objects[artilist[i].otyp].oc_subtyp, get_otyp_subtype_name(artilist[i].otyp), def_oc_syms[(int)objects[artilist[i].otyp].oc_class].name,
                             has_artifact_floor_tile(i)
                         );
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                         tile_count++;
                     }
                 }
@@ -1050,7 +1050,7 @@ uchar* tilemapflags;
                         Sprintf(eos(buf), ",0");
 
                     Sprintf(eos(buf), "\n");
-                    (void)write(fd, buf, strlen(buf));
+                    IGNORE_RESULT write(fd, buf, strlen(buf));
                     tile_count++;
                 }
             }
@@ -1157,7 +1157,7 @@ uchar* tilemapflags;
                     else
                         Sprintf(eos(buf), ",1,1,0");
                     Sprintf(eos(buf), "\n");
-                    (void)write(fd, buf, strlen(buf));
+                    IGNORE_RESULT write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
                 {
@@ -1236,7 +1236,7 @@ uchar* tilemapflags;
                     else
                         Sprintf(eos(buf), ",1,1,0");
                     Sprintf(eos(buf), "\n");
-                    (void)write(fd, buf, strlen(buf));
+                    IGNORE_RESULT write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
                 {
@@ -1281,7 +1281,7 @@ uchar* tilemapflags;
                 if (process_style == 0)
                 {
                     Sprintf(buf, "%s,%s,generic,1,1,0\n", tile_section_name, set_name);
-                    (void)write(fd, buf, strlen(buf));
+                    IGNORE_RESULT write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
                 {
@@ -1296,7 +1296,7 @@ uchar* tilemapflags;
                     if (process_style == 0)
                     {
                         Sprintf(buf, "%s,%s,tile-%d,1,1,0\n", tile_section_name, set_name, i);
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
@@ -1325,7 +1325,7 @@ uchar* tilemapflags;
                     if (process_style == 0)
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, explosion_name, explosion_direction_name, x_coord, y_coord);
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
@@ -1388,7 +1388,7 @@ uchar* tilemapflags;
                     if (process_style == 0)
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%d,%d,%d,%d,1,1,0,%d,%d,%d\n", tile_section_name, set_name, zap_name, base_zap_direction_name, bx_coord, by_coord, template_width, template_height, 0, 0, zap_color);
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
@@ -1436,7 +1436,7 @@ uchar* tilemapflags;
                     if (process_style == 0)
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%d,%d,3,3,1,1,0\n", tile_section_name, set_name, mons[j].mname, swallow_direction_name, x_coord, y_coord);
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
@@ -1468,7 +1468,7 @@ uchar* tilemapflags;
                 if (process_style == 0)
                 {
                     Sprintf(buf, "%s,%s,warn-level-%d,1,1,0\n", tile_section_name, set_name, i);
-                    (void)write(fd, buf, strlen(buf));
+                    IGNORE_RESULT write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
                 {
@@ -1525,7 +1525,7 @@ uchar* tilemapflags;
                     if (process_style == 0)
                     {
                         Sprintf(buf, "%s,%s,%s,%s,%d,%d,%d,%d,1,1,0\n", tile_section_name, set_name, long_worm_type_name, worm_tile_name, x_coord, y_coord, template_width, template_height);
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
@@ -1590,7 +1590,7 @@ uchar* tilemapflags;
             if (process_style == 0)
             {
                 Sprintf(buf, "%s,%s,generic,1,1,0\n", tile_section_name, set_name);
-                (void)write(fd, buf, strlen(buf));
+                IGNORE_RESULT write(fd, buf, strlen(buf));
             }
             else if (process_style == 1)
             {
@@ -1681,7 +1681,7 @@ uchar* tilemapflags;
                                     else
                                         Sprintf(eos(buf), ",1,1,0");
                                     Sprintf(eos(buf), "\n");
-                                    (void)write(fd, buf, strlen(buf));
+                                    IGNORE_RESULT write(fd, buf, strlen(buf));
                                 }
                                 else if (process_style == 1)
                                 {
@@ -1768,7 +1768,7 @@ uchar* tilemapflags;
                                     else
                                         Sprintf(eos(buf), ",1,1,0");
                                     Sprintf(eos(buf), "\n");
-                                    (void)write(fd, buf, strlen(buf));
+                                    IGNORE_RESULT write(fd, buf, strlen(buf));
                                 }
                                 else if (process_style == 1)
                                 {
@@ -1881,7 +1881,7 @@ uchar* tilemapflags;
         if (process_style == 0)
         {
             Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, special_effects[i].name);
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -1903,7 +1903,7 @@ uchar* tilemapflags;
             else
                 Strcat(buf, ",1,1,0");
             Strcat(buf, "\n");
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -1925,7 +1925,7 @@ uchar* tilemapflags;
             else
                 Strcat(buf, ",1,1,0");
             Strcat(buf, "\n");
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -1962,7 +1962,7 @@ uchar* tilemapflags;
         if (process_style == 0)
         {
             Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, game_cursors[i].name);
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -1978,7 +1978,7 @@ uchar* tilemapflags;
         if (process_style == 0)
         {
             Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, hit_tile_definitions[i].name);
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -1994,7 +1994,7 @@ uchar* tilemapflags;
         if (process_style == 0)
         {
             Sprintf(buf, "%s,%s,%s,1,1,0\n", tile_section_name, set_name, general_tile_definitions[i].name);
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -2020,7 +2020,7 @@ uchar* tilemapflags;
                 Sprintf(eos(buf), ",%s", ui_tile_component_array[i].component_names[j]);
             }
             Sprintf(eos(buf), "\n");
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -2045,7 +2045,7 @@ uchar* tilemapflags;
                 Sprintf(eos(buf), ",%s", spellskill_subtile_names[j]);
             }
             Sprintf(eos(buf), "\n");
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -2070,7 +2070,7 @@ uchar* tilemapflags;
                 Sprintf(eos(buf), ",%s", spellskill_subtile_names[j]);
             }
             Sprintf(eos(buf), "\n");
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -2095,7 +2095,7 @@ uchar* tilemapflags;
                 Sprintf(eos(buf), ",%s", spellskill_subtile_names[j]);
             }
             Sprintf(eos(buf), "\n");
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -2127,7 +2127,7 @@ uchar* tilemapflags;
                     Sprintf(eos(buf), ",%s", "no_buff");
             }
             Sprintf(eos(buf), "\n");
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
         else if (process_style == 1)
         {
@@ -2161,7 +2161,7 @@ uchar* tilemapflags;
                 int base_repl = replacements[i].missile_dir < 0 ? -1 : i - replacements[i].missile_dir - 1;
                 Sprintf(eos(buf), ",%s,%s", replacements[i].missile_dir == -2 ? "base" : replacements[i].missile_dir < 0 ? "none" : base_missile_direction_name_array[replacements[i].missile_dir], base_repl < 0 ? "none" : replacements[base_repl].replacement_name ? replacements[base_repl].replacement_name : "unknown-base-replacement");
                 Sprintf(eos(buf), "\n");
-                (void)write(fd, buf, strlen(buf));
+                IGNORE_RESULT write(fd, buf, strlen(buf));
             }
             else if (process_style == 1)
             {
@@ -2201,7 +2201,7 @@ uchar* tilemapflags;
                         else
                             Sprintf(eos(buf), ",1,1,0");
                         Sprintf(eos(buf), "\n");
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
@@ -2239,7 +2239,7 @@ uchar* tilemapflags;
                         else
                             Sprintf(eos(buf), ",1,1,0");
                         Sprintf(eos(buf), "\n");
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
@@ -2290,7 +2290,7 @@ uchar* tilemapflags;
                         else
                             Sprintf(eos(buf), ",1,1,0");
                         Sprintf(eos(buf), "\n");
-                        (void)write(fd, buf, strlen(buf));
+                        IGNORE_RESULT write(fd, buf, strlen(buf));
                     }
                     else if (process_style == 1)
                     {
@@ -2379,7 +2379,7 @@ uchar* tilemapflags;
                         position,
                         enl_anim_tile_idx
                     );
-                    (void)write(fd, buf, strlen(buf));
+                    IGNORE_RESULT write(fd, buf, strlen(buf));
                 }
                 else if (process_style == 1)
                 {

@@ -1427,7 +1427,7 @@ set_savefile_name(boolean regularize_it)
 void
 save_savefile_name(int fd)
 {
-    (void) write(fd, (genericptr_t) SAVEF, sizeof(SAVEF));
+    IGNORE_RESULT write(fd, (genericptr_t) SAVEF, sizeof(SAVEF));
 }
 #endif
 
@@ -2305,7 +2305,7 @@ create_gamestate_levelfile(void)
     else
     {
         hackpid = 1;
-        (void)write(fd, (genericptr_t)&hackpid, sizeof(hackpid));
+        IGNORE_RESULT write(fd, (genericptr_t)&hackpid, sizeof(hackpid));
         close(fd);
     }
 }
@@ -6000,7 +6000,7 @@ recover_savefile(void)
             if (lfd >= 0) {
                 /* any or all of these may not exist */
                 levc = (xchar) lev;
-                (void)write(sfd, (genericptr_t) &levc, sizeof(levc));
+                IGNORE_RESULT write(sfd, (genericptr_t) &levc, sizeof(levc));
                 if (!copy_bytes(lfd, sfd))
                 {
                     recover_failure_reason =

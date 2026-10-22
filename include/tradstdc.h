@@ -58,6 +58,11 @@ typedef void *genericptr_t;
 #define __warn_unused_result__ /*empty*/
 #define warn_unused_result /*empty*/
 #endif
+#if !defined(__clang__)
+/* gcc does not accept a cast to (void) as discarding a warn_unused_result
+   value, but it does accept a negated one */
+#define IGNORE_RESULT (void) !
+#endif
 #endif
 #endif
 
@@ -69,6 +74,9 @@ typedef void *genericptr_t;
 #endif
 #ifndef NORETURN
 #define NORETURN
+#endif
+#ifndef IGNORE_RESULT
+#define IGNORE_RESULT (void)
 #endif
 
 #else
@@ -552,6 +560,9 @@ typedef genericptr genericptr_t; /* (void *) or (char *) */
 #endif
 #ifndef NORETURN
 #define NORETURN
+#endif
+#ifndef IGNORE_RESULT
+#define IGNORE_RESULT (void)
 #endif
 
 #endif

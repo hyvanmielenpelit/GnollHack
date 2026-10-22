@@ -58,7 +58,7 @@
       <PositionIndependentCode>true</PositionIndependentCode>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>FullDebug</DebugInformationFormat>
-      <AdditionalOptions>-Wall -Wno-unused-parameter -Wno-unused-result -Wno-stringop-truncation -Wno-stringop-overflow -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Wall -Wno-unused-parameter -Wno-stringop-truncation -Wno-stringop-overflow -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion %(AdditionalOptions)</AdditionalOptions>
       <CAdditionalWarning>switch;no-deprecated-declarations;empty-body;return-type;parentheses;no-pointer-sign;no-format;uninitialized;unreachable-code;unused-function;unused-value;unused-variable</CAdditionalWarning>
     </ClCompile>
     <Link>
@@ -73,7 +73,7 @@
       <PositionIndependentCode>true</PositionIndependentCode>
       <Optimization>MaxSpeed</Optimization>
       <DebugInformationFormat>FullDebug</DebugInformationFormat>
-      <AdditionalOptions>-Wall -Wno-unused-parameter -Wno-unused-result -Wno-stringop-truncation -Wno-stringop-overflow -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>-Wall -Wno-unused-parameter -Wno-stringop-truncation -Wno-stringop-overflow -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion %(AdditionalOptions)</AdditionalOptions>
       <CAdditionalWarning>switch;no-deprecated-declarations;empty-body;return-type;parentheses;no-pointer-sign;no-format;uninitialized;unreachable-code;unused-function;unused-value;unused-variable</CAdditionalWarning>
     </ClCompile>
     <Link>

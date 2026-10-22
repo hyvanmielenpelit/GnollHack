@@ -945,10 +945,10 @@ deliver_by_file_write(dlb *temp_msg_file, struct qtmsg *qt_msg, int fd, int msgn
             Strcpy(prev_outline, cur_outline);
 
             Sprintf(buf, "%d. ", msgnum);
-            (void)write(fd, buf, strlen(buf));
-            (void)write(fd, cur_outline, strlen(cur_outline));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, cur_outline, strlen(cur_outline));
             Sprintf(buf, "\n");
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
         }
     }
 }
@@ -1065,7 +1065,7 @@ write_quest_texts(int fd)
             if (!common_printed)
             {
                 Sprintf(buf, "-- Common --\n");
-                (void)write(fd, buf, strlen(buf));
+                IGNORE_RESULT write(fd, buf, strlen(buf));
                 for (k = 1; k <= 60; k++)
                 {
                     file_write_pager(msg_file2, temp_qt_list.common, fd, k);
@@ -1073,7 +1073,7 @@ write_quest_texts(int fd)
                 common_printed = TRUE;
             }
             Sprintf(buf, "-- %s Quest --\n", roles[j].name.m);
-            (void)write(fd, buf, strlen(buf));
+            IGNORE_RESULT write(fd, buf, strlen(buf));
             for (k = 1; k <= 91; k++)
             {
                 file_write_pager(msg_file2, temp_qt_list.chrole, fd, k);

@@ -1750,17 +1750,17 @@ boolean
 get_plname_from_file(int fd, char *plbuf, size_t plbuf_size)
 {
     int pltmpsiz = 0;
-    (void) read(fd, (genericptr_t) &pltmpsiz, (readLenType)sizeof(pltmpsiz));
+    IGNORE_RESULT read(fd, (genericptr_t) &pltmpsiz, (readLenType)sizeof(pltmpsiz));
     if (pltmpsiz < 0 || (size_t)pltmpsiz > plbuf_size)
         return FALSE;
-    (void) read(fd, (genericptr_t) plbuf, (readLenType) pltmpsiz);
+    IGNORE_RESULT read(fd, (genericptr_t) plbuf, (readLenType) pltmpsiz);
     return TRUE; /* Might want to check if the read length is the same as requested */
 }
 
 void
 get_save_game_stats_from_file(int fd, struct save_game_stats *stats_ptr)
 {
-    (void)read(fd, (genericptr_t)stats_ptr, (readLenType)sizeof(struct save_game_stats));
+    IGNORE_RESULT read(fd, (genericptr_t)stats_ptr, (readLenType)sizeof(struct save_game_stats));
     return;
 }
 

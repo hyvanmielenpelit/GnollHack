@@ -694,7 +694,7 @@ savestateinlock(void)
         if (tricked_fileremoved(fd, whynot))
             return;
 
-        (void) read(fd, (genericptr_t) &hpid, (readLenType)sizeof(hpid));
+        IGNORE_RESULT read(fd, (genericptr_t) &hpid, (readLenType)sizeof(hpid));
         if (hackpid != hpid)
         {
             Sprintf(whynot, "Level #0 pid (%d) doesn't match ours (%d)!",
@@ -724,13 +724,13 @@ savestateinlock(void)
             return;
 #endif
         }
-        (void) write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
+        IGNORE_RESULT write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
         if (flags.ins_chkpt)
         {
             int currlev = ledger_no(&u.uz);
             int64_t time_stamp = (int64_t)getnow();
 
-            (void) write(fd, (genericptr_t) &currlev, sizeof(currlev));
+            IGNORE_RESULT write(fd, (genericptr_t) &currlev, sizeof(currlev));
             save_savefile_name(fd);
             store_version(fd);
             store_savefileinfo(fd);
