@@ -516,6 +516,9 @@ namespace GnollHackX
         public const string SentryTagDisplayState = "display.state";
         public const string SentryTagWindowVisible = "window.visible";
         public const string SentryTagSessionLocked = "session.locked";
+        public const string SentryTagLinuxPackage = "linux.package";
+        public const string SentryTagLinuxContainer = "linux.container";
+        public const string SentryTagLinuxSession = "linux.session";
         public const string SentryContextProcessMemory = "Process Memory";
         /* Handles above the startup baseline that trigger one handle growth warning per process */
         public const int HandleGrowthWarningThreshold = 5000;

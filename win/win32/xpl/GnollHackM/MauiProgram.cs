@@ -37,7 +37,7 @@ using System.Reflection.Emit;
 using System.Reflection.Metadata;
 #endif
 
-#if SENTRY
+#if SENTRY && !GNH_AVALONIA
 using Sentry.Maui;
 #endif
 
@@ -65,6 +65,9 @@ public static class MauiProgram
         GHAvaloniaWebView.Register();
 #endif
         GHApp.TryReadSecrets();
+#if GNH_AVALONIA && LINUX && SENTRY
+        GHAvaloniaSentry.Init();
+#endif
         GHApp.Edge2Edge = Microsoft.Maui.Storage.Preferences.Get("Edge2Edge", false);
 
         var builder = MauiApp.CreateBuilder();
@@ -103,7 +106,7 @@ public static class MauiProgram
 #endif
             })
 
-#if SENTRY && !WINDOWS
+#if SENTRY && !WINDOWS && !GNH_AVALONIA
             .UseSentry(options => {
                 // The DSN is the only required setting.
                 options.Dsn = GHApp.CurrentUserSecrets?.DefaultSentryDNS ?? "";

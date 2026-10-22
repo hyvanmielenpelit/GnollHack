@@ -51,6 +51,7 @@
     <RuntimeIdentifier Condition="'$(RuntimeIdentifier)' == ''">$(NETCoreSdkPortableRuntimeIdentifier)</RuntimeIdentifier>
     <DefineConstants>GNH_MAUI;GNH_AVALONIA;USE_SPAN_FOR_SUBSTRING;CORECLR</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);LINUX</DefineConstants>
+    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);SENTRY</DefineConstants>
     <MauiActiveBackend>avalonia</MauiActiveBackend>
     <AvaloniaControlsMauiGenerateDesktopProgram>false</AvaloniaControlsMauiGenerateDesktopProgram>
     <InvariantGlobalization>true</InvariantGlobalization>
@@ -1446,6 +1447,10 @@
 
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY')) And '$(GnhAvalonia)' != 'true'">
     <PackageReference Include="Sentry.Maui" Version="6.12.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(DefineConstants.Contains('SENTRY')) And '$(GnhAvalonia)' == 'true'">
+    <PackageReference Include="Sentry" Version="6.12.1" />
   </ItemGroup>
 
   <!-- OTHER -->
