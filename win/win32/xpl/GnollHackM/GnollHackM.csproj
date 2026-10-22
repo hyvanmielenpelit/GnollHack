@@ -1545,6 +1545,18 @@
     </Exec>
     <Warning Condition="'@(GnollHackDroidSo)' != '' And '$(_GnollHackDroidSoExitCode)' != '0'" Text="Sentry CLI could not upload libgnollhackdroid.so." />
   </Target>
+  <!-- libgnollhacklinux.so ships with its DWARF, but UploadDebugInfoToSentry uploads ELF files only for Android.
+       Sentry skips files it already has. -->
+  <Target Name="UploadGnollHackLinuxSoToSentry" AfterTargets="UploadDebugInfoToSentry" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And '$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('linux')) And '$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <GnollHackLinuxSo>$(MSBuildProjectDirectory)\Platforms\Linux\libs\libgnollhacklinux.so</GnollHackLinuxSo>
+    </PropertyGroup>
+    <Warning Condition="!Exists('$(GnollHackLinuxSo)')" Text="libgnollhacklinux.so not found at $(GnollHackLinuxSo); native symbols were not uploaded to Sentry." />
+    <Exec Condition="Exists('$(GnollHackLinuxSo)')" Command="$(SentryCLIDebugFilesUploadCommand) -t elf &quot;$(GnollHackLinuxSo)&quot;" IgnoreExitCode="true" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="ExitCode" PropertyName="_GnollHackLinuxSoExitCode" />
+    </Exec>
+    <Warning Condition="Exists('$(GnollHackLinuxSo)') And '$(_GnollHackLinuxSoExitCode)' != '0'" Text="Sentry CLI could not upload libgnollhacklinux.so." />
+  </Target>
   <!-- The SDK's CopyDSYMFromMac copies the dSYMs to Windows only for BuildIpa or CopyAppBundle builds, so a Visual
        Studio iOS Archive leaves them on the Mac. This copies them before the Mac connection closes, which happens
        before UploadDebugInfoToSentry runs; the upload then finds them in the output directory. GnollHackM.app.dSYM
