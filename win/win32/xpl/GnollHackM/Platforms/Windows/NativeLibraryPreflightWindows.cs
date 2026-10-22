@@ -23,6 +23,8 @@ namespace GnollHackM
         private const int ERROR_SYSTEM_INTEGRITY_POLICY_VIOLATION = 4551;  /* Smart App Control or App Control for Business */
         private const uint LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR = 0x00000100;
         private const uint LOAD_LIBRARY_SEARCH_DEFAULT_DIRS = 0x00001000;
+        private const uint SEM_FAILCRITICALERRORS = 0x0001;
+        private const uint SEM_NOOPENFILEERRORBOX = 0x8000;
         private const uint MB_OK = 0x00000000;
         private const uint MB_ICONERROR = 0x00000010;
         private const uint MB_SETFOREGROUND = 0x00010000;
@@ -36,6 +38,10 @@ namespace GnollHackM
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool FreeLibrary(IntPtr hLibModule);
+
+        [DllImport("kernel32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool SetThreadErrorMode(uint dwNewMode, out uint lpOldMode);
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         private static extern int MessageBoxW(IntPtr hWnd, string lpText, string lpCaption, uint uType);
@@ -87,17 +93,28 @@ namespace GnollHackM
         }
 #endif
 
-        /* Win32 error from loading fileName out of the application folder, or 0 if it loads */
+        /* Win32 error from loading fileName out of the application folder, or 0 if it loads.
+           The loader's own "Bad Image" box is suppressed, as the runtime does for its loads. */
         private static int ProbeLoadError(string fileName)
         {
             string path = Path.Combine(AppContext.BaseDirectory, fileName);
             if (!File.Exists(path))
                 return ERROR_MOD_NOT_FOUND;
-            IntPtr module = LoadLibraryExW(path, IntPtr.Zero, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
-            if (module == IntPtr.Zero)
-                return Marshal.GetLastPInvokeError();
-            FreeLibrary(module);
-            return 0;
+            uint oldMode;
+            bool revertMode = SetThreadErrorMode(SEM_FAILCRITICALERRORS | SEM_NOOPENFILEERRORBOX, out oldMode);
+            try
+            {
+                IntPtr module = LoadLibraryExW(path, IntPtr.Zero, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS);
+                if (module == IntPtr.Zero)
+                    return Marshal.GetLastPInvokeError();
+                FreeLibrary(module);
+                return 0;
+            }
+            finally
+            {
+                if (revertMode)
+                    SetThreadErrorMode(oldMode, out _);
+            }
         }
 
         /* Sentry may not be initialized this early; must never throw */
