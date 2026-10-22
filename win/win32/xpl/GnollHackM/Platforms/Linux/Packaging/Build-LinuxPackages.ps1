@@ -286,7 +286,9 @@ if [ -f "$STAGED/createdump" ]; then
 else
     warn "createdump is missing from the publish."
 fi
-for license in licenses/cef/LICENSE.txt licenses/cef/CREDITS.html licenses/cefglue/LICENSE.txt; do
+[ -f "$STAGED/libsentry.so" ] || warn "libsentry.so is missing from the publish; native crashes will not be reported."
+for license in licenses/cef/LICENSE.txt licenses/cef/CREDITS.html licenses/cefglue/LICENSE.txt \
+    licenses/sentry-native/LICENSE licenses/sentry-native/LICENSE-libunwind; do
     [ -f "$STAGED/$license" ] || warn "$license is missing from the publish."
 done
 # The engine ships without its DWARF; Sentry matches its crashes by the build ID to the full copy it was given

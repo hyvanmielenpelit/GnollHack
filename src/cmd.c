@@ -177,6 +177,7 @@ static int wiz_where(void);
 static int wiz_detect(void);
 #if defined(DEBUG)
 static int wiz_panic(void);
+static int wiz_crashtest(void);
 static int wiz_debug(void);
 static int wiz_deleteitem(void);
 #endif
@@ -1895,6 +1896,28 @@ wiz_panic(void)
     }
     else
         pline(unavailcmd, visctrl((int)cmd_from_func(wiz_panic)));
+    return 0;
+}
+
+/* #crashtest command - test the native crash reporter */
+static int
+wiz_crashtest(void)
+{
+    volatile int *volatile crash_ptr = (volatile int *)0;
+    char c;
+
+    if (!wizard)
+    {
+        pline(unavailcmd, visctrl((int)cmd_from_func(wiz_crashtest)));
+        return 0;
+    }
+
+    c = yn_function("Crash the game with a segmentation fault or an abort?", "saq", 'q',
+                    "Segmentation fault\nAbort\nCancel");
+    if (c == 's')
+        *crash_ptr = 0;
+    else if (c == 'a')
+        abort();
     return 0;
 }
 
@@ -6490,6 +6513,9 @@ struct ext_func_tab extcmdlist[] = {
     { 'c', "close", "close a door", doclose },
     { M('c'), "commands", "list of additional actions", docommandmenu, IFBURIED | GENERALCMD | AUTOCOMPLETE },
     { M(3) /*M('c')*/, "conduct", "list voluntary challenges you have maintained", doconduct, IFBURIED | AUTOCOMPLETE },
+#if defined(DEBUG)
+    { '\0', "crashtest", "crash the game to test crash reporting", wiz_crashtest, IFBURIED | AUTOCOMPLETE | WIZMODECMD },
+#endif
     { '\0', "decorations", "toggle display of decorations on and off", dotoggledecorations, IFBURIED | AUTOCOMPLETE },
     { M(6), "deletesavedgame", "delete saved game if it exists", dodeletesavedgame, IFBURIED | CASUALMODECMD | AUTOCOMPLETE },
     { C('g'), "dig", "dig the ground", dodig, INCMDMENU },

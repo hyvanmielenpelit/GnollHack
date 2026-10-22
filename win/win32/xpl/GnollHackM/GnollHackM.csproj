@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -1431,6 +1431,8 @@
     <!-- Licences: CEF's own and Chromium's third-party notices (extracted from CEF's resources.pak), and the CefGlue packager's -->
     <None Include="Platforms\Linux\licenses\cef\*" Link="licenses\cef\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
     <None Include="$(Pkgcef_runtime_linux-x64)\LICENSE.txt" Link="licenses\cefglue\LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" />
+    <!-- libsentry.so's licenses: sentry-native's and its vendored libunwind's -->
+    <None Include="Platforms\Linux\licenses\sentry-native\*" Link="licenses\sentry-native\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119'))">

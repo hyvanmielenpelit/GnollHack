@@ -73,6 +73,9 @@ namespace GnollHackM
             {
                 LoadAndInitialize();
                 _initialized = true;
+#if SENTRY
+                GHAvaloniaSentryNative.CheckHandlers("after CEF initialization");
+#endif
                 Log("GHCefRuntime: CEF " + GetChromeVersion() + " initialized in " + stopwatch.ElapsedMilliseconds + " ms");
                 return true;
             }
@@ -106,6 +109,7 @@ namespace GnollHackM
             settings.MultiThreadedMessageLoop = false;
             settings.ExternalMessagePump = true;
             settings.NoSandbox = true;
+            /* This and --disable-in-process-stack-traces keep Chromium from resetting the crash signal handlers to SIG_DFL */
             settings.DisableSignalHandlers = true;
             /* A unique root; the cache path must equal it or be a child of it */
             settings.RootCachePath = cacheDirectory;
