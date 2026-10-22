@@ -1268,6 +1268,10 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
+#if GNH_MAUI && WINDOWS
+                if (ex is DllNotFoundException || ex is BadImageFormatException)
+                    NativeLibraryPreflightWindows.ReportNonFatalLoadFailure(ex, "fmod.dll", "fmodstudio.dll");
+#endif
                 DisplayAlertGrid("FMOD Initialization Failed", "Initializing FMOD failed: " + ex.Message, "OK", GHColors.Red);
             }
         }

@@ -4000,8 +4000,21 @@ namespace GnollHackX
 #else
             _mainGnollHackService = DependencyService.Get<IGnollHackService>();
 #endif
+#if GNH_MAUI && WINDOWS
+            try
+            {
+                _mainGnollHackService.LoadLibrary();
+                _mainGnollHackService.Test();
+            }
+            catch (Exception ex) when (ex is DllNotFoundException || ex is BadImageFormatException)
+            {
+                NativeLibraryPreflightWindows.HandleNativeLoadFailure(ex);
+                throw;
+            }
+#else
             _mainGnollHackService.LoadLibrary();
             _mainGnollHackService.Test();
+#endif
 #if GNH_MAUI
             _fmodService = new FmodService();
             _platformService = new PlatformService();

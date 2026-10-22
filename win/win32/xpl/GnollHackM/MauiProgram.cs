@@ -229,6 +229,7 @@ public static class MauiProgram
                     }
 
                     ProcessMemoryWindows.AddToEvent(@event);
+                    NativeLibraryPreflightWindows.AddToEvent(@event);
 
                     return @event;
                 });
