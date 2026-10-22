@@ -1545,7 +1545,8 @@
     </Exec>
     <Warning Condition="'@(GnollHackDroidSo)' != '' And '$(_GnollHackDroidSoExitCode)' != '0'" Text="Sentry CLI could not upload libgnollhackdroid.so." />
   </Target>
-  <!-- libgnollhacklinux.so ships with its DWARF, but UploadDebugInfoToSentry uploads ELF files only for Android.
+  <!-- The Linux packages ship libgnollhacklinux.so stripped of its DWARF (Build-LinuxPackages.ps1); the repository copy
+       uploaded here keeps it. UploadDebugInfoToSentry uploads ELF files only for Android.
        Sentry skips files it already has. -->
   <Target Name="UploadGnollHackLinuxSoToSentry" AfterTargets="UploadDebugInfoToSentry" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And '$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('linux')) And '$(DesignTimeBuild)' != 'true'">
     <PropertyGroup>

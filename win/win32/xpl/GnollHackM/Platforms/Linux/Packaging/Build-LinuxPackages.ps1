@@ -37,6 +37,11 @@
 .PARAMETER SkipPublish
     Uses the existing publish folder instead of running dotnet publish.
 
+.PARAMETER KeepDebugInfo
+    Ships libgnollhacklinux.so with its DWARF debug information. By default the staged copy is stripped with
+    strip --strip-debug, which keeps its build ID and symbol table; the copy in Platforms\Linux\libs\, which the
+    Sentry symbol upload reads, keeps its debug information either way.
+
 .PARAMETER OutputRoot
     The folder that receives a <version> subfolder with the outputs.
     Default: <GnollHackM>\bin\LinuxPackages.
@@ -47,7 +52,7 @@
 .EXAMPLE
     .\Build-LinuxPackages.ps1
 
-    Publishes and builds the AppImage, the tar.gz and the Steam content for sniper.
+    Publishes and builds the AppImage, the tar.gz and the Steam content for steamrt4.
 
 .EXAMPLE
     .\Build-LinuxPackages.ps1 -Targets TarGz -SkipPublish -RunbookPath C:\path\to\runbook.md
@@ -78,6 +83,8 @@ param(
     [string]$RunbookPath = '',
 
     [switch]$SkipPublish,
+
+    [switch]$KeepDebugInfo,
 
     [string]$OutputRoot = '',
 
@@ -282,6 +289,26 @@ fi
 for license in licenses/cef/LICENSE.txt licenses/cef/CREDITS.html licenses/cefglue/LICENSE.txt; do
     [ -f "$STAGED/$license" ] || warn "$license is missing from the publish."
 done
+# The engine ships without its DWARF; Sentry matches its crashes by the build ID to the full copy it was given
+ENGINE="$STAGED/libgnollhacklinux.so"
+if [ "$STRIP_DEBUG" = "1" ]; then
+    for tool in strip readelf awk; do
+        command -v "$tool" >/dev/null 2>&1 || fail "'$tool' is not installed in WSL."
+    done
+    [ -f "$ENGINE" ] || fail "libgnollhacklinux.so is missing from the publish folder $PUBLISH_DIR."
+    build_id() { readelf -n "$1" 2>/dev/null | sed -n '/Build ID:/{s/.*Build ID: \([0-9a-f]*\).*/\1/p;q;}' || true; }
+    megabytes() { awk -v b="$1" 'BEGIN { printf "%.1f MB", b / 1048576 }'; }
+    id_before=$(build_id "$ENGINE")
+    [ -n "$id_before" ] || fail "cannot read the build ID of $ENGINE."
+    size_before=$(stat -c %s "$ENGINE")
+    strip --strip-debug "$ENGINE"
+    id_after=$(build_id "$ENGINE")
+    [ "$id_after" = "$id_before" ] || fail "stripping changed the build ID of libgnollhacklinux.so from $id_before to '$id_after'."
+    size_after=$(stat -c %s "$ENGINE")
+    echo "Stripped libgnollhacklinux.so: $(megabytes "$size_before") -> $(megabytes "$size_after"), build ID $id_after"
+else
+    echo "Keeping the debug information of libgnollhacklinux.so (-KeepDebugInfo)"
+fi
 rm -rf "$OUT"
 mkdir -p "$OUT"
 '@
@@ -589,6 +616,7 @@ $wslVariables = [ordered]@{
     RUNTIME_FILE        = $AppImageRuntimeFile
     RUNTIME_SHA256      = $AppImageRuntimeSha256.ToLowerInvariant()
     RUNBOOK             = ''
+    STRIP_DEBUG         = $(if ($KeepDebugInfo) { '0' } else { '1' })
     STEAMRT4_DIR        = ''
     APP_VDF             = ''
     DEPOT_VDF           = ''
