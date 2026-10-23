@@ -1588,6 +1588,15 @@
     <Delete SessionId="$(BuildSessionId)" Condition="'@(_GnhDsymDir)' != ''" Files="$(DeviceSpecificOutputPath)%(_GnhDsymDir.DsymFileName).zip" ContinueOnError="WarnAndContinue" />
     <Delete Condition="'@(_GnhDsymDir)' != ''" Files="$(DeviceSpecificOutputPath)%(_GnhDsymDir.DsymFileName).zip" ContinueOnError="WarnAndContinue" />
   </Target>
+  <!-- The SDK's _CompileAppManifest does not list Info.plist among its Inputs (dotnet/macios#26700, fixed in
+       dotnet/macios#26718), so an incremental build skips an Info.plist edit and the app keeps the old manifest.
+       $(AppBundleManifest) is set by _DetectAppManifest, one of that target's dependencies, so it is added here
+       after those have run and before the target checks its inputs. Remove once the iOS workload has the fix. -->
+  <Target Name="AddInfoPlistToAppManifestInputs" BeforeTargets="_CompileAppManifest" Condition="$(TargetFramework.Contains('-ios'))">
+    <ItemGroup>
+      <_CompileAppManifestInputFile Include="$(AppBundleManifest)" Condition="'$(AppBundleManifest)' != ''" />
+    </ItemGroup>
+  </Target>
   <Target Name="DeleteNativePdbs">
     <ItemGroup>
       <NativePdbFiles Include="$(OutputPath)\**\*.pdb" />
