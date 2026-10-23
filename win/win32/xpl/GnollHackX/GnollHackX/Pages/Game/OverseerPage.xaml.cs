@@ -31,7 +31,6 @@ using static System.Net.Mime.MediaTypeNames;
 namespace GnollHackX.Pages.Game
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class OverseerPage : CustomModalPage, ICloseablePage, IMessagePopupPage, ISpecialKeyPressHandlingPage
     {
         private string _baseOverseerUrl;

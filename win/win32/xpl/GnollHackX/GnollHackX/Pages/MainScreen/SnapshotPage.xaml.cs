@@ -24,7 +24,6 @@ using Xamarin.Essentials;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SnapshotPage : CustomModalPage, ICloseablePage
     {
         public SnapshotPage()

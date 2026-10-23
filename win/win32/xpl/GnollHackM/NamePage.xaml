@@ -15,7 +15,7 @@
                     HorizontalOptions="Center" />
                 <Entry x:Name="eName" WidthRequest="320" HorizontalOptions="Center" HorizontalTextAlignment="Center" PlaceholderColor="Gray" Placeholder="Enter your name here" FontSize="20" FontFamily="Underwood" TextColor="Black" BackgroundColor="#20404040"
                        Keyboard="Plain" Completed="eName_Completed" />
-                <Label Text="Name can contain only letters, numbers, and underscores.&#x0a;Its length must be 1–31 characters." FontSize="Small" FontAttributes="Italic"
+                <Label Text="Name can contain only letters, numbers, and underscores.&#x0a;Its length must be 1–31 characters." FontSize="14" FontAttributes="Italic"
                        HorizontalOptions="Center" HorizontalTextAlignment="Center" TextColor="Gray" />
                 <Label x:Name="lblError" HorizontalOptions="Center" Text="" />
                 <Grid x:Name="MenuCloseGrid" BackgroundColor="Transparent" HorizontalOptions="Center" ColumnSpacing="6" >

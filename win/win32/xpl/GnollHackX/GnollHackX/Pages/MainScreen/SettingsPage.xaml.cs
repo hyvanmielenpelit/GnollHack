@@ -35,7 +35,6 @@ using GnollHackX.Controls;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SettingsPage : CustomModalPage, ISpecialKeyPressHandlingPage, IMessagePopupPage
     {
         private GamePage _gamePage;

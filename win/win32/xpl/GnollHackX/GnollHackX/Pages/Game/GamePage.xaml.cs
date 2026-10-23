@@ -61,7 +61,6 @@ using Xamarin.Forms.PlatformConfiguration.TizenSpecific;
 namespace GnollHackX.Pages.Game
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class GamePage : CustomModalPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage, IMessagePopupPage
     {
         private struct MenuClickResult

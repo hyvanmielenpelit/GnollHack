@@ -44,6 +44,7 @@ namespace GnollHackX
             {
                 OnSourceChanged();
             }
+            base.OnPropertyChanged(propertyName);
         }
 
         public override Func<CancellationToken, Task<Stream>> Stream => GetStreamAsync;

@@ -20,7 +20,6 @@ using Xamarin.Essentials;
 namespace GnollHackX.Pages.Game
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class OutRipPage : CustomModalPage, ISpecialKeyPressHandlingPage
     {
         GamePage _gamePage;

@@ -22,7 +22,6 @@ namespace GnollHackM
 namespace GnollHackX.Controls
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CustomImageButton : ContentView
     {
         public CustomImageButton()

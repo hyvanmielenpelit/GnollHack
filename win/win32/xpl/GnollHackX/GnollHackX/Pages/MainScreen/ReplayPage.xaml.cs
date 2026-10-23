@@ -37,7 +37,6 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ReplayPage : CustomModalPage, ICloseablePage
     {
         MainPage _mainPage = null;

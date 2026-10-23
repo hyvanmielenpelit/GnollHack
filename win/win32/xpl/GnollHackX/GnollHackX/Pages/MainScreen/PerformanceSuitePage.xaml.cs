@@ -70,7 +70,6 @@ namespace GnollHackX.Pages.MainScreen
         public Thickness RowPadding { get; set; }
     }
 
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class PerformanceSuitePage : CustomModalPage, ICloseablePage, IMessagePopupPage
     {
         /* Backs the Scenario and Page Mode pickers: a display name paired with the

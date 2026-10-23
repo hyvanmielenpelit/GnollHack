@@ -22,7 +22,6 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TopScorePage : CustomModalPage, ICloseablePage
     {
         private string _fileName;

@@ -48,7 +48,6 @@ namespace GnollHackX.Controls
     }
 
 #endif
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SwitchableCanvasView : ContentView, IThreadSafeView
     {
         //private object _glLock = new object();

@@ -26,7 +26,6 @@ using GnollHackX.Pages.Game;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class AboutPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage
     {
         MainPage _mainPage = null;

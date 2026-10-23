@@ -24,7 +24,6 @@ using Xamarin.Essentials;
 namespace GnollHackX.Pages.Game
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NamePage : CustomModalPage, ICloseablePage, ISpecialKeyPressHandlingPage
     {
         public Regex ValidationExpression { get; set; }

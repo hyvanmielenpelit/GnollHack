@@ -25,7 +25,6 @@ using static Xamarin.Essentials.AppleSignInAuthenticator;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ImportExportPage : CustomModalPage, ICloseablePage, IMessagePopupPage
 	{
 		public ImportExportPage ()

@@ -15,7 +15,6 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Controls
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SimpleImageButton : ContentView, IThreadSafeView
     {
         public static readonly BindableProperty ImgSourcePathProperty = BindableProperty.Create(nameof(ImgSourcePath), typeof(string), typeof(SimpleImageButton), string.Empty);

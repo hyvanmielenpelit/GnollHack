@@ -24,7 +24,6 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ResetPage : CustomModalPage, ICloseablePage, IMessagePopupPage
     {
         private MainPage _mainPage;

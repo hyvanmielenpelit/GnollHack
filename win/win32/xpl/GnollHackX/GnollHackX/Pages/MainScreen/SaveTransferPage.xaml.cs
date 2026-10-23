@@ -110,7 +110,6 @@ namespace GnollHackX.Pages.MainScreen
         public long CreatedUtcUnix { get; set; }  // Unix timestamp (seconds since UTC epoch)
     }
 
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SaveTransferPage : CustomModalPage, ICloseablePage, IMessagePopupPage
     {
         private List<GHSaveTransferFile> _saves = new List<GHSaveTransferFile>();

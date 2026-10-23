@@ -24,7 +24,6 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class VaultPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage
     {
         private MainPage _mainPage;

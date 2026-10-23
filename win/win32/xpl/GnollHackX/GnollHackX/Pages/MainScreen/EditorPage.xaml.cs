@@ -22,7 +22,6 @@ using Xamarin.Essentials;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class EditorPage : CustomModalPage, ICloseablePage
     {
         private string _fileName;

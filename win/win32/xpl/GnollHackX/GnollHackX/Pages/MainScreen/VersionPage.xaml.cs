@@ -26,7 +26,6 @@ using GnollHackX.Controls;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class VersionPage : CustomModalPage, ICloseablePage
     {
         private GamePage _gamePage = null;
