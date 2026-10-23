@@ -103,6 +103,7 @@ public static class MauiProgram
                 handlers.AddHandler<Border, NotAnimatedBorderHandler>();
                 handlers.AddHandler<Button, NotAnimatedButtonHandler>();
                 handlers.AddHandler<MetalGLView, GnollHackM.Platforms.iOS.iOSSKGLViewMetalHandler>();
+                handlers.AddHandler<ScrollView, FocusKeepingScrollViewHandler>();
 #endif
 #if WINDOWS
                 handlers.AddHandler<SKTouchGLView, WindowsSKGLViewHandler>();

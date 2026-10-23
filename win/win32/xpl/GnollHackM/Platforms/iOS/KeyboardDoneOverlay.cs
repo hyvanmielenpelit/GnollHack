@@ -29,6 +29,7 @@ namespace GnollHackM.Platforms.iOS
         private static readonly object EntryMarker = new object();
         private static WeakReference<UITextField> _input;
         private static UIButton _button;
+        private static CGRect _buttonFrame = CGRect.Empty;
         private static CGRect _keyboardFrame = CGRect.Empty;
         private static bool _keyboardShowing;
         private static double _animationDuration = 0.25;
@@ -52,6 +53,12 @@ namespace GnollHackM.Platforms.iOS
                 center.AddObserver(UIKeyboard.WillHideNotification, OnKeyboardWillHide),
             };
         }
+
+        /// <summary>
+        /// Frame of the floating close button in its window while it is shown for the focused input,
+        /// else empty. Set when the button is placed, ahead of its fade animation.
+        /// </summary>
+        public static CGRect ButtonFrame => _buttonFrame;
 
         private static void DetachAccessory(UITextField field, object input)
         {
@@ -196,6 +203,7 @@ namespace GnollHackM.Platforms.iOS
                 keyboard.Y - ButtonBottomSpacing - ButtonSize,
                 ButtonSize,
                 ButtonSize);
+            _buttonFrame = frame;
 
             if (button.Superview != window)
             {
@@ -223,6 +231,7 @@ namespace GnollHackM.Platforms.iOS
 
         private static void HideButton()
         {
+            _buttonFrame = CGRect.Empty;
             UIButton button = _button;
             if (button == null || button.Hidden)
                 return;
