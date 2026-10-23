@@ -13,6 +13,7 @@ using AvRect = Avalonia.Rect;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-AVALONIA-0010): ACM canvas view paints inside the render pass
     /* ACM's SKCanvasViewControl, painting on the UI thread outside Avalonia's render pass, because
        GnollHack's raster views read and write MAUI properties while painting. Paint requests are
        coalesced into one posted paint below layout priority; Render only draws the last painted image.
@@ -191,6 +192,7 @@ namespace GnollHackM
             RequestPaint();
         }
 
+        // WORKAROUND(WA-AVALONIA-0009): ACM Skia controls raise no hover touch actions
         protected override void OnPointerEntered(AvPointerEventArgs e)
         {
             base.OnPointerEntered(e);

@@ -160,6 +160,7 @@ namespace GnollHackX.Droid
                 GHApp.AddSentryBreadcrumb("CloseApplication", GHConstants.SentryGnollHackGeneralCategoryName);
                 RevertAnimatorDuration(true);
 #if GNH_MAUI
+                // WORKAROUND(WA-MAUI-0017): Finishing the activity leaves MAUI in an unstable state on Android
                 /* FinishAffinity seems to leave MAUI in an unstable state, so need to hard quit */
                 try
                 {

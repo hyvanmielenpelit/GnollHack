@@ -52,6 +52,7 @@ namespace GnollHackM
             _handlers = ReadHandlers();
         }
 
+        // WORKAROUND(WA-SENTRY-0005): inproc's SA_ONSTACK handlers overflow the alternate stack for CoreCLR's handlers
         /* Inproc installs its handlers with SA_ONSTACK, so CoreCLR's chained handler runs on the small alternate
            signal stack. CoreCLR dispatches managed exceptions from its SIGILL, SIGTRAP, SIGBUS and SIGFPE handlers on
            the current stack, and only its SIGSEGV handler leaves the alternate stack first, so a caught

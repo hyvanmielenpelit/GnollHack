@@ -884,6 +884,7 @@ namespace GnollHackX
             CompositionTarget_Rendering(null, null);
         }
 
+        // WORKAROUND(WA-WINUI-0002): CompositionTarget.Rendering allocates event-args wrappers every frame
         private static void ScheduleRawRenderingLivenessCheck()
         {
             Task.Delay(GHConstants.RawRenderingLivenessCheckMs).ContinueWith(t =>
@@ -987,6 +988,7 @@ namespace GnollHackX
 #if WINDOWS
             GHPresentFeedback.Register(new PresentFeedbackWindows());
 #if ENABLE_RAW_RENDERING
+            // WORKAROUND(WA-WINUI-0002): CompositionTarget.Rendering allocates event-args wrappers every frame
             if (RenderingSubscriptionWindows.TrySubscribe(_rawRenderingCallback))
             {
                 _windowsRenderSubscription = 2;
@@ -2220,6 +2222,7 @@ namespace GnollHackX
         {
             ulong memory = TotalMemory;
             long TotalMemInBytes = (long)memory;
+            // WORKAROUND(WA-SKIASHARP-0005): Skia uploads whole tile sheets under half the Metal cache limit
             /* See GHConstants.MaxMetalGPUCacheSize */
             long maxLimit = metal ? GHConstants.MaxMetalGPUCacheSize : long.MaxValue;
 
@@ -3455,6 +3458,7 @@ namespace GnollHackX
         }
 
 #if WINDOWS
+        // WORKAROUND(WA-MAUI-0019): Re-entrant window activation throws "already activated" or "already deactivated"
         /* Runs from the dispatcher after MAUI's activation sequence, because these calls dispatch window
            messages and a re-entrant activation inside Window.Resumed throws in MAUI's state machine */
         private static void CompleteWindowsResume()
@@ -3655,6 +3659,7 @@ namespace GnollHackX
 #endif
         }
 
+        // WORKAROUND(WA-SENTRY-0008): The Android and iOS scope observers ignore a null extra
         /* Replaces, never removes: the SDK's native scope observer logs and returns
            early on a null value, so setting null would leave the previous, now stale,
            snapshot in the native scope. Always write a sentinel string instead. */
@@ -4472,6 +4477,7 @@ namespace GnollHackX
             return verstr;
         }
 
+        // WORKAROUND(WA-MAUI-0022): First use of a custom font sometimes fails on Windows
         /* Force lazy loading for MAUI fonts, which seems to sometimes fail on Windows */
         public static async Task InitBaseFontsViaGrid(Grid grid)
         {
@@ -7349,6 +7355,7 @@ namespace GnollHackX
         public static async Task<PermissionStatus> CheckAndRequestWritePermission(Page page)
         {
 #if GNH_AVALONIA
+            // WORKAROUND(WA-AVALONIA-0013): ACM Essentials leaves most Essentials APIs unimplemented
             /* Desktop storage needs no runtime permission, and the portable Permissions API throws */
             return PermissionStatus.Granted;
 #else
@@ -7378,6 +7385,7 @@ namespace GnollHackX
         public static async Task<PermissionStatus> CheckAndRequestReadPermission(Page page)
         {
 #if GNH_AVALONIA
+            // WORKAROUND(WA-AVALONIA-0013): ACM Essentials leaves most Essentials APIs unimplemented
             /* Desktop storage needs no runtime permission, and the portable Permissions API throws */
             return PermissionStatus.Granted;
 #else
@@ -13557,6 +13565,7 @@ namespace GnollHackX
                 Debug.WriteLine(ex.Message);
             }
 
+            // WORKAROUND(WA-WINUI-0001): Rendering capped at 32 FPS by the Sleep(16) frame-pacing fallback
             /* When DCompositionWaitForCompositorClock fails, WinUI paces CompositionTarget.Rendering
                with Sleep(16), which takes about 31 ms at the default 15.6 ms timer resolution */
             try

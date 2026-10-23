@@ -21,6 +21,7 @@ public partial class App : MauiWinUIApplication
 		this.RequestedTheme = ApplicationTheme.Dark;
 		GHApp.WindowsApp = this;
         GHApp.InitializeGC();
+        // WORKAROUND(WA-MAUI-0019): Re-entrant window activation throws "already activated" or "already deactivated"
         Microsoft.UI.Xaml.Application.Current.UnhandledException += (s, e) =>
         {
             GHApp.MaybeWriteGHLog(e.Exception.Message);

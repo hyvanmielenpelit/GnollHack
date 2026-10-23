@@ -16,6 +16,7 @@ using AView = Android.Views.View;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-SKIASHARP-0001): SKGLView has no SurfaceView-backed handler on Android
     /* SKGLView on an SKGLSurfaceView: the map is its own SurfaceFlinger layer instead of a
        TextureView that HWUI composites into the page's window. The layer sits behind the
        window, so views above it draw normally; the view's own opacity, transforms and
@@ -120,6 +121,7 @@ namespace GnollHackM
             handler._touchHandler.SetEnabled(platformView, view.EnableTouchEvents);
         }
 
+        // WORKAROUND(WA-SKIASHARP-0002): SKGLSurfaceView keeps its GRContext across EGL contexts
         /* GL thread */
         private void OnPaintSurface(object? sender, SkiaSharp.Views.Android.SKPaintGLSurfaceEventArgs e)
         {
@@ -181,6 +183,7 @@ namespace GnollHackM
 
             private bool _wasDetached;
 
+            // WORKAROUND(WA-SKIASHARP-0002): SKGLSurfaceView keeps its GRContext across EGL contexts
             /* GLSurfaceView gives a re-attached view a new GL thread and EGL context, while
                SKGLSurfaceView's renderer keeps the GRContext it made in the old one */
             protected override void OnAttachedToWindow()
@@ -211,6 +214,7 @@ namespace GnollHackM
             }
         }
 
+        // WORKAROUND(WA-SKIASHARP-0001): SKGLView has no SurfaceView-backed handler on Android
         /* Adapted from SkiaSharp's internal Android SKTouchHandler (MIT) */
         private class SurfaceTouchHandler
         {

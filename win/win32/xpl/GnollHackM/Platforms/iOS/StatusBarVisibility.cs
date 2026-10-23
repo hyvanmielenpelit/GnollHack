@@ -199,6 +199,7 @@ namespace GnollHackM.Platforms.iOS
             iOSPage.SetPrefersStatusBarHidden(page, _hidden ? StatusBarHiddenMode.True : StatusBarHiddenMode.False);
         }
 
+        // WORKAROUND(WA-MAUI-0004): ControlsModalWrapper does not forward status bar visibility to its page
         private static unsafe void AddModalWrapperForwarding()
         {
             try
@@ -221,6 +222,7 @@ namespace GnollHackM.Platforms.iOS
             }
         }
 
+        // WORKAROUND(WA-MAUI-0004): ControlsModalWrapper does not forward status bar visibility to its page
         [UnmanagedCallersOnly]
         private static IntPtr ChildViewControllerForStatusBarHidden(IntPtr self, IntPtr selector)
         {

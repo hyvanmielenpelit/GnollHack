@@ -57,6 +57,7 @@ public partial class App : Application
         }
 #endif
 #if IOS
+        // WORKAROUND(WA-MAUI-0003): IsOn mapping recolors and re-animates the Liquid Glass UISwitch mid-toggle
         /* Liquid Glass UISwitch (iOS 26+): MAUI's default IsOn mapping forces a TrackColor update,
          * which writes OnTintColor and a private track subview, and re-issues an animated SetState
          * in the middle of UIKit's own toggle animation (dotnet/maui#34560). Toggling must leave
@@ -79,6 +80,7 @@ public partial class App : Application
 #endif
 
 #if IOS || ANDROID
+        // WORKAROUND(WA-MAUI-0028): FormattedText lines get uneven heights when spans mix fonts
         /* Custom Label handler for consistent line spacing when mixing fonts in FormattedText.
          * 
          * Problem: iOS (CoreText) and Android (StaticLayout) compute each line's height from

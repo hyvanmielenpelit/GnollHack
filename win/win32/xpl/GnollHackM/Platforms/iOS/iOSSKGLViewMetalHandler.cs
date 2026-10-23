@@ -14,6 +14,7 @@ using System.Linq;
 
 namespace GnollHackM.Platforms.iOS
 {
+    // WORKAROUND(WA-SKIASHARP-0003): SKGLView has no Metal-backed handler on iOS
     public class iOSSKGLViewMetalHandler : ViewHandler<ISKGLView, iOSSKGLViewMetalHandler.GHMetalView>
     {
         private CustomSKTouchHandler? _touchHandler;
@@ -179,6 +180,7 @@ namespace GnollHackM.Platforms.iOS
             }
         }
 
+        // WORKAROUND(WA-SKIASHARP-0004): SKMetalView leaks per-frame wrappers and its GRContext
         /* An MTKView that renders with Skia. Each view owns its own command queue and
            GRContext. Drawing happens on the main thread. */
         public class GHMetalView : MTKView, IMTKViewDelegate
@@ -311,6 +313,7 @@ namespace GnollHackM.Platforms.iOS
             }
         }
 
+        // WORKAROUND(WA-SKIASHARP-0003): SKGLView has no Metal-backed handler on iOS
         private class CustomSKTouchHandler : UIGestureRecognizer
         {
             private Action<SKTouchEventArgs>? onTouchAction;

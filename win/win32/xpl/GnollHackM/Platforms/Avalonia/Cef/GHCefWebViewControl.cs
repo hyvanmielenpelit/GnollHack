@@ -491,6 +491,7 @@ namespace GnollHackM
             }
         }
 
+        // WORKAROUND(WA-AVALONIA-0017): IsEffectivelyVisible has no change event
         /* Visibility: CEF stops painting a hidden browser. IsEffectivelyVisible has no public change event, so
            IsVisible is watched on the control and its ancestors while attached. */
         private void SubscribeVisibility()
@@ -1563,6 +1564,7 @@ namespace GnollHackM
             }
         }
 
+        // WORKAROUND(WA-CEF-0003): Chromium's X11 clipboard blocks off-screen pages
         /* RAWKEYDOWN for every key, plus CHAR '\r' for Enter; text comes from TextInput, which Avalonia raises
            only when the key is not handled, so only navigation keys are marked handled. Clipboard keys are handled
            here through Avalonia's clipboard: Chromium's own X11 clipboard blocks the page on paste and does not reach
@@ -1674,6 +1676,7 @@ namespace GnollHackM
             return e.Key == Avalonia.Input.Key.Delete && modifiers == Avalonia.Input.KeyModifiers.Shift;
         }
 
+        // WORKAROUND(WA-CEF-0003): Chromium's X11 clipboard blocks off-screen pages
         /* The selection CEF reported, onto the clipboard through Avalonia's X11 connection. A cut then deletes the
            selection with a Delete key, which does nothing outside editable fields. */
         private async Task CopySelectionAsync(bool cut)
@@ -1704,6 +1707,7 @@ namespace GnollHackM
             }
         }
 
+        // WORKAROUND(WA-CEF-0003): Chromium's X11 clipboard blocks off-screen pages
         /* The clipboard text through Avalonia's own X11 connection, inserted at the caret of the focused field */
         private async Task PasteClipboardTextAsync()
         {

@@ -669,6 +669,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        // WORKAROUND(WA-WINUI-0008): Swap-chain canvases cannot be transparent or faded
         /* The SurfaceView layer and the Windows swap chain ignore the canvas's opacity */
         private bool FadeWithFadeFrame
         {
@@ -699,6 +700,7 @@ namespace GnollHackX.Pages.Game
             get { return CommandCanvas.UseGL; }
             set
             {
+                // WORKAROUND(WA-WINUI-0008): Swap-chain canvases cannot be transparent or faded
                 /* SKGLView is non-transparent on Windows */
                 CommandCanvas.UseGL = value;
 #if !WINDOWS
@@ -1190,6 +1192,7 @@ namespace GnollHackX.Pages.Game
         public bool IsResizing => Volatile.Read(ref _isResizing) != 0
             && (DateTime.UtcNow.Ticks - Volatile.Read(ref _resizeStartTicks)) < GHConstants.MaxResizingDurationTicks;
 
+        // WORKAROUND(WA-SKIASHARP-0008): SKGLView reports EGL errors while it is being resized
         void DoResizeCanvasUpdatePause()
         {
             /* This is needed especially on Windows while SKGLView is being resized */
@@ -13244,6 +13247,7 @@ namespace GnollHackX.Pages.Game
                 tx = bkgrect.Left + bkgrect.Width / 12.6f;
 
                 SKRect cliprect = new SKRect(0, ty + textPaint.FontMetrics.Ascent, canvaswidth, bkgrect.Bottom - bkgrect.Height / 8.5f);
+                // WORKAROUND(WA-SKIASHARP-0006): ClipRect sometimes malfunctions on iOS SKGLView
                 //canvas.ClipRect(cliprect); // Note this ClipRect sometimes malfunctions on iOS with SKGLView
 
                 //lock (_statusOffsetLock)
@@ -17185,6 +17189,7 @@ namespace GnollHackX.Pages.Game
                         }
                         break;
                     case SKTouchAction.Cancelled:
+                        // WORKAROUND(WA-SKIASHARP-0010): Android touch cancel reaches only one pointer
                         /* Android reports a cancelled gesture once, for ActionIndex only, so the
                            other pointers never receive an event of their own */
                         ResetMainCanvasTouchState();
@@ -24195,6 +24200,7 @@ namespace GnollHackX.Pages.Game
                 StartMainCanvasAnimation();
         }
 
+        // WORKAROUND(WA-WINUI-0004): Mouse capture loss raises no PointerCaptureLost or PointerCanceled
         /// <summary>
         /// Clears all canvas touch dictionaries, touch-moved flags and pending presses.
         /// Called on resign-active, suspend, and resume to prevent phantom

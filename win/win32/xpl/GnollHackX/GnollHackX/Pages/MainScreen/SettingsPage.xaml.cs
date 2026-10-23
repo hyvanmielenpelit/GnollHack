@@ -364,6 +364,7 @@ namespace GnollHackX.Pages.MainScreen
             }
 
 #if GNH_MAUI && ANDROID
+            // WORKAROUND(WA-MAUI-0015): ScrollView misbehaves with enabled entries when Settings opens on Android
             /* Workaround for ScrollView bug in .NET MAUI 9.0 GA */
             PostXlogUserNameEntry.IsEnabled = false;
             PostXlogPasswordEntry.IsEnabled = false;
@@ -415,6 +416,7 @@ namespace GnollHackX.Pages.MainScreen
                                 if (!label.GestureRecognizers.Any(g => g is TapGestureRecognizer))
                                 {
                                     var tapGesture = new TapGestureRecognizer();
+                                    // WORKAROUND(WA-MAUI-0010): FormattedText spans do not inherit Label's font on iOS
                                     string baseFontFamily = label.FontFamily; /* We need to set since there is a bug that without it iOS sets the normal font to something else in FormattedText */
                                     tapGesture.Tapped += (s, e) =>
                                     {
@@ -2859,6 +2861,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             GHApp.BackButtonPressed += BackButtonPressed;
 #if GNH_MAUI && IOS
+            // WORKAROUND(WA-IOS-0001): Liquid Glass flex pan recognizers lose taps on switches
             GnollHackM.Platforms.iOS.FlexGestureSuppressor.SetActive(true);
 #endif
         }
@@ -2866,6 +2869,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
 #if GNH_MAUI && IOS
+            // WORKAROUND(WA-IOS-0001): Liquid Glass flex pan recognizers lose taps on switches
             GnollHackM.Platforms.iOS.FlexGestureSuppressor.SetActive(false);
 #endif
         }

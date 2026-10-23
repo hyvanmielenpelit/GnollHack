@@ -6,6 +6,7 @@ using GnollHackX;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-AVALONIA-0015): Avalonia's Screen reports no refresh rate
     /* The refresh rate of a monitor's current display mode, read with user32 since Avalonia's Screen does
        not report one. Windows only; elsewhere every call returns 0. UI thread. */
     public static class GHAvaloniaMonitorRefreshRate

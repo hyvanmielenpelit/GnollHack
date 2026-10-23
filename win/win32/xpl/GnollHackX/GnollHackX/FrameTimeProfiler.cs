@@ -297,6 +297,7 @@ namespace GnollHackX
             }
         }
 
+        // WORKAROUND(WA-RUNTIME-0002): GC.GetTotalMemory walks the whole major heap on Mono
         /* GC.GetTotalMemory walks the major heap on Mono, taking milliseconds, so the heap size
            is sampled off the UI thread while the profiler is enabled */
         private const int HeapSampleIntervalMs = 1000;

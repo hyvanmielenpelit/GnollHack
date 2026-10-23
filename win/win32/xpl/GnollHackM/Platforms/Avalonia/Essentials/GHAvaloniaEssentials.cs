@@ -24,6 +24,7 @@ namespace GnollHackM
         private static GHAvaloniaLauncher _launcher = null;
         private static GHAvaloniaShare _share = null;
 
+        // WORKAROUND(WA-AVALONIA-0013): ACM Essentials leaves most Essentials APIs unimplemented
         /* Installs all ten implementations. Runs before GHApp's static initializers and before
            the MAUI app builder exists; the instances are created once and reused. */
         public static void InstallEarly()
@@ -45,6 +46,7 @@ namespace GnollHackM
             }
         }
 
+        // WORKAROUND(WA-AVALONIA-0013): ACM Essentials leaves most Essentials APIs unimplemented
         /* Re-installs Preferences and AppInfo, which UseAvaloniaEssentials() and UseAvaloniaApp()
            replace when called. The other eight are not touched by ACM. */
         public static void InstallAfterBuilder()

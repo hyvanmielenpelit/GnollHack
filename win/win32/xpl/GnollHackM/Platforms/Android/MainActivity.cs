@@ -26,6 +26,7 @@ public class MainActivity : MauiAppCompatActivity
         bool edge2edge = GHApp.Edge2Edge; // Microsoft.Maui.Storage.Preferences.Get("Edge2Edge", false);
         if (edge2edge && Window != null)
         {
+            // WORKAROUND(WA-MAUI-0012): WindowInsets padding is applied despite SafeAreaEdges None on Android 15
             // ANDROID 15 / .NET MAUI BUG WORKAROUND:
             // MAUI forcefully applies WindowInsets padding to the root view on Android 15+, ignoring SafeAreaEdges="None".
             // We intercept the insets at the DecorView level to force 0 padding.
@@ -47,6 +48,7 @@ public class MainActivity : MauiAppCompatActivity
         CreateSaveGameNotificationChannel();
     }
 
+    // WORKAROUND(WA-MAUI-0016): Framework teardown raises ObjectDisposedException on Android
     protected override void OnDestroy()
     {
         try
@@ -177,6 +179,7 @@ public class MainActivity : MauiAppCompatActivity
         }
     }
 
+    // WORKAROUND(WA-MAUI-0012): WindowInsets padding is applied despite SafeAreaEdges None on Android 15
     private class BypassInsetsListener : Java.Lang.Object, AndroidX.Core.View.IOnApplyWindowInsetsListener
     {
         public AndroidX.Core.View.WindowInsetsCompat OnApplyWindowInsets(Android.Views.View v, AndroidX.Core.View.WindowInsetsCompat insets)

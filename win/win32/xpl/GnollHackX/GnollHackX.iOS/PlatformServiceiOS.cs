@@ -367,6 +367,7 @@ namespace GnollHackX.iOS
 
         }
 
+        // WORKAROUND(WA-IOS-0003): Mac iPad app window loses key status after modal navigation
         public void EnsureWindowFocus()
         {
             /* On Mac ("Designed for iPad"), the window can lose active status

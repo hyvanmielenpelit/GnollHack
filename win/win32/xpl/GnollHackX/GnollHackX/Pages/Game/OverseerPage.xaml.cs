@@ -608,6 +608,7 @@ namespace GnollHackX.Pages.Game
             HookNewWindowRequested();
 #endif
 #if GNH_AVALONIA
+            // WORKAROUND(WA-AVALONIA-0018): WebKitGTK adapter ignores a cancelled navigation
             /* The WebKitGTK adapter does not cancel navigation, so an off-site page that DisplayWebView_Navigating
                cancelled, and opened in the system browser, loads anyway; going back removes it */
             if (e.Result == WebNavigationResult.Success && _avaloniaHost.IgnoresNavigationCancel)
@@ -2438,6 +2439,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        // WORKAROUND(WA-MAUI-0027): EvaluateJavaScriptAsync wraps scripts in eval, which a CSP refuses
         /// <summary>
         /// Sends a tool response back to the Angular SPA through the platform's
         /// script evaluation: EvaluateJavaScriptAsync, or under Avalonia the native
@@ -2791,6 +2793,7 @@ namespace GnollHackX.Pages.Game
         }
 #endif
 
+        // WORKAROUND(WA-MAUI-0027): EvaluateJavaScriptAsync wraps scripts in eval, which a CSP refuses
         private async void SendPickedFilesToJs(List<object> fileEntries)
         {
             try

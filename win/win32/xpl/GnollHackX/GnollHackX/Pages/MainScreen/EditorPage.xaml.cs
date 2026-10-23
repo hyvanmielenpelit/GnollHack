@@ -79,6 +79,7 @@ namespace GnollHackX.Pages.MainScreen
                     try
                     {
 #if WINDOWS
+                        // WORKAROUND(WA-WINUI-0006): TextBox reports line breaks as a lone CR
                         // In UWP on Windows line endings are just \r so they need to be changed back to Environment.NewLine
                         string str = TextEditor.Text.Replace("\r", Environment.NewLine);
 #else

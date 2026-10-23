@@ -11,6 +11,7 @@ namespace GnollHackM
        the history state arrive through the dispatcher. Disconnecting closes the browser for good. */
     public sealed class GHCefWebViewHandler : Avalonia.Controls.Maui.Handlers.ViewHandler<IWebView, GHCefWebViewControl>, IWebViewDelegate
     {
+        // WORKAROUND(WA-AVALONIA-0002): ACM Skia handler mappers chain to MAUI's inert view mappers
         /* Chained to ACM's view mappers: MAUI's own view mappers do nothing on Avalonia */
         public static IPropertyMapper<IWebView, GHCefWebViewHandler> Mapper =
             new Microsoft.Maui.PropertyMapper<IWebView, GHCefWebViewHandler>(AcmViewHandler.ViewMapper)

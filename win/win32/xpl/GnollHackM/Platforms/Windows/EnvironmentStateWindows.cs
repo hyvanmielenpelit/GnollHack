@@ -8,6 +8,7 @@ using GnollHackX;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-MAUI-0024): OnPlatformMessage costs an allocation for every window message on Windows
     /* Console display state, suspend/resume, session lock and main-window visibility, collected
        without window messages: the display state and suspend/resume through powrprof callbacks
        (DEVICE_NOTIFY_CALLBACK), which run on a system thread; the session lock by polling

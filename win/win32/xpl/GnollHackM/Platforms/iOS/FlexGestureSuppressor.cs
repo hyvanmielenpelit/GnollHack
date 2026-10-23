@@ -5,6 +5,7 @@ using UIKit;
 
 namespace GnollHackM.Platforms.iOS
 {
+    // WORKAROUND(WA-IOS-0001): Liquid Glass flex pan recognizers lose taps on switches
     /// <summary>
     /// Disables the window-level flex pan gesture recognizers while active. Each Liquid Glass UISwitch and
     /// UISlider (iOS 26+) registers a private _UIFlexInteractionPanGestureRecognizer on its UIWindow, so with

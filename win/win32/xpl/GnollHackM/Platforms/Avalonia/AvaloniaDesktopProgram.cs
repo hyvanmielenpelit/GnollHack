@@ -17,6 +17,7 @@ internal static class AvaloniaDesktopProgram
            else of the game is initialized */
         if (GHCefSubprocess.IsSubprocess(args))
             return GHCefSubprocess.Run(args);
+        // WORKAROUND(WA-SKIASHARP-0009): libHarfBuzzSharp binds its own calls to the system HarfBuzz
         PreloadHarfBuzzSharp();
         GHAvaloniaFontConfig.Install();
 #endif
@@ -74,6 +75,7 @@ internal static class AvaloniaDesktopProgram
     [DllImport("libc", EntryPoint = "dlerror")]
     private static extern IntPtr DlError();
 
+    // WORKAROUND(WA-SKIASHARP-0009): libHarfBuzzSharp binds its own calls to the system HarfBuzz
     /* libHarfBuzzSharp calls its own exported hb_* functions through the PLT. FreeType 2.14 and later load the
        system libharfbuzz.so.0 with RTLD_GLOBAL when fontconfig scans font files, and a call bound lazily after that
        resolves to the system HarfBuzz, which then aborts on HarfBuzzSharp's objects. RTLD_NOW binds every call to

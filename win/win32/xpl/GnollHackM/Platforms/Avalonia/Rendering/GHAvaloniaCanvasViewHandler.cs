@@ -10,6 +10,7 @@ namespace GnollHackM
        InvalidateSurface and IgnorePixelScaling request a coalesced paint; the rest is ACM's. */
     public class GHAvaloniaCanvasViewHandler : AcmSKCanvasViewHandler
     {
+        // WORKAROUND(WA-AVALONIA-0002): ACM Skia handler mappers chain to MAUI's inert view mappers
         /* Chained to ACM's view mappers, not to ACM's SKCanvasViewHandler mappers: those chain to MAUI's own
            ViewHandler mappers, whose entries do nothing on Avalonia, so sizes, margins, visibility and
            the other view properties would never reach the control */
@@ -32,6 +33,7 @@ namespace GnollHackM
         {
         }
 
+        // WORKAROUND(WA-AVALONIA-0010): ACM canvas view paints inside the render pass
         protected override AcmSKCanvasViewControl CreatePlatformView() => new GHAvaloniaCanvasControl();
 
         /* An entry in a derived mapper replaces the chained one, so ACM's mapping is called explicitly */
@@ -42,6 +44,7 @@ namespace GnollHackM
             control?.RequestPaint();
         }
 
+        // WORKAROUND(WA-AVALONIA-0003): Aligned Skia views collapse to zero size
         /* The control stays stretched over the frame MAUI arranges it in. MAUI has already aligned that frame, and
            an aligned Avalonia control takes its own desired size, which is zero for a view MAUI sizes itself */
         public static void MapLayoutAlignment(AcmSKCanvasViewHandler handler, ISKCanvasView view)

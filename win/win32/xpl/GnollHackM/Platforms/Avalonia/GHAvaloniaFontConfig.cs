@@ -61,6 +61,7 @@ namespace GnollHackM
             }
         }
 
+        // WORKAROUND(WA-LINUX-0001): fontconfig recaches fonts from a moving AppImage mount
         /* An AppImage is mounted at a new path on every launch, and fontconfig keys its cache by folder path, so the
            fonts are used from a copy in the data directory. Returns the bundled folder if the copy fails. */
         private static string CopyToDataDirectory(string fontDirectory)

@@ -528,6 +528,7 @@ namespace GnollHackX.Controls
             PaintSurface?.Invoke(sender, convargs);
         }
 
+        // WORKAROUND(WA-SKIASHARP-0005): Skia uploads whole tile sheets under half the Metal cache limit
         /* A Metal context never exceeds GHConstants.MaxMetalGPUCacheSize, whatever level or backend setting asked for more */
         private void SetContextResourceCacheLimit(GRContext grContext, long limit)
         {

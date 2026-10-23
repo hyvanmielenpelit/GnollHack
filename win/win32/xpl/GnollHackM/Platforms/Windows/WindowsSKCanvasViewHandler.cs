@@ -9,6 +9,7 @@ using SkiaSharp.Views.Windows;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-SKIASHARP-0007): SkiaSharp's Windows touch handler is internal and reads every WinRT object
     /* SkiaSharp's SKCanvasViewHandler with WindowsTouchHandler in place of its own touch handler */
     public class WindowsSKCanvasViewHandler : SKCanvasViewHandler
     {

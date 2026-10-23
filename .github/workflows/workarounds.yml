@@ -1,0 +1,14 @@
+name: workarounds
+on:
+  push:
+    paths: ['DEVEL/workarounds/**', 'win/**', 'src/**', 'include/**', 'util/**', 'sys/**', '.github/workflows/workarounds.yml']
+  pull_request:
+    paths: ['DEVEL/workarounds/**', 'win/**', 'src/**', 'include/**', 'util/**', 'sys/**', '.github/workflows/workarounds.yml']
+jobs:
+  lint:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check the workaround register and its code tags
+        shell: powershell
+        run: powershell -NoProfile -ExecutionPolicy Bypass -File DEVEL/workarounds/Test-WorkaroundRegister.ps1

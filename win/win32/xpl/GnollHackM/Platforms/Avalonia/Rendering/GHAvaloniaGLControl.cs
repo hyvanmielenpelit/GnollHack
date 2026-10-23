@@ -165,6 +165,7 @@ namespace GnollHackM
             InvalidateVisual();
         }
 
+        // WORKAROUND(WA-AVALONIA-0009): ACM Skia controls raise no hover touch actions
         protected override void OnPointerEntered(AvPointerEventArgs e)
         {
             base.OnPointerEntered(e);

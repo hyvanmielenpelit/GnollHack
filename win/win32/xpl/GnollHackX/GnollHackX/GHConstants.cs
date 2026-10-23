@@ -133,6 +133,7 @@ namespace GnollHackX
         public const int MaxUISoundInstances = 8;
         public const int MaxChannels = 512;
         public const int FmodSuspendFlushPasses = 2;
+        // WORKAROUND(WA-FMOD-0001): mixerSuspend can crash on a freed semaphore on Android
         /* FMOD 2.03.14 on Android can crash inside System::mixerSuspend (qa.fmod.com/t/24471);
            Android backgrounding pauses the master channel group instead while this is true. */
         public static readonly bool FmodAndroidPauseInsteadOfMixerSuspend = true;
@@ -522,6 +523,7 @@ namespace GnollHackX
         public const string SentryContextProcessMemory = "Process Memory";
         /* Handles above the startup baseline that trigger one handle growth warning per process */
         public const int HandleGrowthWarningThreshold = 5000;
+        // WORKAROUND(WA-WINUI-0007): WriteableBitmap updates pile up shared surfaces while the display is off
         /* Stops the main screen carousel while the display is off or the session is locked; static readonly
            rather than const, so that either value compiles without unreachable-code warnings */
         public static readonly bool PauseMainScreenWhenUnseen = true;
@@ -544,6 +546,7 @@ namespace GnollHackX
         public const ulong DiskSpaceLowThresholdInBytes = 5 * 1024UL * 1024UL * 1024UL;
         public const bool EnableExperimentalFeatures = false;
         public const int NumGuiAchievementLongs = ((int)gui_achievement_types.NUM_GUI_ACHIEVEMENTS - 1) / 64 + 1;
+        // WORKAROUND(WA-SKIASHARP-0005): Skia uploads whole tile sheets under half the Metal cache limit
         /* Skia uploads a raster tile sheet to the GPU whole, instead of the per-sprite subsets drawn,
            when its decoded bytes are below half the context's GPU cache limit and it fits the maximum
            texture size, which every sheet does on Metal. A whole 186-192 MB sheet slows the game and

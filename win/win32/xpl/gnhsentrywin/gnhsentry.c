@@ -166,6 +166,7 @@ static int is_listed_image(PVOID base)
     return 0;
 }
 
+/* WORKAROUND(WA-SENTRY-0002): Native faults under managed frames never reach inproc's crash handler */
 /*
  * Captures a crash fault raised inside a listed module. The exception always continues unchanged, so CoreCLR's
  * fail-fast and WER still run. There is no one-shot guard here: sentry-native captures at most once per process and
@@ -199,6 +200,7 @@ static LONG CALLBACK gnh_vectored_handler(PEXCEPTION_POINTERS info)
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
+/* WORKAROUND(WA-SENTRY-0001): inproc's unhandled-exception filter does not chain to the filter it displaced */
 /*
  * Hardware faults go to sentry-native's filter first, which captures at most once per process. Every exception then
  * goes to the filter that was current before sentry_init: a CLR exception (0xE0434352) reaching this point, from the
@@ -234,6 +236,7 @@ __declspec(dllexport) int gnh_crash_prepare(void)
     return 1;
 }
 
+/* WORKAROUND(WA-SENTRY-0001): inproc's unhandled-exception filter does not chain to the filter it displaced */
 /*
  * Called after sentry_init. Puts gnh_unhandled_filter in front of sentry-native's filter and adds the vectored
  * handler. Returns 0 without installing anything when gnh_crash_prepare was not called, or when the current filter

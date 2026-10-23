@@ -8,6 +8,7 @@ namespace GnollHackM.Platforms.iOS
 {
     public class FocusKeepingScrollViewHandler : ScrollViewHandler
     {
+        // WORKAROUND(WA-MAUI-0007): Focused input is not kept visible when the page shrinks above the keyboard
         /// <summary>
         /// Keeps the focused input visible when the scroll view gets shorter, as Android's ScrollView does.
         /// MAUI shrinks SafeAreaEdges.All pages above the keyboard but does not scroll on iOS, and UIKit only

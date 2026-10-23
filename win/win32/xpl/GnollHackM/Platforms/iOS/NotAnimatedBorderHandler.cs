@@ -13,6 +13,7 @@ namespace GnollHackM.Platforms.iOS
     {
         private class BorderContentView : ContentView
         {
+            // WORKAROUND(WA-MAUI-0001): Border animates its size and position changes on iOS
             public override void LayoutSubviews()
             {
                 // This is the only workaround I found to avoid the animation when the border size is updated.

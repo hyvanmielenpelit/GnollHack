@@ -26,6 +26,7 @@ public class MainApplication : MauiApplication
         StaticAssets = Assets;
         FmodService.AndroidInit(this);
 
+        // WORKAROUND(WA-MAUI-0016): Framework teardown raises ObjectDisposedException on Android
         /* Runs before Sentry's raiser handler, which captures the exception either way;
            a handled framework-teardown ObjectDisposedException becomes a warning in BeforeSend */
         AndroidEnvironment.UnhandledExceptionRaiser += (s, e) =>

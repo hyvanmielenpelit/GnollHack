@@ -7,6 +7,7 @@ using WinRT;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-WINUI-0002): CompositionTarget.Rendering allocates event-args wrappers every frame
     /* Subscribes to CompositionTarget.Rendering through its ABI with a static native
        delegate, so no managed wrapper is created for the per-frame event arguments.
        Slots follow WinMD order, not the member order of the C# projection; an interface

@@ -36,6 +36,7 @@ namespace GnollHackX.iOS
         }
 
 #if GNH_MAUI
+        // WORKAROUND(WA-IOS-0001): Liquid Glass flex pan recognizers lose taps on switches
         /* Disables Liquid Glass flex recognizers before UIKit dispatches a touch-down; see FlexGestureSuppressor */
         public override void SendEvent(UIEvent uievent)
         {

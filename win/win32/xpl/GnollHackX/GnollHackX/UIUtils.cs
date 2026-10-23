@@ -1567,8 +1567,10 @@ namespace GnollHackX
                 return;
             }
 
+            // WORKAROUND(WA-MAUI-0023): Replacing FormattedText leaves old span highlights on Windows
             label.Text = ""; /* There was a bug in clearing the spans at least on Windows when using just FormattedText */
 
+            // WORKAROUND(WA-MAUI-0010): FormattedText spans do not inherit the Label's font on iOS
             bool hasBaseFontFamily = !string.IsNullOrEmpty(baseFontFamily);
             int currentIndex = 0;
             var formattedString = new FormattedString();

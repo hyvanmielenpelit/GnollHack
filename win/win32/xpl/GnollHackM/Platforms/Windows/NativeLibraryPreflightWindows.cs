@@ -11,6 +11,7 @@ using Sentry;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-RUNTIME-0003): DllNotFoundException does not carry the Win32 load error
     /* Diagnoses a native library that fails to load. The runtime's DllNotFoundException and
        BadImageFormatException do not carry the Win32 error in HResult, so the file is loaded again
        directly to recover it, and the failure is reported to Sentry. A failure of the game library

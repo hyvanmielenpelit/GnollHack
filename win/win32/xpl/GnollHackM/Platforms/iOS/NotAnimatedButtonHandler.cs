@@ -17,6 +17,7 @@ namespace GnollHackM.Platforms.iOS
     /// </summary>
     public class NotAnimatedButtonHandler : ButtonHandler
     {
+        // WORKAROUND(WA-MAUI-0002): Button title crossfades when its text changes on iOS
         private class NotAnimatedUIButton : UIButton
         {
             public NotAnimatedUIButton() : base(UIButtonType.System)

@@ -6,6 +6,7 @@ using GnollHackX;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-WINUI-0007): WriteableBitmap updates pile up shared surfaces while the display is off
     /* Suspends the main page (carousel and general timer) while the display is off or the session is
        locked, and resumes it when both clear, when GHConstants.PauseMainScreenWhenUnseen is set.
        MainPage.Resume starts the carousel only while the main page itself is showing, and a window

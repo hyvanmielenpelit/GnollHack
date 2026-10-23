@@ -187,6 +187,7 @@ namespace GnollHackM
             Raise(info);
         }
 
+        // WORKAROUND(WA-AVALONIA-0015): Avalonia's Screen reports no refresh rate
         /* Passes the monitor's display-mode refresh rate to the frame loop. Unless forced, it is read only
            when the window has moved to another monitor: a drag raises many position changes. */
         private void UpdateMonitorRefreshRate(AvWindow window, bool force)

@@ -3,6 +3,7 @@ using System;
 
 namespace GnollHackM;
 
+// WORKAROUND(WA-MAUI-0016): Framework teardown raises ObjectDisposedException on Android
 /* Classifies an ObjectDisposedException as framework teardown noise when the nearest frame
    outside the JNI peer plumbing, the platform bindings and the base class library belongs to
    .NET MAUI, or when no such frame exists. Every other ObjectDisposedException, including

@@ -432,6 +432,7 @@ $ProjectPath = Join-Path $GnollHackMDir 'GnollHackM.csproj'
 $AvaloniaDir = Join-Path $PlatformsDir 'Avalonia'
 $NativeLibraryPath = Join-Path $LinuxDir 'libs\libgnollhacklinux.so'
 $NativeProjectPath = Join-Path $RepoRoot 'win\win32\vs\gnollhacklinux.vcxproj'
+# WORKAROUND(WA-LINUX-0002): Steam Linux Runtime 4.0 lacks libraries libcef.so needs
 $SteamRt4LibsDir = Join-Path $LinuxDir 'libs-steamrt4'
 $AppVdfTemplatePath = Join-Path $PackagingDir 'steam\app_build_linux.vdf.template'
 $DepotVdfTemplatePath = Join-Path $PackagingDir 'steam\depot_build_linux.vdf.template'

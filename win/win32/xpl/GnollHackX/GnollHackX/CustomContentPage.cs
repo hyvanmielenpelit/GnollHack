@@ -43,6 +43,7 @@ namespace GnollHackX
             base.OnAppearing();
 #if GNH_MAUI
 #if IOS
+            // WORKAROUND(WA-MAUI-0008): SafeAreaEdges.None does not make iOS pages edge-to-edge
             /* Re-apply on every appearance: the Handler is guaranteed to exist
                by this point, and safe area insets may have changed (rotation). */
             ApplyiOSEdge2Edge(GHApp.Edge2Edge);
@@ -55,6 +56,7 @@ namespace GnollHackX
             base.OnSizeAllocated(width, height);
 #if GNH_MAUI
 #if IOS
+            // WORKAROUND(WA-MAUI-0008): SafeAreaEdges.None does not make iOS pages edge-to-edge
             /* After rotation the system safe area insets change,
                so re-apply the negative override to stay edge-to-edge. */
             ApplyiOSEdge2Edge(GHApp.Edge2Edge);
@@ -70,6 +72,7 @@ namespace GnollHackX
         public void SetEdge2Edge(bool newEdge2Edge)
         {
 #if GNH_MAUI
+            // WORKAROUND(WA-MAUI-0008): SafeAreaEdges.None does not make iOS pages edge-to-edge
             /* Keep the MAUI property as belt-and-suspenders in case a future
                MAUI update fixes SafeAreaEdges propagation on iOS. */
             SafeAreaEdges = newEdge2Edge ? SafeAreaEdges.None : SafeAreaEdges.All;
@@ -83,6 +86,7 @@ namespace GnollHackX
 
 #if GNH_MAUI
 #if IOS
+        // WORKAROUND(WA-MAUI-0008): SafeAreaEdges.None does not make iOS pages edge-to-edge
         /// <summary>
         /// Applies or removes negative AdditionalSafeAreaInsets on the
         /// UIViewController hierarchy, forcing content to extend

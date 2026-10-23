@@ -19,6 +19,7 @@ namespace GnollHackX
     }
 
 #if GNH_MAUI && ANDROID
+    // WORKAROUND(WA-MAUI-0014): Fill-aligned ScrollView measures at the full constraint on Android
     /* The stock Android handler measures a Fill-aligned ScrollView at the full constraint; this one
        measures to content as iOS and Windows do, and measures at the final frame when arranged so
        that FillViewport still stretches short content */

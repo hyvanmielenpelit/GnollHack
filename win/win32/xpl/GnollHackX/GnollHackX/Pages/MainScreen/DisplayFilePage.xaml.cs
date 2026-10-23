@@ -140,6 +140,7 @@ namespace GnollHackX.Pages.MainScreen
         }
 
 #if GNH_MAUI && WINDOWS
+        // WORKAROUND(WA-MAUI-0020): WebViewHandler dereferences a null CoreWebView2 when WebView2 fails to initialize
         /* MAUI's WebViewHandler dereferences CoreWebView2 without a null check when
            WebView2 initialization fails, so the core is initialized here first and the
            source is assigned only on success. */
@@ -222,6 +223,7 @@ namespace GnollHackX.Pages.MainScreen
                     htmlSource.Html = text;
                     htmlSource.BaseUrl = GHApp.PlatformService.GetBaseUrl();
 #if GNH_MAUI && WINDOWS
+                    // WORKAROUND(WA-MAUI-0020): WebViewHandler dereferences a null CoreWebView2 if WebView2 init fails
                     _pendingHtmlSource = htmlSource;
 #else
                     DisplayWebView.Source = htmlSource;

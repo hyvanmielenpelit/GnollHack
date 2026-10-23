@@ -12,6 +12,7 @@ using SkiaSharp.Views.Maui;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-WINUI-0003): CsWinRT wrappers on pointer events add GC memory pressure
     /* Adapted from SkiaSharp's internal Windows SKTouchHandler (MIT). Every WinRT object read
        here is a CsWinRT wrapper that adds GC memory pressure, so each event reads only what
        it reports: one PointerPoint, Properties only when a button can be involved, and

@@ -401,6 +401,7 @@ namespace GnollHackX.Pages.MainScreen
         public async Task<PermissionStatus> CheckAndRequestWritePermission()
         {
 #if GNH_AVALONIA
+            // WORKAROUND(WA-AVALONIA-0013): ACM Essentials leaves most Essentials APIs unimplemented
             /* Desktop storage needs no runtime permission, and the portable Permissions API throws */
             return PermissionStatus.Granted;
 #else
@@ -431,6 +432,7 @@ namespace GnollHackX.Pages.MainScreen
         public async Task<PermissionStatus> CheckAndRequestReadPermission()
         {
 #if GNH_AVALONIA
+            // WORKAROUND(WA-AVALONIA-0013): ACM Essentials leaves most Essentials APIs unimplemented
             /* Desktop storage needs no runtime permission, and the portable Permissions API throws */
             return PermissionStatus.Granted;
 #else

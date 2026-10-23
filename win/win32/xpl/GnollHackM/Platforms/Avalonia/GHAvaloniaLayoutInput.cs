@@ -8,6 +8,7 @@ namespace GnollHackM
        through its own area; with CascadeInputTransparent its children let it through as well. */
     internal static class GHAvaloniaLayoutInput
     {
+        // WORKAROUND(WA-AVALONIA-0005): ACM does not apply InputTransparent to layouts
         public static void Register()
         {
             AcmLayoutHandler.Mapper.AppendToMapping(nameof(IView.InputTransparent), Apply);

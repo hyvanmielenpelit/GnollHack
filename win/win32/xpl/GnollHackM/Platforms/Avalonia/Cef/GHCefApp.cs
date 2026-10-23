@@ -22,6 +22,7 @@ namespace GnollHackM
                 _browserProcessHandler = new GHCefBrowserProcessHandler();
         }
 
+        // WORKAROUND(WA-LINUX-0003): Chromium's sandbox cannot run in Steam's container
         /* Switches of the browser process, which CEF passes on to its helpers as needed. No zygote and no sandbox,
            which cannot work in Steam's container; no GPU, since the package has no ANGLE and pages are painted on the
            CPU for off-screen rendering. A switch with a value uses the two-argument form: a single "name=value" string

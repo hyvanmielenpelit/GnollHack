@@ -481,6 +481,7 @@
     <!-- Not lower than the ios SupportedOSPlatformVersion in GnollHackM.csproj -->
     <GHiOSDeploymentTarget>15.0</GHiOSDeploymentTarget>
   </PropertyGroup>
+  <!-- WORKAROUND(WA-BUILD-0001): Xcode project generator hardcodes IPHONEOS_DEPLOYMENT_TARGET 8.1 -->
   <!-- The Xcode project generator hardcodes IPHONEOS_DEPLOYMENT_TARGET = 8.1 in the
        target-level build settings, which override AdditionalBuildSettings. Rewrite every
        IPHONEOS_DEPLOYMENT_TARGET value after generation, before the project is copied to

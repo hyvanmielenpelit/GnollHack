@@ -15,6 +15,7 @@ using GnollHackX;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT builds on Windows and Linux
     /* Native crash capture through sentry-native (inproc backend, no built-in transport): gnhsentry.dll on Windows,
        libsentry.so on Linux. Initialized before Sentry .NET, which starts its own native SDK only in trimmed or Native
        AOT builds. Crash envelopes go to an outbox folder and are uploaded at the next start. */
@@ -159,6 +160,7 @@ namespace GnollHackM
             }
         }
 
+        // WORKAROUND(WA-SENTRY-0001): inproc's unhandled-exception filter does not chain to the filter it displaced
         private static unsafe bool InitOnce(string dsn, string release, string environment, bool debug, string databaseDirectory)
         {
             try
@@ -374,6 +376,7 @@ namespace GnollHackM
             Task.Run(() => UploadOutboxAsync(dsn, outboxDirectory));
         }
 
+        // WORKAROUND(WA-SENTRY-0004): SentrySdk.CaptureEnvelope can drop native-only event fields
         /* Posts the bytes unchanged: SentrySdk.CaptureEnvelope would re-parse the event and can drop native-only
            fields, such as registers, signal metadata and debug_meta details. Oldest first; a 4xx other than 429 can
            never succeed, so that file is deleted; 429, 5xx and network errors keep the rest for the next start. */

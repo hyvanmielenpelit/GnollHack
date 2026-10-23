@@ -404,6 +404,7 @@ namespace GnollHackX.Controls
         }
 #endif
 
+        // WORKAROUND(WA-MAUI-0009): Span tap regions are offset from the rendered text on iOS
         private void ScheduleSpanPositionRecalculation(FormattedString formatted)
         {
 #if GNH_MAUI && IOS
@@ -417,6 +418,7 @@ namespace GnollHackX.Controls
 #if GNH_MAUI && IOS
         private FormattedString _pendingFormattedString;
 
+        // WORKAROUND(WA-MAUI-0009): Span tap regions are offset from the rendered text on iOS
         private void OnLabelSizeChangedForSpanRecalc(object sender, EventArgs e)
         {
             MessagePopupLabel.SizeChanged -= OnLabelSizeChangedForSpanRecalc;
@@ -454,6 +456,7 @@ namespace GnollHackX.Controls
             });
         }
 
+        // WORKAROUND(WA-MAUI-0009): Span tap regions are offset from the rendered text on iOS
         /// <summary>
         /// Recomputes ISpatialElement.Region for each span using the native UILabel's
         /// actual bounds, fixing the MAUI bug where ArrangeOverride runs before

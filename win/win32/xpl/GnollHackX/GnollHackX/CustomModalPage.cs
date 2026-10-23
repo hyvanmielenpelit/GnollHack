@@ -30,6 +30,7 @@ namespace GnollHackX
             base.OnAppearing();
 
 #if WINDOWS
+            // WORKAROUND(WA-MAUI-0018): Modal page has a 32-pixel title bar gap in full-screen mode on Windows
             if (!GHApp.WindowedMode)
             {
                 try
@@ -48,6 +49,7 @@ namespace GnollHackX
 #endif
         }
 
+        // WORKAROUND(WA-MAUI-0018): Modal page has a 32-pixel title bar gap in full-screen mode on Windows
         public static void FixModalTitleBarGap(ContentPage modalPage)
         {
 #if WINDOWS

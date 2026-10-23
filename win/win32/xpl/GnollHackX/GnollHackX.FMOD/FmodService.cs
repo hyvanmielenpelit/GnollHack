@@ -167,6 +167,7 @@ namespace GnollHackX.Unknown
         private int _mixerSuspended = 0;
         private bool MixerSuspended { get { return Interlocked.CompareExchange(ref _mixerSuspended, 0, 0) != 0; } set { Interlocked.Exchange(ref _mixerSuspended, value ? 1 : 0); } }
 
+        // WORKAROUND(WA-FMOD-0001): mixerSuspend can crash on a freed semaphore on Android
         /* True when backgrounding pauses the master channel group instead of suspending the mixer */
         private static bool UseMasterPauseForSuspend
         {
@@ -460,6 +461,7 @@ namespace GnollHackX.Unknown
                    second executes the start() calls those callbacks queue in turn. */
                 if (_system.hasHandle())
                 {
+                    // WORKAROUND(WA-FMOD-0002): Studio flushCommands can hang while Android backgrounds the app
                     /* flushCommands waits for the Studio update thread, which can hang in the
                        platform audio service, so the caller waits for it only for a bounded time.
                        On timeout the mixer is left running and the worker stays inside FMOD.

@@ -50,6 +50,7 @@ namespace GnollHackM;
 
 public static class MauiProgram
 {
+    // WORKAROUND(WA-AVALONIA-0013): ACM Essentials leaves most Essentials APIs unimplemented
     public static MauiApp CreateMauiApp()
 	{
 #if GNH_AVALONIA
@@ -69,6 +70,7 @@ public static class MauiProgram
         GHAvaloniaSentry.Init();
 #endif
 #if SENTRY && WINDOWS
+        // WORKAROUND(WA-SENTRY-0007): Sentry.Maui invokes the UseSentry options callback twice
         /* Once, here: Sentry.Maui invokes the UseSentry options callback twice */
         WindowsSentryNative.Init();
 #endif
@@ -95,14 +97,18 @@ public static class MauiProgram
 #endif
 #if ANDROID
                 handlers.AddHandler(typeof(Button), typeof(NoFocusButtonHandler));
+                // WORKAROUND(WA-MAUI-0014): Fill-aligned ScrollView measures at the full constraint on Android
                 handlers.AddHandler(typeof(ConsistentScrollView), typeof(ConsistentScrollViewHandler));
                 handlers.AddHandler<MapSurfaceGLView, AndroidSKGLViewSurfaceHandler>();
 #endif
 #if IOS
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));
+                // WORKAROUND(WA-MAUI-0001): Border animates its size and position changes on iOS
                 handlers.AddHandler<Border, NotAnimatedBorderHandler>();
+                // WORKAROUND(WA-MAUI-0002): Button title crossfades when its text changes on iOS
                 handlers.AddHandler<Button, NotAnimatedButtonHandler>();
                 handlers.AddHandler<MetalGLView, GnollHackM.Platforms.iOS.iOSSKGLViewMetalHandler>();
+                // WORKAROUND(WA-MAUI-0007): Focused input is not kept visible when the page shrinks above the keyboard
                 handlers.AddHandler<ScrollView, FocusKeepingScrollViewHandler>();
 #endif
 #if WINDOWS
@@ -146,6 +152,7 @@ public static class MauiProgram
                     var exception = @event.Exception;
 
 #if ANDROID
+                    // WORKAROUND(WA-MAUI-0016): Framework teardown raises ObjectDisposedException on Android
                     ObjectDisposedException frameworkDisposal = FrameworkObjectDisposedFilter.FindFrameworkTeardownDisposal(exception);
                     if (frameworkDisposal != null)
                     {
@@ -155,6 +162,7 @@ public static class MauiProgram
                     }
 #endif
 #if IOS
+                    // WORKAROUND(WA-MAUI-0019): Re-entrant window activation throws "already (de)activated"
                     /* Capture MAUI's "already activated"/"already deactivated"
                      * InvalidOperationException as a warning rather than an error.
                      * If this fires, MAUI's window state machine threw and skipped
@@ -222,6 +230,7 @@ public static class MauiProgram
 
                     var exception = @event.Exception;
 
+                    // WORKAROUND(WA-MAUI-0019): Re-entrant window activation throws "already (de)activated"
                     if (exception is InvalidOperationException ioe && ioe.Message != null &&
                         (ioe.Message.Contains("already deactivated") 
                         || ioe.Message.Contains("already activated")))
@@ -543,6 +552,7 @@ public static class MauiProgram
                     {
                         if (activity is AndroidX.Activity.ComponentActivity componentActivity)
                         {
+                            // WORKAROUND(WA-MAUI-0013): Modal pages on Android lose immersive mode and key handling
                             componentActivity.GetFragmentManager()?.RegisterFragmentLifecycleCallbacks(new MyFragmentLifecycleCallbacks((fragmentManager, fragment) =>
                             {
                                 // Modals in MAUI in NET9 use DialogFragment
@@ -574,6 +584,7 @@ public static class MauiProgram
 
                                             if (GHApp.Edge2Edge)
                                             {
+                                                // WORKAROUND(WA-MAUI-0012): Insets padded despite SafeAreaEdges None
                                                 AndroidX.Core.View.ViewCompat.SetOnApplyWindowInsetsListener(window!.DecorView, new BypassInsetsListener());
                                                 window!.DecorView.RequestApplyInsets();
                                             }
@@ -708,6 +719,7 @@ public static class MauiProgram
 #if GNH_AVALONIA
         /* UseAvaloniaEssentials and UseAvaloniaApp replaced Preferences and AppInfo */
         GHAvaloniaEssentials.InstallAfterBuilder();
+        // WORKAROUND(WA-AVALONIA-0011): ACM font registrar misreads UTF-16 font names
         Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.Replace(builder.Services,
             Microsoft.Extensions.DependencyInjection.ServiceDescriptor.Singleton<IFontRegistrar>(new GHAvaloniaFontRegistrar()));
 #endif
@@ -716,6 +728,7 @@ public static class MauiProgram
         RenderSurfaceDiagnostics.Register();
 #endif
 #if IOS
+        // WORKAROUND(WA-MAUI-0005): Done accessory leaves an empty band above the keyboard on iOS 27
         KeyboardDoneOverlay.Register();
 #endif
         MauiApp app = builder.Build();
@@ -751,6 +764,7 @@ public static class MauiProgram
 #endif
 
 #if ANDROID
+    // WORKAROUND(WA-MAUI-0013): Modal pages on Android lose the activity's immersive mode and key handling
     public static void AndroidDialogKeyPress(object sender, DialogKeyEventArgs e)
     {
         e.Handled = false;
@@ -761,6 +775,7 @@ public static class MauiProgram
 }
 
 #if ANDROID
+// WORKAROUND(WA-MAUI-0013): Modal pages on Android lose the activity's immersive mode and key handling
 public class MyFragmentLifecycleCallbacks(Action<AndroidX.Fragment.App.FragmentManager, AndroidX.Fragment.App.Fragment> fragmentCallback) : AndroidX.Fragment.App.FragmentManager.FragmentLifecycleCallbacks
 {
     public override void OnFragmentStarted(AndroidX.Fragment.App.FragmentManager fm, AndroidX.Fragment.App.Fragment f)
@@ -775,6 +790,7 @@ public class MyFragmentLifecycleCallbacks(Action<AndroidX.Fragment.App.FragmentM
     }
 }
 
+// WORKAROUND(WA-MAUI-0012): WindowInsets padding is applied despite SafeAreaEdges None on Android 15
 public class BypassInsetsListener : Java.Lang.Object, AndroidX.Core.View.IOnApplyWindowInsetsListener
 {
     public AndroidX.Core.View.WindowInsetsCompat OnApplyWindowInsets(Android.Views.View v, AndroidX.Core.View.WindowInsetsCompat insets)
@@ -828,6 +844,7 @@ public class KeyboardHook
 
     private static bool _foregroundMismatchLogged = false;
 
+    // WORKAROUND(WA-MAUI-0019): Re-entrant window activation throws "already activated" or "already deactivated"
     /* WindowFocused follows MAUI lifecycle events, which a re-entrant activation can skip; the foreground check does not depend on them */
     private static bool ShouldHandleKeys()
     {

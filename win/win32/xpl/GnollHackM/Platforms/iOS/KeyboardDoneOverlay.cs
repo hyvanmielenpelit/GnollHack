@@ -9,6 +9,7 @@ using UIKit;
 
 namespace GnollHackM.Platforms.iOS
 {
+    // WORKAROUND(WA-MAUI-0005): Done accessory leaves an empty band above the keyboard on iOS 27
     /// <summary>
     /// On iOS 27 and later, replaces MAUI's Done accessory on Entry and Picker with a close button in the app
     /// window, floating over the page just above the keyboard. The accessory itself is a transparent strip
@@ -41,6 +42,7 @@ namespace GnollHackM.Platforms.iOS
         {
             if (!OperatingSystem.IsIOSVersionAtLeast(27))
             {
+                // WORKAROUND(WA-MAUI-0006): Glass Done button does not show in the iOS 26 compatibility design
                 /* MAUI's iOS 26 glass close button does not show in the compatibility design; its legacy Done toolbar does */
                 AppContext.SetSwitch(UseLegacyDoneAccessorySwitch, true);
                 return;

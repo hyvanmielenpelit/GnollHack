@@ -221,6 +221,7 @@ namespace GnollHackM
             }
         }
 
+        // WORKAROUND(WA-AVALONIA-0014): Avalonia's render timer keeps a stale RandR rate
         /* Once a second while the swap interval is applied: raises SleepLoopRenderTimer.DesiredFps
            to twice the estimate when it is below 1.5 times the estimate (a stale RandR rate) */
         private static void MaybeAdjustRenderTimer()
@@ -260,6 +261,7 @@ namespace GnollHackM
             }
         }
 
+        // WORKAROUND(WA-AVALONIA-0014): Avalonia's render timer keeps a stale RandR rate
         /* AvaloniaLocator.Current.GetService(typeof(IRenderLoop)).Timer.DesiredFps */
         private static void LookUpRenderTimer()
         {

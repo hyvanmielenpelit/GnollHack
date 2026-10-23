@@ -603,6 +603,7 @@ namespace GnollHackX.Pages.Game
             }
             if (GHApp.IsiOS || !GHApp.IsWebViewAvailable)
             {
+                // WORKAROUND(WA-MAUI-0011): WebView Navigated event is not raised on iOS
                 /* Navigated event does not trigger with WebView on iOS, making navigation buttons inactivate all the time; use OpenBrowser instead (does not trigger OnSleep / OnResume on iOS) */
                 /* Without a WebView (Linux without WebKitGTK), OpenBrowser uses the system browser */
                 await GHApp.OpenBrowser(this, "Wiki", new Uri(GHConstants.GnollHackWikiPage));

@@ -374,6 +374,7 @@ namespace GnollHackX.Performance
             return found;
         }
 
+        // WORKAROUND(WA-ANDROID-0001): Choreographer frameTimeNanos can be one refresh stale
         /* Android can hand the frame callback a frameTimeNanos one refresh older than the one
            HWUI records for the same doFrame. Returns records with each tick's vsync replaced by
            the HWUI frame time where they disagree by one refresh: a copy when anything changed,

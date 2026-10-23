@@ -57,6 +57,7 @@ namespace GnollHackM
             }
         }
 
+        // WORKAROUND(WA-AVALONIA-0016): NativeControlHost ignores render transform changes
         private static void MapPositionTracking(AcmWebViewHandler handler, IWebView webView)
         {
             Avalonia.Controls.Control platformView = ((IElementHandler)handler).PlatformView as Avalonia.Controls.Control;

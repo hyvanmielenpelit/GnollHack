@@ -86,6 +86,7 @@
   </PropertyGroup>-->
 
   <!-- DESIGN TIME BUILD SPECIFIC PROPERTIES -->
+  <!-- WORKAROUND(WA-MAUI-0026): Design-time builds corrupt the Resizetizer cache during Publish -->
   <!-- Prevent DesignTimeBuilds from corrupting the Resizetizer cache during Publish -->
   <PropertyGroup Condition="'$(DesignTimeBuild)' == 'true'">
     <DisableResizetizer>true</DisableResizetizer>
@@ -106,6 +107,7 @@
     <DebugType>portable</DebugType>
   </PropertyGroup>
 
+  <!-- WORKAROUND(WA-BUILD-0002): Visual Studio's Android Archive sets no archive or publish property -->
   <!-- Sentry symbol upload runs only for publish and archive builds, and only when the
        SENTRY_AUTH_TOKEN environment variable is set. Decided in a target so that properties
        from the publish profile (PublishAppxPackage) are visible. Sentry CLI reads the token,
@@ -201,10 +203,12 @@
     <!-- Custom Fonts -->
     <MauiFont Include="Resources\Fonts\*" Condition="$(TargetFramework.Contains('-ios'))" />
     <MauiFont Include="Resources\Fonts\*" Condition="$(TargetFramework.Contains('-maccatalyst'))" />
+    <!-- WORKAROUND(WA-AVALONIA-0012): ACM converts MauiFont items after the resource step -->
     <!-- Avalonia: the fonts are Avalonia resources from the start, at the path ACM's font registrar reads. As MauiFont
          items, ACM converts them only after the resource step has run, and the resource blob never reaches the compiler -->
     <AvaloniaResource Include="Resources\Fonts\*" Link="Assets/Fonts/%(Filename)%(Extension)" Condition="'$(GnhAvalonia)' == 'true'" />
     <AvaloniaResource Include="Resources\AppIcon\appicon.png" Link="Assets/AppIcon/appicon.png" Condition="'$(GnhAvalonia)' == 'true'" />
+    <!-- WORKAROUND(WA-MAUI-0021): MauiFont fonts are unreliable on Android and Windows -->
     <!-- Note: MauiFont has been unreliable on Android and Windows; workaround is to copy the files using MauiAsset to the right location instead -->
     <MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="$(TargetFramework.Contains('-android'))" />
     <MauiAsset Include="Resources\Fonts\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" Condition="$(TargetFramework.Contains('-windows'))" />
@@ -1420,6 +1424,7 @@
     <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="4.153.1" />
   </ItemGroup>
 
+  <!-- WORKAROUND(WA-CEF-0001): cef.runtime copy target nests Resources and skips publish -->
   <!-- Chromium (CEF) web view on Linux: CefGlue.Next.Core bindings and the CEF runtime, versions in lockstep.
        The runtime package's own copy target is excluded: it keeps a Resources subfolder, which breaks ICU on Linux,
        and never publishes. Its files are copied flat next to the executable, with only the en-US locale. -->
@@ -1490,6 +1495,7 @@
   </PropertyGroup>
 
   <!-- IMPORTED TARGET PROJECTS -->
+  <!-- WORKAROUND(WA-RUNTIME-0001): Mono LLVM AOT breaks System.Net.Sockets on Android -->
   <Import Project="CompileMonoAoTLibraries2.targets" Condition="'$(EnableLLVM)'=='True' and $(TargetFramework.Contains('-android'))" />
   <!--<Import Project="AppxIcons.targets" Condition="$(TargetFramework.Contains('-windows'))" />-->
   <!--<Import Project="MonoAoTLibraries.targets" Condition="'$(EnableLLVM)'=='True' and $(TargetFramework.Contains('-android'))" />-->
@@ -1555,6 +1561,7 @@
     </Exec>
     <Warning Condition="'@(GnollHackDroidSo)' != '' And '$(_GnollHackDroidSoExitCode)' != '0'" Text="Sentry CLI could not upload libgnollhackdroid.so." />
   </Target>
+  <!-- WORKAROUND(WA-SENTRY-0006): UploadDebugInfoToSentry uploads ELF symbols only for Android -->
   <!-- The Linux packages ship libgnollhacklinux.so stripped of its DWARF (Build-LinuxPackages.ps1); the repository copy
        uploaded here keeps it. UploadDebugInfoToSentry uploads ELF files only for Android.
        Sentry skips files it already has. -->
@@ -1568,6 +1575,7 @@
     </Exec>
     <Warning Condition="Exists('$(GnollHackLinuxSo)') And '$(_GnollHackLinuxSoExitCode)' != '0'" Text="Sentry CLI could not upload libgnollhacklinux.so." />
   </Target>
+  <!-- WORKAROUND(WA-IOS-0005): Visual Studio iOS Archive leaves dSYMs on the Mac -->
   <!-- The SDK's CopyDSYMFromMac copies the dSYMs to Windows only for BuildIpa or CopyAppBundle builds, so a Visual
        Studio iOS Archive leaves them on the Mac. This copies them before the Mac connection closes, which happens
        before UploadDebugInfoToSentry runs; the upload then finds them in the output directory. GnollHackM.app.dSYM
@@ -1588,6 +1596,7 @@
     <Delete SessionId="$(BuildSessionId)" Condition="'@(_GnhDsymDir)' != ''" Files="$(DeviceSpecificOutputPath)%(_GnhDsymDir.DsymFileName).zip" ContinueOnError="WarnAndContinue" />
     <Delete Condition="'@(_GnhDsymDir)' != ''" Files="$(DeviceSpecificOutputPath)%(_GnhDsymDir.DsymFileName).zip" ContinueOnError="WarnAndContinue" />
   </Target>
+  <!-- WORKAROUND(WA-IOS-0004): Incremental builds ignore Info.plist edits -->
   <!-- The SDK's _CompileAppManifest does not list Info.plist among its Inputs (dotnet/macios#26700, fixed in
        dotnet/macios#26718), so an incremental build skips an Info.plist edit and the app keeps the old manifest.
        $(AppBundleManifest) is set by _DetectAppManifest, one of that target's dependencies, so it is added here

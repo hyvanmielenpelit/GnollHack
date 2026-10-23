@@ -14,6 +14,7 @@ namespace GnollHackM.Platforms.Windows
 {
     public static class CursorUtilities
     {
+        // WORKAROUND(WA-WINUI-0005): No public API to set the cursor of an arbitrary UIElement
         public static void ChangeCursor(this UIElement element, InputCursor? cursor)
         {
             ArgumentNullException.ThrowIfNull(element);

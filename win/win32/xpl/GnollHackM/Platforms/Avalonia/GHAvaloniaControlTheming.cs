@@ -43,6 +43,7 @@ namespace GnollHackM
             AcmButtonHandler.Mapper.AppendToMapping(nameof(ITextStyle.TextColor), MapButtonDisabledTextColor);
         }
 
+        // WORKAROUND(WA-AVALONIA-0008): ACM leaves some control colors to the Fluent theme
         /* A disabled button's text in its text color, as MAUI's WinUI handler sets it. ACM sets the pointer-over and
            pressed foregrounds only, which left the Fluent theme's faint disabled foreground. */
         private static void MapButtonDisabledTextColor(AcmButtonHandler handler, IButton button)
@@ -58,6 +59,7 @@ namespace GnollHackM
                 platformButton.Resources["ButtonForegroundDisabled"] = ToBrush(color);
         }
 
+        // WORKAROUND(WA-AVALONIA-0008): ACM leaves some control colors to the Fluent theme
         /* The caret in the text color. Without a CaretBrush, Avalonia draws the inverse of the background,
            which for GnollHack's transparent text boxes is black. */
         private static void MapCaret(IElementHandler handler, ITextStyle textStyle)
@@ -73,6 +75,7 @@ namespace GnollHackM
                 textBox.CaretBrush = ToBrush(color);
         }
 
+        // WORKAROUND(WA-AVALONIA-0008): ACM leaves some control colors to the Fluent theme
         private static void MapCheckBoxColor(AcmCheckBoxHandler handler, ICheckBox checkBox)
         {
             Avalonia.Controls.CheckBox box = ((IElementHandler)handler).PlatformView as Avalonia.Controls.CheckBox;

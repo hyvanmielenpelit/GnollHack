@@ -6,6 +6,7 @@ using AvPoint = Avalonia.Point;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-AVALONIA-0009): ACM Skia controls raise no hover touch actions
     /* Raises the no-contact Entered, Moved and Exited touch actions (mouse hover) that ACM's Skia controls do not */
     internal static class GHAvaloniaPointerHover
     {

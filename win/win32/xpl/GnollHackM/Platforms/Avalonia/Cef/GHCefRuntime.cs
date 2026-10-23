@@ -12,6 +12,7 @@ using Xilium.CefGlue;
 
 namespace GnollHackM
 {
+    // WORKAROUND(WA-CEF-0002): CefRuntime installs a disk-scanning native library resolver
     /* CEF in the game process: loaded and initialized lazily, when the first CEF web view needs a browser, because
        CefRuntime's static constructor installs a process-wide native library resolver that scans the disk on every
        miss. CEF's UI-thread work runs on the Avalonia UI thread through the external message pump, so every client
@@ -108,6 +109,7 @@ namespace GnollHackM
             settings.WindowlessRenderingEnabled = true;
             settings.MultiThreadedMessageLoop = false;
             settings.ExternalMessagePump = true;
+            // WORKAROUND(WA-LINUX-0003): Chromium's sandbox cannot run in Steam's container
             settings.NoSandbox = true;
             /* This and --disable-in-process-stack-traces keep Chromium from resetting the crash signal handlers to SIG_DFL */
             settings.DisableSignalHandlers = true;

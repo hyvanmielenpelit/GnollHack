@@ -181,6 +181,7 @@ namespace GnollHackM
             get { return _view?.Source?.AbsoluteUri; }
         }
 
+        // WORKAROUND(WA-AVALONIA-0018): WebKitGTK adapter ignores a cancelled navigation
         /* The WebKitGTK adapter does not honor a cancelled navigation */
         public bool IgnoresNavigationCancel
         {
@@ -216,6 +217,7 @@ namespace GnollHackM
             _view.Background = new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromRgb(r, g, b));
         }
 
+        // WORKAROUND(WA-MAUI-0027): EvaluateJavaScriptAsync wraps scripts in eval, which a CSP refuses
         public async Task InvokeScriptAsync(string script)
         {
             if (_view == null)

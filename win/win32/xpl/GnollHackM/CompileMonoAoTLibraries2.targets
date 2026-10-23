@@ -7,6 +7,7 @@
     <Import Project="Sdk.props" Sdk="Microsoft.NETCore.App.Runtime.AOT.Cross.android-arm64" />
   </ImportGroup>
   
+  <!-- WORKAROUND(WA-RUNTIME-0001): Mono LLVM AOT breaks System.Net.Sockets on Android -->
   <Target Name="CompileMonoAotLibraries" AfterTargets="_AndroidAotCompilation">
     <PropertyGroup>
       <_AoTFolder>$(IntermediateOutputPath)aot\</_AoTFolder>

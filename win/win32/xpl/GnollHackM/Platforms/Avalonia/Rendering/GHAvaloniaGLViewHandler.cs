@@ -10,6 +10,7 @@ namespace GnollHackM
        on the UI thread. The paint, size, context and touch handling are ACM's. */
     public sealed class GHAvaloniaGLViewHandler : AcmSKGLViewHandler
     {
+        // WORKAROUND(WA-AVALONIA-0002): ACM Skia handler mappers chain to MAUI's inert view mappers
         /* Chained to ACM's view mappers, not to ACM's SKGLViewHandler mappers: those chain to MAUI's own
            ViewHandler mappers, whose entries do nothing on Avalonia, so sizes, margins, visibility and
            the other view properties would never reach the control */
@@ -36,6 +37,7 @@ namespace GnollHackM
         protected override AcmSKGLViewControl CreatePlatformView()
             => new GHAvaloniaGLControl { ForceSoftwareRendering = ForceSoftwareRendering };
 
+        // WORKAROUND(WA-AVALONIA-0003): Aligned Skia views collapse to zero size
         /* The control stays stretched over the frame MAUI arranges it in. MAUI has already aligned that frame, and
            an aligned Avalonia control takes its own desired size, which is zero for a view MAUI sizes itself */
         public static void MapLayoutAlignment(AcmSKGLViewHandler handler, ISKGLView view)

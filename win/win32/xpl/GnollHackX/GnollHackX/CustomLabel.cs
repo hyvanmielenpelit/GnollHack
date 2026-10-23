@@ -1365,6 +1365,7 @@ namespace GnollHackX
 
 #if GNH_MAUI
 #if GNH_AVALONIA
+    // WORKAROUND(WA-AVALONIA-0004): ACM ViewHandler.GetDesiredSize is not virtual
     /* ACM's GetDesiredSize is not virtual; MAUI calls it through IViewHandler, which this class re-implements */
     internal class AutoSizeSKCanvasViewHandler : GnollHackM.GHAvaloniaCanvasViewHandler, IViewHandler
     {

@@ -11,6 +11,7 @@ namespace GnollHackM
        keep a zero margin: ACM then measures with MAUI's constraints and arranges in MAUI's frame. */
     internal static class GHAvaloniaMargin
     {
+        // WORKAROUND(WA-AVALONIA-0001): ACM applies MAUI margins twice
         /* Before any handler is created, while no mapper has cached its entries */
         public static void Register()
         {

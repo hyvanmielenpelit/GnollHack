@@ -1396,6 +1396,7 @@ namespace GnollHackX
             GHApp.InitRuntimeEffects();
 #endif
 
+            // WORKAROUND(WA-MAUI-0022): First use of a custom font sometimes fails on Windows
             /* Loading MAUI fonts is needed on Windows to avoid COM re-entrancy issues */
 #if WINDOWS
             await GHApp.InitBaseFontsViaGrid(RootGrid);
