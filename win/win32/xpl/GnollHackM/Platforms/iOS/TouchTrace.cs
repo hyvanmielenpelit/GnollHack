@@ -81,16 +81,17 @@ namespace GnollHackM.Platforms.iOS
             }
         }
 
-        public static void AfterEvent(UIEvent evt)
+        public static void AfterEvent(UIEvent evt, double entered, double dispatchStart, double dispatchEnd)
         {
             try
             {
                 if (!_active || evt == null || evt.Type != UIEventType.Touches)
                     return;
 
+                UITouch[] touches = GetTouches(evt);
+                LogDispatchTimes(touches, entered, dispatchStart, dispatchEnd);
                 LogStateChanges(NSProcessInfo.ProcessInfo.SystemUptime);
 
-                UITouch[] touches = GetTouches(evt);
                 bool allDone = touches.Length > 0;
                 foreach (UITouch touch in touches)
                 {
@@ -146,6 +147,8 @@ namespace GnollHackM.Platforms.iOS
             _sb.Append("TouchTrace #").Append(_sequenceCount)
                 .Append(" (iOS ").Append(UIDevice.CurrentDevice.SystemVersion)
                 .Append(", page ").Append(pageName).Append(')').AppendLine();
+            _sb.Append("  flex suppression: ").Append(FlexGestureSuppressor.IsActive ? "active" : "inactive")
+                .Append(", disabled ").Append(FlexGestureSuppressor.DisabledCount).AppendLine();
             Log(touch.Timestamp, "touch Began at " + FormatPoint(_startLocation) + " on " + Describe(hitView));
             _sb.Append("  hit chain: ").Append(DescribeHitChain(hitView)).AppendLine();
             if (uiSwitch != null)
@@ -153,15 +156,17 @@ namespace GnollHackM.Platforms.iOS
 
             UIGestureRecognizer[] recognizers = touch.GestureRecognizers ?? Array.Empty<UIGestureRecognizer>();
             _sb.Append("  recognizers receiving the touch: ").Append(recognizers.Length).AppendLine();
+            List<string> recognizerLines = new List<string>();
             foreach (UIGestureRecognizer recognizer in recognizers)
             {
                 if (recognizer == null)
                     continue;
                 _recognizers.Add(recognizer);
                 _recognizerStates.Add(recognizer.State);
-                _sb.Append("    ").Append(DescribeRecognizer(recognizer)).AppendLine();
+                recognizerLines.Add(DescribeRecognizer(recognizer));
                 AddRecognizerTarget(recognizer);
             }
+            AppendGrouped(recognizerLines, "    ");
 
             if (uiSwitch != null)
             {
@@ -174,11 +179,13 @@ namespace GnollHackM.Platforms.iOS
         private static void EndSequence()
         {
             _sb.Append("  final recognizer states:").AppendLine();
+            List<string> finalLines = new List<string>(_recognizers.Count);
             for (int i = 0; i < _recognizers.Count; i++)
             {
                 UIGestureRecognizer recognizer = _recognizers[i];
-                _sb.Append("    ").Append(recognizer.Class.Name).Append(" ").Append(recognizer.State).AppendLine();
+                finalLines.Add(recognizer.Class.Name + " " + recognizer.State);
             }
+            AppendGrouped(finalLines, "    ");
 
             int sequence = _sequenceCount;
             UISwitch uiSwitch = _switch;
@@ -272,6 +279,23 @@ namespace GnollHackM.Platforms.iOS
             }, controlEvent);
         }
 
+        private static void LogDispatchTimes(UITouch[] touches, double entered, double dispatchStart, double dispatchEnd)
+        {
+            double uiKitMs = (dispatchEnd - dispatchStart) * 1000.0;
+            foreach (UITouch touch in touches)
+            {
+                UITouchPhase phase = touch.Phase;
+                bool logged = phase == UITouchPhase.Began || phase == UITouchPhase.Ended || phase == UITouchPhase.Cancelled
+                    || (phase == UITouchPhase.Moved && uiKitMs > 8.0);
+                if (!logged)
+                    continue;
+                Log(dispatchEnd, "dispatch " + phase
+                    + ": waited " + FormatMs((entered - touch.Timestamp) * 1000.0) + " ms"
+                    + ", before " + FormatMs((dispatchStart - entered) * 1000.0) + " ms"
+                    + ", UIKit " + FormatMs(uiKitMs) + " ms");
+            }
+        }
+
         private static void LogStateChanges(double timestamp)
         {
             for (int i = 0; i < _recognizers.Count; i++)
@@ -346,10 +370,40 @@ namespace GnollHackM.Platforms.iOS
             UIGestureRecognizer[] recognizers = view.GestureRecognizers;
             if (recognizers != null)
             {
+                List<string> recognizerLines = new List<string>(recognizers.Length);
                 foreach (UIGestureRecognizer recognizer in recognizers)
                 {
-                    _sb.Append(indent).Append("  * ").Append(DescribeRecognizer(recognizer)).AppendLine();
+                    recognizerLines.Add("* " + DescribeRecognizer(recognizer));
                 }
+                AppendGrouped(recognizerLines, indent + "  ");
+            }
+        }
+
+        /* Identical lines are written once with a count prefix, in first-seen order */
+        private static void AppendGrouped(List<string> lines, string indent)
+        {
+            List<string> distinct = new List<string>();
+            Dictionary<string, int> counts = new Dictionary<string, int>();
+            foreach (string line in lines)
+            {
+                if (counts.TryGetValue(line, out int count))
+                {
+                    counts[line] = count + 1;
+                }
+                else
+                {
+                    counts[line] = 1;
+                    distinct.Add(line);
+                }
+            }
+
+            foreach (string line in distinct)
+            {
+                _sb.Append(indent);
+                int count = counts[line];
+                if (count > 1)
+                    _sb.Append(count).Append(" x ");
+                _sb.Append(line).AppendLine();
             }
         }
 
@@ -434,6 +488,11 @@ namespace GnollHackM.Platforms.iOS
         private static int ElapsedMs(double timestamp)
         {
             return (int)Math.Round((timestamp - _startTimestamp) * 1000.0);
+        }
+
+        private static string FormatMs(double milliseconds)
+        {
+            return milliseconds.ToString("0.0", CultureInfo.InvariantCulture);
         }
 
         private static string FormatPoint(CGPoint point)

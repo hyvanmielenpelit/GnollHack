@@ -36,12 +36,16 @@ namespace GnollHackX.iOS
         }
 
 #if GNH_MAUI
-        /* Temporary diagnostic for the iOS 27 SettingsPage switch investigation */
+        /* Temporary diagnostic and experiment for the iOS 27 SettingsPage switch investigation */
         public override void SendEvent(UIEvent uievent)
         {
+            double entered = Foundation.NSProcessInfo.ProcessInfo.SystemUptime;
+            FlexGestureSuppressor.BeforeEvent(uievent);
             TouchTrace.BeforeEvent(uievent);
+            double dispatchStart = Foundation.NSProcessInfo.ProcessInfo.SystemUptime;
             base.SendEvent(uievent);
-            TouchTrace.AfterEvent(uievent);
+            double dispatchEnd = Foundation.NSProcessInfo.ProcessInfo.SystemUptime;
+            TouchTrace.AfterEvent(uievent, entered, dispatchStart, dispatchEnd);
         }
 #endif
 

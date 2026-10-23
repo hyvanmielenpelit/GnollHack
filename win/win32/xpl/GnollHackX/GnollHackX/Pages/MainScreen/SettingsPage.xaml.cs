@@ -2862,10 +2862,16 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+#if GNH_MAUI && IOS
+            GnollHackM.Platforms.iOS.FlexGestureSuppressor.SetActive(true);
+#endif
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+#if GNH_MAUI && IOS
+            GnollHackM.Platforms.iOS.FlexGestureSuppressor.SetActive(false);
+#endif
         }
 
         private void VolumeSlider_ValueChanged(object sender, ValueChangedEventArgs e)
