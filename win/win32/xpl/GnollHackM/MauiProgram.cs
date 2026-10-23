@@ -103,8 +103,6 @@ public static class MauiProgram
 #endif
 #if IOS
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));
-                // WORKAROUND(WA-MAUI-0001): Border animates its size and position changes on iOS
-                handlers.AddHandler<Border, NotAnimatedBorderHandler>();
                 // WORKAROUND(WA-MAUI-0002): Button title crossfades when its text changes on iOS
                 handlers.AddHandler<Button, NotAnimatedButtonHandler>();
                 handlers.AddHandler<MetalGLView, GnollHackM.Platforms.iOS.iOSSKGLViewMetalHandler>();

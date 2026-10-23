@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 
 #if GNH_MAUI
-#if WINDOWS
-using System.Reflection;
-using Microsoft.Maui.Platform;
-#endif
 using GnollHackX;
 
 namespace GnollHackM
@@ -23,66 +19,6 @@ namespace GnollHackX
         public CustomModalPage() : base()
         {
 
-        }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-
-#if WINDOWS
-            // WORKAROUND(WA-MAUI-0018): Modal page has a 32-pixel title bar gap in full-screen mode on Windows
-            if (!GHApp.WindowedMode)
-            {
-                try
-                {
-                    // Defer to ensure the modal's MAUI context is fully set up
-                    Dispatcher.Dispatch(() =>
-                    {
-                        FixModalTitleBarGap(this);
-                    });
-                }
-                catch (Exception ex)
-                {
-                    GHApp.MaybeWriteGHLog(ex.Message);
-                }
-            }
-#endif
-        }
-
-        // WORKAROUND(WA-MAUI-0018): Modal page has a 32-pixel title bar gap in full-screen mode on Windows
-        public static void FixModalTitleBarGap(ContentPage modalPage)
-        {
-#if WINDOWS
-            try
-            {
-                var mauiContext = modalPage.Handler?.MauiContext;
-                if (mauiContext is null)
-                    return;
-
-                // 1. Get the NavigationRootManager for this modal's scoped context
-                var navManager = mauiContext.Services.GetService(
-                    typeof(Microsoft.Maui.Platform.NavigationRootManager));
-
-                if (navManager is not null)
-                {
-                    // 2. Invoke internal void SetTitleBarVisibility(bool isVisible)
-                    var method = navManager.GetType().GetMethod(
-                        "SetTitleBarVisibility",
-                        BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
-
-                    if (method is not null)
-                    {
-                        // Passing false tells it to collapse the title bar, zero the 32px margin,
-                        // and clear the unclickable non-client input regions.
-                        method.Invoke(navManager, new object[] { false });
-                    }
-                }
-            }
-            catch (Exception ex) 
-            {
-                GHApp.MaybeWriteGHLog(ex.Message);
-            }
-#endif
         }
     }
 }

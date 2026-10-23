@@ -92,7 +92,7 @@ Checks:
 - Fixed upstream in: https://github.com/AvaloniaUI/Avalonia.Controls.Maui/pull/230 (contained in 11.0.0-rc.2.26287.618)
 - Last checked: 2026-10-23
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasViewHandler.cs` (`GHAvaloniaCanvasViewHandler.MapLayoutAlignment`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLViewHandler.cs` (`GHAvaloniaGLViewHandler.MapLayoutAlignment`)
-- Remove when: Verify removal passes with the current Avalonia.Controls.Maui release.
+- Remove when: ACM stops mapping MAUI layout options onto the alignment of Skia controls, or GnollHack's Skia controls stop measuring zero, and Verify removal passes.
 - Related: WA-AVALONIA-0002
 
 **Symptom.** A Skia view with a Start, Center or End option has zero width or height and
@@ -101,6 +101,10 @@ draws nothing.
 **Cause.** ACM maps the MAUI layout options onto the Avalonia control's alignment,
 although MAUI has already aligned the frame it arranges the control in. An aligned Avalonia
 control takes its own desired size, which is zero for a view that MAUI sizes itself.
+PR 230 fixed this inside ACM's `SKCanvasViewControl.MeasureOverride`, which now returns
+the available size, while `ViewHandler` still maps the alignment. GnollHack's
+`GHAvaloniaCanvasControl` and `GHAvaloniaGLControl` override `MeasureOverride` to return
+zero, so the fix does not reach them.
 
 **Workaround.** The horizontal and vertical alignment mapper entries of both Skia handlers
 are no-ops, so the control stays stretched over MAUI's frame.
@@ -111,6 +115,7 @@ flavor and check that Skia views with Start, Center or End options keep their si
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | Issue closed as completed by PR 230, which the shipped version contains; not re-tested with GnollHack's MeasureOverride.
+- 2026-10-23 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | still-needed | ACM's ViewHandler still maps layout alignment; PR 230's fix is in SKCanvasViewControl.MeasureOverride, which GHAvaloniaCanvasControl and GHAvaloniaGLControl override to return zero. Decompiled shipped package, not a run.
 
 ## WA-AVALONIA-0004: ACM ViewHandler.GetDesiredSize is not virtual
 

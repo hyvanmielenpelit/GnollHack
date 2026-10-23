@@ -13,7 +13,6 @@ namespace GnollHackM.Platforms.iOS
     /// crossfade animation introduced in iOS 15 with UIButtonConfiguration.
     /// Without this, button text changes (or the initial text appearance when a
     /// parent view becomes visible) cause a visible fade-in effect.
-    /// Similar workaround to NotAnimatedBorderHandler for Border layout animations.
     /// </summary>
     public class NotAnimatedButtonHandler : ButtonHandler
     {

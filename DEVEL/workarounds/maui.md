@@ -12,7 +12,7 @@ issues at the end of the file. Never renumber or reuse an ID.
 
 ## WA-MAUI-0001: Border animates its size and position changes on iOS
 
-- Status: active
+- Status: removed
 - Added: 2024-08-16 (from git history)
 - GnollHack version: 2.6 (206)
 - Component: .NET MAUI
@@ -27,6 +27,7 @@ issues at the end of the file. Never renumber or reuse an ID.
 - Code: `win/win32/xpl/GnollHackM/Platforms/iOS/NotAnimatedBorderHandler.cs` (`NotAnimatedBorderHandler.BorderContentView.LayoutSubviews`); `win/win32/xpl/GnollHackM/MauiProgram.cs` (`CreateMauiApp`, `AddHandler<Border, NotAnimatedBorderHandler>`)
 - Remove when: Verify removal passes on the Microsoft.Maui.Controls version GnollHack uses.
 - Related: WA-MAUI-0002
+- Removed: 2026-10-23, 3.31 (431)
 
 **Symptom.** When a Border changes size, its stroke and background visibly animate to the
 new bounds and position instead of snapping, so the border lags behind its content.
@@ -49,6 +50,7 @@ registration. Then:
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Both issues closed as completed; fix for #18204 released in 8.0.70. Possibly obsolete.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | Handler and registration removed: at 10.0.120 MauiCALayer.AddAnimation is an empty override, so the layer has no bounds or position animation to strip. Builds pass; iOS device test by the user.
 
 ## WA-MAUI-0002: Button title crossfades when its text changes on iOS
 
@@ -317,7 +319,7 @@ Checks:
 
 ## WA-MAUI-0009: Span tap regions are offset from the rendered text on iOS
 
-- Status: active
+- Status: removed
 - Added: 2026-08-02 (from git history)
 - GnollHack version: 3.7 (405)
 - Component: .NET MAUI
@@ -331,6 +333,7 @@ Checks:
 - Last checked: 2026-10-23
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/Controls/MessagePopupView.xaml.cs` (`MessagePopupView.ScheduleSpanPositionRecalculation`); `win/win32/xpl/GnollHackX/GnollHackX/Controls/MessagePopupView.xaml.cs` (`MessagePopupView.OnLabelSizeChangedForSpanRecalc`); `win/win32/xpl/GnollHackX/GnollHackX/Controls/MessagePopupView.xaml.cs` (`MessagePopupView.RecalculateSpanPositionsFromNative`)
 - Remove when: Verify removal passes on the Microsoft.Maui.Controls version GnollHack uses.
+- Removed: 2026-10-23, 3.31 (431)
 
 **Symptom.** Tapping a link span in a message popup misses: the tap regions are offset
 from the visible text, increasingly toward the bottom of longer texts.
@@ -351,10 +354,11 @@ the native `UILabel`'s attributed text and bounds, falling back to the MAUI size
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Issue closed as completed by the reporter, fixed in 10.0.90. Probably obsolete.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | Span region recalculation removed: fixed in 10.0.90 per the reporter, and iOS span hit-testing was fixed again by PRs 34640 (10.0.80) and 36564 (10.0.110). Builds pass; iOS device test by the user.
 
 ## WA-MAUI-0010: FormattedText spans do not inherit the Label's font on iOS
 
-- Status: active
+- Status: removed
 - Added: 2026-07-11 (from git history)
 - GnollHack version: 3.1 (393)
 - Component: .NET MAUI
@@ -368,6 +372,7 @@ Checks:
 - Last checked: 2026-10-23
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/Pages/MainScreen/SettingsPage.xaml.cs` (`SettingsPage.SetupSettingLabels`); `win/win32/xpl/GnollHackX/GnollHackX/UIUtils.cs` (`UIUtils.SetMarkdownText`)
 - Remove when: Verify removal passes on the Microsoft.Maui.Controls version GnollHack uses.
+- Removed: 2026-10-23, 3.31 (431)
 
 **Symptom.** In setting description popups, the plain text runs between formatted runs
 appear in a different font than the label's own font on iOS.
@@ -388,6 +393,7 @@ Then:
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Issue closed as completed by the reporter, fixed in 10.0.60. Probably obsolete.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | baseFontFamily removed from SetMarkdownText and its callers: at 10.0.120 iOS spans resolve their font through GetEffectiveFont with label.ToFont() as the default, and PR 34110 (10.0.60) fixed span font inheritance. Builds pass; iOS device test by the user.
 
 ## WA-MAUI-0011: WebView Navigated event is not raised on iOS
 
@@ -653,7 +659,7 @@ Checks:
 
 ## WA-MAUI-0018: Modal page has a 32-pixel title bar gap in full-screen mode on Windows
 
-- Status: active
+- Status: removed
 - Added: 2026-06-20 (from git history)
 - GnollHack version: 2.140 (381)
 - Component: .NET MAUI
@@ -667,6 +673,7 @@ Checks:
 - Last checked: 2026-10-23
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/CustomModalPage.cs` (`CustomModalPage.OnAppearing`); `win/win32/xpl/GnollHackX/GnollHackX/CustomModalPage.cs` (`CustomModalPage.FixModalTitleBarGap`)
 - Remove when: Verify removal passes on the Microsoft.Maui.Controls version GnollHack uses.
+- Removed: 2026-10-23, 3.31 (431)
 
 **Symptom.** In full-screen mode, a modal page starts 32 pixels below the top of the
 window, and the strip above it is an unclickable non-client area.
@@ -688,6 +695,7 @@ reflection, collapsing the title bar and its margin.
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Fix released in 10.0.110. Probably obsolete.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | OnAppearing override and FixModalTitleBarGap removed: at 10.0.120 ModalNavigationManager.Windows hides the title bar for the FullScreen presenter on push and on AppWindow.Changed (PR 36209), the presenter GnollHack uses outside windowed mode. Builds pass; Windows device test by the user.
 
 ## WA-MAUI-0019: Re-entrant window activation throws "already activated" or "already deactivated"
 
@@ -749,15 +757,17 @@ Checks:
 - Fixed upstream in: 10.0.120 (https://github.com/dotnet/maui/pull/38569)
 - Last checked: 2026-10-23
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/Pages/MainScreen/DisplayFilePage.xaml.cs` (`DisplayFilePage.ReadFile`, `_pendingHtmlSource`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/MainScreen/DisplayFilePage.xaml.cs` (`DisplayFilePage.DisplayWebView_Loaded`)
-- Remove when: Verify removal passes on the Microsoft.Maui.Controls version GnollHack uses.
+- Remove when: MAUI guards the WebView2 initialization in `MauiWebView.LoadHtml` in a Microsoft.Maui.Controls release GnollHack uses, and Verify removal passes.
 
 **Symptom.** On a computer where WebView2 cannot initialize, opening an HTML file (such as
 a dumplog) crashes the app with a NullReferenceException.
 
 **Cause.** MAUI's Windows `WebViewHandler` handled `CoreWebView2Initialized` by subscribing
 to `sender.CoreWebView2` events without checking the exception or a null core. Fixed by
-PR 38569, released in 10.0.120, which GnollHack uses, so the workaround is probably
-obsolete.
+PR 38569, released in 10.0.120, which GnollHack uses. That fix guards only the
+initialization callback: at 10.0.120, `MauiWebView.LoadHtml` is `async void` and awaits
+`EnsureCoreWebView2Async` without a try/catch, so an HTML source assigned to a WebView
+whose WebView2 cannot start still throws, now from `LoadHtml`, and crashes the app.
 
 **Workaround.** On MAUI Windows, `ReadFile` holds the HTML source back. When the WebView is
 loaded, `DisplayWebView_Loaded` awaits `EnsureCoreWebView2Async` and assigns the source
@@ -771,6 +781,7 @@ handler. Then:
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Fix released in 10.0.120, which GnollHack uses. Probably obsolete.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | still-needed | PR 38569 guards only OnCoreWebView2Initialized; MauiWebView.LoadHtml (async void) still awaits EnsureCoreWebView2Async unguarded at 10.0.120, and GnollHack's UnhandledException handler does not mark that exception handled. Source reading, not a device run.
 
 ## WA-MAUI-0021: MauiFont fonts are unreliable on Android and Windows
 
@@ -848,7 +859,7 @@ Checks:
 
 ## WA-MAUI-0023: Replacing FormattedText leaves old span highlights on Windows
 
-- Status: active
+- Status: removed
 - Added: 2026-07-11 (from git history)
 - GnollHack version: 3.1 (393)
 - Component: .NET MAUI
@@ -862,6 +873,7 @@ Checks:
 - Last checked: 2026-10-23
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/UIUtils.cs` (`UIUtils.SetMarkdownText`, `label.Text = ""` before the new FormattedText)
 - Remove when: Verify removal passes on the Microsoft.Maui.Controls version GnollHack uses.
+- Removed: 2026-10-23, 3.31 (431)
 
 **Symptom.** On Windows, setting a Label's `FormattedText` again leaves the previous spans'
 background and text colors in place, overlapping the new text.
@@ -882,6 +894,7 @@ Then:
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Fix released in 10.0.110. Probably obsolete.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | label.Text = "" removed from SetMarkdownText: at 10.0.120 the Windows UpdateInlines clears TextHighlighters together with Inlines (PR 36608). Builds pass; Windows device test by the user.
 
 ## WA-MAUI-0024: OnPlatformMessage costs an allocation for every window message on Windows
 
