@@ -211,12 +211,20 @@ namespace GnollHackX.iOS
 
         public void SetStatusBarHidden(bool ishidden)
         {
+#if GNH_MAUI
+            GnollHackM.Platforms.iOS.StatusBarVisibility.SetHidden(ishidden);
+#else
             UIApplication.SharedApplication.StatusBarHidden = ishidden;
+#endif
         }
 
         public bool GetStatusBarHidden()
         {
+#if GNH_MAUI
+            return GnollHackM.Platforms.iOS.StatusBarVisibility.IsHidden();
+#else
             return UIApplication.SharedApplication.StatusBarHidden;
+#endif
         }
 
         public float GetAnimatorDurationScaleSetting()

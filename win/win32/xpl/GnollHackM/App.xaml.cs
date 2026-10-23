@@ -327,6 +327,9 @@ public partial class App : Application
 #endif
 
         GHApp.Initialize();
+#if IOS
+        GnollHackM.Platforms.iOS.StatusBarVisibility.Register();
+#endif
         //MainPage = new AppShell();
     }
 
