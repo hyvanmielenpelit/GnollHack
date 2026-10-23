@@ -222,6 +222,7 @@ static int wiz_rumor_check(void);
 static int doattributes(void);
 static int dopolyformstatistics(void);
 static int doviewpetstatistics(struct monst*);
+static void clear_available_ability_list(void);
 
 static void enlght_out(const char *, int);
 static void enlght_line(const char *, const char *, const char *,
@@ -777,6 +778,20 @@ struct available_ability
 
 static struct available_ability available_ability_list[MAXABILITYNUM] = { {"", 0, 0, 0} };
 
+/* Empties every slot so that a menu build starts from a table with no leftover entries */
+static void
+clear_available_ability_list(void)
+{
+    int i;
+    for (i = 0; i < MAXABILITYNUM; i++)
+    {
+        available_ability_list[i].name[0] = '\0';
+        available_ability_list[i].function_ptr = 0;
+        available_ability_list[i].function_mtmp_ptr = 0;
+        available_ability_list[i].target_mtmp = 0;
+    }
+}
+
 int
 doability(void)
 {
@@ -792,6 +807,8 @@ doability(void)
         int glyph = 0;
         glyph = player_to_glyph_index(urole.rolenum, urace.racenum, Ufemale, u.ualign.type, 0) + GLYPH_PLAYER_OFF;
         int gui_glyph = maybe_get_replaced_glyph(glyph, u.ux, u.uy, data_to_replacement_info(glyph, LAYER_MONSTER, (struct obj*)0, &youmonst, 0UL, 0UL, 0UL, MAT_NONE, 0));
+
+        clear_available_ability_list();
 
         any = zeroany;
         win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_CHARACTER_MENU_SCREEN, gui_glyph, extended_create_window_info_from_mon(&youmonst));
@@ -1129,6 +1146,7 @@ domonsterability(void)
     struct extended_create_window_info createinfo = extended_create_window_info_from_mon(&youmonst);
     win = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_MONSTER_COMMAND_MENU, gui_glyph, createinfo);
     start_menu_style(win, GHMENU_STYLE_MONSTER_ABILITY);
+    clear_available_ability_list();
     int abilitynum = print_monster_abilities(win, 0);
     end_menu(win, "Monster Abilities");
 

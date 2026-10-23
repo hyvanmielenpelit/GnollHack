@@ -350,7 +350,7 @@ E int doprev_message(void);
 E int timed_occupation(void);
 E int doattributes(void);
 E int dopolyformstatistics(void);
-E int doviewpetstatistics(void);
+E int doviewpetstatistics(struct monst*);
 E int wiz_detect(void);
 E int wiz_files(void);
 E int wiz_genesis(void);
