@@ -4,8 +4,9 @@
 - Upstream: https://github.com/dotnet/runtime
 - ID prefix: WA-RUNTIME
 
-Entries follow the schema in [README.md](README.md). Append new entries at the end of the
-file and never renumber or reuse an ID.
+Entries follow the schema in [README.md](README.md). Append workarounds before the
+`<!-- known-issues -->` line if there is one, otherwise at the end of the file, and known
+issues at the end of the file. Never renumber or reuse an ID.
 
 <!-- entries -->
 
@@ -117,3 +118,49 @@ failure of the game library shows a message box explaining the cause.
 
 Checks:
 - 2026-10-23 | .NET SDK 10.0.402 (runtime 10.0.13) | still-needed | LoadLibErrorTracker in dotnet/runtime still passes the HRESULT only as message text.
+
+<!-- known-issues -->
+
+## KI-RUNTIME-0001: Mono lock-free mempool chunk overflow aborts on the Finalizer thread
+
+- Status: open
+- Added: 2026-10-23
+- GnollHack version: 3.29 (429)
+- Component: .NET runtime
+- Package: Mono runtime, workload android
+- Defective version: .NET 10 Mono (SDK 10.0.402)
+- Platforms: Android
+- Impact: crash
+- Sentry: GNOLLHACK-HJ
+- Upstream issue: https://github.com/dotnet/runtime/pull/129843
+- Upstream status when added: fixed-unreleased
+- Upstream status: fixed-unreleased
+- Fixed upstream in: https://github.com/dotnet/runtime/pull/129843 (in .NET 11 from v11.0.0-preview.7; not in release/10.0)
+- Last checked: 2026-10-23
+- Resolve when: GnollHack's Android build uses a stable .NET runtime containing dotnet/runtime#129843 (11.0, or a 10.0 servicing release if the fix is backported), and Verify fix passes.
+
+**Symptom.** The Android app aborts with SIGABRT and the message `Assertion at
+.../mono/metadata/memory-manager.c:85, condition 'chunk->pos + size <=
+GINT_TO_UINT(chunk->size)' not met`. The crashed thread is Mono's `Finalizer`, and Sentry
+receives only the tombstone, with no managed stack.
+
+**Cause.** `lock_free_mempool_chunk_new` reserves 24 bytes for the chunk header, but the data
+starts at offset 32, so a request of a whole number of pages minus 24 bytes overflows a fresh
+chunk. The lock-free pool is used only to decode AOT unwind information in async context,
+for signal-safe stack walks. On the Finalizer thread that means Mono's SIGQUIT thread dump
+or its native crash reporter. What sends the signal is unverified; an ANR or vendor
+(MIUI) monitor is the leading guess. iOS runs the same Mono code, but no trigger has been seen
+there.
+
+**Why no workaround.** The overflow is inside Mono's native runtime. No runtime option was
+found that avoids the async-context unwind path, and the signal that starts the thread dump
+comes from the OS or a vendor monitor, not from GnollHack. Fixing it locally would mean
+shipping a patched libmonosgen.
+
+**Verify fix.** After GnollHack's Android build moves to a runtime containing the fix, no
+`memory-manager.c:85` abort is reported from a release built with it for 90 days. If the
+trigger is confirmed as SIGQUIT, also run `adb shell kill -3 <pid>` repeatedly during a game
+on an arm64 device, and confirm that logcat shows Mono's thread dump and the app survives.
+
+Checks:
+- 2026-10-23 | .NET SDK 10.0.402, workload android 36.1.118 | still-present | dotnet/runtime#129843 merged to main on 2026-06-25; in release/11.0 (tags v11.0.0-preview.7, rc.1, rc.2), not in release/10.0, no backport PR found. No upstream issue exists; the pull request is the only upstream record. One event, Android 15 (Redmi), 3.29+429.

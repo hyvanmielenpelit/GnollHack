@@ -4,8 +4,9 @@
 - Upstream: https://qa.fmod.com
 - ID prefix: WA-FMOD
 
-Entries follow the schema in [README.md](README.md). Append new entries at the end of the
-file and never renumber or reuse an ID.
+Entries follow the schema in [README.md](README.md). Append workarounds before the
+`<!-- known-issues -->` line if there is one, otherwise at the end of the file, and known
+issues at the end of the file. Never renumber or reuse an ID.
 
 <!-- entries -->
 
@@ -24,7 +25,7 @@ file and never renumber or reuse an ID.
 - Last checked: 2026-10-23
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs` (`GHConstants.FmodAndroidPauseInsteadOfMixerSuspend`); `win/win32/xpl/GnollHackX/GnollHackX.FMOD/FmodService.cs` (`FmodService.UseMasterPauseForSuspend`)
 - Remove when: FMOD names a release that fixes the mixerSuspend defect, GnollHack uses that release on Android, and Verify removal passes.
-- Related: GNOLLHACK-FN
+- Related: GNOLLHACK-FN, KI-FMOD-0001
 
 **Symptom.** When the app goes to the background on Android and `System::mixerSuspend` is
 called, the process can crash with a SIGSEGV in FMOD's mixer thread, in `sem_post`.
@@ -94,3 +95,47 @@ mixer is left running and the worker stays inside FMOD.
 
 Checks:
 - 2026-10-23 | FMOD 2.03.14 | still-needed | No upstream report exists, and no fix is known.
+
+<!-- known-issues -->
+
+## KI-FMOD-0001: Device restart race can crash FMOD in sem_post on Android
+
+- Status: open
+- Added: 2026-10-23
+- GnollHack version: 3.25 (425)
+- Component: FMOD Core
+- Package: FMOD
+- Defective version: FMOD 2.03.14
+- Platforms: Android
+- Impact: crash
+- Sentry: GNOLLHACK-FN
+- Upstream issue: https://qa.fmod.com/t/24471
+- Upstream status when added: reported
+- Upstream status: reported
+- Last checked: 2026-10-23
+- Resolve when: GnollHack ships an FMOD release on Android that FMOD names as fixing the device-restart race (announced for 2.03.16), and Verify fix passes.
+- Related: WA-FMOD-0001
+
+**Symptom.** While the app is in the background on Android, the process can crash with a
+SIGSEGV in `sem_post` on an FMOD thread, with no GnollHack code running. GNOLLHACK-FN mixes
+these crashes with the `mixerSuspend` crashes that WA-FMOD-0001 avoids. A crash from 3.25 or
+later, where Android no longer calls `mixerSuspend`, belongs here.
+
+**Cause.** Per FMOD's reply on the forum thread on 2026-10-14: a race when an output device
+disconnects while its replacement device is starting, separate from the `mixerSuspend`
+defect.
+
+**Why no workaround.** The race is inside FMOD's own output-device restart, on FMOD's
+threads, and is not started by a GnollHack call; pausing the master channel group, which is
+WA-FMOD-0001, does not stop the device restart. Releasing the FMOD system whenever the app is
+backgrounded might avoid it, but it has not been tried, and it would reload every bank on each
+resume. FMOD announced a fix rather than a workaround.
+
+**Verify fix.** After upgrading to the fixed FMOD:
+- Background the app at least 50 times on an Android device, connecting and disconnecting
+  headphones while it is in the background, and confirm that it never crashes.
+- After shipping, no GNOLLHACK-FN event with `app.lifecycle` `sleeping` comes from a release
+  built with that FMOD for 90 days.
+
+Checks:
+- 2026-10-23 | FMOD 2.03.14 | still-present | FMOD replied on 2026-10-14 that the fix targets 2.03.16; the FMOD Engine revision history lists 2.03.15 (2026-09-22) as the newest release, with no 2.03.16 entry. GNOLLHACK-FN had a 3.25+425 event on 2026-10-16.

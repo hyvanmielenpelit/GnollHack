@@ -4,8 +4,9 @@
 - Upstream: https://github.com/microsoft/microsoft-ui-xaml, https://github.com/microsoft/WindowsAppSDK, https://github.com/microsoft/CsWinRT
 - ID prefix: WA-WINUI
 
-Entries follow the schema in [README.md](README.md). Append new entries at the end of the
-file and never renumber or reuse an ID.
+Entries follow the schema in [README.md](README.md). Append workarounds before the
+`<!-- known-issues -->` line if there is one, otherwise at the end of the file, and known
+issues at the end of the file. Never renumber or reuse an ID.
 
 <!-- entries -->
 
@@ -62,7 +63,7 @@ Checks:
 - Last checked: 2026-10-23
 - Code: `win/win32/xpl/GnollHackM/Platforms/Windows/RenderingSubscriptionWindows.cs` (`RenderingSubscriptionWindows`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.InitializePlatformRenderLoop`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.ScheduleRawRenderingLivenessCheck`)
 - Remove when: GnollHack uses a Windows App SDK release that resolves microsoft-ui-xaml#12112, or a CsWinRT release that resolves CsWinRT#2594, and Verify removal passes.
-- Related: WA-WINUI-0001, WA-WINUI-0003
+- Related: WA-WINUI-0001, WA-WINUI-0003, KI-WINUI-0001
 
 **Symptom.** With the managed `CompositionTarget.Rendering +=` subscription, every frame
 allocates managed wrappers for the event arguments, and the render loop alone causes
@@ -324,3 +325,50 @@ SurfaceView layer ignores view opacity by design.
 
 Checks:
 - 2026-10-23 | Microsoft.WindowsAppSDK.WinUI 1.8.260528001 | unverified | Not re-tested; one issue search found nothing.
+
+<!-- known-issues -->
+
+## KI-WINUI-0001: TrackMemory forces blocking gen2 collections on the UI thread
+
+- Status: open
+- Added: 2026-10-23
+- GnollHack version: unknown
+- Component: WinUI 3
+- Package: Microsoft.WindowsAppSDK.WinUI
+- Defective version: Microsoft.WindowsAppSDK.WinUI 1.8.260528001
+- Platforms: Windows (MAUI)
+- Impact: performance
+- Sentry: none
+- Upstream issue: https://github.com/microsoft/microsoft-ui-xaml/issues/12113
+- Upstream status when added: reported
+- Upstream status: reported
+- Last checked: 2026-10-23
+- Resolve when: WinUI stops these collections or lets an app defer or opt out of them, GnollHack uses that release, and Verify fix passes.
+- Related: WA-WINUI-0002
+
+**Symptom.** On Windows, the UI thread blocks in an induced gen2 garbage collection
+whenever the working set rises more than 50 MiB above WinUI's baseline, including once
+shortly after startup when the working set is already above 100 MiB. Each one shows as a
+frame hitch.
+
+**Cause.** Every 51st rendered frame, WinUI's `CCoreServices::TrackMemory` reads the working
+set, and if it is more than `MAX_ALLOWEDMEMORY_INCREASE` (52,428,800 bytes) above a baseline
+that starts at 50 MiB, it triggers a garbage collection on the UI thread. The baseline moves
+only when such a collection runs or a sample is lower, so a collection the app makes itself
+does not defer it. The issue also names `TriggerCollectionForOrphanedObjects`. Measured in a
+blank WinUI app (Windows App SDK 1.8.260529003, Windows 11 build 26200) that grows its
+working set in 64 MiB steps: one blocking induced gen2 (reason 1) per step. This is a
+different gen2 source from WA-WINUI-0002, where per-frame wrapper allocations cause the
+collections.
+
+**Why no workaround.** The collection is requested from WinUI's native code, with no public
+setting. Its trigger is working-set growth, which includes memory that GnollHack does not
+allocate, such as graphics driver and WinUI allocations, so the app cannot keep below the
+threshold.
+
+**Verify fix.** In a blank WinUI app on the new release, and in GnollHack's Windows build
+with the frame-time profiler on, grow the working set in 64 MiB steps several times and
+confirm that no induced gen2 collection occurs on the UI thread.
+
+Checks:
+- 2026-10-23 | Microsoft.WindowsAppSDK.WinUI 1.8.260528001 | still-present | microsoft-ui-xaml#12113 open (feature proposal, needs-triage); behavior measured on Windows App SDK 1.8.260529003.

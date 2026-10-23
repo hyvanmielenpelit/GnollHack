@@ -603,6 +603,10 @@ for this event (A.5, context provenance).
    SkiaSharp, the runtime, WinUI, Avalonia, CEF, FMOD, Sentry, the OS), search
    that component's file in `DEVEL/workarounds/`. A known defect there may explain
    the crash, and an active workaround at the crashing site may be its cause.
+   Also search the register for the issue's short ID (`git grep -n "GNOLLHACK-XX"
+   DEVEL/workarounds`). A `KI-` entry naming it means the crash is a known issue
+   waiting for upstream: confirm the new events match its Symptom, and report against
+   the entry instead of re-analyzing from scratch.
 
 > [!NOTE]
 > **Don't assume platform exclusivity without evidence.** A crash seen only on
@@ -734,7 +738,10 @@ When the analysis concludes that the bug is in a framework or library, the actio
 includes an upstream report. Draft it with the global `agent-issue-drafting` skill, using
 this analysis as the evidence and leaving out the personal data the Security and Privacy
 section excludes. When the recommended fix is a workaround for that bug, the action list
-also includes its entry in `DEVEL/workarounds/`, per `client_workarounds`.
+also includes its entry in `DEVEL/workarounds/`, per `client_workarounds`. When no
+workaround is recommended, or it covers only part of the crashes, the action list
+instead includes a `KI-` entry for the defect and the Sentry note and archive that
+`client_workarounds` describes.
 
 ---
 
@@ -921,7 +928,7 @@ unrelated operation.
   source at the shipped version
 - **`agent-issue-drafting`** (global) — drafting the upstream issue when an analysis
   ends in a framework bug
-- **`client_workarounds`** — the workaround register in `DEVEL/workarounds/`: known
-  third-party defects and the workarounds for them
+- **`client_workarounds`** — the register in `DEVEL/workarounds/`: known third-party
+  defects, the workarounds for them, and the known issues with none
 - **`save_restore_system`** — Save/load system, struct alignment, file I/O
   (relevant for save corruption and restore crashes)
