@@ -15,11 +15,13 @@ namespace GnollHackM.Platforms.iOS
     /// 44 points tall that iOS counts as part of the keyboard, so pages padded above it showed an empty band.
     /// The close button ends editing, so an Entry gets no Completed event. A Picker takes the row on its wheel
     /// whenever editing ends, including the close button and MAUI's tap outside the picker.
-    /// Earlier iOS versions run with UIDesignRequiresCompatibility and keep the accessory. UI thread only.
+    /// Earlier iOS versions run with UIDesignRequiresCompatibility and keep the accessory, in its legacy toolbar
+    /// form. UI thread only.
     /// </summary>
     public static class KeyboardDoneOverlay
     {
         private const string MapperKey = "GHKeyboardDoneOverlay";
+        private const string UseLegacyDoneAccessorySwitch = "Microsoft.Maui.Platform.iOS.UseLegacyDoneAccessory";
         private const double ButtonSize = 44;
         private const double ButtonBottomSpacing = 4;
         private const double ButtonTrailingMargin = 8;
@@ -37,7 +39,13 @@ namespace GnollHackM.Platforms.iOS
 
         public static void Register()
         {
-            if (!OperatingSystem.IsIOSVersionAtLeast(27) || _observers != null)
+            if (!OperatingSystem.IsIOSVersionAtLeast(27))
+            {
+                /* MAUI's iOS 26 glass close button does not show in the compatibility design; its legacy Done toolbar does */
+                AppContext.SetSwitch(UseLegacyDoneAccessorySwitch, true);
+                return;
+            }
+            if (_observers != null)
                 return;
 
             EntryHandler.Mapper.AppendToMapping(MapperKey, (handler, entry) => DetachAccessory(handler.PlatformView, EntryMarker));
