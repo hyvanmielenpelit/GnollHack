@@ -50,7 +50,7 @@ registration. Then:
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Both issues closed as completed; fix for #18204 released in 8.0.70. Possibly obsolete.
-- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | Handler and registration removed: at 10.0.120 MauiCALayer.AddAnimation is an empty override, so the layer has no bounds or position animation to strip. Builds pass; iOS device test by the user.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | Handler and registration removed: at 10.0.120 MauiCALayer.AddAnimation is an empty override, so the layer has no bounds or position animation to strip. Builds pass; device-tested on iOS by the user, works without the workaround.
 
 ## WA-MAUI-0002: Button title crossfades when its text changes on iOS
 
@@ -354,7 +354,7 @@ the native `UILabel`'s attributed text and bounds, falling back to the MAUI size
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Issue closed as completed by the reporter, fixed in 10.0.90. Probably obsolete.
-- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | Span region recalculation removed: fixed in 10.0.90 per the reporter, and iOS span hit-testing was fixed again by PRs 34640 (10.0.80) and 36564 (10.0.110). Builds pass; iOS device test by the user.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | Span region recalculation removed: fixed in 10.0.90 per the reporter, and iOS span hit-testing was fixed again by PRs 34640 (10.0.80) and 36564 (10.0.110). Builds pass; device-tested on iOS by the user, works without the workaround.
 
 ## WA-MAUI-0010: FormattedText spans do not inherit the Label's font on iOS
 
@@ -393,7 +393,7 @@ Then:
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Issue closed as completed by the reporter, fixed in 10.0.60. Probably obsolete.
-- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | baseFontFamily removed from SetMarkdownText and its callers: at 10.0.120 iOS spans resolve their font through GetEffectiveFont with label.ToFont() as the default, and PR 34110 (10.0.60) fixed span font inheritance. Builds pass; iOS device test by the user.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | baseFontFamily removed from SetMarkdownText and its callers: at 10.0.120 iOS spans resolve their font through GetEffectiveFont with label.ToFont() as the default, and PR 34110 (10.0.60) fixed span font inheritance. Builds pass; device-tested on iOS by the user, works without the workaround.
 
 ## WA-MAUI-0011: WebView Navigated event is not raised on iOS
 
@@ -695,7 +695,7 @@ reflection, collapsing the title bar and its margin.
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Fix released in 10.0.110. Probably obsolete.
-- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | OnAppearing override and FixModalTitleBarGap removed: at 10.0.120 ModalNavigationManager.Windows hides the title bar for the FullScreen presenter on push and on AppWindow.Changed (PR 36209), the presenter GnollHack uses outside windowed mode. Builds pass; Windows device test by the user.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | OnAppearing override and FixModalTitleBarGap removed: at 10.0.120 ModalNavigationManager.Windows hides the title bar for the FullScreen presenter on push and on AppWindow.Changed (PR 36209), the presenter GnollHack uses outside windowed mode. Builds pass; device-tested on Windows by the user, works without the workaround.
 
 ## WA-MAUI-0019: Re-entrant window activation throws "already activated" or "already deactivated"
 
@@ -894,7 +894,7 @@ Then:
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | Fix released in 10.0.110. Probably obsolete.
-- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | label.Text = "" removed from SetMarkdownText: at 10.0.120 the Windows UpdateInlines clears TextHighlighters together with Inlines (PR 36608). Builds pass; Windows device test by the user.
+- 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | removed | label.Text = "" removed from SetMarkdownText: at 10.0.120 the Windows UpdateInlines clears TextHighlighters together with Inlines (PR 36608). Builds pass; device-tested on Windows by the user, works without the workaround.
 
 ## WA-MAUI-0024: OnPlatformMessage costs an allocation for every window message on Windows
 
