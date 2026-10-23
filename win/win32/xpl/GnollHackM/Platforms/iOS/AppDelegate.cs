@@ -14,16 +14,6 @@ public class AppDelegate : MauiUIApplicationDelegate
     }
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
 
-    public override bool FinishedLaunching(UIApplication app, NSDictionary options)
-    {
-        var result = base.FinishedLaunching(app, options);
-        if (Window != null)
-        {
-            Window.BackgroundColor = UIColor.FromRGB(0x00, 0x00, 0x00); // Set the background color to black
-        }
-        return result;
-    }
-
     /* Remove the system Quit menu item so that Cmd+Q is handled by our
      * UIKeyCommand in GHUIApplication instead of immediately killing the app.
      * This is critical on Mac ("Designed for iPad") where Cmd+Q would

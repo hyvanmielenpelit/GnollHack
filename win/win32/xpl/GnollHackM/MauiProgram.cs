@@ -153,7 +153,7 @@ public static class MauiProgram
                     /* Capture MAUI's "already activated"/"already deactivated"
                      * InvalidOperationException as a warning rather than an error.
                      * If this fires, MAUI's window state machine threw and skipped
-                     * our ios.OnActivated / ios.OnResignActivation handler. */
+                     * our ios.SceneOnActivated / ios.SceneOnResignActivation handler. */
                     if (exception is InvalidOperationException invOp && invOp.Message != null &&
                         (invOp.Message.Contains("already activated") ||
                          invOp.Message.Contains("already deactivated")))
@@ -624,7 +624,7 @@ public static class MauiProgram
 #if IOS
             lifecycleBuilder.AddiOS(ios =>
             {
-                ios.OnResignActivation((app) =>
+                ios.SceneOnResignActivation((scene) =>
                 {
                     GHApp.MaybeWriteGHLog("OnResignActivation: Start", true, GHConstants.SentryGnollHackGeneralCategoryName);
                     GHGame game = GHApp.CurrentGHGame;
@@ -663,7 +663,7 @@ public static class MauiProgram
                         });
                     }
                 });
-                ios.OnActivated((app) =>
+                ios.SceneOnActivated((scene) =>
                 {
                     GHApp.MaybeWriteGHLog("OnActivated: Start", true, GHConstants.SentryGnollHackGeneralCategoryName);
                     GHApp.EnsureGameThreadResumed();

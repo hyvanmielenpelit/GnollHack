@@ -265,7 +265,7 @@ namespace GnollHackX.iOS
                 {
                     if (IsiOS14_0)
                     {
-                        UIWindow window = UIApplication.SharedApplication?.Delegate?.GetWindow();
+                        UIWindow window = GetKeyWindow();
                         if (window != null)
                         {
                             UIWindowScene windowscene = window.WindowScene;
@@ -287,6 +287,26 @@ namespace GnollHackX.iOS
                 //await page.DisplayAlertAsync("App Review Exception", "Exception occurred in App Review: " + ex.Message, "OK");
             }
             await System.Threading.Tasks.Task.Delay(50);
+        }
+
+        /* Key window of the connected window scene; UIApplicationDelegate.Window is null under the scene life cycle */
+        private static UIWindow GetKeyWindow()
+        {
+            if (UIDevice.CurrentDevice.CheckSystemVersion(13, 0))
+            {
+                foreach (UIScene scene in UIApplication.SharedApplication.ConnectedScenes)
+                {
+                    if (scene is UIWindowScene windowScene)
+                    {
+                        foreach (UIWindow w in windowScene.Windows)
+                        {
+                            if (w.IsKeyWindow)
+                                return w;
+                        }
+                    }
+                }
+            }
+            return UIApplication.SharedApplication.KeyWindow;
         }
 
         public string GetBaseUrl()
