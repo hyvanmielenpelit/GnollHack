@@ -714,6 +714,9 @@ public static class MauiProgram
         /* Before Build: mappers snapshot their chained keys on first use */
         RenderSurfaceDiagnostics.Register();
 #endif
+#if IOS
+        KeyboardDoneOverlay.Register();
+#endif
         MauiApp app = builder.Build();
 #if SENTRY && WINDOWS
         ProcessMemoryWindows.Start();
