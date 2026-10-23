@@ -47,7 +47,7 @@ namespace GnollHackM.Platforms.iOS
                 if (active)
                 {
                     _loggedDisable = false;
-                    GHApp.WriteGHLog("FlexGestureSuppressor: active");
+                    GHApp.MaybeWriteGHLog("FlexGestureSuppressor: active");
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace GnollHackM.Platforms.iOS
                         }
                     }
                     _disabled.Clear();
-                    GHApp.WriteGHLog("FlexGestureSuppressor: inactive, re-enabled " + reenabled);
+                    GHApp.MaybeWriteGHLog("FlexGestureSuppressor: inactive, re-enabled " + reenabled);
                 }
             }
             catch (Exception ex)
@@ -119,7 +119,7 @@ namespace GnollHackM.Platforms.iOS
             if (disabledNow > 0 && !_loggedDisable)
             {
                 _loggedDisable = true;
-                GHApp.WriteGHLog("FlexGestureSuppressor: disabled " + disabledNow + " on touch-down");
+                GHApp.MaybeWriteGHLog("FlexGestureSuppressor: disabled " + disabledNow + " on touch-down");
             }
         }
     }

@@ -4086,10 +4086,15 @@ namespace GnollHackX
             }
         }
 
+        private static bool _hideStatusBar;
         public static bool HideiOSStatusBar
         {
-            get { return PlatformService.GetStatusBarHidden(); }
-            set { PlatformService.SetStatusBarHidden(value); }
+            get { return _hideStatusBar; }
+            set
+            {
+                _hideStatusBar = value;
+                PlatformService.SetStatusBarHidden(value);
+            }
         }
         public static bool DeveloperMode { get; set; }
         public static bool OverseerSendGameContext { get; set; } = true;

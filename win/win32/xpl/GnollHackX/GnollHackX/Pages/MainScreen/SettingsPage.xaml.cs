@@ -188,10 +188,6 @@ namespace GnollHackX.Pages.MainScreen
             _mainPage = mainPage;
 
             InitializeComponent();
-#if GNH_MAUI && IOS
-            /* Liquid Glass switches and sliders lose taps when the scroll view delays and cancels their touches */
-            MainScrollView.On<iOS>().SetShouldDelayContentTouches(false);
-#endif
 //#if GNH_MAUI
 //            SafeAreaEdges = SafeAreaEdges.All;
 //#else

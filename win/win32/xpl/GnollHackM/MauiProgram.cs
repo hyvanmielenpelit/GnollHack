@@ -102,7 +102,6 @@ public static class MauiProgram
                 handlers.AddHandler(typeof(Shell), typeof(CustomShellRenderer));
                 handlers.AddHandler<Border, NotAnimatedBorderHandler>();
                 handlers.AddHandler<Button, NotAnimatedButtonHandler>();
-                handlers.AddHandler<ScrollView, GnollHackM.Platforms.iOS.TracingScrollViewHandler>();
                 handlers.AddHandler<MetalGLView, GnollHackM.Platforms.iOS.iOSSKGLViewMetalHandler>();
 #endif
 #if WINDOWS
