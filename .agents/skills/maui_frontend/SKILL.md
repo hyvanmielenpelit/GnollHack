@@ -11,6 +11,7 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
 - **UI Thread Safety**: All UI updates must be marshaled to the main thread via `MainThread.BeginInvokeOnMainThread()`.
 - **Do NOT block the UI Thread**: Long-running native calls or file I/O must run asynchronously.
 - **Cross-Platform XAML**: Use `OnPlatform` in XAML to handle differences between iOS/Android/Windows.
+- **Workarounds are registered**: a workaround for a MAUI, SkiaSharp, WinUI, Avalonia, Android or iOS defect gets a `WORKAROUND(WA-...)` tag and an entry in `DEVEL/workarounds/` in the same change. See `client_workarounds`.
 - **XAML `WidthRequest` / `HeightRequest` → `MaximumWidthRequest` / `MaximumHeightRequest` Convention**:
 
   > [!CAUTION]
@@ -314,3 +315,4 @@ All platforms delegate lifecycle to `GHApp.OnStart()`, `GHApp.OnResume()`, `GHAp
 - **`nethack_c_core`** — C core engine, `libshare` bridge code
 - **`debugging_gnollhack`** — Wizard mode, running the MAUI app locally
 - **`client_framework_sources`** — The source of the frameworks under this layer, read at the shipped version
+- **`client_workarounds`** — Recording, re-checking and removing workarounds for framework and OS defects

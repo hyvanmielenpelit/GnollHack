@@ -141,6 +141,7 @@ Git stores all text files with **LF** line endings in the repository. On checkou
 | Native bridge (C#) | `win/win32/xpl/GnollHackX/GnollHackX.Common/GnollHackService.cs` |
 | VS solution | `win/win32/vs/GnollHack.sln` |
 | Dev documentation | `DEVEL/` |
+| Workaround register | `DEVEL/workarounds/` |
 
 ## Build Prerequisites
 
@@ -225,3 +226,4 @@ the MobileGnollHackLogger server. Canonical bodies live in
   3. **Four files are exempt** because their `makedefsdroid.vcxproj` blocks omit the replacement: `Controls/CustomImageButton.xaml`, `Controls/LabeledImageButton.xaml`, `Controls/SimpleImageButton.xaml`, `Controls/SwitchableCanvasView.xaml`. In those, the two-space form survives into the generated MAUI XAML and will not compile — use the plain one-space form, or add the replacement to that file's block.
   4. **`HorizontalOptions  =` behaves the same way**: in files whose block includes it, `HorizontalOptions  ="Center"` becomes `HorizontalOptions="Fill"` in GnollHackM. Use the plain one-space form unless you want that override.
 - **Do NOT hardcode version numbers in AI skills**: NuGet package versions, SDK build numbers, game version strings, and platform minimum OS versions change frequently. AI skills (`.agents/skills/`) must reference the source-of-truth files (e.g., `GnollHackM.csproj` for NuGet and target framework versions, `include/date.h` for game version) rather than embedding specific version strings that will drift out of date.
+- **Record every third-party workaround in `DEVEL/workarounds/`**: adding, changing, re-checking, or removing a workaround for a defect or limitation in MAUI, SkiaSharp, the .NET runtime, Android, iOS, WinUI, Avalonia, CEF, FMOD, Sentry, or any other third-party component updates its register entry and its `WORKAROUND(WA-...)` code tag in the same change, and runs `DEVEL/workarounds/Test-WorkaroundRegister.ps1`. Upgrading a package, SDK, or workload re-checks that component's entries. Follow the `client_workarounds` skill.

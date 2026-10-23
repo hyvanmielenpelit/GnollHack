@@ -599,6 +599,10 @@ for this event (A.5, context provenance).
      the page file do not show in it. A `Handle growth warning` event from the
      same process, if any, carries a full handle census taken while commit was
      still available and usually answers more than the crash itself.
+4. When the stack or the breadcrumbs lead into a third-party component (MAUI,
+   SkiaSharp, the runtime, WinUI, Avalonia, CEF, FMOD, Sentry, the OS), search
+   that component's file in `DEVEL/workarounds/`. A known defect there may explain
+   the crash, and an active workaround at the crashing site may be its cause.
 
 > [!NOTE]
 > **Don't assume platform exclusivity without evidence.** A crash seen only on
@@ -729,7 +733,8 @@ Conclude every analysis with a prioritized action items list:
 When the analysis concludes that the bug is in a framework or library, the action list
 includes an upstream report. Draft it with the global `agent-issue-drafting` skill, using
 this analysis as the evidence and leaving out the personal data the Security and Privacy
-section excludes.
+section excludes. When the recommended fix is a workaround for that bug, the action list
+also includes its entry in `DEVEL/workarounds/`, per `client_workarounds`.
 
 ---
 
@@ -916,5 +921,7 @@ unrelated operation.
   source at the shipped version
 - **`agent-issue-drafting`** (global) — drafting the upstream issue when an analysis
   ends in a framework bug
+- **`client_workarounds`** — the workaround register in `DEVEL/workarounds/`: known
+  third-party defects and the workarounds for them
 - **`save_restore_system`** — Save/load system, struct alignment, file I/O
   (relevant for save corruption and restore crashes)

@@ -9,6 +9,7 @@ description: Best practices for AI agents documenting the GnollHack C# .NET MAUI
 - **Use standard XML doc comments (`///`)** for all public classes, methods, and properties.
 - **Document all `DllImport` P/Invoke methods**. Explicitly state which C function is being called and describe any marshaling behavior.
 - **Do NOT document trivial getters/setters** unless they have side effects.
+- **Tag third-party workarounds**: put `// WORKAROUND(WA-<COMPONENT>-NNNN): <title>` on a new line directly above the workaround's existing comment or first line, matching its register entry in `DEVEL/workarounds/`. See `client_workarounds`.
 
 This skill defines how AI agents should apply documentation and comments to GnollHack's C# source code. The documentation style follows Microsoft's own C# and .NET documentation conventions — concise, technical, and structured using standard XML documentation comments.
 

@@ -66,9 +66,14 @@ documentation or memory.
   upstream issue, and a report upstream with a minimal reproduction. Draft the report with
   `agent-issue-drafting`; it is a document, delivered as `agent-implementation-planning`
   specifies.
+- The workaround also gets a `WORKAROUND(WA-...)` tag and an entry in
+  `DEVEL/workarounds/`, as `client_workarounds` specifies. Once the report is filed, its
+  URL goes into the entry's `Upstream issue`, with a new `Checks` line.
 
 ## Related Skills
 
 - **`sentry_crash_analysis`** — when a crash leads into framework code
 - **`maui_frontend`** — the MAUI, SkiaSharp and native-bridge layers these frameworks
   sit under
+- **`client_workarounds`** — recording a workaround for a framework bug in
+  `DEVEL/workarounds/`

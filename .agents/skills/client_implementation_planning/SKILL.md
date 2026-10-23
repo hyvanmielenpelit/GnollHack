@@ -128,6 +128,16 @@ must say which form it intends:
 
 ---
 
+## Workarounds in a Plan
+
+A plan that adds, changes or removes a workaround for a third-party defect lists the
+component's file in `DEVEL/workarounds/` in its Affected Files and the lint
+(`DEVEL/workarounds/Test-WorkaroundRegister.ps1`) in its Verification Plan. A plan that
+upgrades a package, SDK or workload includes the re-check of that component's entries as
+a step. See `client_workarounds`.
+
+---
+
 ## Related Skills
 
 - **`client_subagent_guidelines`** -- the build dependency chains that constrain

@@ -49,6 +49,11 @@ regeneration boundary falls *between* plan steps, never inside one.
 See `client_implementation_planning` for the full Build Impact section, and
 `build_pipeline` for the pipeline reference.
 
+**Workaround register files are shared files.** Each file in `DEVEL/workarounds/` is
+assigned to exactly one agent. When several agents add entries for the same component,
+the orchestrator reserves each agent's IDs in the spawn prompt, or runs them one after
+another.
+
 ---
 
 ## Escalation Is the Common Case Here

@@ -15,6 +15,7 @@ description: Best practices for AI agents documenting the GnollHack C codebase. 
   disabling a block when that reads more clearly (it appears in ~250 places
   across `src/`). **Do not "fix" existing `//` comments to `/* */`.**
 - **Document game mechanics**, not syntax. Explain *why* the code does what it does in the context of the game.
+- **Tag third-party workarounds**: put `/* WORKAROUND(WA-<COMPONENT>-NNNN): <title> */` on a new line directly above the workaround's existing comment or first line, never inside a `#define` continuation, matching its register entry in `DEVEL/workarounds/`. See `client_workarounds`.
 
 For advanced patterns (macros and constants, structs and enums, complex control flow, conditional compilation), see [references/advanced_patterns.md](references/advanced_patterns.md).
 

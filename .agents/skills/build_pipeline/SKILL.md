@@ -13,6 +13,7 @@ End-to-end build process for GnollHack, from compiling the C core engine to pack
 - AI skills must **not hardcode version numbers**. Reference source files (`GnollHackM.csproj`, `include/date.h`) instead.
 - **A data file added to the Windows pipeline is not automatically in the mobile one.** See [Two Data Pipelines](#two-data-pipelines).
 - **After any build, verify the expected artifacts exist.** MSBuild reports success even when a project was silently skipped. See [Verifying the Build](#verifying-the-build).
+- **Upgrading a dependency re-checks its workarounds.** Bumping a package in `GnollHackM.csproj`, an SDK in a `global.json`, a workload, FMOD, or sentry-native re-checks the `DEVEL/workarounds/` entries whose `Package` names it. For NuGet packages the lint's version-drift warning lists the entries that matter; for the rest, search the `Package` fields. See `client_workarounds`.
 
 ## Quick Path (clean clone → running Windows app)
 
