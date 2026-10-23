@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Text;
+using Foundation;
 using GnollHackX;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
@@ -30,6 +32,16 @@ namespace GnollHackM.Platforms.iOS
         [DllImport(Constants.ObjectiveCLibrary)]
         [return: MarshalAs(UnmanagedType.I1)]
         private static extern bool class_addMethod(IntPtr cls, IntPtr name, IntPtr imp, string types);
+
+        [DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSend")]
+        private static extern IntPtr IntPtr_objc_msgSend(IntPtr receiver, IntPtr selector);
+
+        [DllImport(Constants.ObjectiveCLibrary, EntryPoint = "objc_msgSend")]
+        [return: MarshalAs(UnmanagedType.I1)]
+        private static extern bool bool_objc_msgSend(IntPtr receiver, IntPtr selector);
+
+        [DllImport(Constants.ObjectiveCLibrary)]
+        private static extern IntPtr object_getClassName(IntPtr obj);
 
         public static void Register()
         {
@@ -62,6 +74,7 @@ namespace GnollHackM.Platforms.iOS
                 else
                     _pages.RemoveAt(i);
             }
+            NSTimer.CreateScheduledTimer(1.0, false, timer => LogState("set " + hidden));
 
             /* The Shell root and each presented wrapper decide, not the pages that changed */
             Application app = Application.Current;
@@ -89,6 +102,84 @@ namespace GnollHackM.Platforms.iOS
                     return windowScene.StatusBarManager.StatusBarHidden;
             }
             return _hidden;
+        }
+
+        /// <summary>
+        /// Logs the Info.plist keys, the scene's status bar state, and, for every window, the view
+        /// controllers UIKit consults: each presented controller and its childViewControllerForStatusBarHidden
+        /// chain, with the prefersStatusBarHidden answer each gives. Queried through objc_msgSend, so
+        /// methods added at runtime are included.
+        /// </summary>
+        public static void LogState(string reason)
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("StatusBarVisibility state (").Append(reason).Append("): iOS ").Append(UIDevice.CurrentDevice.SystemVersion);
+                sb.Append(", idiom=").Append(UIDevice.CurrentDevice.UserInterfaceIdiom);
+                sb.Append(", hidden=").Append(_hidden).Append(", pages=").Append(_pages.Count);
+                NSBundle bundle = NSBundle.MainBundle;
+                sb.Append(", plist VCBased=").Append(bundle.ObjectForInfoDictionary("UIViewControllerBasedStatusBarAppearance")?.ToString() ?? "null");
+                sb.Append(", plist Hidden=").Append(bundle.ObjectForInfoDictionary("UIStatusBarHidden")?.ToString() ?? "null");
+                Page mainPage = GHApp.CurrentMainPage;
+                if (mainPage != null)
+                    sb.Append(", MainPage mode=").Append(iOSPage.GetPrefersStatusBarHidden(mainPage));
+                foreach (UIScene scene in UIApplication.SharedApplication.ConnectedScenes)
+                {
+                    if (!(scene is UIWindowScene windowScene))
+                        continue;
+                    sb.Append(" | scene");
+                    UIStatusBarManager manager = windowScene.StatusBarManager;
+                    if (manager != null)
+                        sb.Append(" manager hidden=").Append(manager.StatusBarHidden).Append(", frame=").Append(manager.StatusBarFrame);
+                    foreach (UIWindow uiWindow in windowScene.Windows)
+                    {
+                        sb.Append(" | window ").Append(ClassName(uiWindow.Handle)).Append(" key=").Append(uiWindow.IsKeyWindow);
+                        sb.Append(" level=").Append(uiWindow.WindowLevel).Append(" hidden=").Append(uiWindow.Hidden);
+                        sb.Append(" bounds=").Append(uiWindow.Bounds.Size).Append(" vsize=").Append(uiWindow.TraitCollection.VerticalSizeClass);
+                        sb.Append(" safetop=").Append(uiWindow.SafeAreaInsets.Top);
+                        AppendControllerChain(sb, uiWindow.RootViewController);
+                    }
+                }
+                GHApp.MaybeWriteGHLog(sb.ToString());
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("StatusBarVisibility state (" + reason + ") failed: " + ex.Message);
+            }
+        }
+
+        private static void AppendControllerChain(StringBuilder sb, UIViewController root)
+        {
+            IntPtr prefersSelector = Selector.GetHandle("prefersStatusBarHidden");
+            IntPtr childSelector = Selector.GetHandle("childViewControllerForStatusBarHidden");
+            UIViewController presented = root;
+            int presentedDepth = 0;
+            while (presented != null && presentedDepth < 16)
+            {
+                sb.Append(" => ");
+                IntPtr controller = presented.Handle;
+                int childDepth = 0;
+                while (controller != IntPtr.Zero && childDepth < 8)
+                {
+                    sb.Append(ClassName(controller)).Append("[prefers=").Append(bool_objc_msgSend(controller, prefersSelector)).Append("]");
+                    IntPtr child = IntPtr_objc_msgSend(controller, childSelector);
+                    if (child == IntPtr.Zero || child == controller)
+                        break;
+                    sb.Append(" child ");
+                    controller = child;
+                    childDepth++;
+                }
+                sb.Append(" style=").Append(presented.ModalPresentationStyle);
+                sb.Append(" captures=").Append(presented.ModalPresentationCapturesStatusBarAppearance);
+                presented = presented.PresentedViewController;
+                presentedDepth++;
+            }
+        }
+
+        private static string ClassName(IntPtr obj)
+        {
+            return Marshal.PtrToStringAnsi(object_getClassName(obj)) ?? "?";
         }
 
         private static void TrackPage(Page page)
