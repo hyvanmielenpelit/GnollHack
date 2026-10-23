@@ -132,7 +132,7 @@ Checks:
 - Platforms: Android
 - Impact: crash
 - Sentry: GNOLLHACK-HJ
-- Upstream issue: https://github.com/dotnet/runtime/pull/129843
+- Upstream issue: https://github.com/dotnet/runtime/issues/136356, https://github.com/dotnet/runtime/pull/129843
 - Upstream status when added: fixed-unreleased
 - Upstream status: fixed-unreleased
 - Fixed upstream in: https://github.com/dotnet/runtime/pull/129843 (in .NET 11 from v11.0.0-preview.7; not in release/10.0)
@@ -164,3 +164,4 @@ on an arm64 device, and confirm that logcat shows Mono's thread dump and the app
 
 Checks:
 - 2026-10-23 | .NET SDK 10.0.402, workload android 36.1.118 | still-present | dotnet/runtime#129843 merged to main on 2026-06-25; in release/11.0 (tags v11.0.0-preview.7, rc.1, rc.2), not in release/10.0, no backport PR found. No upstream issue exists; the pull request is the only upstream record. One event, Android 15 (Redmi), 3.29+429.
+- 2026-10-23 | .NET SDK 10.0.402, workload android 36.1.118 | still-present | Correction: dotnet/runtime#136356, opened 2026-10-23, asks for a release/10.0 backport of #129843 (open, untriaged); the previous line's "no upstream issue exists" was wrong.
