@@ -1,4 +1,4 @@
-#if GNH_AVALONIA && LINUX && SENTRY
+#if SENTRY && (WINDOWS || (GNH_AVALONIA && LINUX))
 using System;
 using System.Globalization;
 using System.Text.Json;
@@ -8,7 +8,7 @@ namespace GnollHackM
 {
     /* Mirrors Sentry .NET's scope into sentry-native's, so that a native crash event carries the same tags, extras,
        breadcrumbs and user. Called by the SDK while it updates the scope; never throws. */
-    internal sealed class GHAvaloniaNativeScopeObserver : IScopeObserver
+    internal sealed class GHSentryNativeScopeObserver : IScopeObserver
     {
         public void AddBreadcrumb(Breadcrumb breadcrumb)
         {
@@ -17,14 +17,14 @@ namespace GnollHackM
                 if (breadcrumb == null)
                     return;
 
-                GHAvaloniaSentryNative.SentryValue crumb = GHAvaloniaSentryNative.sentry_value_new_breadcrumb(breadcrumb.Type, breadcrumb.Message);
-                GHAvaloniaSentryNative.sentry_value_set_by_key(crumb, "level",
-                    GHAvaloniaSentryNative.sentry_value_new_string(breadcrumb.Level.ToString().ToLowerInvariant()));
-                GHAvaloniaSentryNative.sentry_value_set_by_key(crumb, "timestamp",
-                    GHAvaloniaSentryNative.sentry_value_new_string(breadcrumb.Timestamp.UtcDateTime.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'", CultureInfo.InvariantCulture)));
+                GHSentryNative.SentryValue crumb = GHSentryNative.sentry_value_new_breadcrumb(breadcrumb.Type, breadcrumb.Message);
+                GHSentryNative.sentry_value_set_by_key(crumb, "level",
+                    GHSentryNative.sentry_value_new_string(breadcrumb.Level.ToString().ToLowerInvariant()));
+                GHSentryNative.sentry_value_set_by_key(crumb, "timestamp",
+                    GHSentryNative.sentry_value_new_string(breadcrumb.Timestamp.UtcDateTime.ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'", CultureInfo.InvariantCulture)));
                 if (breadcrumb.Category != null)
-                    GHAvaloniaSentryNative.sentry_value_set_by_key(crumb, "category", GHAvaloniaSentryNative.sentry_value_new_string(breadcrumb.Category));
-                GHAvaloniaSentryNative.sentry_add_breadcrumb(crumb);
+                    GHSentryNative.sentry_value_set_by_key(crumb, "category", GHSentryNative.sentry_value_new_string(breadcrumb.Category));
+                GHSentryNative.sentry_add_breadcrumb(crumb);
             }
             catch (Exception)
             {
@@ -41,12 +41,12 @@ namespace GnollHackM
 
                 if (value == null)
                 {
-                    GHAvaloniaSentryNative.sentry_remove_extra(key);
+                    GHSentryNative.sentry_remove_extra(key);
                     return;
                 }
 
                 string text = value as string ?? JsonSerializer.Serialize(value);
-                GHAvaloniaSentryNative.sentry_set_extra(key, GHAvaloniaSentryNative.sentry_value_new_string(text));
+                GHSentryNative.sentry_set_extra(key, GHSentryNative.sentry_value_new_string(text));
             }
             catch (Exception)
             {
@@ -61,9 +61,9 @@ namespace GnollHackM
                     return;
 
                 if (value == null)
-                    GHAvaloniaSentryNative.sentry_remove_tag(key);
+                    GHSentryNative.sentry_remove_tag(key);
                 else
-                    GHAvaloniaSentryNative.sentry_set_tag(key, value);
+                    GHSentryNative.sentry_set_tag(key, value);
             }
             catch (Exception)
             {
@@ -75,7 +75,7 @@ namespace GnollHackM
             try
             {
                 if (key != null)
-                    GHAvaloniaSentryNative.sentry_remove_tag(key);
+                    GHSentryNative.sentry_remove_tag(key);
             }
             catch (Exception)
             {
@@ -88,16 +88,16 @@ namespace GnollHackM
             {
                 if (user == null)
                 {
-                    GHAvaloniaSentryNative.sentry_remove_user();
+                    GHSentryNative.sentry_remove_user();
                     return;
                 }
 
-                GHAvaloniaSentryNative.SentryValue nativeUser = GHAvaloniaSentryNative.sentry_value_new_object();
+                GHSentryNative.SentryValue nativeUser = GHSentryNative.sentry_value_new_object();
                 SetIfNotNull(nativeUser, "id", user.Id);
                 SetIfNotNull(nativeUser, "username", user.Username);
                 SetIfNotNull(nativeUser, "email", user.Email);
                 SetIfNotNull(nativeUser, "ip_address", user.IpAddress);
-                GHAvaloniaSentryNative.sentry_set_user(nativeUser);
+                GHSentryNative.sentry_set_user(nativeUser);
             }
             catch (Exception)
             {
@@ -109,7 +109,7 @@ namespace GnollHackM
             try
             {
                 if (environment != null)
-                    GHAvaloniaSentryNative.sentry_set_environment(environment);
+                    GHSentryNative.sentry_set_environment(environment);
             }
             catch (Exception)
             {
@@ -130,10 +130,10 @@ namespace GnollHackM
         {
         }
 
-        private static void SetIfNotNull(GHAvaloniaSentryNative.SentryValue obj, string key, string value)
+        private static void SetIfNotNull(GHSentryNative.SentryValue obj, string key, string value)
         {
             if (value != null)
-                GHAvaloniaSentryNative.sentry_value_set_by_key(obj, key, GHAvaloniaSentryNative.sentry_value_new_string(value));
+                GHSentryNative.sentry_value_set_by_key(obj, key, GHSentryNative.sentry_value_new_string(value));
         }
     }
 }

@@ -973,6 +973,9 @@
     <MauiAsset Include="Platforms\Windows\libs\fsbank.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </MauiAsset>
+    <MauiAsset Include="Platforms\Windows\libs\gnhsentry.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MauiAsset>
     <MauiAsset Include="Platforms\Windows\libs\gnollhackwin.dll" LogicalName="%(RecursiveDir)%(Filename)%(Extension)">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </MauiAsset>
@@ -1433,6 +1436,11 @@
     <None Include="$(Pkgcef_runtime_linux-x64)\LICENSE.txt" Link="licenses\cefglue\LICENSE.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" Visible="false" />
     <!-- libsentry.so's licenses: sentry-native's and its vendored libunwind's -->
     <None Include="Platforms\Linux\licenses\sentry-native\*" Link="licenses\sentry-native\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
+    <!-- gnhsentry.dll's license: sentry-native's -->
+    <None Include="Platforms\Windows\licenses\sentry-native\*" Link="licenses\sentry-native\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup Condition="!$(DefineConstants.Contains('SKIASHARP_3119'))">

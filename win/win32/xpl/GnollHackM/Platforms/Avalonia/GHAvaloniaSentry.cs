@@ -1,8 +1,6 @@
 #if GNH_AVALONIA && LINUX && SENTRY
 using System;
-using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using GnollHackX;
 
 namespace GnollHackM
@@ -22,15 +20,18 @@ namespace GnollHackM
                     return;
 
                 /* Set explicitly on both SDKs, so that native crash events match the managed ones */
-                string release = GetRelease();
-                string environment = GetEnvironment();
+                string release = GHSentryNative.GetRelease();
+                string environment = GHSentryNative.GetEnvironment();
 #if DEBUG
                 bool debug = true;
 #else
                 bool debug = false;
 #endif
+                /* Explicit: the default, .sentry-native in the current directory, is inside the read-only AppImage
+                   mount, because AppRun changes into $APPDIR/gnollhack */
+                string databaseDirectory = Path.Combine(GHAvaloniaPaths.DataDirectory, "sentry-native");
                 /* Before SentrySdk.Init, which reads CrashedLastRun */
-                bool nativeInitialized = GHAvaloniaSentryNative.Init(dsn, release, environment, debug, out bool crashedLastRun);
+                bool nativeInitialized = GHSentryNative.Init(dsn, release, environment, debug, databaseDirectory, out bool crashedLastRun);
 
                 SentrySdk.Init(options =>
                 {
@@ -50,7 +51,7 @@ namespace GnollHackM
 #endif
                     if (nativeInitialized)
                     {
-                        options.ScopeObserver = new GHAvaloniaNativeScopeObserver();
+                        options.ScopeObserver = new GHSentryNativeScopeObserver();
                         options.EnableScopeSync = true;
                         options.CrashedLastRun = () => crashedLastRun;
                     }
@@ -70,7 +71,7 @@ namespace GnollHackM
                 {
                     AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
                     AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
-                    GHAvaloniaSentryNative.StartOutboxUpload(dsn);
+                    GHSentryNative.StartOutboxUpload(dsn);
                 }
             }
             catch (Exception ex)
@@ -85,52 +86,12 @@ namespace GnollHackM
         private static void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
             if (e.IsTerminating)
-                GHAvaloniaSentryNative.Close();
+                GHSentryNative.Close();
         }
 
         private static void OnProcessExit(object sender, EventArgs e)
         {
-            GHAvaloniaSentryNative.Close();
-        }
-
-        /* Sentry .NET's rule: SENTRY_RELEASE, else <entry assembly name>@<informational version, else assembly
-           version>; a version that already contains '@' is the release as it is */
-        private static string GetRelease()
-        {
-            string release = Environment.GetEnvironmentVariable("SENTRY_RELEASE");
-            if (!string.IsNullOrWhiteSpace(release))
-                return release;
-
-            Assembly assembly = Assembly.GetEntryAssembly();
-            if (assembly == null)
-                return null;
-
-            string name = assembly.GetName().Name;
-            string version = null;
-            try
-            {
-                version = assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
-            }
-            catch (Exception)
-            {
-                version = null;
-            }
-            if (string.IsNullOrEmpty(version))
-                version = assembly.GetName().Version?.ToString();
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(version))
-                return null;
-
-            return version.Contains('@') ? version : name + "@" + version;
-        }
-
-        /* Sentry .NET's rule: SENTRY_ENVIRONMENT, else "debug" with a debugger attached, else "production" */
-        private static string GetEnvironment()
-        {
-            string environment = Environment.GetEnvironmentVariable("SENTRY_ENVIRONMENT");
-            if (!string.IsNullOrWhiteSpace(environment))
-                return environment;
-
-            return Debugger.IsAttached ? "debug" : "production";
+            GHSentryNative.Close();
         }
 
         /* APPIMAGE first: an AppImage started from Steam as a non-Steam game also sees Steam's variables */

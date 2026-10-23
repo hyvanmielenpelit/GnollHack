@@ -1931,7 +1931,7 @@ wiz_crashtest(void)
     }
 
     c = yn_function("Crash the game with a segmentation fault or an abort?", "saq", 'q',
-                    "Segmentation fault\nAbort\nCancel");
+                    "Seg fault\nAbort\nCancel");
     if (c == 's')
         *crash_ptr = 0;
     else if (c == 'a')

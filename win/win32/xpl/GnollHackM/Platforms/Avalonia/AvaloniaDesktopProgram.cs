@@ -46,8 +46,8 @@ internal static class AvaloniaDesktopProgram
 
     /* The FMOD wrappers import "fmod" and "fmodstudio". libfmodstudio.so.14 loads its core library by soname,
        libfmod.so.14, from its own directory; loading the core under any other file name would create a
-       second FMOD instance, in which the Studio system's core handle is invalid. GHAvaloniaSentryNative imports
-       "sentry", always the application's own libsentry.so, never a system one. */
+       second FMOD instance, in which the Studio system's core handle is invalid. GHSentryNative and
+       GHAvaloniaSentryNative import "sentry", always the application's own libsentry.so, never a system one. */
     private static IntPtr ResolveLinuxLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
     {
         string fileName;

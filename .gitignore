@@ -126,6 +126,7 @@ _Isincrementalbuild
 *.ps1
 !DEVEL/performance/scripts/*.ps1
 !win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/*.ps1
+!win/win32/xpl/gnhsentrywin/*.ps1
 
 # User-specific files
 *.suo

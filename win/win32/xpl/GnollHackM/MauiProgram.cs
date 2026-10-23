@@ -68,6 +68,10 @@ public static class MauiProgram
 #if GNH_AVALONIA && LINUX && SENTRY
         GHAvaloniaSentry.Init();
 #endif
+#if SENTRY && WINDOWS
+        /* Once, here: Sentry.Maui invokes the UseSentry options callback twice */
+        WindowsSentryNative.Init();
+#endif
         GHApp.Edge2Edge = Microsoft.Maui.Storage.Preferences.Get("Edge2Edge", false);
 
         var builder = MauiApp.CreateBuilder();
@@ -187,7 +191,15 @@ public static class MauiProgram
             .UseSentry(options =>
             {
                 // The DSN is the only required setting.
-                options.Dsn = GHApp.CurrentUserSecrets?.DefaultSentryDNS ?? "";
+                options.Dsn = WindowsSentryNative.Dsn ?? "";
+                options.Release = WindowsSentryNative.Release;
+                options.Environment = WindowsSentryNative.Environment;
+                if (WindowsSentryNative.NativeInitialized)
+                {
+                    options.ScopeObserver = new GHSentryNativeScopeObserver();
+                    options.EnableScopeSync = true;
+                    options.CrashedLastRun = () => WindowsSentryNative.CrashedLastRun;
+                }
 
 #if DEBUG
                 // Debug messages go to stdout through Console.WriteLine, so this stays
@@ -705,6 +717,11 @@ public static class MauiProgram
         MauiApp app = builder.Build();
 #if SENTRY && WINDOWS
         ProcessMemoryWindows.Start();
+        if (WindowsSentryNative.NativeInitialized)
+        {
+            WindowsSentryNative.SubscribeClose();
+            GHSentryNative.StartOutboxUpload(WindowsSentryNative.Dsn);
+        }
 #endif
         return app;
 	}
