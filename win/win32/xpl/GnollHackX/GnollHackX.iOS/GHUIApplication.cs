@@ -35,6 +35,16 @@ namespace GnollHackX.iOS
 
         }
 
+#if GNH_MAUI
+        /* Temporary diagnostic for the iOS 27 SettingsPage switch investigation */
+        public override void SendEvent(UIEvent uievent)
+        {
+            TouchTrace.BeforeEvent(uievent);
+            base.SendEvent(uievent);
+            TouchTrace.AfterEvent(uievent);
+        }
+#endif
+
         /* UIKeyCommand-based keyboard handling.
          * 
          * On iOS with a physical keyboard, PressesBegan works for all keys.

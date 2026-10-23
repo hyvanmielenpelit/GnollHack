@@ -44,8 +44,8 @@ public partial class App : Application
             };
         });
 #endif
-#if ANDROID || WINDOWS
-        // If UIDesignRequiresCompatibility Info.plist item gets deprecated, you can change the name of the global Switch style to PlatformSwitchStyle, and add it only for right platforms here
+#if ANDROID || WINDOWS || GNH_AVALONIA
+        // iOS uses the native Liquid Glass switch colors; PlatformSwitchStyle is the implicit Switch style elsewhere
         if (Application.Current.Resources.TryGetValue("PlatformSwitchStyle", out var styleObj) && styleObj is Style baseStyle)
         {
             var switchStyle = new Style(typeof(Switch));
@@ -55,6 +55,27 @@ public partial class App : Application
             }
             Application.Current.Resources.Add(switchStyle);
         }
+#endif
+#if IOS
+        /* Liquid Glass UISwitch (iOS 26+): MAUI's default IsOn mapping forces a TrackColor update,
+         * which writes OnTintColor and a private track subview, and re-issues an animated SetState
+         * in the middle of UIKit's own toggle animation (dotnet/maui#34560). Toggling must leave
+         * the switch alone; colors are written only when one is set. */
+        Microsoft.Maui.Handlers.SwitchHandler.Mapper.ModifyMapping(nameof(ISwitch.IsOn), (handler, view, previous) =>
+        {
+            if (handler.PlatformView is UIKit.UISwitch uiSwitch && uiSwitch.On != view.IsOn)
+                uiSwitch.SetState(view.IsOn, true);
+        });
+        Microsoft.Maui.Handlers.SwitchHandler.Mapper.ModifyMapping(nameof(ISwitch.TrackColor), (handler, view, previous) =>
+        {
+            if (view.TrackColor == null)
+            {
+                if (handler.PlatformView is UIKit.UISwitch uiSwitch && uiSwitch.OnTintColor != null)
+                    uiSwitch.OnTintColor = null;
+                return;
+            }
+            previous?.Invoke(handler, view);
+        });
 #endif
 
 #if IOS || ANDROID
