@@ -880,7 +880,7 @@
     <AndroidAsset Include="Platforms\Android\gnh\symbols" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
     <AndroidAsset Include="Platforms\Android\gnh\sysconf" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
     <AndroidAsset Include="Platforms\Android\gnh\perm" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
-    <AndroidAsset Include="Platforms\Android\gnh\recover" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+    <!-- No recover utility on Android: an app cannot run a separate executable from its files; saves are recovered in-game (SELF_RECOVER) -->
     <AndroidAsset Include="Platforms\Android\gnh\xlogfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
     <AndroidAsset Include="Platforms\Android\gnh\defaults.gnh" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
     <AndroidAsset Include="Platforms\Android\gnh\xcredits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
@@ -936,7 +936,7 @@
     <BundleResource Include="Platforms\iOS\gnh\nhdat" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
     <BundleResource Include="Platforms\iOS\gnh\perm" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
     <BundleResource Include="Platforms\iOS\gnh\record" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
-    <BundleResource Include="Platforms\iOS\gnh\recover" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
+    <!-- No recover utility on iOS: the sandbox cannot start a separate executable; saves are recovered in-game (SELF_RECOVER) -->
     <BundleResource Include="Platforms\iOS\gnh\symbols" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
     <BundleResource Include="Platforms\iOS\gnh\sysconf" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
     <BundleResource Include="Platforms\iOS\gnh\xcredits" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)" />
@@ -1019,6 +1019,9 @@
     <MauiAsset Include="Platforms\Windows\gnh\xlogfile" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </MauiAsset>
+    <MauiAsset Include="Platforms\Windows\gnh\recover.exe" LogicalName="%(RecursiveDir)gnh\%(Filename)%(Extension)">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </MauiAsset>
     <MauiAsset Include="Platforms\Windows\banks\Auxiliary.bank" LogicalName="%(RecursiveDir)banks\%(Filename)%(Extension)">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </MauiAsset>
@@ -1054,6 +1057,8 @@
     <!-- FMOD under its sonames (libfmod.so.14, libfmodstudio.so.14), as AvaloniaDesktopProgram loads them -->
     <Content Include="Platforms\Linux\libs\*.so.*" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Platforms\Android\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- The Android gnh folder has no recover; Linux ships its own release build, made by Build-LinuxRecover.ps1 -->
+    <Content Include="Platforms\Linux\gnh\recover" Link="gnh\recover" CopyToOutputDirectory="PreserveNewest" />
     <!-- Emoji fallback for web pages: fontconfig includes this folder (GHAvaloniaFontConfig) -->
     <Content Include="Platforms\Linux\fonts\*" Link="fonts\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <!-- Icon for a desktop entry: a Linux executable carries no icon of its own -->

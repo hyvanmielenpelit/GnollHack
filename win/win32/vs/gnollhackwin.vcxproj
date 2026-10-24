@@ -390,12 +390,16 @@
     <MSBuild Projects="aftergnollhack.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
     <Message Text="Start building aftergnollhackdll.proj" Importance="High" />
     <MSBuild Projects="aftergnollhackdll.proj" Targets="Build" Properties="Configuration=$(Configuration)" />
+    <Message Text="Start building recoverwin.vcxproj" Importance="High" />
+    <MSBuild Projects="recoverwin.vcxproj" Targets="Build" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
   </Target>
   <Target Name="AfterClean">
     <Message Text="Start cleaning aftergnollhack.proj" Importance="High" />
     <MSBuild Projects="aftergnollhack.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
     <Message Text="Start cleaning aftergnollhackdll.proj" Importance="High" />
     <MSBuild Projects="aftergnollhackdll.proj" Targets="Clean" Properties="Configuration=$(Configuration)" />
+    <Message Text="Start cleaning recoverwin.vcxproj" Importance="High" />
+    <MSBuild Projects="recoverwin.vcxproj" Targets="Clean" Properties="Configuration=$(Configuration);Platform=$(Platform)" />
   </Target>
   <!--<Target Name="AfterRebuild">
 	  <Message Text="Start rebuilding aftergnollhack.proj" Importance="High" />

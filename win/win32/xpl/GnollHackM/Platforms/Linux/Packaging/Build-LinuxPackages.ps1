@@ -296,6 +296,11 @@ if [ -f "$STAGED/createdump" ]; then
 else
     warn "createdump is missing from the publish."
 fi
+if [ -f "$STAGED/gnh/recover" ]; then
+    chmod 755 "$STAGED/gnh/recover"
+else
+    warn "gnh/recover is missing from the publish."
+fi
 [ -f "$STAGED/libsentry.so" ] || warn "libsentry.so is missing from the publish; native crashes will not be reported."
 for license in licenses/cef/LICENSE.txt licenses/cef/CREDITS.html licenses/cefglue/LICENSE.txt \
     licenses/sentry-native/LICENSE licenses/sentry-native/LICENSE-libunwind; do

@@ -139,7 +139,7 @@
     <AndroidAsset Include="gnh\symbols" />
     <AndroidAsset Include="gnh\sysconf" />
     <AndroidAsset Include="gnh\perm" />
-    <AndroidAsset Include="gnh\recover" />
+    <!-- No recover utility on Android: an app cannot run a separate executable from its files; saves are recovered in-game (SELF_RECOVER) -->
     <AndroidAsset Include="gnh\xlogfile" />
     <AndroidAsset Include="gnh\defaults.gnh" />
     <AndroidAsset Include="gnh\xcredits" />

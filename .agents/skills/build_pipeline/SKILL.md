@@ -156,6 +156,7 @@ Run: `dlb.exe cIf dat/dlb.lst bin/$(Configuration)/$(Platform)/nhdat` from `dat/
 
 Post-build `.proj` files copy libraries and assets to `GnollHackM/Platforms/`:
 - `aftergnollhackdll.proj` — FMOD DLLs + gnh data files → Windows
+- `recoverwin.vcxproj` — `util/recover.c` with `GNH_MOBILE;GNH_WIN` (the engine's save layout, unlike `recover.vcxproj`'s tty build), built from `gnollhackwin.vcxproj`'s `AfterBuild` → `Platforms/Windows/gnh/recover.exe`
 - `afterdroidutils.proj` — mobile `nhdat` + data from `C:\wsl-out\` → Android/iOS
 - `aftergnollhackdroid.proj` — Android `.so` → MAUI Android
 - `aftergnollhackios.proj` — iOS `.a` from `C:\mac-out\` → MAUI iOS
@@ -213,6 +214,7 @@ win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/Build-LinuxPackages.ps1 -Targ
 - **Steam:** the content targets the Steam Linux Runtime 4.0 (steamrt4) by default, with the two libraries `libcef.so` needs from `Platforms/Linux/libs-steamrt4/` added. `-SteamRuntime sniper` builds for SLR 3.0 without them. The `.vdf` templates in `Packaging/steam/` are filled from `-SteamAppId`, `-SteamDepotId`, `-SteamBranch` and `-BuildDescription`. Upload with `steamcmd` from the WSL copy the summary names, so that the executable bits survive.
 - **Engine debug information:** the staged `libgnollhacklinux.so` ships stripped with `strip --strip-debug` (about 10 MB instead of 34 MB), keeping its build ID and symbol table; the script stops if the build ID changes. The repository copy keeps its DWARF for the Sentry symbol upload. `-KeepDebugInfo` ships it unstripped.
 - **glibc and libstdc++ floor:** every ELF file in the staged publish must need no newer glibc than `$MaxGlibcVersion` in `Build-LinuxPackages.ps1`, and no newer system libstdc++ than `$MaxGlibcxxVersion` and `$MaxCxxabiVersion` (libstdc++ is not bundled on Linux, unlike Android's `libc++_shared.so`); the script stops otherwise, naming each file. The engine is built on a newer glibc than the floor, so `win/win32/xpl/gnollhacklinux/linuxconf.h` pins the libm functions glibc 2.29 re-versioned (WA-LINUX-0004); `Build-LinuxSentryNative.ps1` checks `libsentry.so` against the same floor in its own `$MaxGlibcVersion`.
+- **Save recovery utility:** `Build-LinuxRecover.ps1` builds `util/recover.c` in WSL with the release hints `sys/unix/hints/linux` (never `linux-asan-debug`, which is for local debugging), strips and checks it, and writes `Platforms/Linux/gnh/recover`, which is committed like `libsentry.so` and shipped as `gnh/recover` with mode 755. Rerun it after a change to `util/recover.c` or the save file headers it reads.
 - **Licences:** `Platforms/Linux/licenses/cef/` holds CEF's `LICENSE.txt` and Chromium's `CREDITS.html`. `CREDITS.html` is the credits page built into CEF's `resources.pak`, extracted locally (brotli). **Refresh both with every CEF update.**
 - **Design and decisions:** plans repository, `hyvanmielenpelit/GnollHack/2026-10-20/linux_distribution/implementation_plan_v2.md`.
 
@@ -226,6 +228,8 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 | `GnollHackM/Platforms/Android/libs/{arm64-v8a,x86_64}/libgnollhackdroid.so` | `aftergnollhackdroid.proj` |
 | `GnollHackM/Platforms/iOS/libs/libgnollhackios.a` | `aftergnollhackios.proj` |
 | `GnollHackM/Platforms/{Windows,Android,iOS}/gnh/nhdat` | `afterdlb.proj` / `afterdroidutils.proj` |
+| `GnollHackM/Platforms/Windows/gnh/recover.exe` | `recoverwin.vcxproj` (from `gnollhackwin.vcxproj`) |
+| `GnollHackM/Platforms/Linux/gnh/recover` (committed) | `Build-LinuxRecover.ps1` (manual) |
 | `GnollHackM/Platforms/*/tileset/*.ghpng` (3 each) | `copytilesetdroid.proj` |
 | `GnollHackM/Platforms/*/banks/*.bank` (6 each) | `update-wsl-in-*.bat` |
 | 31 generated `.xaml` in `GnollHackM/` | `makedefsdroid` `InitialBuild` |

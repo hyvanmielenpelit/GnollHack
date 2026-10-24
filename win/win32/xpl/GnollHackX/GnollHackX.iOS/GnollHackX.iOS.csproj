@@ -99,7 +99,7 @@
     <BundleResource Include="gnh\nhdat" />
     <BundleResource Include="gnh\perm" />
     <BundleResource Include="gnh\record" />
-    <BundleResource Include="gnh\recover" />
+    <!-- No recover utility on iOS: the sandbox cannot start a separate executable; saves are recovered in-game (SELF_RECOVER) -->
     <BundleResource Include="gnh\symbols" />
     <BundleResource Include="gnh\sysconf" />
     <BundleResource Include="gnh\xcredits" />
