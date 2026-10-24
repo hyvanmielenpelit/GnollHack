@@ -70,8 +70,9 @@ namespace GnollHackM
             }
         }
 
-        /* Closing is defense in depth and shuts the handler thread down in order; the filter wrapper is what keeps a
-           terminating managed exception away from sentry-native. Called after builder.Build(), so Sentry .NET's own
+        /* Closing takes the filter wrapper out of the chain before CoreCLR re-raises a terminating managed exception,
+           which keeps one re-raised with a hardware code (a NullReferenceException or DivideByZeroException) away from
+           sentry-native, and shuts the handler thread down in order. Called after builder.Build(), so Sentry .NET's own
            UnhandledException handler runs first. */
         internal static void SubscribeClose()
         {

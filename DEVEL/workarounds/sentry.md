@@ -37,9 +37,13 @@ that filter never calls the filter it displaced.
 
 **Workaround.** `gnh_crash_prepare` records the filter current before `sentry_init`.
 `gnh_crash_install` puts `gnh_unhandled_filter` in front of sentry-native's filter; it hands
-hardware faults to sentry-native and then passes every exception to the recorded filter.
-`gnh_crash_uninstall` gives the slot back before `sentry_close`. When the install fails,
-`GHSentryNative.InitOnce` closes sentry-native and runs without native crash capture.
+every exception except a CLR exception to sentry-native and then passes every exception to
+the recorded filter. `gnh_crash_uninstall` gives the slot back before `sentry_close`. When
+the install fails, `GHSentryNative.InitOnce` closes sentry-native and runs without native
+crash capture. Fail-fast exceptions (`__fastfail`, `STATUS_STACK_BUFFER_OVERRUN`,
+`RaiseFailFastException`, CoreCLR's own fail-fast, WinUI's stowed exception, and heap
+corruption, `STATUS_HEAP_CORRUPTION`) reach neither the filter nor the vectored handler, so
+they are not captured.
 
 **Verify removal.** With a sentry-native release that chains, make `gnh_crash_install`
 skip the filter swap and keep only the vectored handler. Then:

@@ -10,8 +10,8 @@
  *   sentry_handle_exception. Under managed frames such a fault ends in CoreCLR's fail-fast without reaching the
  *   unhandled-exception filter, so the vectored handler is the only place that sees it.
  * - An unhandled-exception filter in front of sentry-native's own filter, which never calls the filter it
- *   displaced. Hardware faults go to sentry-native and then to the filter that was current before sentry_init;
- *   every other exception goes to that filter directly.
+ *   displaced. Every exception except a CLR exception goes to sentry-native and then to the filter that was
+ *   current before sentry_init; a CLR exception goes to that filter directly.
  *
  * Call order: gnh_crash_prepare, sentry_init, gnh_crash_install; at shutdown gnh_crash_uninstall, then sentry_close.
  */
@@ -34,6 +34,9 @@ static const char *const listed_modules[] =
     "libGLESv2.dll",
     "SkiaSharp.Views.WinUI.Native.dll"
 };
+
+/* CoreCLR's exception code for a managed throw, 0xE0000000 | 'CCR' */
+#define GNH_CLR_EXCEPTION_CODE ((DWORD)0xE0434352UL)
 
 /* The unhandled-exception filter that was current before sentry_init */
 static LPTOP_LEVEL_EXCEPTION_FILTER g_runtime_uef = NULL;
@@ -198,14 +201,16 @@ static LONG CALLBACK gnh_vectored_handler(PEXCEPTION_POINTERS info)
 
 /* WORKAROUND(WA-SENTRY-0001): inproc's unhandled-exception filter does not chain to the filter it displaced */
 /*
- * Hardware faults go to sentry-native's filter first, which captures at most once per process. Every exception then
- * goes to the filter that was current before sentry_init: a CLR exception (0xE0434352) reaching this point, from the
- * main thread or from a managed callback on a native thread, must still reach CoreCLR's filter, which raises
- * AppDomain.UnhandledException and writes the "Unhandled exception." message and the ".NET Runtime" event-log entry.
+ * Runs only for an exception nothing handled, after which the process ends, so every exception except a CLR
+ * exception goes to sentry-native's filter first, which captures at most once per process and skips breakpoints.
+ * Every exception then goes to the filter that was current before sentry_init: a CLR exception (0xE0434352) reaching
+ * this point, from the main thread or from a managed callback on a native thread, must still reach CoreCLR's filter,
+ * which raises AppDomain.UnhandledException and writes the "Unhandled exception." message and the ".NET Runtime"
+ * event-log entry. Fail-fast exceptions never reach this filter.
  */
 static LONG WINAPI gnh_unhandled_filter(EXCEPTION_POINTERS *info)
 {
-    if (info != NULL && info->ExceptionRecord != NULL && is_crash_code(info->ExceptionRecord->ExceptionCode)
+    if (info != NULL && info->ExceptionRecord != NULL && info->ExceptionRecord->ExceptionCode != GNH_CLR_EXCEPTION_CODE
         && g_sentry_uef != NULL)
     {
         (void)g_sentry_uef(info);
