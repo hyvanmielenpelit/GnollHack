@@ -1341,6 +1341,7 @@ E boolean check_saved_game_exists(void);
 E int make_tmp_backup_savefile_from_uncompressed_savefile(const char*);
 E int move_tmp_backup_savefile_to_actual_backup_savefile(void);
 E int restore_backup_savefile(boolean);
+E int restore_backup_savefile_for_name(const char *, const char *);
 E boolean backup_savefile_matches_savefile(void);
 E int delete_backup_savefile(void);
 E int delete_tmp_backup_savefile(void);

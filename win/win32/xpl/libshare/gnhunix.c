@@ -81,9 +81,10 @@ getlock(void)
 
     if (level0_file_lacks_checkpoint(fq_lock))
     {
-        /* No checkpoint was ever written: nothing to recover */
+        /* No checkpoint was ever written; a missing save file falls back to its backup */
         debugprint("getlock: level 0 file has no checkpoint");
         issue_breadcrumb("getlock: removed a level 0 file with no checkpoint");
+        (void)restore_backup_savefile_for_name(plname, "getlock");
         goto gotlock;
     }
 
@@ -95,7 +96,7 @@ getlock(void)
            is a fixed phrase, so the reporter groups these by cause. */
         nonfatal_error("Couldn't recover the old game: %s.",
                        get_recover_savefile_failure_reason());
-        (void)restore_backup_savefile(FALSE);
+        (void)restore_backup_savefile_for_name(plname, "getlock");
         return;
     }
 
@@ -163,7 +164,12 @@ check_crash(void)
     (void)close(fd);
 
     if (level0_file_lacks_checkpoint(fq_lock))
+    {
+        /* Nothing to recover; a missing save file falls back to its backup, so the game is listed */
+        if (!wizard)
+            (void)restore_backup_savefile_for_name(recovery_plname, "check_crash");
         goto nofilefound;
+    }
 
     struct special_view_info info = { 0 };
     info.viewtype = SPECIAL_VIEW_CRASH_DETECTED;

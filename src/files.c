@@ -1768,6 +1768,32 @@ restore_backup_savefile(boolean dodelete_existing)
     return -1; /* Making backups is not on */
 }
 
+/* Restores the named character's backup save file if its save file is missing;
+   plname and SAVEF are left unchanged. Returns as restore_backup_savefile(). */
+int
+restore_backup_savefile_for_name(const char *name, const char *caller)
+{
+    char saved_plname[PL_NSIZ], saved_savef[SAVESIZE], namebuf[PL_NSIZ], buf[BUFSZ];
+    int res;
+
+    if (!name || !*name)
+        return -1;
+
+    Strncpy(namebuf, name, PL_NSIZ - 1);
+    namebuf[PL_NSIZ - 1] = '\0';
+    Strcpy(saved_plname, plname);
+    Strcpy(saved_savef, SAVEF);
+    Strcpy(plname, namebuf);
+    set_savefile_name(TRUE);
+    res = restore_backup_savefile(FALSE);
+    Strcpy(plname, saved_plname);
+    Strcpy(SAVEF, saved_savef);
+    debugprint("%s: restore_backup_savefile returned %d", caller ? caller : "", res);
+    Sprintf(buf, "%s: restore_backup_savefile returned", caller ? caller : "");
+    issue_breadcrumb2(buf, res);
+    return res;
+}
+
 /* TRUE if both files open and have the same contents */
 static boolean
 files_have_same_contents(const char *fq_a, const char *fq_b)
