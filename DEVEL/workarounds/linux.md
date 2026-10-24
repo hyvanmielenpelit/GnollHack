@@ -105,3 +105,38 @@ under the Steam Linux Runtime, and open a web view; CEF must initialize and rend
 
 Checks:
 - 2026-10-23 | Steam Linux Runtime 4.0 (steamrt4), cef.runtime.linux-x64 154.0.34 | unverified | No upstream issue found.
+
+## WA-LINUX-0004: glibc 2.29 re-versioned exp, exp2, log, log2 and pow
+
+- Status: active
+- Added: 2026-10-24
+- GnollHack version: 3.31 (431)
+- Component: glibc
+- Package: glibc
+- Defective version: glibc 2.31 (build host, Ubuntu 20.04); affects every glibc from 2.29
+- Platforms: Linux
+- Upstream issue: none
+- Upstream status when added: not-needed
+- Upstream status: not-needed
+- Last checked: 2026-10-24
+- Code: `win/win32/xpl/gnollhacklinux/linuxconf.h` (`LINUXCONF_H`)
+- Remove when: the Linux glibc floor (`$MaxGlibcVersion` in `Build-LinuxPackages.ps1`) is raised to 2.29 or later, or the engine is built against glibc 2.28 or older.
+- Related: GNOLLHACK-HS
+
+**Symptom.** `libgnollhacklinux.so` does not load on glibc older than 2.29 (Debian 10, Ubuntu
+18.04, RHEL 8): `version 'GLIBC_2.29' not found (required by libgnollhacklinux.so)`, and the game
+exits at start.
+
+**Cause.** glibc 2.29 gave `exp`, `exp2`, `log`, `log2` and `pow` new symbol versions. A library
+linked against glibc 2.29 or later that calls them requires `GLIBC_2.29`. This is glibc's normal
+symbol versioning, by design.
+
+**Workaround.** On x86_64, `linuxconf.h` binds the five functions to their `GLIBC_2.2.5` versions
+with `.symver`, which every glibc still exports.
+
+**Verify removal.** Remove the block, rebuild `gnollhacklinux` Release|x64, and run
+`objdump -T libgnollhacklinux.so`: no symbol may need a glibc version above the floor, and
+`Build-LinuxPackages.ps1` must pass its glibc check.
+
+Checks:
+- 2026-10-24 | glibc 2.31 (build host) | still-needed | Without the pin, pow imports GLIBC_2.29.

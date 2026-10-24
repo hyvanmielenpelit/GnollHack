@@ -4016,6 +4016,17 @@ namespace GnollHackX
                 NativeLibraryPreflightWindows.HandleNativeLoadFailure(ex);
                 throw;
             }
+#elif GNH_AVALONIA && LINUX
+            try
+            {
+                _mainGnollHackService.LoadLibrary();
+                _mainGnollHackService.Test();
+            }
+            catch (Exception ex) when (ex is DllNotFoundException || ex is BadImageFormatException)
+            {
+                NativeLibraryPreflightLinux.HandleNativeLoadFailure(ex);
+                throw;
+            }
 #else
             _mainGnollHackService.LoadLibrary();
             _mainGnollHackService.Test();

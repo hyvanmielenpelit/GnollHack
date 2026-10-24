@@ -6,7 +6,7 @@
     Builds a pinned sentry-native checkout in WSL with CMake (inproc backend, no transport, shared library), in
     $HOME/.cache/gnollhack-sentry-native/build, which is recreated on every run. The library is stripped with
     strip --strip-unneeded, which keeps its build ID, and checked: no libcurl or libstdc++ among its NEEDED entries,
-    no glibc symbol version above GLIBC_2.31, and sentry_init and sentry_options_set_handler_strategy exported.
+    no glibc symbol version above GLIBC_2.27, and sentry_init and sentry_options_set_handler_strategy exported.
     Only then is it copied to Platforms\Linux\libs\libsentry.so, with sentry-native's license and the license of its
     vendored libunwind in Platforms\Linux\licenses\sentry-native\.
 
@@ -14,7 +14,8 @@
     not, the script stops with the command that installs or clones them.
 
 .PARAMETER WslDistro
-    The WSL distribution that builds the library. Default: Ubuntu-20.04, whose glibc 2.31 sets the library's floor.
+    The WSL distribution that builds the library. Default: Ubuntu-20.04 (glibc 2.31); the library must still need no glibc
+    symbol version above GLIBC_2.27, the floor of the Linux packages.
 
 .PARAMETER SourceDir
     The sentry-native checkout in WSL. A leading $HOME or ~ is expanded inside WSL.
@@ -45,7 +46,7 @@ $SentryNativeVersion = '0.17.2'
 $SentryNativeCommit = 'd043b2bcbdc24eb9fd3a17d0fe0a510526e5902a'
 
 # The highest glibc symbol version the library may need
-$MaxGlibcVersion = '2.31'
+$MaxGlibcVersion = '2.27'
 
 # ---------------------------------------------------------------------------------------------------
 # Helper functions

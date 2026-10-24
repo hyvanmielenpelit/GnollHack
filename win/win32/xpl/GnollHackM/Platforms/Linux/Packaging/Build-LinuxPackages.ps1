@@ -8,6 +8,9 @@
     lose file permissions. Finished outputs are copied to <OutputRoot>\<version>\, where the version
     is <ApplicationDisplayVersion>.<ApplicationVersion> from GnollHackM.csproj.
 
+    The staged publish is checked against the glibc floor in $MaxGlibcVersion and the libstdc++ floors in
+    $MaxGlibcxxVersion and $MaxCxxabiVersion, and the script stops if any ELF file needs a newer glibc or libstdc++.
+
     The script never downloads, uploads, publishes or signs in to anything. The pinned appimagetool
     and AppImage runtime must already be in $HOME/.cache/gnollhack-packaging/tools/ in WSL.
 
@@ -102,6 +105,13 @@ $AppImageToolFile = 'appimagetool-1.9.1-x86_64.AppImage'
 $AppImageToolSha256 = 'ed4ce84f0d9caff66f50bcca6ff6f35aae54ce8135408b3fa33abfc3cb384eb0'
 $AppImageRuntimeFile = 'type2-runtime-20251108-x86_64'
 $AppImageRuntimeSha256 = '2fca8b443c92510f1483a883f60061ad09b46b978b2631c807cd873a47ec260d'
+
+# The oldest glibc the Linux packages support; every ELF file in the publish must load on it
+$MaxGlibcVersion = '2.27'
+# The system libstdc++ of the oldest distributions that glibc floor admits (GCC 8's, as in Debian 10, Ubuntu 18.04
+# and RHEL 8); libstdc++ is not bundled
+$MaxGlibcxxVersion = '3.4.25'
+$MaxCxxabiVersion = '1.3.11'
 
 # ---------------------------------------------------------------------------------------------------
 # Helper functions
@@ -311,6 +321,29 @@ if [ "$STRIP_DEBUG" = "1" ]; then
 else
     echo "Keeping the debug information of libgnollhacklinux.so (-KeepDebugInfo)"
 fi
+# Every ELF file must load on the oldest supported glibc and libstdc++
+for tool in objdump od find; do
+    command -v "$tool" >/dev/null 2>&1 || fail "'$tool' is not installed in WSL."
+done
+too_new=0
+while IFS= read -r -d '' file; do
+    [ "$(od -An -tx1 -N4 "$file" | tr -d ' \n')" = "7f454c46" ] || continue
+    tags=$(objdump -T "$file" 2>/dev/null | grep -oE '(GLIBC|GLIBCXX|CXXABI)_[0-9][0-9.]*' || true)
+    [ -n "$tags" ] || continue
+    for floor in "GLIBC:$MAX_GLIBC" "GLIBCXX:$MAX_GLIBCXX" "CXXABI:$MAX_CXXABI"; do
+        prefix=${floor%%:*}
+        max=${floor#*:}
+        need=$(printf '%s\n' "$tags" | sed -n "s/^${prefix}_//p" | sort -u -V | tail -n 1)
+        [ -n "$need" ] || continue
+        newest=$(printf '%s\n%s\n' "$need" "$max" | sort -V | tail -n 1)
+        if [ "$newest" != "$max" ]; then
+            echo "error: ${file#"$STAGED"/} needs ${prefix}_$need, above the ${prefix}_$max floor." >&2
+            too_new=1
+        fi
+    done
+done < <(find "$STAGED" -type f -print0)
+[ "$too_new" = "0" ] || fail "the publish needs a newer glibc or libstdc++ than the floor; see the files above."
+echo "Every ELF file needs at most GLIBC_$MAX_GLIBC, GLIBCXX_$MAX_GLIBCXX and CXXABI_$MAX_CXXABI"
 rm -rf "$OUT"
 mkdir -p "$OUT"
 '@
@@ -620,6 +653,9 @@ $wslVariables = [ordered]@{
     RUNTIME_SHA256      = $AppImageRuntimeSha256.ToLowerInvariant()
     RUNBOOK             = ''
     STRIP_DEBUG         = $(if ($KeepDebugInfo) { '0' } else { '1' })
+    MAX_GLIBC           = $MaxGlibcVersion
+    MAX_GLIBCXX         = $MaxGlibcxxVersion
+    MAX_CXXABI          = $MaxCxxabiVersion
     STEAMRT4_DIR        = ''
     APP_VDF             = ''
     DEPOT_VDF           = ''

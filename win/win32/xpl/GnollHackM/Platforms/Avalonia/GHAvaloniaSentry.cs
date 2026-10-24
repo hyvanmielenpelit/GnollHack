@@ -60,11 +60,13 @@ namespace GnollHackM
                 string package = GetPackage();
                 string container = GetContainer();
                 string session = GetSessionType();
+                string glibc = NativeLibraryPreflightLinux.GlibcVersion;
                 SentrySdk.ConfigureScope(scope =>
                 {
                     scope.SetTag(GHConstants.SentryTagLinuxPackage, package);
                     scope.SetTag(GHConstants.SentryTagLinuxContainer, container);
                     scope.SetTag(GHConstants.SentryTagLinuxSession, session);
+                    scope.SetTag(GHConstants.SentryTagLinuxGlibc, glibc);
                 });
 
                 if (nativeInitialized)

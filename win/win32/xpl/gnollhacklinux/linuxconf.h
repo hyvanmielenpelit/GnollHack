@@ -79,5 +79,15 @@
 #define HAS_STDINT_H    /* force include of stdint.h in integer.h */
 #endif
 
+/* WORKAROUND(WA-LINUX-0004): glibc 2.29 re-versioned exp, exp2, log, log2 and pow */
+/* Binds them to their GLIBC_2.2.5 versions, so that the library loads on glibc 2.27 */
+#if defined(__x86_64__)
+__asm__(".symver exp,exp@GLIBC_2.2.5");
+__asm__(".symver exp2,exp2@GLIBC_2.2.5");
+__asm__(".symver log,log@GLIBC_2.2.5");
+__asm__(".symver log2,log2@GLIBC_2.2.5");
+__asm__(".symver pow,pow@GLIBC_2.2.5");
+#endif
+
 #endif /* LINUXCONF_H */
 #endif /* GNH_LINUX */
