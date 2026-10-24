@@ -409,9 +409,11 @@ where to find each version number.
   - When a package is bumped, refresh `Upstream status`. Append a `Checks` line only when
     the status changed or the new version contains the fix.
   - A full re-check also runs **Verify removal**.
-  - The lint warns when a NuGet package's version no longer matches the last check of an
-    entry whose upstream status is `fixed-unreleased` or `released`. For SDK, workload,
-    WinUI, FMOD and OS bumps, find the entries by their `Package` field.
+  - The lint warns when the version of a NuGet package (a `$(...)` version is resolved
+    from the csproj) or of sentry-native (from the native binaries' build manifests) no
+    longer matches the last check of an entry whose upstream status is `fixed-unreleased`
+    or `released`. For SDK, workload, WinUI, FMOD and OS bumps, find the entries by their
+    `Package` field.
 - **Removing.**
   - Run **Verify removal**, then delete the code and its tags.
   - Set `Status: removed`, add the `Removed` field, append a `Checks` line with the result

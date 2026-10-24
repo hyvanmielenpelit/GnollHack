@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -1465,12 +1465,24 @@
     <PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.4" />
   </ItemGroup>
 
+  <!-- WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT builds on Windows and Linux -->
+  <!-- GHSentryNative runs sentry-native on these platforms; Sentry .NET must never start a second one -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('linux')))">
+    <SentryNative>false</SentryNative>
+  </PropertyGroup>
+
+  <!-- Sentry and Sentry.Maui. gnhsentry.dll is linked from this package's sentry-native.lib; GnhSentryNative.targets
+       checks that it was built from this version -->
+  <PropertyGroup>
+    <GnhSentryVersion>6.12.1</GnhSentryVersion>
+  </PropertyGroup>
+
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY')) And '$(GnhAvalonia)' != 'true'">
-    <PackageReference Include="Sentry.Maui" Version="6.12.1" />
+    <PackageReference Include="Sentry.Maui" Version="$(GnhSentryVersion)" />
   </ItemGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY')) And '$(GnhAvalonia)' == 'true'">
-    <PackageReference Include="Sentry" Version="6.12.1" />
+    <PackageReference Include="Sentry" Version="$(GnhSentryVersion)" />
   </ItemGroup>
 
   <!-- OTHER -->
@@ -1553,6 +1565,22 @@
     </Exec>
     <Warning Condition="Exists('$(GnollHackWinPdb)') And '$(_GnollHackWinPdbExitCode)' != '0'" Text="Sentry CLI could not upload gnollhackwin.pdb." />
   </Target>
+  <!-- gnhsentry.pdb exists only on the machine that built the committed gnhsentry.dll; it is uploaded only when it
+       matches the manifest -->
+  <Target Name="UploadGnhSentryPdbToSentry" AfterTargets="UploadDebugInfoToSentry" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <GnhSentryPdb>$(MSBuildProjectDirectory)\..\..\vs\symbols\Release\x64\gnhsentry\gnhsentry.pdb</GnhSentryPdb>
+    </PropertyGroup>
+    <Warning Condition="!Exists('$(GnhSentryPdb)')" Text="gnhsentry.pdb not found at $(GnhSentryPdb); symbols for gnhsentry.dll (debug ID $(GnhSentryDllDebugId)) were not uploaded to Sentry." />
+    <GetFileHash Condition="Exists('$(GnhSentryPdb)')" Files="$(GnhSentryPdb)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="_GnhSentryPdbSha256" />
+    </GetFileHash>
+    <Warning Condition="Exists('$(GnhSentryPdb)') And '$(_GnhSentryPdbSha256)' != '$(GnhSentryDllPdbSha256)'" Text="gnhsentry.pdb at $(GnhSentryPdb) has SHA-256 $(_GnhSentryPdbSha256), but gnhsentry.build.props records $(GnhSentryDllPdbSha256); symbols for gnhsentry.dll (debug ID $(GnhSentryDllDebugId)) were not uploaded to Sentry." />
+    <Exec Condition="Exists('$(GnhSentryPdb)') And '$(_GnhSentryPdbSha256)' == '$(GnhSentryDllPdbSha256)'" Command="$(SentryCLIDebugFilesUploadCommand) -t pdb &quot;$(GnhSentryPdb)&quot;" IgnoreExitCode="true" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="ExitCode" PropertyName="_GnhSentryPdbExitCode" />
+    </Exec>
+    <Warning Condition="Exists('$(GnhSentryPdb)') And '$(_GnhSentryPdbSha256)' == '$(GnhSentryDllPdbSha256)' And '$(_GnhSentryPdbExitCode)' != '0'" Text="Sentry CLI could not upload gnhsentry.pdb." />
+  </Target>
   <!-- The shipped libgnollhackdroid.so in Platforms\Android\libs has no DWARF and lies outside the directory that
        UploadDebugInfoToSentry scans. gnollhackdroid.vcxproj (ARM64) and gnollhackdroid2.vcxproj (x64) keep the full
        copies in their intermediate directories. Sentry skips files it already has. -->
@@ -1628,5 +1656,6 @@
       <MauiIcon Include="Resources\AppIcon\Windows\MSIX\appicon.png" ForegroundFile="Resources\AppIcon\Windows\MSIX\appiconmsix.png" ForegroundScale="1.0" />
     </ItemGroup>
   </Target>-->
+  <Import Project="GnhSentryNative.targets" />
 </Project>
                                                                                                                                                                                                                                                                      

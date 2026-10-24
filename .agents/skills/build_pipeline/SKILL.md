@@ -13,7 +13,8 @@ End-to-end build process for GnollHack, from compiling the C core engine to pack
 - AI skills must **not hardcode version numbers**. Reference source files (`GnollHackM.csproj`, `include/date.h`) instead.
 - **A data file added to the Windows pipeline is not automatically in the mobile one.** See [Two Data Pipelines](#two-data-pipelines).
 - **After any build, verify the expected artifacts exist.** MSBuild reports success even when a project was silently skipped. See [Verifying the Build](#verifying-the-build).
-- **Upgrading a dependency re-checks its workarounds and known issues.** Bumping a package in `GnollHackM.csproj`, an SDK in a `global.json`, a workload, FMOD, or sentry-native re-checks the `DEVEL/workarounds/` entries, workarounds and known issues alike, whose `Package` names it. For NuGet packages the lint's version-drift warning lists the entries that matter; for the rest, search the `Package` fields. An upgrade that contains a known issue's fix is the moment to start its **Verify fix**. See `client_workarounds`.
+- **Upgrading a dependency re-checks its workarounds and known issues.** Bumping a package in `GnollHackM.csproj`, an SDK in a `global.json`, a workload, FMOD, or sentry-native re-checks the `DEVEL/workarounds/` entries, workarounds and known issues alike, whose `Package` names it. For NuGet packages and sentry-native the lint's version-drift warning lists the upstream-fixed entries that matter; for the rest, search the `Package` fields. An upgrade that contains a known issue's fix is the moment to start its **Verify fix**. See `client_workarounds`.
+- **Native Sentry binaries.** `gnhsentry.dll` and `libsentry.so` are committed builds checked against `GnhSentryVersion` and the vendored `sentry.h` by `GnhSentryNative.targets`; a Sentry upgrade follows the runbook in `win/win32/xpl/gnhsentrywin/README.md`.
 
 ## Quick Path (clean clone → running Windows app)
 

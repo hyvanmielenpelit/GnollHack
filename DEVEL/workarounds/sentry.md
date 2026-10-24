@@ -108,7 +108,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/GHSentryNative.cs` (`GHSentryNative`); `win/win32/xpl/GnollHackM/GHSentryNativeScopeObserver.cs` (`GHSentryNativeScopeObserver`)
+- Code: `win/win32/xpl/GnollHackM/GHSentryNative.cs` (`GHSentryNative`); `win/win32/xpl/GnollHackM/GHSentryNativeScopeObserver.cs` (`GHSentryNativeScopeObserver`); `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`SentryNative`)
 - Remove when: Sentry .NET starts its native SDK, with scope sync and crash upload, in JIT builds on Windows and Linux, GnollHack uses that release, and Verify removal passes.
 - Related: WA-SENTRY-0004
 
@@ -122,11 +122,13 @@ GnollHack ships JIT builds on these platforms.
 gnhsentry.dll on Windows, libsentry.so on Linux, inproc backend, with a transport that
 stores crash envelopes in an outbox that is uploaded at the next start. It feeds
 `CrashedLastRun` to Sentry .NET, and `GHSentryNativeScopeObserver` mirrors the managed
-scope into the native one.
+scope into the native one. `SentryNative` is `false` for these builds, so Sentry .NET never
+starts a second sentry-native beside it.
 
 **Verify removal.** With a Sentry .NET release that supports native crashes in JIT builds:
 - Remove `GHSentryNative.Init` and the scope observer from `WindowsSentryNative` and
-  `GHAvaloniaSentry`, and enable the SDK's own native support.
+  `GHAvaloniaSentry`, and enable the SDK's own native support (remove `SentryNative=false`
+  from `GnollHackM.csproj`).
 - Build Windows and Linux Release builds.
 - In wizard mode, run `#crashtest` with a segmentation fault on each, and confirm that the
   next start uploads a native crash event carrying the managed scope's tags, extras and

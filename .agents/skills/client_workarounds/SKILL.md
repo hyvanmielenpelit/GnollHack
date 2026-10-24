@@ -83,12 +83,12 @@ goes above it.
 | Value | Source |
 |-------|--------|
 | GnollHack version | `ApplicationDisplayVersion` and `ApplicationVersion` in `win/win32/xpl/GnollHackM/GnollHackM.csproj`, written `<display> (<build>)`. For history before that file existed, `VERSION_MAJOR`, `VERSION_MINOR`, `PATCHLEVEL` and `EDITLEVEL` in `include/patchlevel.h`, written `game <major>.<minor>.<patch>-<edit>` |
-| NuGet packages | The `PackageReference` in `GnollHackM.csproj`. MAUI, SkiaSharp and Avalonia have several references selected by conditions (`GnhAvalonia`, `SKIASHARP_3119`, the target framework); record the one in effect for the affected platform |
+| NuGet packages | The `PackageReference` in `GnollHackM.csproj`. MAUI, SkiaSharp and Avalonia have several references selected by conditions (`GnhAvalonia`, `SKIASHARP_3119`, the target framework); record the one in effect for the affected platform; `Sentry` and `Sentry.Maui` take their version from the `GnhSentryVersion` property |
 | .NET SDK | The `global.json` that applies: `win/win32/xpl/GnollHackM/global.json`, or `win/win32/xpl/GnollHackM/Platforms/Avalonia/global.json` for the Avalonia flavor |
 | Workloads (android, ios, maui-windows) | `dotnet workload list`, run in `win/win32/xpl/GnollHackM` |
 | WinUI / Windows App SDK | `Microsoft.WindowsAppSDK.WinUI` in `win/win32/xpl/GnollHackM/obj/project.assets.json` after a Windows restore |
 | FMOD | `VERSION.number` in `win/win32/xpl/GnollHackX/GnollHackX.FMOD/fmod.cs`, a hexadecimal `0x00MMmmpp` |
-| sentry-native | The tag named in `win/win32/xpl/gnhsentrywin/gnhsentry.c` |
+| sentry-native | `SENTRY_SDK_VERSION_*` in `win/win32/xpl/gnhsentrywin/include/sentry.h`, recorded in the build manifests next to `gnhsentry.dll` and `libsentry.so` |
 | OS versions | The device or machine where the defect was seen |
 
 For the matching tag or commit in a framework's own repository, use the table in
@@ -120,9 +120,9 @@ commit (`git show <commit>:<path>`), mark `Added` with ` (from git history)`, an
 
 Triggers:
 
-- A package, SDK, workload, FMOD or sentry-native upgrade. For NuGet packages the lint's
-  version-drift warning lists the entries that matter. For everything else, search the
-  `Package` fields of workarounds and known issues.
+- A package, SDK, workload, FMOD or sentry-native upgrade. For NuGet packages and
+  sentry-native the lint's version-drift warning lists the upstream-fixed entries that
+  matter. For everything else, search the `Package` fields of workarounds and known issues.
 - The upstream issue closes or its fix ships.
 - The user asks for a sweep of the register.
 

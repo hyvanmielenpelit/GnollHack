@@ -4,11 +4,18 @@
 
 .DESCRIPTION
     Builds a pinned sentry-native checkout in WSL with CMake (inproc backend, no transport, shared library), in
-    $HOME/.cache/gnollhack-sentry-native/build, which is recreated on every run. The library is stripped with
-    strip --strip-unneeded, which keeps its build ID, and checked: no libcurl or libstdc++ among its NEEDED entries,
-    no glibc symbol version above GLIBC_2.27, and sentry_init and sentry_options_set_handler_strategy exported.
-    Only then is it copied to Platforms\Linux\libs\libsentry.so, with sentry-native's license and the license of its
-    vendored libunwind in Platforms\Linux\licenses\sentry-native\.
+    $HOME/.cache/gnollhack-sentry-native/build, which is recreated on every run. The sentry-native version is read
+    from the vendored header win\win32\xpl\gnhsentrywin\include\sentry.h (SENTRY_SDK_VERSION_MAJOR, _MINOR and
+    _PATCH), and the checkout must match it twice over: the tag of that version must resolve to the pinned commit,
+    and the checkout's include/sentry.h must equal the vendored header, ignoring line endings.
+
+    The library is stripped with strip --strip-unneeded, which keeps its build ID, and checked: no libcurl or
+    libstdc++ among its NEEDED entries, no glibc symbol version above GLIBC_2.27, and sentry_init and
+    sentry_options_set_handler_strategy exported. Only then is it copied to Platforms\Linux\libs\libsentry.so, with
+    sentry-native's license and the license of its vendored libunwind in Platforms\Linux\licenses\sentry-native\.
+    Next to the library, Platforms\Linux\libs\libsentry.build.props records the sentry-native version, the pinned
+    commit, the normalized hash of the vendored header, the SHA-256 of libsentry.so and its GNU build ID, which
+    GnhSentryNative.targets checks at build time.
 
     The script never downloads anything. The build tools and the pinned checkout must already be in WSL; when they are
     not, the script stops with the command that installs or clones them.
@@ -41,8 +48,7 @@ param(
 Set-StrictMode -Version 2
 $ErrorActionPreference = 'Stop'
 
-# Pinned sentry-native release: tag 0.17.2 of github.com/getsentry/sentry-native and the commit it points to
-$SentryNativeVersion = '0.17.2'
+# Pinned sentry-native commit: the commit of the tag that win\win32\xpl\gnhsentrywin\include\sentry.h names
 $SentryNativeCommit = 'd043b2bcbdc24eb9fd3a17d0fe0a510526e5902a'
 
 # The highest glibc symbol version the library may need
@@ -156,6 +162,81 @@ function Format-ByteSize
     return ('{0:N1} MB ({1} bytes)' -f ($Bytes / 1MB), $Bytes)
 }
 
+# Reads MAJOR.MINOR.PATCH from the SENTRY_SDK_VERSION_MAJOR, _MINOR and _PATCH defines of a sentry.h, each of which
+# must occur exactly once.
+function Get-SentryNativeVersion
+{
+    param([Parameter(Mandatory = $true)][string]$HeaderPath)
+    $text = [System.IO.File]::ReadAllText($HeaderPath)
+    $parts = @()
+    foreach ($part in @('MAJOR', 'MINOR', 'PATCH'))
+    {
+        $found = [regex]::Matches($text, "#define\s+SENTRY_SDK_VERSION_$part\s+(\d+)")
+        if ($found.Count -ne 1)
+        {
+            throw "Expected one '#define SENTRY_SDK_VERSION_$part <number>' in '$HeaderPath', found $($found.Count)."
+        }
+        $parts += $found[0].Groups[1].Value
+    }
+    return ($parts -join '.')
+}
+
+# Hashes text files independently of their line endings: each file read as UTF-8 (BOM stripped) with CRLF turned
+# into LF, the files concatenated in order, encoded as UTF-8 without a BOM, SHA-256 as uppercase hex.
+function Get-NormalizedTextHash
+{
+    param([Parameter(Mandatory = $true)][string[]]$TextFiles)
+    $builder = New-Object System.Text.StringBuilder
+    foreach ($textFile in $TextFiles)
+    {
+        [void]$builder.Append([System.IO.File]::ReadAllText($textFile).Replace("`r`n", "`n"))
+    }
+    $bytes = (New-Object System.Text.UTF8Encoding($false)).GetBytes($builder.ToString())
+    $sha256 = [System.Security.Cryptography.SHA256]::Create()
+    try
+    {
+        $digest = $sha256.ComputeHash($bytes)
+    }
+    finally
+    {
+        $sha256.Dispose()
+    }
+    return ([System.BitConverter]::ToString($digest)).Replace('-', '')
+}
+
+# Reads the GNU build ID of an ELF file as lowercase hex. Assumes the 20-byte SHA-1 note that Ubuntu's linker emits
+# by default: the note header namesz 4, descsz 20, type NT_GNU_BUILD_ID (3), name "GNU\0", must occur exactly once,
+# and the 20 bytes after it are the ID. A 16-byte note (--build-id=md5 or uuid) is not found and throws.
+function Get-ElfBuildId
+{
+    param([Parameter(Mandatory = $true)][string]$ElfPath)
+    $bytes = [System.IO.File]::ReadAllBytes($ElfPath)
+    # ISO-8859-1 maps every byte to the char of the same value, so an ordinal string search is a byte search
+    $latin1 = [System.Text.Encoding]::GetEncoding(28591)
+    $content = $latin1.GetString($bytes)
+    $noteHeader = $latin1.GetString([byte[]](0x04, 0, 0, 0, 0x14, 0, 0, 0, 0x03, 0, 0, 0, 0x47, 0x4E, 0x55, 0))
+    $index = $content.IndexOf($noteHeader, [System.StringComparison]::Ordinal)
+    if ($index -lt 0)
+    {
+        throw "'$ElfPath' has no 20-byte GNU build-ID note."
+    }
+    if ($content.IndexOf($noteHeader, $index + 1, [System.StringComparison]::Ordinal) -ge 0)
+    {
+        throw "'$ElfPath' has more than one 20-byte GNU build-ID note header."
+    }
+    $start = $index + $noteHeader.Length
+    if ($start + 20 -gt $bytes.Length)
+    {
+        throw "The GNU build-ID note of '$ElfPath' is truncated."
+    }
+    $id = New-Object System.Text.StringBuilder
+    for ($i = $start; $i -lt $start + 20; $i++)
+    {
+        [void]$id.Append($bytes[$i].ToString('x2'))
+    }
+    return $id.ToString()
+}
+
 # ---------------------------------------------------------------------------------------------------
 # Bash steps. Each runs after the variables from Invoke-WslScript and $BashCommon.
 # ---------------------------------------------------------------------------------------------------
@@ -207,6 +288,19 @@ head_commit=$(git -C "$SOURCE_DIR" rev-parse HEAD 2>/dev/null || true)
 if [ "$head_commit" != "$SENTRY_COMMIT" ]; then
     fail "HEAD of $SOURCE_DIR is $head_commit, not the pinned $SENTRY_COMMIT ($SENTRY_VERSION). Run in WSL: rm -rf $SOURCE_DIR && $CLONE_COMMAND"
 fi
+tag_commit=$(git -C "$SOURCE_DIR" rev-parse "refs/tags/$SENTRY_VERSION^{commit}" 2>/dev/null || true)
+[ "$tag_commit" = "$SENTRY_COMMIT" ] || fail "tag $SENTRY_VERSION in $SOURCE_DIR is not the pinned $SENTRY_COMMIT."
+[ -f "$SOURCE_DIR/include/sentry.h" ] || fail "$SOURCE_DIR/include/sentry.h is missing."
+checkout_header_hash=$(sed 's/\r$//' "$SOURCE_DIR/include/sentry.h" | sha256sum)
+vendored_header_hash=$(sed 's/\r$//' "$VENDORED_HEADER" | sha256sum)
+if [ "$checkout_header_hash" != "$vendored_header_hash" ]; then
+    share_header='\\wsl.localhost\'"$WSL_DISTRO$(printf '%s' "$SOURCE_DIR" | tr '/' '\\')"'\include\sentry.h'
+    echo "error: $SOURCE_DIR/include/sentry.h differs from the vendored $VENDORED_HEADER." >&2
+    echo "Compare the API and update the vendored copy on Windows with:" >&2
+    echo "    $COMPARE_API_SCRIPT -NewHeader $share_header" >&2
+    exit 1
+fi
+echo "include/sentry.h matches the vendored header"
 for file in LICENSE vendor/libunwind/COPYING; do
     [ -f "$SOURCE_DIR/$file" ] || fail "$SOURCE_DIR/$file is missing."
 done
@@ -264,12 +358,13 @@ echo "Build ID: $id_after"
 echo "SHA-256:  $(sha256sum "$LIB" | cut -d ' ' -f 1)"
 '@
 
-# Copy the checked library and the two licenses to the Windows tree.
+# Copy the checked library and the two licenses to the Windows tree. The licenses get CRLF line endings, as text files
+# have in the Windows working tree.
 $BashCopy = @'
 mkdir -p "$WIN_LIBS_DIR" "$WIN_LICENSE_DIR"
 cp "$LIB" "$WIN_LIBS_DIR/libsentry.so"
-cp "$SOURCE_DIR/LICENSE" "$WIN_LICENSE_DIR/LICENSE"
-cp "$SOURCE_DIR/vendor/libunwind/COPYING" "$WIN_LICENSE_DIR/LICENSE-libunwind"
+sed 's/\r$//; s/$/\r/' "$SOURCE_DIR/LICENSE" > "$WIN_LICENSE_DIR/LICENSE"
+sed 's/\r$//; s/$/\r/' "$SOURCE_DIR/vendor/libunwind/COPYING" > "$WIN_LICENSE_DIR/LICENSE-libunwind"
 echo "Copied libsentry.so to $WIN_LIBS_DIR and the licenses to $WIN_LICENSE_DIR"
 '@
 
@@ -286,11 +381,23 @@ $ProjectPath = Join-Path $GnollHackMDir 'GnollHackM.csproj'
 $LibsDir = Join-Path $LinuxDir 'libs'
 $LicenseDir = Join-Path $LinuxDir 'licenses\sentry-native'
 $LibraryPath = Join-Path $LibsDir 'libsentry.so'
+$ManifestPath = Join-Path $LibsDir 'libsentry.build.props'
+
+$GnhSentryWinDir = [System.IO.Path]::GetFullPath((Join-Path $GnollHackMDir '..\gnhsentrywin'))
+$VendoredHeaderPath = Join-Path $GnhSentryWinDir 'include\sentry.h'
+$CompareApiScriptPath = Join-Path $GnhSentryWinDir 'Compare-SentryNativeApi.ps1'
 
 if (-not (Test-Path -LiteralPath $ProjectPath -PathType Leaf))
 {
     throw "GnollHackM.csproj not found at '$ProjectPath'. The script must stay in GnollHackM\Platforms\Linux\Packaging."
 }
+
+if (-not (Test-Path -LiteralPath $VendoredHeaderPath -PathType Leaf))
+{
+    throw "The vendored sentry-native header was not found at '$VendoredHeaderPath'."
+}
+
+$SentryNativeVersion = Get-SentryNativeVersion -HeaderPath $VendoredHeaderPath
 
 # ---------------------------------------------------------------------------------------------------
 # 1. Prerequisites
@@ -315,13 +422,15 @@ if ($LASTEXITCODE -ne 0)
 }
 
 $wslVariables = [ordered]@{
-    WSL_DISTRO      = $WslDistro
-    SENTRY_VERSION  = $SentryNativeVersion
-    SENTRY_COMMIT   = $SentryNativeCommit
-    MAX_GLIBC       = $MaxGlibcVersion
-    SOURCE_DIR      = $SourceDir
-    WIN_LIBS_DIR    = (ConvertTo-WslPath $LibsDir)
-    WIN_LICENSE_DIR = (ConvertTo-WslPath $LicenseDir)
+    WSL_DISTRO         = $WslDistro
+    SENTRY_VERSION     = $SentryNativeVersion
+    SENTRY_COMMIT      = $SentryNativeCommit
+    MAX_GLIBC          = $MaxGlibcVersion
+    SOURCE_DIR         = $SourceDir
+    VENDORED_HEADER    = (ConvertTo-WslPath $VendoredHeaderPath)
+    COMPARE_API_SCRIPT = $CompareApiScriptPath
+    WIN_LIBS_DIR       = (ConvertTo-WslPath $LibsDir)
+    WIN_LICENSE_DIR    = (ConvertTo-WslPath $LicenseDir)
 }
 
 # ---------------------------------------------------------------------------------------------------
@@ -341,12 +450,44 @@ Write-Step 'Copying libsentry.so and its licenses'
 Invoke-WslScript -StepName 'copy' -Body $BashCopy -Variables $wslVariables -Common $BashCommon -Distro $WslDistro
 
 # ---------------------------------------------------------------------------------------------------
-# 6. Summary
+# 6. Manifest: what the copied library was built from, for GnhSentryNative.targets
+# ---------------------------------------------------------------------------------------------------
+
+Write-Step 'Writing libsentry.build.props'
+
+if (-not (Test-Path -LiteralPath $LibraryPath -PathType Leaf))
+{
+    throw "'$LibraryPath' was not created."
+}
+
+$libraryHash = (Get-FileHash -LiteralPath $LibraryPath -Algorithm SHA256).Hash.ToUpperInvariant()
+$buildId = Get-ElfBuildId -ElfPath $LibraryPath
+$headerHash = Get-NormalizedTextHash -TextFiles @($VendoredHeaderPath)
+$manifestLines = @(
+    '<!-- Written by Build-LinuxSentryNative.ps1; checked by GnhSentryNative.targets. Do not edit. -->',
+    '<Project>',
+    '  <PropertyGroup>',
+    "    <GnhLibSentryNativeVersion>$SentryNativeVersion</GnhLibSentryNativeVersion>",
+    "    <GnhLibSentryCommit>$SentryNativeCommit</GnhLibSentryCommit>",
+    "    <GnhLibSentryHeaderSha256>$headerHash</GnhLibSentryHeaderSha256>",
+    "    <GnhLibSentrySha256>$libraryHash</GnhLibSentrySha256>",
+    "    <GnhLibSentryBuildId>$buildId</GnhLibSentryBuildId>",
+    '  </PropertyGroup>',
+    '</Project>',
+    ''
+)
+$utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+[System.IO.File]::WriteAllText($ManifestPath, ($manifestLines -join "`r`n"), $utf8NoBom)
+Write-Host "Wrote $ManifestPath (build ID $buildId)"
+
+# ---------------------------------------------------------------------------------------------------
+# 7. Summary
 # ---------------------------------------------------------------------------------------------------
 
 Write-Step "libsentry.so from sentry-native $SentryNativeVersion"
 
-foreach ($path in @($LibraryPath, (Join-Path $LicenseDir 'LICENSE'), (Join-Path $LicenseDir 'LICENSE-libunwind')))
+$expectedFiles = @($LibraryPath, $ManifestPath, (Join-Path $LicenseDir 'LICENSE'), (Join-Path $LicenseDir 'LICENSE-libunwind'))
+foreach ($path in $expectedFiles)
 {
     if (-not (Test-Path -LiteralPath $path -PathType Leaf))
     {
@@ -355,8 +496,10 @@ foreach ($path in @($LibraryPath, (Join-Path $LicenseDir 'LICENSE'), (Join-Path 
 }
 
 $item = Get-Item -LiteralPath $LibraryPath
-$hash = (Get-FileHash -LiteralPath $LibraryPath -Algorithm SHA256).Hash.ToLowerInvariant()
+$hash = $libraryHash.ToLowerInvariant()
 Write-Host $LibraryPath
-Write-Host "    size    $(Format-ByteSize $item.Length)"
-Write-Host "    sha256  $hash"
+Write-Host "    size     $(Format-ByteSize $item.Length)"
+Write-Host "    sha256   $hash"
+Write-Host "    build ID $buildId"
+Write-Host $ManifestPath
 Write-Host $LicenseDir

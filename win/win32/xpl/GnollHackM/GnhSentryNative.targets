@@ -1,0 +1,140 @@
+<!-- Checks that gnhsentry.dll and libsentry.so match the inputs recorded in their manifests -->
+<Project>
+  <Import Project="Platforms\Windows\libs\gnhsentry.build.props" Condition="Exists('$(MSBuildThisFileDirectory)Platforms\Windows\libs\gnhsentry.build.props')" />
+  <Import Project="Platforms\Linux\libs\libsentry.build.props" Condition="Exists('$(MSBuildThisFileDirectory)Platforms\Linux\libs\libsentry.build.props')" />
+
+  <!-- SHA-256 of the files' concatenated text with CRLF read as LF, so the hash does not depend on the checkout's line
+       endings; uppercase hex without dashes, as Build-GnhSentry.ps1 and Build-LinuxSentryNative.ps1 compute it -->
+  <UsingTask TaskName="GnhGetNormalizedTextHash" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <Hash ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Security.Cryptography" />
+      <Using Namespace="System.Text" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        var builder = new StringBuilder();
+        foreach (var file in Files)
+        {
+            builder.Append(File.ReadAllText(file.GetMetadata("FullPath")).Replace("\r\n", "\n"));
+        }
+        using (var sha = SHA256.Create())
+        {
+            Hash = BitConverter.ToString(sha.ComputeHash(new UTF8Encoding(false).GetBytes(builder.ToString()))).Replace("-", "");
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
+  <!-- Visual Studio's fast up-to-date check runs the build, and so the check, when one of these changes -->
+  <ItemGroup>
+    <UpToDateCheckInput Include="..\gnhsentrywin\gnhsentry.c;..\gnhsentrywin\gnhsentry.def;..\gnhsentrywin\include\sentry.h" />
+    <UpToDateCheckInput Include="Platforms\Windows\libs\gnhsentry.build.props;Platforms\Linux\libs\libsentry.build.props" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <_GnhSentryDllRemedy>Run win\win32\xpl\gnhsentrywin\Build-GnhSentry.ps1 (see win\win32\xpl\gnhsentrywin\README.md), or pass -p:GnhAllowStaleSentryNative=true.</_GnhSentryDllRemedy>
+    <_GnhSentryDllRemedy Condition="'$(GnhAllowStaleSentryNative)' == 'true'">$(_GnhSentryDllRemedy) (GnhAllowStaleSentryNative is set)</_GnhSentryDllRemedy>
+    <_GnhLibSentryRemedy>Run win\win32\xpl\GnollHackM\Platforms\Linux\Packaging\Build-LinuxSentryNative.ps1, or pass -p:GnhAllowStaleSentryNative=true.</_GnhLibSentryRemedy>
+    <_GnhLibSentryRemedy Condition="'$(GnhAllowStaleSentryNative)' == 'true'">$(_GnhLibSentryRemedy) (GnhAllowStaleSentryNative is set)</_GnhLibSentryRemedy>
+  </PropertyGroup>
+
+  <!-- Reports every problem the checks found: as errors for Release publish, archive, package and symbol upload builds
+       and with GnhSentryNativeStrict=true, otherwise as warnings; GnhAllowStaleSentryNative=true always makes them
+       warnings. EnableSentryUploadForPublish runs first, so SentryUploadSymbols is final here. -->
+  <Target Name="GnhCheckSentryNativeBinaries" BeforeTargets="BeforeBuild" DependsOnTargets="EnableSentryUploadForPublish;_GnhCheckGnhSentryDll;_GnhCheckLibSentry" Condition="'$(DesignTimeBuild)' != 'true' And $(DefineConstants.Contains('SENTRY')) And ($(TargetFramework.Contains('-windows')) Or '$(GnhAvalonia)' == 'true')">
+    <PropertyGroup>
+      <_GnhSentryNativeStrict>false</_GnhSentryNativeStrict>
+      <_GnhSentryNativeStrict Condition="'$(GnhSentryNativeStrict)' == 'true' Or ('$(Configuration)' == 'Release' And ('$(_IsPublishing)' == 'true' Or '$(ArchiveOnBuild)' == 'true' Or '$(PublishAppxPackage)' == 'true' Or '$(GenerateAppxPackageOnBuild)' == 'true' Or '$(SentryUploadSymbols)' == 'true'))">true</_GnhSentryNativeStrict>
+      <_GnhSentryNativeStrict Condition="'$(GnhAllowStaleSentryNative)' == 'true'">false</_GnhSentryNativeStrict>
+    </PropertyGroup>
+    <Warning Condition="'$(_GnhSentryNativeStrict)' != 'true' And '@(_GnhSentryNativeProblem)' != ''" Code="%(_GnhSentryNativeProblem.Code)" Text="%(_GnhSentryNativeProblem.Text)" />
+    <Error Condition="'$(_GnhSentryNativeStrict)' == 'true' And '@(_GnhSentryNativeProblem)' != ''" Code="%(_GnhSentryNativeProblem.Code)" Text="%(_GnhSentryNativeProblem.Text)" ContinueOnError="ErrorAndContinue" />
+  </Target>
+
+  <!-- gnhsentry.dll: the Sentry package version, the sentry-native.lib it linked, the DLL itself and its sources -->
+  <Target Name="_GnhCheckGnhSentryDll" Condition="$(TargetFramework.Contains('-windows')) And '$(GnhAvalonia)' != 'true'">
+    <PropertyGroup>
+      <_GnhNuGetPackageRoot>$(NuGetPackageRoot)</_GnhNuGetPackageRoot>
+      <_GnhNuGetPackageRoot Condition="'$(_GnhNuGetPackageRoot)' == ''">$(UserProfile)\.nuget\packages\</_GnhNuGetPackageRoot>
+      <_GnhPkgSentryFolder>$(PkgSentry.TrimEnd('\').ToLowerInvariant())</_GnhPkgSentryFolder>
+      <_GnhPkgSentrySuffix>\sentry\$(GnhSentryVersion.ToLowerInvariant())</_GnhPkgSentrySuffix>
+      <_GnhSentryPackageDir>$(PkgSentry)</_GnhSentryPackageDir>
+      <_GnhSentryPackageDir Condition="'$(_GnhSentryPackageDir)' == ''">$([MSBuild]::EnsureTrailingSlash('$(_GnhNuGetPackageRoot)'))sentry\$(GnhSentryVersion.ToLowerInvariant())</_GnhSentryPackageDir>
+      <_GnhSentryNativeLib>$([MSBuild]::EnsureTrailingSlash('$(_GnhSentryPackageDir)'))sentry-native\win-x64\sentry-native.lib</_GnhSentryNativeLib>
+      <_GnhGnhSentryDll>$(MSBuildProjectDirectory)\Platforms\Windows\libs\gnhsentry.dll</_GnhGnhSentryDll>
+      <_GnhSentryDllCanHash>true</_GnhSentryDllCanHash>
+      <_GnhSentryDllCanHash Condition="'$(GnhSentryDllSha256)' == '' Or !Exists('$(_GnhSentryNativeLib)')">false</_GnhSentryDllCanHash>
+    </PropertyGroup>
+    <ItemGroup>
+      <_GnhSentryDllSource Include="..\gnhsentrywin\gnhsentry.c;..\gnhsentrywin\gnhsentry.def;..\gnhsentrywin\include\sentry.h" />
+      <_GnhSentryDllMissingSource Include="@(_GnhSentryDllSource)" Condition="!Exists('%(FullPath)')" />
+      <_GnhSentryStalePackageReference Include="@(PackageReference)" Condition="('%(Identity)' == 'Sentry' Or '%(Identity)' == 'Sentry.Maui') And '%(Version)' != '$(GnhSentryVersion)'" />
+    </ItemGroup>
+    <PropertyGroup>
+      <_GnhSentryDllMissingSources>@(_GnhSentryDllMissingSource->'%(Identity)', ', ')</_GnhSentryDllMissingSources>
+    </PropertyGroup>
+
+    <GetFileHash Condition="'$(_GnhSentryDllCanHash)' == 'true'" Files="$(_GnhSentryNativeLib)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="_GnhSentryNativeLibSha256" />
+    </GetFileHash>
+    <GetFileHash Condition="'$(_GnhSentryDllCanHash)' == 'true' And Exists('$(_GnhGnhSentryDll)')" Files="$(_GnhGnhSentryDll)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="_GnhGnhSentryDllSha256" />
+    </GetFileHash>
+    <GnhGetNormalizedTextHash Condition="'$(_GnhSentryDllCanHash)' == 'true' And '@(_GnhSentryDllMissingSource)' == ''" Files="@(_GnhSentryDllSource)">
+      <Output TaskParameter="Hash" PropertyName="_GnhSentryDllSourceSha256" />
+    </GnhGetNormalizedTextHash>
+
+    <ItemGroup>
+      <_GnhSentryNativeProblem Include="GNHSN005" Condition="'$(GnhSentryDllSha256)' == ''" Code="GNHSN005" Text="Platforms\Windows\libs\gnhsentry.build.props was not found, so gnhsentry.dll cannot be checked against Sentry $(GnhSentryVersion). $(_GnhSentryDllRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN005" Condition="!Exists('$(_GnhSentryNativeLib)')" Code="GNHSN005" Text="sentry-native.lib was not found at $(_GnhSentryNativeLib), so gnhsentry.dll cannot be checked against it. $(_GnhSentryDllRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN001" Condition="'$(GnhSentryDllSha256)' != '' And '$(GnhSentryVersion)' != '$(GnhSentryDllPackageVersion)'" Code="GNHSN001" Text="gnhsentry.dll was built from Sentry $(GnhSentryDllPackageVersion), but GnhSentryVersion is $(GnhSentryVersion). $(_GnhSentryDllRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN002" Condition="'$(_GnhSentryDllCanHash)' == 'true' And '$(_GnhSentryNativeLibSha256)' != '$(GnhSentryDllLibSha256)'" Code="GNHSN002" Text="$(_GnhSentryNativeLib) has SHA-256 $(_GnhSentryNativeLibSha256), but gnhsentry.dll was linked from a sentry-native.lib with SHA-256 $(GnhSentryDllLibSha256). $(_GnhSentryDllRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN003" Condition="'$(_GnhSentryDllCanHash)' == 'true' And !Exists('$(_GnhGnhSentryDll)')" Code="GNHSN003" Text="gnhsentry.dll was not found at $(_GnhGnhSentryDll). $(_GnhSentryDllRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN003" Condition="'$(_GnhSentryDllCanHash)' == 'true' And Exists('$(_GnhGnhSentryDll)') And '$(_GnhGnhSentryDllSha256)' != '$(GnhSentryDllSha256)'" Code="GNHSN003" Text="$(_GnhGnhSentryDll) has SHA-256 $(_GnhGnhSentryDllSha256), but gnhsentry.build.props records $(GnhSentryDllSha256). $(_GnhSentryDllRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN004" Condition="'$(_GnhSentryDllCanHash)' == 'true' And '@(_GnhSentryDllMissingSource)' != ''" Code="GNHSN004" Text="gnhsentry.dll sources not found: $(_GnhSentryDllMissingSources). $(_GnhSentryDllRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN004" Condition="'$(_GnhSentryDllCanHash)' == 'true' And '@(_GnhSentryDllMissingSource)' == '' And '$(_GnhSentryDllSourceSha256)' != '$(GnhSentryDllSourceSha256)'" Code="GNHSN004" Text="gnhsentry.c, gnhsentry.def and include\sentry.h in win\win32\xpl\gnhsentrywin have the normalized hash $(_GnhSentryDllSourceSha256), but gnhsentry.dll was built from sources with $(GnhSentryDllSourceSha256). $(_GnhSentryDllRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN006" Condition="'@(_GnhSentryStalePackageReference)' != ''" Code="GNHSN006" Text="PackageReference %(_GnhSentryStalePackageReference.Identity) has Version %(_GnhSentryStalePackageReference.Version), not GnhSentryVersion $(GnhSentryVersion); set its Version to the GnhSentryVersion property in GnollHackM.csproj. $(_GnhSentryDllRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN006" Condition="'$(PkgSentry)' != '' And !$(_GnhPkgSentryFolder.EndsWith('$(_GnhPkgSentrySuffix)'))" Code="GNHSN006" Text="The restore resolved the Sentry package to $(PkgSentry), not to version $(GnhSentryVersion); restore again. $(_GnhSentryDllRemedy)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- libsentry.so: built from the sentry-native version and header that gnhsentry.dll uses, so the check reads both
+       manifests -->
+  <Target Name="_GnhCheckLibSentry" Condition="'$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('linux'))">
+    <PropertyGroup>
+      <_GnhPkgSentryFolder>$(PkgSentry.TrimEnd('\').ToLowerInvariant())</_GnhPkgSentryFolder>
+      <_GnhPkgSentrySuffix>\sentry\$(GnhSentryVersion.ToLowerInvariant())</_GnhPkgSentrySuffix>
+      <_GnhLibSentrySo>$(MSBuildProjectDirectory)\Platforms\Linux\libs\libsentry.so</_GnhLibSentrySo>
+      <_GnhLibSentryHeader>$(MSBuildProjectDirectory)\..\gnhsentrywin\include\sentry.h</_GnhLibSentryHeader>
+      <_GnhLibSentryCanCheck>true</_GnhLibSentryCanCheck>
+      <_GnhLibSentryCanCheck Condition="'$(GnhSentryDllSha256)' == '' Or '$(GnhLibSentrySha256)' == ''">false</_GnhLibSentryCanCheck>
+    </PropertyGroup>
+    <ItemGroup>
+      <_GnhLibSentryHeaderItem Include="$(_GnhLibSentryHeader)" />
+      <_GnhSentryStalePackageReference Include="@(PackageReference)" Condition="('%(Identity)' == 'Sentry' Or '%(Identity)' == 'Sentry.Maui') And '%(Version)' != '$(GnhSentryVersion)'" />
+    </ItemGroup>
+
+    <GetFileHash Condition="'$(_GnhLibSentryCanCheck)' == 'true' And Exists('$(_GnhLibSentrySo)')" Files="$(_GnhLibSentrySo)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="_GnhLibSentrySoSha256" />
+    </GetFileHash>
+    <GnhGetNormalizedTextHash Condition="'$(_GnhLibSentryCanCheck)' == 'true' And Exists('$(_GnhLibSentryHeader)')" Files="@(_GnhLibSentryHeaderItem)">
+      <Output TaskParameter="Hash" PropertyName="_GnhLibSentryHeaderSha256" />
+    </GnhGetNormalizedTextHash>
+
+    <ItemGroup>
+      <_GnhSentryNativeProblem Include="GNHSN015" Condition="'$(GnhSentryDllSha256)' == ''" Code="GNHSN015" Text="Platforms\Windows\libs\gnhsentry.build.props was not found; libsentry.so is checked against the Sentry package and sentry-native versions it records. Run win\win32\xpl\gnhsentrywin\Build-GnhSentry.ps1 first. $(_GnhLibSentryRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN015" Condition="'$(GnhLibSentrySha256)' == ''" Code="GNHSN015" Text="Platforms\Linux\libs\libsentry.build.props was not found, so libsentry.so cannot be checked against Sentry $(GnhSentryVersion). $(_GnhLibSentryRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN011" Condition="'$(_GnhLibSentryCanCheck)' == 'true' And '$(GnhSentryVersion)' != '$(GnhSentryDllPackageVersion)'" Code="GNHSN011" Text="gnhsentry.build.props records Sentry $(GnhSentryDllPackageVersion), but GnhSentryVersion is $(GnhSentryVersion); libsentry.so follows the sentry-native version gnhsentry.dll was built with. Run win\win32\xpl\gnhsentrywin\Build-GnhSentry.ps1 first. $(_GnhLibSentryRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN012" Condition="'$(_GnhLibSentryCanCheck)' == 'true' And '$(GnhLibSentryNativeVersion)' != '$(GnhSentryDllNativeVersion)'" Code="GNHSN012" Text="libsentry.so is sentry-native $(GnhLibSentryNativeVersion), but gnhsentry.dll and Sentry $(GnhSentryDllPackageVersion) use sentry-native $(GnhSentryDllNativeVersion). $(_GnhLibSentryRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN013" Condition="'$(_GnhLibSentryCanCheck)' == 'true' And !Exists('$(_GnhLibSentrySo)')" Code="GNHSN013" Text="libsentry.so was not found at $(_GnhLibSentrySo). $(_GnhLibSentryRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN013" Condition="'$(_GnhLibSentryCanCheck)' == 'true' And Exists('$(_GnhLibSentrySo)') And '$(_GnhLibSentrySoSha256)' != '$(GnhLibSentrySha256)'" Code="GNHSN013" Text="$(_GnhLibSentrySo) has SHA-256 $(_GnhLibSentrySoSha256), but libsentry.build.props records $(GnhLibSentrySha256). $(_GnhLibSentryRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN014" Condition="'$(_GnhLibSentryCanCheck)' == 'true' And !Exists('$(_GnhLibSentryHeader)')" Code="GNHSN014" Text="sentry.h was not found at $(_GnhLibSentryHeader). $(_GnhLibSentryRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN014" Condition="'$(_GnhLibSentryCanCheck)' == 'true' And Exists('$(_GnhLibSentryHeader)') And '$(_GnhLibSentryHeaderSha256)' != '$(GnhLibSentryHeaderSha256)'" Code="GNHSN014" Text="win\win32\xpl\gnhsentrywin\include\sentry.h has the normalized hash $(_GnhLibSentryHeaderSha256), but libsentry.so was built from a header with $(GnhLibSentryHeaderSha256). $(_GnhLibSentryRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN016" Condition="'@(_GnhSentryStalePackageReference)' != ''" Code="GNHSN016" Text="PackageReference %(_GnhSentryStalePackageReference.Identity) has Version %(_GnhSentryStalePackageReference.Version), not GnhSentryVersion $(GnhSentryVersion); set its Version to the GnhSentryVersion property in GnollHackM.csproj. $(_GnhLibSentryRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN016" Condition="'$(PkgSentry)' != '' And !$(_GnhPkgSentryFolder.EndsWith('$(_GnhPkgSentrySuffix)'))" Code="GNHSN016" Text="The restore resolved the Sentry package to $(PkgSentry), not to version $(GnhSentryVersion); restore again. $(_GnhLibSentryRemedy)" />
+    </ItemGroup>
+  </Target>
+</Project>

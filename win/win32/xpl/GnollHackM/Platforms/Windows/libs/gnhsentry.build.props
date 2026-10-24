@@ -1,0 +1,14 @@
+<!-- Written by Build-GnhSentry.ps1; checked by GnhSentryNative.targets. Do not edit. -->
+<Project>
+  <PropertyGroup>
+    <GnhSentryDllPackageVersion>6.12.1</GnhSentryDllPackageVersion>
+    <GnhSentryDllNativeVersion>0.17.2</GnhSentryDllNativeVersion>
+    <GnhSentryDllLibSha256>010EA77329A809737D4D0696512B6B6FC4E2282B380801191C9827CF0CF4D85C</GnhSentryDllLibSha256>
+    <GnhSentryDllSourceSha256>7D74829626A761473BFB125186B4DEC4D11D371003AE9FE432FC82D8804BF9A5</GnhSentryDllSourceSha256>
+    <GnhSentryDllSha256>D8FE0D937DA1E4311C2202662050AF30408EF3D0BB9965244BED05DB44747533</GnhSentryDllSha256>
+    <GnhSentryDllPdbSha256>2C7A17A39F72DBA75EFA085B5937A4F22D2ED168A957A29B39F72C6857DEB3A7</GnhSentryDllPdbSha256>
+    <GnhSentryDllDebugId>226ecd6b-bde5-4ed5-9283-6f666430b4b6-3</GnhSentryDllDebugId>
+    <GnhSentryDllToolset>MSVC 14.51.36231, Windows SDK 10.0.28000.0</GnhSentryDllToolset>
+    <GnhSentryDllBuildArgsSha256>BA51D492421138B5F4E76E67331A0F93E71E92B7F5B7B3AE1D176C92148BC2FB</GnhSentryDllBuildArgsSha256>
+  </PropertyGroup>
+</Project>

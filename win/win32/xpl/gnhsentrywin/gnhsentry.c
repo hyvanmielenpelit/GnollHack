@@ -19,13 +19,9 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-/* Declarations as in include/sentry.h of sentry-native at tag 0.17.2 (_WIN32, static build) */
-typedef struct sentry_ucontext_s
-{
-    EXCEPTION_POINTERS exception_ptrs;
-} sentry_ucontext_t;
-
-void sentry_handle_exception(const sentry_ucontext_t *uctx);
+/* sentry-native's public API, at the version Build-GnhSentry.ps1 checks against the linked library */
+#define SENTRY_BUILD_STATIC 1
+#include "include/sentry.h"
 
 /* Modules whose faults are captured, by the name in their export directory */
 static const char *const listed_modules[] =

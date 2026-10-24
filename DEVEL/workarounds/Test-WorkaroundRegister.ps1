@@ -17,9 +17,10 @@ superseded entries must have no tags left. Known issues have no tags, and a
 WORKAROUND(KI-...) tag is an error.
 
 Warnings do not fail the run. They cover stale entries, field order, ID order, a leftover
-"No entries." line, dangling Related IDs, and NuGet version drift: an entry whose fix is
-merged or released upstream while GnollHackM.csproj references a version that the newest
-check did not cover.
+"No entries." line, dangling Related IDs, and version drift: an entry whose fix is merged
+or released upstream while GnollHackM.csproj references a NuGet version (a $(...) version
+is resolved from the csproj's properties), or the native binaries' build manifests record
+a sentry-native version, that the newest check did not cover.
 
 -CheckUpstream asks GitHub, through the gh CLI, for the state of each linked issue or pull
 request and warns where it contradicts the entry. It needs the network and is not meant
@@ -588,17 +589,44 @@ foreach ($entry in $allEntries) {
     }
 }
 
-# NuGet version drift: only entries whose fix is merged or released upstream can become
+# Version drift: only entries whose fix is merged or released upstream can become
 # removable, or resolved, through a package bump.
 $csprojPath = Join-Path $root 'win\win32\xpl\GnollHackM\GnollHackM.csproj'
 if (Test-Path -LiteralPath $csprojPath) {
     $csproj = [IO.File]::ReadAllText($csprojPath)
     $csproj = [regex]::Replace($csproj, '<!--.*?-->', '', [Text.RegularExpressions.RegexOptions]::Singleline)
+    # Simple properties for $(...) versions; conditions are not evaluated, and the last one wins, as in MSBuild
+    $csprojProperties = @{}
+    foreach ($m in [regex]::Matches($csproj, '<([A-Za-z_][\w.-]*)>([^<$]+)</\1>')) {
+        $csprojProperties[$m.Groups[1].Value] = $m.Groups[2].Value.Trim()
+    }
     $packageVersions = @{}
+    $packageSources = @{}
     foreach ($m in [regex]::Matches($csproj, '<PackageReference\s+Include="([^"]+)"\s+Version="([^"]+)"')) {
         $name = $m.Groups[1].Value
+        $version = $m.Groups[2].Value
+        if ($version -match '^\$\(([A-Za-z_][\w.-]*)\)$' -and $csprojProperties.ContainsKey($Matches[1])) {
+            $version = $csprojProperties[$Matches[1]]
+        }
         if (-not $packageVersions.ContainsKey($name)) { $packageVersions[$name] = @() }
-        $packageVersions[$name] += $m.Groups[2].Value
+        if ($packageVersions[$name] -notcontains $version) { $packageVersions[$name] += $version }
+        $packageSources[$name] = 'GnollHackM.csproj references'
+    }
+    # sentry-native, from the build manifests of gnhsentry.dll and libsentry.so
+    $manifests = @(
+        @{ Path = 'win\win32\xpl\GnollHackM\Platforms\Windows\libs\gnhsentry.build.props'; Property = 'GnhSentryDllNativeVersion' },
+        @{ Path = 'win\win32\xpl\GnollHackM\Platforms\Linux\libs\libsentry.build.props'; Property = 'GnhLibSentryNativeVersion' }
+    )
+    foreach ($manifest in $manifests) {
+        $manifestPath = Join-Path $root $manifest.Path
+        if (-not (Test-Path -LiteralPath $manifestPath)) { continue }
+        $manifestText = [IO.File]::ReadAllText($manifestPath)
+        $m = [regex]::Match($manifestText, "<$($manifest.Property)>([^<]+)</$($manifest.Property)>")
+        if (-not $m.Success) { continue }
+        $version = $m.Groups[1].Value.Trim()
+        if (-not $packageVersions.ContainsKey('sentry-native')) { $packageVersions['sentry-native'] = @() }
+        if ($packageVersions['sentry-native'] -notcontains $version) { $packageVersions['sentry-native'] += $version }
+        $packageSources['sentry-native'] = "the native binaries' build manifests record"
     }
     foreach ($entry in $allEntries) {
         $fields = $entry.Fields
@@ -619,7 +647,7 @@ if (Test-Path -LiteralPath $csprojPath) {
             if (-not $covered) {
                 $suffix = 're-check'
                 if ($entry.Kind -eq 'KI') { $suffix = 're-check, the upgrade may fix it' }
-                Add-LintMessage 'WARNING' $entry.File $fields['Package'].Line $entry.Id "GnollHackM.csproj references $package $($packageVersions[$package] -join ' and '), which the newest check does not cover; $suffix"
+                Add-LintMessage 'WARNING' $entry.File $fields['Package'].Line $entry.Id "$($packageSources[$package]) $package $($packageVersions[$package] -join ' and '), which the newest check does not cover; $suffix"
             }
         }
     }
