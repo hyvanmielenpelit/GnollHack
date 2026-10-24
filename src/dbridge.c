@@ -440,6 +440,15 @@ e_sync_monster(struct entity *etmp)
 
     if (!DEADMONSTER(etmp->emon) && etmp->emon->mx)
     {
+        if (etmp->emon->wormno && (etmp->ex != etmp->emon->mx || etmp->ey != etmp->emon->my))
+        {
+            /* a tail entity keeps its square while its segment is still there */
+            if (m_at(etmp->ex, etmp->ey) == etmp->emon)
+                etmp->edata = &mons[get_worm_tail_mnum(etmp->emon->data)];
+            else
+                etmp->edata = (struct permonst *) 0;
+            return TRUE;
+        }
         etmp->edata = etmp->emon->data;
         etmp->ex = etmp->emon->mx;
         etmp->ey = etmp->emon->my;
@@ -581,6 +590,18 @@ e_eject(struct entity *etmp)
         etmp->ex = u.ux;
         etmp->ey = u.uy;
     }
+    else if (etmp->emon->wormno && (etmp->ex != etmp->emon->mx || etmp->ey != etmp->emon->my))
+    {
+        /* a long worm's tail is re-laid from the head, which stays in place */
+        xchar mx = etmp->emon->mx, my = etmp->emon->my;
+
+        remove_worm(etmp->emon);
+        place_monster(etmp->emon, mx, my);
+        place_worm_tail_randomly(etmp->emon, mx, my);
+        update_monster_region(etmp->emon);
+        newsym(mx, my);
+        etmp->edata = (struct permonst *) 0;
+    }
     else if (enexto(&xy, etmp->ex, etmp->ey, etmp->emon->data))
     {
         rloc_to(etmp->emon, xy.x, xy.y);
@@ -720,8 +741,9 @@ do_entity(struct entity *etmp)
     {
         if (crm->typ == DRAWBRIDGE_DOWN)
         {
-            pline_ex(ATR_NONE, is_u(etmp) ? CLR_MSG_NEGATIVE : CLR_MSG_WARNING, "%s hit by the falling drawbridge!",
-                  E_phrase(etmp, "are"));             /* no jump */
+            if (e_inview)
+                pline_ex(ATR_NONE, is_u(etmp) ? CLR_MSG_NEGATIVE : CLR_MSG_WARNING,
+                         "%s hit by the falling drawbridge!", E_phrase(etmp, "are")); /* no jump */
             if (!e_damage(etmp, DRAWBRIDGE_CRUSH_DAMAGE, "crushed to death underneath a drawbridge", NO_KILLER_PREFIX,
                           XKILL_NOCORPSE | (e_inview ? XKILL_GIVEMSG : XKILL_NOMSG))
                 && is_u(etmp))

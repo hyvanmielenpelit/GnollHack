@@ -107,16 +107,24 @@
     <DebugType>portable</DebugType>
   </PropertyGroup>
 
+  <!-- Whether the SENTRY_AUTH_TOKEN environment variable is set; used by EnableSentryUploadForPublish -->
+  <PropertyGroup>
+    <_GnhHasSentryAuthToken>false</_GnhHasSentryAuthToken>
+    <_GnhHasSentryAuthToken Condition="!$([System.String]::IsNullOrEmpty($([System.Environment]::GetEnvironmentVariable('SENTRY_AUTH_TOKEN'))))">true</_GnhHasSentryAuthToken>
+  </PropertyGroup>
+
   <!-- WORKAROUND(WA-BUILD-0002): Visual Studio's Android Archive sets no archive or publish property -->
   <!-- Sentry symbol upload runs only for publish and archive builds, and only when the
-       SENTRY_AUTH_TOKEN environment variable is set. Decided in a target so that properties
-       from the publish profile (PublishAppxPackage) are visible. Sentry CLI reads the token,
+       SENTRY_AUTH_TOKEN environment variable is set (_GnhHasSentryAuthToken). The variable is
+       read through a property function so that MSBuild's environment tracking never logs its
+       value. Decided in a target so that properties from the publish profile (PublishAppxPackage)
+       are visible. Sentry CLI reads the token,
        SENTRY_ORG and SENTRY_PROJECT from the environment; SentryAuthToken is never set here
        because MSBuild would log it. GnhSentryUpload=true forces the upload for other builds,
        and GnhSentryUpload=false suppresses it. Visual Studio's Android Archive passes no archive
        property, so every Android Release build counts as a publish except those Visual Studio
        triggers implicitly for F5 and deploy (IsImplicitlyTriggeredBuild=true). -->
-  <Target Name="EnableSentryUploadForPublish" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' And '$(SENTRY_AUTH_TOKEN)' != '' And '$(GnhSentryUpload)' != 'false' And ('$(_IsPublishing)' == 'true' Or '$(ArchiveOnBuild)' == 'true' Or '$(PublishAppxPackage)' == 'true' Or '$(GenerateAppxPackageOnBuild)' == 'true' Or '$(GnhSentryUpload)' == 'true' Or ($(TargetFramework.Contains('-android')) And '$(IsImplicitlyTriggeredBuild)' != 'true')) ">
+  <Target Name="EnableSentryUploadForPublish" BeforeTargets="BeforeBuild" Condition=" '$(Configuration)' == 'Release' And '$(_GnhHasSentryAuthToken)' == 'true' And '$(GnhSentryUpload)' != 'false' And ('$(_IsPublishing)' == 'true' Or '$(ArchiveOnBuild)' == 'true' Or '$(PublishAppxPackage)' == 'true' Or '$(GenerateAppxPackageOnBuild)' == 'true' Or '$(GnhSentryUpload)' == 'true' Or ($(TargetFramework.Contains('-android')) And '$(IsImplicitlyTriggeredBuild)' != 'true')) ">
     <PropertyGroup>
       <SentryUploadSymbols>true</SentryUploadSymbols>
     </PropertyGroup>
@@ -1555,15 +1563,32 @@
   <Target Name="CleanNativePdbsAfterSentryUpload" AfterTargets="UploadDebugInfoToSentry" DependsOnTargets="DeleteNativePdbs" Condition="$(DefineConstants.Contains('SENTRY')) And ('$(SentryUploadSymbols)' == 'true' Or '$(SentryUploadSources)' == 'true') And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'" />
   <!-- gnollhackwin.vcxproj writes its PDB to the symbols directory, not next to the DLL in Platforms\Windows\libs,
        so UploadDebugInfoToSentry never sees it -->
-  <Target Name="UploadGnollHackWinPdbToSentry" AfterTargets="UploadDebugInfoToSentry" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
+  <!-- The PDB is uploaded only when its debug ID matches that of the gnollhackwin.dll in Platforms\Windows\libs;
+       a mismatch is an error in strict builds (_GnhSentryNativeStrict) and a warning otherwise -->
+  <Target Name="UploadGnollHackWinPdbToSentry" AfterTargets="UploadDebugInfoToSentry" DependsOnTargets="GnhCheckSentryNativeBinaries" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
     <PropertyGroup>
       <GnollHackWinPdb>$(MSBuildProjectDirectory)\..\..\vs\symbols\Release\x64\gnollhackwin\gnollhackwin.pdb</GnollHackWinPdb>
+      <_GnhWinDll>$(MSBuildProjectDirectory)\Platforms\Windows\libs\gnollhackwin.dll</_GnhWinDll>
     </PropertyGroup>
     <Warning Condition="!Exists('$(GnollHackWinPdb)')" Text="gnollhackwin.pdb not found at $(GnollHackWinPdb); native symbols were not uploaded to Sentry." />
-    <Exec Condition="Exists('$(GnollHackWinPdb)')" Command="$(SentryCLIDebugFilesUploadCommand) -t pdb &quot;$(GnollHackWinPdb)&quot;" IgnoreExitCode="true" ContinueOnError="WarnAndContinue">
+    <Exec Condition="Exists('$(GnollHackWinPdb)')" Command="&quot;$(SentryCLI)&quot; debug-files check --json &quot;$(_GnhWinDll)&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_GnhWinDllCheckOut" />
+    </Exec>
+    <Exec Condition="Exists('$(GnollHackWinPdb)')" Command="&quot;$(SentryCLI)&quot; debug-files check --json &quot;$(GnollHackWinPdb)&quot;" ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_GnhWinPdbCheckOut" />
+    </Exec>
+    <PropertyGroup Condition="Exists('$(GnollHackWinPdb)')">
+      <_GnhWinDllDebugId>$([System.Text.RegularExpressions.Regex]::Match('$(_GnhWinDllCheckOut)', '"debug_id":\s*"([0-9a-fA-F-]+)"').Groups[1].Value.ToLowerInvariant())</_GnhWinDllDebugId>
+      <_GnhWinPdbDebugId>$([System.Text.RegularExpressions.Regex]::Match('$(_GnhWinPdbCheckOut)', '"debug_id":\s*"([0-9a-fA-F-]+)"').Groups[1].Value.ToLowerInvariant())</_GnhWinPdbDebugId>
+      <_GnhWinPdbMatchesDll>false</_GnhWinPdbMatchesDll>
+      <_GnhWinPdbMatchesDll Condition="'$(_GnhWinDllDebugId)' != '' And '$(_GnhWinDllDebugId)' == '$(_GnhWinPdbDebugId)'">true</_GnhWinPdbMatchesDll>
+    </PropertyGroup>
+    <Error Condition="Exists('$(GnollHackWinPdb)') And '$(_GnhWinPdbMatchesDll)' != 'true' And '$(_GnhSentryNativeStrict)' == 'true'" Text="$(_GnhWinDll) has debug ID '$(_GnhWinDllDebugId)', but $(GnollHackWinPdb) has debug ID '$(_GnhWinPdbDebugId)'; the DLL in Platforms\Windows\libs was probably built from another configuration, and its symbols were not uploaded to Sentry." />
+    <Warning Condition="Exists('$(GnollHackWinPdb)') And '$(_GnhWinPdbMatchesDll)' != 'true' And '$(_GnhSentryNativeStrict)' != 'true'" Text="$(_GnhWinDll) has debug ID '$(_GnhWinDllDebugId)', but $(GnollHackWinPdb) has debug ID '$(_GnhWinPdbDebugId)'; the DLL in Platforms\Windows\libs was probably built from another configuration, and its symbols were not uploaded to Sentry." />
+    <Exec Condition="Exists('$(GnollHackWinPdb)') And '$(_GnhWinPdbMatchesDll)' == 'true'" Command="$(SentryCLIDebugFilesUploadCommand) -t pdb &quot;$(GnollHackWinPdb)&quot;" IgnoreExitCode="true" ContinueOnError="WarnAndContinue">
       <Output TaskParameter="ExitCode" PropertyName="_GnollHackWinPdbExitCode" />
     </Exec>
-    <Warning Condition="Exists('$(GnollHackWinPdb)') And '$(_GnollHackWinPdbExitCode)' != '0'" Text="Sentry CLI could not upload gnollhackwin.pdb." />
+    <Warning Condition="Exists('$(GnollHackWinPdb)') And '$(_GnhWinPdbMatchesDll)' == 'true' And '$(_GnollHackWinPdbExitCode)' != '0'" Text="Sentry CLI could not upload gnollhackwin.pdb." />
   </Target>
   <!-- gnhsentry.pdb exists only on the machine that built the committed gnhsentry.dll; it is uploaded only when it
        matches the manifest -->

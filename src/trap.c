@@ -3078,7 +3078,7 @@ mintrap(struct monst *mtmp)
             if ((in_sight || see_it) && can_see_trap)
                 seetrap(trap);
 
-            mburn_away_slime(mtmp, in_sight || see_it);
+            mburn_away_slime(mtmp, in_sight);
 
             if (is_mon_immune_to_fire(mtmp)) 
             {

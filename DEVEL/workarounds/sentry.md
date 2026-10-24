@@ -86,7 +86,12 @@ or to the .NET runtime is not established.
 **Workaround.** `gnh_vectored_handler`, a first vectored exception handler installed by
 `gnh_crash_install`, passes crash codes raised inside an allowlisted native module to
 `sentry_handle_exception`, and then lets the exception continue unchanged, so CoreCLR's
-fail-fast and WER still run.
+fail-fast and WER still run. It sees first-chance exceptions, so a fault that a listed
+module handles itself with `__try`/`__except` would still be captured as a crash. As of
+2026-10-24 none of the listed third-party modules shows SEH use beyond its static CRT: the
+x64 unwind data names a C scope table with `__except` in 17 to 19 functions per module
+(libSkiaSharp 18, libEGL 18, libGLESv2 19, SkiaSharp.Views.WinUI.Native 17, fmod 17,
+fmodstudio 9), against 18 in gnollhackwin.dll, whose own code has no `__try`.
 
 **Verify removal.** Disable the `AddVectoredExceptionHandler` call in `gnh_crash_install`.
 Then:
@@ -241,7 +246,9 @@ when the target platform is Android.
 
 **Workaround.** `UploadGnollHackLinuxSoToSentry` runs after `UploadDebugInfoToSentry` and
 uploads the repository copy of libgnollhacklinux.so, which keeps its DWARF, with
-`sentry-cli debug-files upload -t elf`.
+`sentry-cli debug-files upload -t elf`. libsentry.so ships stripped with
+`--strip-unneeded`, which keeps its exported names, and its debug companion is not kept or
+uploaded, because no Linux native event has had a frame in it.
 
 **Verify removal.** Delete the target. Then:
 - Build the Linux Avalonia Release build with `SENTRY_AUTH_TOKEN` set and

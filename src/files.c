@@ -1943,14 +1943,22 @@ read_savefile_header(const char *fq_file, const char *plbuf,
     return ok;
 }
 
-/* TRUE if both headers describe the same game; only fields a game cannot change */
+/* TRUE if both headers describe the same game: role, race, difficulty and debug mode match, and
+   explore, modern and casual modes match unless the game switched into explore mode between
+   the older header and the newer one */
 static boolean
-same_game_stats(const struct save_game_stats *a, const struct save_game_stats *b)
+same_game_stats(const struct save_game_stats *older, const struct save_game_stats *newer)
 {
-    return (boolean) (a->rolenum == b->rolenum && a->racenum == b->racenum
-                      && a->game_difficulty == b->game_difficulty
-                      && a->debug_mode == b->debug_mode && a->explore_mode == b->explore_mode
-                      && a->modern_mode == b->modern_mode && a->casual_mode == b->casual_mode);
+    if (older->rolenum != newer->rolenum || older->racenum != newer->racenum
+        || older->game_difficulty != newer->game_difficulty || older->debug_mode != newer->debug_mode)
+        return FALSE;
+
+    if (older->explore_mode == newer->explore_mode)
+        return (boolean) (older->modern_mode == newer->modern_mode && older->casual_mode == newer->casual_mode);
+    else if (!older->explore_mode && newer->explore_mode)
+        return TRUE;
+    else
+        return FALSE;
 }
 
 int
