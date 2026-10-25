@@ -43,6 +43,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHWindowGate.cs" Link="Shared\GHWindowGate.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteLogic.cs" Link="Shared\GHPerformanceSuiteLogic.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHReplayFiles.cs" Link="Shared\GHReplayFiles.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHBonesFiles.cs" Link="Shared\GHBonesFiles.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Android\FrameworkObjectDisposedFilter.cs" Link="Shared\FrameworkObjectDisposedFilter.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Avalonia\GHRefreshRateEstimator.cs" Link="Shared\GHRefreshRateEstimator.cs" />
   </ItemGroup>

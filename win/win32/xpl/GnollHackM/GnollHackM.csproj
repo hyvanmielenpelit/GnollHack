@@ -279,6 +279,7 @@
     <None Remove="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHRecordedGameFile.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHReplayFiles.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHBonesFiles.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHRefList.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHResponse.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHRequest.cs" />
@@ -548,6 +549,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\GHRecordedFunctionCall.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHRecordedGameFile.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHReplayFiles.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHBonesFiles.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHRefList.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHResponse.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHRequest.cs" />

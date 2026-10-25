@@ -8485,16 +8485,15 @@ namespace GnollHackX
                                                         string filename = list[0];
                                                         if (!string.IsNullOrWhiteSpace(filename))
                                                         {
-                                                            string savepath = Path.Combine(GHPath, filename);
-                                                            if (!File.Exists(savepath))
+                                                            string savepath = GHBonesFiles.GetSavePathInside(GHPath, filename);
+                                                            if (savepath == null)
+                                                                MaybeWriteGHLog("Received bones file name is not a valid bones file name: " + GHBonesFiles.FormatForLog(filename) + ". Ignoring the received bones file.");
+                                                            else if (!File.Exists(savepath))
                                                             {
                                                                 Debug.WriteLine("Starting writing bones byte array into file: " + savepath);
                                                                 try
                                                                 {
-                                                                    using (FileStream fs = File.OpenWrite(savepath))
-                                                                    {
-                                                                        await fs.WriteAsync(bytearray, 0, bytearray.Length);
-                                                                    }
+                                                                    await GHBonesFiles.WriteNewFileAsync(savepath, bytearray);
                                                                     didWriteBonesFileSuccessfully = true;
 
                                                                     if (response.Headers.TryGetValues("X-GH-BonesFilePath", out IEnumerable<string> bonesfilepathienum))
