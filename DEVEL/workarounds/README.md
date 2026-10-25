@@ -53,7 +53,7 @@ files. A file's `- ID prefix:` line gives both of its series: `WA-RUNTIME` also 
 | [cef.md](cef.md) | `WA-CEF` | CEF, CefGlue, Chromium |
 | [linux.md](linux.md) | `WA-LINUX` | Linux distributions, glibc, FreeType, fontconfig, X11, AppImage, Steam runtime |
 | [fmod.md](fmod.md) | `WA-FMOD` | FMOD Core and FMOD Studio |
-| [sentry.md](sentry.md) | `WA-SENTRY` | sentry-dotnet, Sentry.Maui, sentry-native, sentry-cocoa |
+| [sentry.md](sentry.md) | `WA-SENTRY` | sentry-dotnet, Sentry.Maui, sentry-java (Sentry's Android SDK), sentry-native, sentry-cocoa |
 | [build_tooling.md](build_tooling.md) | `WA-BUILD` | MSBuild, the .NET SDK, Visual Studio, NuGet, C compilers and linkers |
 
 A new component gets a new file with the header below and a row in this table. The lint

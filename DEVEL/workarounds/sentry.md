@@ -1,7 +1,7 @@
 # Sentry Workarounds
 
-- Component: Sentry SDKs (sentry-dotnet, Sentry.Maui, sentry-native, sentry-cocoa)
-- Upstream: https://github.com/getsentry/sentry-dotnet, https://github.com/getsentry/sentry-native
+- Component: Sentry SDKs (sentry-dotnet, Sentry.Maui, sentry-java, sentry-native, sentry-cocoa)
+- Upstream: https://github.com/getsentry/sentry-dotnet, https://github.com/getsentry/sentry-java, https://github.com/getsentry/sentry-native
 - ID prefix: WA-SENTRY
 
 Entries follow the schema in [README.md](README.md). Append workarounds before the
@@ -374,3 +374,46 @@ nor a message gets a message.
 
 Checks:
 - 2026-10-25 | Sentry 6.12.1 | still-needed | Reproduced in a scratch console project: a throwing Message getter leaves SentryExceptions empty in BeforeSend; no upstream issue found.
+
+## WA-SENTRY-0010: Sentry's Android ANR events omit the ApplicationExitInfo description
+
+- Status: active
+- Added: 2026-10-25
+- GnollHack version: 3.31 (431)
+- Component: sentry-java
+- Package: Sentry
+- Defective version: Sentry 6.12.1 (sentry-android 8.60.0)
+- Platforms: Android
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-25
+- Code: `win/win32/xpl/GnollHackM/Platforms/Android/AndroidExitInfoReporter.cs` (`AndroidExitInfoReporter`); `win/win32/xpl/GnollHackM/Platforms/Android/MainActivity.cs` (`MainActivity.OnCreate`)
+- Remove when: Sentry's Android ANR events carry the exit description or the trace header, GnollHack uses that release, and Verify removal passes.
+- Related: GNOLLHACK-DQ, GNOLLHACK-DR, WA-SENTRY-0008
+
+**Symptom.** An Android ANR event in Sentry says only "ANR" or "Background ANR". When the
+main thread is idle at the dump, nothing in the event tells an input timeout from a missing
+focused window, a service timeout or a broadcast timeout, or says when the dump was taken.
+
+**Cause.** sentry-android's ANR integration reads the exit reason, importance, timestamp and
+trace stream from `ApplicationExitInfo` but never `getDescription()`, and it parses the
+trace into threads without keeping its `Subject:` header. Its `attachAnrThreadDump` option
+would attach the raw dump, but Sentry .NET does not expose it: `SentrySdk` copies a fixed
+set of `NativeOptions` into the Java options, and the Java options are not reachable
+otherwise.
+
+**Workaround.** `AndroidExitInfoReporter`, started from `MainActivity.OnCreate`, reads the
+ANR exits Android recorded since the last report and sends each as a warning message
+`Android ANR exit info: <type>`, with the description, the trace `Subject:` and dump-time
+lines, and the exit time in the `anr.exit_time` tag and the `ANR Exit Time` extra.
+
+**Verify removal.** With a Sentry release whose ANR events are expected to carry the
+description:
+- Build an Android Debug build without the two tagged sites.
+- Cause an ANR as in this entry's first check: `adb shell run-as <package> kill -STOP <pid>`,
+  tap the screen until the ANR dialog appears, choose to close the app, and relaunch it.
+- Confirm that Sentry's ANR event shows the exit description or the trace `Subject:` line.
+
+Checks:
+- 2026-10-25 | Sentry 6.12.1 (sentry-android 8.60.0) | still-needed | No ANR or exit-info class in sentry-android-core 8.60.0 references getDescription; Sentry 6.12.1 NativeOptions has no AttachAnrThreadDump; no upstream issue found.

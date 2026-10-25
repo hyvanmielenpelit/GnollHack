@@ -46,6 +46,11 @@ public class MainActivity : MauiAppCompatActivity
             HideOsNavigationBar();
 
         CreateSaveGameNotificationChannel();
+
+#if SENTRY
+        // WORKAROUND(WA-SENTRY-0010): Sentry's Android ANR events omit the ApplicationExitInfo description
+        AndroidExitInfoReporter.StartReporting(this);
+#endif
     }
 
     // WORKAROUND(WA-MAUI-0016): Framework teardown raises ObjectDisposedException on Android
