@@ -6139,7 +6139,7 @@ namespace GnollHackX
 
             try
             {
-                GnollHackService.Chmod(targetpath, (uint)ChmodPermissions.S_IALL);
+                GnollHackService?.Chmod(targetpath, (uint)ChmodPermissions.S_IALL);
             }
             catch (Exception ex)
             {
