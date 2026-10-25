@@ -3434,6 +3434,7 @@ E struct obj* find_oid_ex(unsigned, int*, int*);
 E int64_t contained_cost(struct obj *, struct monst *, int64_t, boolean, boolean);
 E int64_t contained_gold(struct obj *);
 E void picked_container(struct obj *);
+E void dropped_container(struct obj *, struct monst *, boolean);
 E void gem_learned(int);
 E void alter_cost(struct obj *, int64_t);
 E int64_t unpaid_cost(struct obj *, boolean);

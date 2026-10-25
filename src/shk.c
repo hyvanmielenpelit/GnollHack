@@ -54,7 +54,6 @@ static void rile_shk(struct monst *);
 static void rouse_shk(struct monst *, boolean);
 static void remove_damage(struct monst *, boolean);
 static void sub_one_frombill(struct obj *, struct monst *);
-static void dropped_container(struct obj *, struct monst *, boolean);
 static void adjust_dropped_container_on_sale(struct obj*, struct monst*);
 static void add_to_billobjs(struct obj *);
 static void bill_box_content(struct obj *, boolean, boolean,
@@ -2456,7 +2455,7 @@ contained_gold(struct obj *obj)
     return value;
 }
 
-static void
+void
 dropped_container(struct obj *obj, struct monst *shkp, boolean sale)
 {
     struct obj *otmp;
@@ -2700,7 +2699,8 @@ alter_cost(struct obj *obj, int64_t amt)
     int64_t new_price;
 
     debugprint_pos();
-    for (shkp = next_shkp(fmon, TRUE); shkp; shkp = next_shkp(shkp, TRUE))
+    for (shkp = next_shkp(fmon, TRUE); shkp;
+         shkp = next_shkp(shkp->nmon, TRUE))
         if ((bp = onbill(obj, shkp, TRUE)) != 0) {
             new_price = !amt ? get_cost(obj, shkp) : (amt < 0L) ? -amt : amt;
             if (new_price > bp->price || amt < 0L) {
@@ -3476,8 +3476,9 @@ sellobj(struct obj *obj, xchar x, xchar y)
         if (isgold)
             offer = obj->quan;
         else if (cgold)
-            offer += cgold;
-        if ((eshkp->robbed -= offer < 0L))
+            offer += gltmp;
+        eshkp->robbed -= offer;
+        if (eshkp->robbed < 0L)
             eshkp->robbed = 0L;
         if (offer && !Deaf && !muteshk(shkp))
         {

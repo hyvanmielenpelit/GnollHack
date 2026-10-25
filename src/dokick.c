@@ -1035,7 +1035,13 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
               otense(kickedobj, "slide"), surface(x, y));
 
     if (costly && !isgold)
+    {
+        /* addtobill() clears no_charge; a hero-owned container keeps it so that only its contents are billed */
+        boolean was_no_charge = is_obj_no_charge(kickedobj);
+
         addtobill(kickedobj, FALSE, FALSE, TRUE);
+        set_obj_no_charge(kickedobj, was_no_charge);
+    }
     debugprint("really_kick_object2: %d", kickedobj->otyp);
     obj_extract_self(kickedobj);
     (void) snuff_candle(kickedobj);
@@ -1076,8 +1082,13 @@ really_kick_object(xchar x, xchar y, boolean is_golf_swing)
 
     if (flooreffects(kickedobj, bhitpos.x, bhitpos.y, "fall"))
         return 1;
-    if (is_obj_unpaid(kickedobj))
+    if (is_unpaid(kickedobj))
+    {
+        /* billed contents are unpaid; everything else in the container is the hero's */
+        if (Has_contents(kickedobj))
+            dropped_container(kickedobj, shkp, FALSE);
         subfrombill(kickedobj, shkp);
+    }
     place_object(kickedobj, bhitpos.x, bhitpos.y);
     play_object_floor_sound(kickedobj, OBJECT_SOUND_TYPE_DROP_AFTER_THROW, Underwater);
     stackobj(kickedobj);
