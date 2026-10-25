@@ -1242,6 +1242,14 @@ namespace GnollHackX
                     pacing = IsSuspended ? GHPacingDecision.Suspended : GHPacingDecision.PlatformLoopOff;
                     return;
                 }
+#if WINDOWS && GNH_MAUI
+                // WORKAROUND(WA-WINUI-0007): WriteableBitmap updates pile up shared surfaces while the display is off
+                if (GHConstants.PauseGameRenderingWhenUnseen && EnvironmentStateWindows.IsDisplayOff)
+                {
+                    pacing = GHPacingDecision.Suspended;
+                    return;
+                }
+#endif
 
                 GamePage curGamePage = CurrentGamePage;
                 if (curGamePage == null)
@@ -3078,19 +3086,43 @@ namespace GnollHackX
                 CurrentMainPage.DoKeyboardFocus();
         }
 
-        /* Any thread; shows the notice only while the main page itself is showing, never during a game */
+        private static int _resourceWarningPending = 0;
+
+        /* Any thread; the notice stays pending until a page can show it */
         public static void ShowResourceWarningNotice()
         {
+            Interlocked.Exchange(ref _resourceWarningPending, 1);
+            TryShowPendingResourceWarning();
+        }
+
+        /* Any thread; shows a pending notice on the game page or the main page while that page is on top */
+        public static void TryShowPendingResourceWarning()
+        {
+            if (Interlocked.CompareExchange(ref _resourceWarningPending, 0, 0) == 0)
+                return;
             try
             {
                 MainThread.BeginInvokeOnMainThread(() =>
                 {
                     try
                     {
-                        MainPage mainPage = CurrentMainPage;
-                        if (CurrentGamePage != null || mainPage == null || PageFromTopOfModalNavigationStack() != null)
+                        if (Interlocked.CompareExchange(ref _resourceWarningPending, 0, 0) == 0)
                             return;
-                        mainPage.ShowResourceWarningPopup();
+                        Page topPage = PageFromTopOfModalNavigationStack();
+                        GamePage gamePage = CurrentGamePage;
+                        MainPage mainPage = CurrentMainPage;
+                        bool shown = false;
+                        if (gamePage != null)
+                        {
+                            if (ReferenceEquals(topPage, gamePage))
+                                shown = gamePage.ShowResourceWarningPopup();
+                        }
+                        else if (topPage == null && mainPage != null)
+                        {
+                            shown = mainPage.ShowResourceWarningPopup();
+                        }
+                        if (shown)
+                            Interlocked.Exchange(ref _resourceWarningPending, 0);
                     }
                     catch (Exception ex)
                     {

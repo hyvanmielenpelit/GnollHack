@@ -300,7 +300,14 @@ After retrieval, extract and record the following for each event:
   by up to a minute and a shorter lock can be missed. A
   separate `Handle growth warning` warning event (its own issue) is sent once
   per process when handles exceed the baseline by
-  `GHConstants.HandleGrowthWarningThreshold`. On a discrete GPU `local` is its
+  `GHConstants.HandleGrowthWarningThreshold`, or when the committed
+  pagefile-backed section bytes exceed the watchdog's first census (one
+  minute after start) by `GHConstants.SectionCommitGrowthWarningBytes`; its
+  `Trigger` extra says which (`handles` or `section commit`). An event whose
+  exception mechanism type is `gnollhack.before_send_fallback`, or that carries
+  an `Exception Fallback` extra, lost its exception data inside the Sentry SDK
+  and was given a minimal one in `BeforeSend` (WA-SENTRY-0009); its exception
+  has no stack, but an `Exception Stack Trace` extra may. On a discrete GPU `local` is its
   VRAM and `non-local` is system RAM; on an integrated GPU `local` is system
   RAM and the `non-local` budget is 0. GPU usage is non-zero only on the
   adapter GnollHack renders on. Sentry's own `Memory Info` context holds the

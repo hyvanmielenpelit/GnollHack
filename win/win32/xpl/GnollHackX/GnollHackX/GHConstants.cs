@@ -524,10 +524,15 @@ namespace GnollHackX
         public const string SentryContextProcessMemory = "Process Memory";
         /* Handles above the startup baseline that trigger one handle growth warning per process */
         public const int HandleGrowthWarningThreshold = 5000;
+        /* Committed pagefile-backed section bytes above the first watchdog census that trigger the same warning */
+        public const long SectionCommitGrowthWarningBytes = 2L * 1024L * 1024L * 1024L;
         // WORKAROUND(WA-WINUI-0007): WriteableBitmap updates pile up shared surfaces while the display is off
         /* Stops the main screen carousel while the display is off or the session is locked; static readonly
            rather than const, so that either value compiles without unreachable-code warnings */
         public static readonly bool PauseMainScreenWhenUnseen = true;
+        // WORKAROUND(WA-WINUI-0007): WriteableBitmap updates pile up shared surfaces while the display is off
+        /* Stops game page rendering while the display is off */
+        public static readonly bool PauseGameRenderingWhenUnseen = true;
         /* Worst case for the debug buffers is NUM_DEBUGBUFS (40) entries of DEBUGBUFSIZ
            (BUFSZ * 2 = 512) characters plus separators, about 20.7 kB. Real snapshots
            are far smaller. */

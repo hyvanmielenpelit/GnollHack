@@ -24970,6 +24970,18 @@ namespace GnollHackX.Pages.Game
             return MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
         }
 
+        /* Shown only when no other message popup is open: replacing one would answer it */
+        public bool ShowResourceWarningPopup()
+        {
+            if (MessagePopup.IsPopupOpen)
+                return false;
+            _ = MessagePopup.ShowMessagePopupAsync("Resources Running Low",
+                "GnollHack is using an unusually large amount of system resources. Please save your game and restart GnollHack.",
+                "OK", null, GHColors.Orange);
+            GHApp.AddSentryBreadcrumb("Popup: Resources Running Low", GHConstants.SentryGnollHackGeneralCategoryName);
+            return true;
+        }
+
         public bool HandleKeyPress(int key, bool isCtrl, bool isMeta)
         {
             Debug.WriteLine("HandleKeyPress: " + key);

@@ -260,13 +260,18 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: reported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Windows/MainScreenPauseWindows.cs` (`MainScreenPauseWindows`); `win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs` (`GHConstants.PauseMainScreenWhenUnseen`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Windows/MainScreenPauseWindows.cs` (`MainScreenPauseWindows`); `win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs` (`GHConstants.PauseMainScreenWhenUnseen`); `win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs` (`GHConstants.PauseGameRenderingWhenUnseen`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.CompositionTarget_Rendering`)
 - Remove when: GnollHack uses a Windows App SDK release that fixes microsoft-ui-xaml#12355, and Verify removal passes.
+- Related: GNOLLHACK-E9, GNOLLHACK-HC, GNOLLHACK-HW
 
 **Symptom.** While the display is off, the main menu's animated image carousel keeps
 updating its canvas, and the process accumulates window-sized shared surfaces, about
 100-170 MB of system commit. On one player's desktop the handle count kept growing for
-hours on the main menu until the app failed with E_OUTOFMEMORY.
+hours on the main menu until the app failed with E_OUTOFMEMORY. A game in progress does the
+same when the map is drawn on the CPU-rendered canvas (the GPU setting off): it keeps
+painting the map while the display is off. On one player's AMD Radeon 780M laptop the
+surfaces never leveled off, about 32 a minute, and the system commit was exhausted in
+about two hours.
 
 **Cause.** A `WriteableBitmap` updated while the display is off is uploaded through
 DirectComposition surfaces that are retired only when composition resumes. The carousel
@@ -276,12 +281,23 @@ DirectComposition or the GPU driver owns it.
 
 **Workaround.** `MainScreenPauseWindows` suspends the main page, including the carousel and
 its timer, while the display is off or the session is locked, and resumes it when both
-clear. `GHConstants.PauseMainScreenWhenUnseen` switches it on.
+clear. `GHConstants.PauseMainScreenWhenUnseen` switches it on. Game page rendering stops
+while the display is off: `GHApp.CompositionTarget_Rendering` checks the display state on
+every frame and skips the game page, and `MainScreenPauseWindows` suspends the game page's
+own animations for the case where the platform render loop is off.
+`GHConstants.PauseGameRenderingWhenUnseen` switches it on. The game pause does not apply
+to a locked session with the display on, because the lock is polled once a minute.
 
 **Verify removal.** Set `GHConstants.PauseMainScreenWhenUnseen` to `false`. Then:
 - Build the Windows Release configuration.
 - Leave the app on the main menu with the carousel running, and turn the display off for
   at least ten minutes.
+- Confirm that the process handle count and commit stay flat while the display is off.
+
+Then set `GHConstants.PauseGameRenderingWhenUnseen` to `false`, and:
+- Build the Windows Release configuration.
+- Turn the GPU setting off, start a game, and turn the display off for at least ten
+  minutes.
 - Confirm that the process handle count and commit stay flat while the display is off.
 
 Checks:

@@ -2148,10 +2148,10 @@ namespace GnollHackX
         }
 
         /* Leaves an already open popup alone */
-        public void ShowResourceWarningPopup()
+        public bool ShowResourceWarningPopup()
         {
             if (PopupGrid.IsVisible)
-                return;
+                return false;
             _popupStyle = popup_style.GeneralDialog;
             PopupCheckBoxLayout.IsVisible = false;
             PopupTitleLabel.TextColor = GHColors.Orange;
@@ -2159,6 +2159,7 @@ namespace GnollHackX
             PopupLabel.Text = "GnollHack is using an unusually large amount of system resources. Please restart GnollHack.";
             PopupGrid.IsVisible = true;
             GHApp.AddSentryBreadcrumb("Popup: " + PopupTitleLabel.Text, GHConstants.SentryGnollHackGeneralCategoryName);
+            return true;
         }
 
         private void UpdateMobileVersionLabel()

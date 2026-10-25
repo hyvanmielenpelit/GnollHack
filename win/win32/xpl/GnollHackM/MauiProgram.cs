@@ -188,6 +188,7 @@ public static class MauiProgram
                     }
 #endif
 
+                    GHSentryEventFallback.Apply(@event);
                     return @event;
                 });
 #endif
@@ -251,6 +252,7 @@ public static class MauiProgram
                         }
                     }
 
+                    GHSentryEventFallback.Apply(@event);
                     ProcessMemoryWindows.AddToEvent(@event);
                     NativeLibraryPreflightWindows.AddToEvent(@event);
 

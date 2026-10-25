@@ -271,10 +271,10 @@ namespace GnollHackM
             }
         }
 
+        /* Sentry breadcrumb, and the GnollHack log or the debug output */
         private static void WriteBreadcrumb(string text)
         {
-            GHApp.AddSentryBreadcrumb(text, GHConstants.SentryGnollHackGeneralCategoryName);
-            Debug.WriteLine(text);
+            GHApp.MaybeWriteGHLog(text, true, GHConstants.SentryGnollHackGeneralCategoryName);
         }
 
         private static string DisplayStateName(int value)
@@ -296,6 +296,9 @@ namespace GnollHackM
         public static bool IsWindowVisible { get { return Interlocked.CompareExchange(ref _windowVisible, 0, 0) != 0; } }
         public static bool IsSessionLocked { get { return Interlocked.CompareExchange(ref _sessionLocked, 0, 0) != 0; } }
         public static bool IsSessionKnown { get { return Interlocked.CompareExchange(ref _sessionKnown, 0, 0) != 0; } }
+
+        /* Display off; a dimmed display is still on */
+        public static bool IsDisplayOff { get { return Interlocked.CompareExchange(ref _displayState, 0, 0) == 0; } }
 
         /* Display off, or the session known to be locked; a dimmed display still counts as seen */
         public static bool IsUnseen

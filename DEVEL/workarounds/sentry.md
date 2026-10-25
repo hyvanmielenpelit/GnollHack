@@ -329,3 +329,48 @@ Then:
 
 Checks:
 - 2026-10-23 | Sentry.Maui 6.12.1 | still-needed | No upstream issue found; both observers at 6.12.1 still return early on null.
+
+## WA-SENTRY-0009: A failing exception processor sends the event without its exception
+
+- Status: active
+- Added: 2026-10-25
+- GnollHack version: 3.31 (431)
+- Component: sentry-dotnet
+- Package: Sentry
+- Defective version: Sentry 6.12.1
+- Platforms: all
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-25
+- Code: `win/win32/xpl/GnollHackM/GHSentryEventFallback.cs` (`GHSentryEventFallback.Apply`)
+- Remove when: The SDK keeps a minimal exception on the event when an exception processor fails, GnollHack uses that release, and Verify removal passes.
+- Related: GNOLLHACK-HW
+
+**Symptom.** An exception event arrives as `<unlabeled event>`: it has contexts, tags,
+extras and breadcrumbs, but no exception, message or stack trace.
+
+**Cause.** `SentryClient.DoSendEvent` catches an exception thrown by an exception processor
+that is an `ISdkProcessor`, logs it and continues. `MainExceptionProcessor`, which fills
+`SentryEvent.SentryExceptions`, is one, so when it throws, the event is sent without any
+exception data. It reads `Exception.Message` first, so an exception whose `Message`
+getter throws is enough; an allocation failure when the system commit is exhausted is the
+likely cause in GNOLLHACK-HW.
+
+**Workaround.** `GHSentryEventFallback.Apply`, called from every `BeforeSend`, builds a
+minimal exception from the exception's type, `HResult` and message, marks it with the
+mechanism type `gnollhack.before_send_fallback` and the `Exception Fallback` extra, and
+adds the stack trace as an extra when it can be read. An event with neither an exception
+nor a message gets a message.
+
+**Verify removal.** Remove the `GHSentryEventFallback.Apply` calls. Then:
+- Build a Debug build.
+- Capture an instance of a scratch exception class whose `Message` getter throws, with
+  `SentrySdk.CaptureException`.
+- Confirm in Sentry, or in `BeforeSend` under the debugger, whether the event still has
+  `SentryExceptions`. A user-registered exception processor that throws is not a test of
+  this, because the SDK drops the whole event for one that is not an `ISdkProcessor`, and
+  neither is an exception whose `StackTrace` getter throws, which the processor survives.
+
+Checks:
+- 2026-10-25 | Sentry 6.12.1 | still-needed | Reproduced in a scratch console project: a throwing Message getter leaves SentryExceptions empty in BeforeSend; no upstream issue found.

@@ -55,6 +55,13 @@ namespace GnollHackM
                         options.EnableScopeSync = true;
                         options.CrashedLastRun = () => crashedLastRun;
                     }
+                    options.SetBeforeSend(@event =>
+                    {
+                        if (@event == null)
+                            return null;
+                        GHSentryEventFallback.Apply(@event);
+                        return @event;
+                    });
                 });
 
                 string package = GetPackage();
