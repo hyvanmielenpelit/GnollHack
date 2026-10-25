@@ -1,5 +1,7 @@
 echo Executing update-wsl-in-debug.bat
 
+if not exist c:\wsl-in\assetpack\Assets\tileset mkdir c:\wsl-in\assetpack\Assets\tileset
+
 echo Preparing GnollHack tilesets
 copy ..\tileset\gnollhack_64x96_transparent_32bits.png ..\tileset\gnollhack_64x96_transparent_32bits.ghpng
 copy ..\tileset\gnollhack_64x96_transparent_32bits-2.png ..\tileset\gnollhack_64x96_transparent_32bits-2.ghpng

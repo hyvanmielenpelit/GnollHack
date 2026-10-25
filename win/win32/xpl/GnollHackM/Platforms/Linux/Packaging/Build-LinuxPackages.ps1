@@ -40,6 +40,10 @@
 .PARAMETER SkipPublish
     Uses the existing publish folder instead of running dotnet publish.
 
+.PARAMETER NoSentryUpload
+    Publishes with -p:GnhSentryUpload=false, so that no debug symbols are uploaded to Sentry even when the
+    SENTRY_AUTH_TOKEN environment variable is set. Has no effect with -SkipPublish.
+
 .PARAMETER KeepDebugInfo
     Ships libgnollhacklinux.so with its DWARF debug information. By default the staged copy is stripped with
     strip --strip-debug, which keeps its build ID and symbol table; the copy in Platforms\Linux\libs\, which the
@@ -87,6 +91,8 @@ param(
 
     [switch]$SkipPublish,
 
+    [switch]$NoSentryUpload,
+
     [switch]$KeepDebugInfo,
 
     [string]$OutputRoot = '',
@@ -132,7 +138,8 @@ function Resolve-WslDistro
     if ([string]::IsNullOrEmpty($Name))
     {
         # Not wsl.exe -l, whose UTF-16 output Windows PowerShell reads as interleaved null characters
-        $resolved = & wsl.exe -e sh -c 'echo $WSL_DISTRO_NAME' | Select-Object -First 1
+        # @() lets wsl.exe finish, so that $LASTEXITCODE is its own exit code; Select-Object -First alone would stop it
+        $resolved = @(& wsl.exe -e sh -c 'echo $WSL_DISTRO_NAME') | Select-Object -First 1
         if (($LASTEXITCODE -ne 0) -or [string]::IsNullOrWhiteSpace($resolved))
         {
             throw 'The default WSL distribution cannot run commands. Install Ubuntu in WSL, or pass -WslDistro.'
@@ -532,6 +539,10 @@ if ((-not $SkipPublish) -and ($null -eq (Get-Command 'dotnet' -ErrorAction Silen
 {
     throw 'dotnet was not found on PATH.'
 }
+if ($NoSentryUpload -and $SkipPublish)
+{
+    Write-Warning '-NoSentryUpload has no effect with -SkipPublish.'
+}
 
 if ($BuildAppImage)
 {
@@ -643,7 +654,12 @@ else
     Push-Location -LiteralPath $AvaloniaDir
     try
     {
-        & dotnet publish '..\..\GnollHackM.csproj' '-p:GnhAvalonia=true' -r linux-x64 -f net11.0 -c Release --self-contained true | Out-Host
+        $publishArguments = @('publish', '..\..\GnollHackM.csproj', '-p:GnhAvalonia=true', '-r', 'linux-x64', '-f', 'net11.0', '-c', 'Release', '--self-contained', 'true')
+        if ($NoSentryUpload)
+        {
+            $publishArguments += '-p:GnhSentryUpload=false'
+        }
+        & dotnet @publishArguments | Out-Host
         if ($LASTEXITCODE -ne 0)
         {
             throw "dotnet publish failed with exit code $LASTEXITCODE."

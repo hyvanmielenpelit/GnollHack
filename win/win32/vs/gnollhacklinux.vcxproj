@@ -21,6 +21,12 @@
     <TargetLinuxPlatform>Generic</TargetLinuxPlatform>
     <LinuxProjectType>{2238F9CD-F817-4ECC-BD14-2524D2669B35}</LinuxProjectType>
   </PropertyGroup>
+  <!-- WORKAROUND(WA-BUILD-0003): Linux toolset asks Windows project dependencies for GetRecipeFile -->
+  <!-- A command-line solution build turns solution dependencies into project references, which the Linux toolset
+       asks for recipe files; Visual Studio builds add no such references -->
+  <PropertyGroup>
+    <AddSyntheticProjectReferencesForSolutionDependencies>false</AddSyntheticProjectReferencesForSolutionDependencies>
+  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>

@@ -38,7 +38,7 @@ These files are **not** in the GnollHack repository. Without them the app has no
 | 12 FMOD `.bank` files (6 Desktop + 6 Mobile) | [GnollHackSoundSet](https://github.com/hyvanmielenpelit/GnollHackSoundSet) releases or build with FMOD Studio | `win/win32/bank/` (must contain `Desktop/` and `Mobile/` subdirs) |
 | `ghsecrets.sjson` (webhook URLs, Azure keys) | Create from template with empty values | `win/win32/xpl/GnollHackM/Assets/` and `win/win32/xpl/GnollHackX/GnollHackX/Assets/` |
 
-Tilesets reach the app via `copytilesetdroid.proj`; sound banks via `update-wsl-in-{debug,release}.bat`. Both run as part of `makedefsdroid`. If the banks/tilesets directories are empty, those steps fail.
+Tilesets reach the app via `copytilesetdroid.proj`; sound banks via `update-wsl-in-{debug,release}.bat`. Both run as part of `makedefsdroid`. If the banks/tilesets directories are empty, those steps fail. The Avalonia port does not use the staged copies: it reads `win/win32/tileset/*.png` and `win/win32/bank/Desktop/*.bank` directly.
 
 `ghsecrets.sjson` template (all seven keys, empty values are fine for a local build):
 
@@ -54,7 +54,7 @@ Tilesets reach the app via `copytilesetdroid.proj`; sound banks via `update-wsl-
 }
 ```
 
-**`C:\wsl-in\` must exist before the first build** — the asset-pack staging uses plain `copy` with no `mkdir`. Create: `C:\wsl-in\assetpack\Assets\tileset\`, `C:\wsl-in\assetpack2\`, `C:\wsl-in\assetpack-maui\`, `C:\wsl-in\assetpack-maui2\`. (`C:\wsl-out\` is created automatically.)
+`C:\wsl-in\` and `C:\wsl-out\` are created by the build itself (`makedefsdroid`'s `WriteLinesToFile`, the `update-wsl-in-*.bat` scripts, `afterdroidutils.proj`); nothing needs creating by hand. The `assetpack-maui*` folders are referenced only by a commented-out `RemotePostBuildEvent`.
 
 For full details, see the [GnollHack Wiki](https://github.com/hyvanmielenpelit/GnollHackWiki/tree/main/Development) pages on tilesets, sound banks, and secrets.
 
@@ -77,15 +77,18 @@ Building this solution: compiles build utilities → runs data pipeline → comp
 | `Android+Windows` | `gnollhackwin.dll`, `.so` (both ABIs) | ✓ | ✓ | WSL |
 | `ARM64` | `.so` (both ABIs) | ✓ | ✓ | WSL |
 | `x64` | `gnollhackwin.dll` | ✓ | **✗** | — |
+| `Linux` | `libgnollhacklinux.so` | ✗ | ✓ | WSL |
 | `iPhone` | `libgnollhackios.a` | ✗ | ✓ | WSL + Mac |
 
 **For MAUI work, prefer `MauiAndroid` or `MauiAll`.** `x64` is the only WSL-free platform but does **not** run `makedefsdroid` — no XAML translation, tileset staging, or sound-bank staging.
+
+`Linux` builds `gnollhacklinux` and its dependencies — `makedefs`, `levcomp`, `dgncomp` and the four `*droid` data tools — and nothing else, for the Avalonia Linux flavor. It needs no Android C++ workload.
 
 `Android+Windows` and `ARM64` also build the legacy Xamarin projects `GnollHackX.Android` and `GnollHackX.Android.Bindings` (`iPhone` builds `GnollHackX.iOS`). Visual Studio 2026 has no Xamarin, so they need Visual Studio 2022, or Visual Studio 2026 with those projects unloaded. Unloading is IDE state that a command-line build ignores, and `vswhere -latest` returns VS 2026's MSBuild whenever VS 2026 is installed. `MauiAndroid` builds everything else `Android+Windows` does.
 
 The solution defines five further platforms — `Android x64`, `iPhoneSimulator`, `Win32`, `ARM`, and `Any CPU` — which are legacy or niche; avoid them unless you specifically need one. `Any CPU` in particular is not a safe default: it builds the legacy ASCII/GUI targets and the Xamarin projects as well.
 
-Use the 64-bit MSBuild, as Visual Studio does. `-find MSBuild\**\Bin\MSBuild.exe` returns the 32-bit host, which fail-fasts with no output on Visual Studio's Linux projects (`gnollhacklinux` and the `*droid` data tools).
+Use the 64-bit MSBuild, as Visual Studio does. `-find MSBuild\**\Bin\MSBuild.exe` returns the 32-bit host, which fail-fasts with no output on Visual Studio's Linux projects (`gnollhacklinux` and the `*droid` data tools). Those projects set `AddSyntheticProjectReferencesForSolutionDependencies` to `false` (`WA-BUILD-0003`): otherwise a command-line solution build stops with `MSB4057` for `GetRecipeFile` on `makedefs.vcxproj`.
 
 ```powershell
 $msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\amd64\MSBuild.exe
@@ -166,7 +169,7 @@ Post-build `.proj` files copy libraries and assets to `GnollHackM/Platforms/`:
 - `aftergnollhackdroid.proj` — Android `.so` → MAUI Android
 - `aftergnollhackios.proj` — iOS `.a` from `C:\mac-out\` → MAUI iOS
 
-### Android prerequisites: WSL with SSH, VS Connection Manager (127.0.0.1:22), `C:\wsl-in\` directories.
+### Android prerequisites: WSL with SSH, VS Connection Manager (127.0.0.1:22).
 
 ### iOS prerequisites: WSL + vcremote on Mac + Pair to Mac + PuTTY/PSCP for downloading `libgnollhackios.a`. See wiki pages for setup.
 
@@ -206,7 +209,7 @@ dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-ios 
 
 ## Avalonia Port (Linux and Windows)
 
-`GnollHackM.csproj` with `-p:GnhAvalonia=true` targets `net11.0` on Avalonia.Controls.Maui instead of the platform backends. The runtime identifier defaults to the host's, so a build on Windows is the `win-x64` flavor (development and testing only, not shipped; `Platforms/Windows` libs and `gnh`, data in `%LOCALAPPDATA%\GnollHack-Avalonia`), and `-r linux-x64` is the shipped Linux flavor (`LINUX` and `SENTRY` defined). Both take the `Platforms/Windows` tilesets and Desktop banks. Human-facing walkthroughs: wiki pages `Development/Avalonia Port`, `Development/Build Instructions for Avalonia Linux Version on Windows`, `Development/Build Instructions for Avalonia Windows Version on Windows`.
+`GnollHackM.csproj` with `-p:GnhAvalonia=true` targets `net11.0` on Avalonia.Controls.Maui instead of the platform backends. The runtime identifier defaults to the host's, so a build on Windows is the `win-x64` flavor (development and testing only, not shipped; `Platforms/Windows` libs and `gnh`, data in `%LOCALAPPDATA%\GnollHack-Avalonia`), and `-r linux-x64` is the shipped Linux flavor (`LINUX` and `SENTRY` defined). Both take the tilesets from `win/win32/tileset` and the Desktop banks from `win/win32/bank/Desktop` directly, so neither needs staged assets. Human-facing walkthroughs: wiki pages `Development/Avalonia Port`, `Development/Build Instructions for Avalonia Linux Version on Windows`, `Development/Build Instructions for Avalonia Windows Version on Windows`.
 
 - **Always run `dotnet` from `GnollHackM/Platforms/Avalonia`.** Its `global.json` pins the SDK and workload set; from the repository root or `GnollHackM` another SDK is chosen. First install the SDK named by `sdk.version` in that file (it may be a preview or release candidate), then run `dotnet workload install maui` in that folder, so that the pinned `workloadVersion` is installed.
 - **No `-t:Compile`** for this flavor (MSB4057); verify with a full build, about 30 s.
@@ -218,15 +221,15 @@ dotnet publish ..\..\GnollHackM.csproj -p:GnhAvalonia=true -r win-x64 -f net11.0
 dotnet publish ..\..\GnollHackM.csproj -p:GnhAvalonia=true -r linux-x64 -f net11.0 -c Release --self-contained true -p:GnhSentryUpload=false
 ```
 
-Publish needs `-f net11.0`. A Release publish uploads Sentry symbols when the machine-wide `SENTRY_AUTH_TOKEN` is set; `-p:GnhSentryUpload=false` suppresses it. `Build-LinuxPackages.ps1` publishes **without** that flag, so for a non-release package run the publish above yourself and then the script with `-SkipPublish`.
+Publish needs `-f net11.0`. A Release publish uploads Sentry symbols when the machine-wide `SENTRY_AUTH_TOKEN` is set; `-p:GnhSentryUpload=false` suppresses it. `Build-LinuxPackages.ps1 -NoSentryUpload` passes it.
 
 ### Windows flavor
 
-1. **Native solution**: build `GnollHack.sln` once with `MauiAndroid`, after creating the `C:\wsl-in\` folders (see [External Assets](#external-assets)). It writes `Platforms/Windows/libs/gnollhackwin.dll` and `Platforms/Windows/gnh/nhdat`, and stages `Platforms/Windows/tileset/` and the Desktop banks in `Platforms/Windows/banks/`. Afterwards `x64` is enough when only C code or `dat/` changes; it needs no WSL, but stages no assets and converts no XAML. The Avalonia build takes whichever `gnollhackwin.dll` was built last, so build the native solution in Release before a Release publish.
+1. **Native solution**: build `GnollHack.sln` with `x64` (no WSL): `& $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform=x64`. It writes `Platforms/Windows/libs/gnollhackwin.dll` and `Platforms/Windows/gnh/nhdat`. The Avalonia build takes whichever `gnollhackwin.dll` was built last, so build the native solution in Release before a Release publish. Editing GnollHackX XAML still needs `MauiAndroid` (WSL) to regenerate the MAUI XAML.
 2. **Build** from `Platforms/Avalonia`: `dotnet build ..\..\GnollHackM.csproj -p:GnhAvalonia=true`.
 3. **Run** `GnollHackM/bin/Debug/net11.0/win-x64/GnollHackM.exe`. To debug, attach Visual Studio to it (Managed .NET Core); starting `GnollHackM.sln` runs the WinUI 3 app instead.
 
-The Avalonia native items in `GnollHackM.csproj` are wildcards, so a skipped native step does not fail the build: the game starts without data, graphics or sound. Check the files in [Verifying the Build](#verifying-the-build).
+`GnhCheckAvaloniaNativeInputs` in `GnollHackM.csproj` stops either flavor's build with `GNHNI001` (engine or `nhdat`), `GNHNI002` (banks) or `GNHNI003` (tilesets), naming each missing file. `-p:GnhAllowMissingNativeInputs=true` makes them warnings, for a compile check on a machine without them.
 
 ### Native prerequisites of the Linux flavor
 
@@ -234,12 +237,11 @@ The Avalonia native items in `GnollHackM.csproj` are wildcards, so a skipped nat
 
 **C standard:** Visual Studio's Linux toolset already passes `-std=c11` (`CLanguageStandard` default in `Linux.props`); do not add another. GCC 14+ makes implicit declarations errors, so `levcompdroid` and `dgncompdroid` add `-Wno-error=implicit-function-declaration` for the lex files' `fileno`, as the engine does. The Unix hints (`sys/unix/hints/linux*`) set `-std=gnu17`, since GCC 15 defaults to C23, where `E void srand48();` conflicts with glibc.
 
-1. **WSL data pipeline**: build `GnollHack.sln` once with `MauiAndroid` (not `x64`, which skips the WSL pipeline, and not `Android+Windows`, see [Platform Configurations](#platform-configurations)). Linux ships the Android `nhdat` (`Platforms/Android/gnh/*`), and `afterdroidutils.proj` writes `win/win32/xpl/gnollhacklinux/date_unix.h` (gitignored), which `gnollhacklinux` compiles against. The same build stages the Windows tilesets and banks both flavors use.
-2. **`libgnollhacklinux.so`**: `win/win32/vs/gnollhacklinux.vcxproj` (Release|x64) is built by **no** solution platform except `Any CPU`; build it explicitly. It remote-compiles over the Connection Manager's SSH connection against the sysroot (`GnhLinuxSysroot`; a `RemotePreBuildEvent` stops with a clear message when the sysroot's stamp file is missing), and `CopyToMauiLinuxLibs` copies it to `Platforms/Linux/libs/`. **Build Release**: `CopyToMauiLinuxLibs` runs after every build of either configuration, and `Build-LinuxPackages.ps1` ships whatever library is there, so a later Debug build replaces the one a package would ship. From the command line use the 64-bit `$msbuild` from [Platform Configurations](#platform-configurations):
+**Native build:** build `GnollHack.sln` with the `Linux` platform in **Release**. It runs the WSL data pipeline, which gives Linux the Android-format `nhdat` (`Platforms/Android/gnh/*`) and writes `win/win32/xpl/gnollhacklinux/date_unix.h` (gitignored), and then `gnollhacklinux.vcxproj`. That remote-compiles the engine over the Connection Manager's SSH connection against the sysroot (`GnhLinuxSysroot`; a `RemotePreBuildEvent` stops with a clear message when the sysroot's stamp file is missing), and `CopyToMauiLinuxLibs` copies it to `Platforms/Linux/libs/`. **Build Release before packaging**: `CopyToMauiLinuxLibs` runs after every build of either configuration, and `Build-LinuxPackages.ps1` ships whatever library is there, so a later Debug build replaces the one a package would ship. That is how every platform's engine works: either configuration can be tested, and a Release build is made before shipping. From the command line use the 64-bit `$msbuild` from [Platform Configurations](#platform-configurations):
 
 ```powershell
 wsl -d <distro> -u root -e /usr/sbin/service ssh start          # plain 'service' is not on root's -e PATH
-& $msbuild win\win32\vs\gnollhacklinux.vcxproj /t:Build /p:Configuration=Release /p:Platform=x64 /v:m
+& $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Release /p:Platform=Linux /v:m
 ```
 
 `Could not connect to the remote system` means sshd is not running or the Connection Manager entry is missing.
@@ -253,7 +255,8 @@ win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/Build-LinuxPackages.ps1      
 win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/Build-LinuxPackages.ps1 -Targets AppImage -SkipPublish
 ```
 
-- **Prerequisite:** `Platforms/Linux/libs/libgnollhacklinux.so`, built by `win/win32/vs/gnollhacklinux.vcxproj` (gitignored). The script stops without it.
+- **Prerequisite:** `Platforms/Linux/libs/libgnollhacklinux.so` (gitignored), built by the `Linux` solution platform. The script stops without it.
+- **Sentry:** with `SENTRY_AUTH_TOKEN` set, the script's Release publish uploads the release's debug symbols; `-NoSentryUpload` publishes with `-p:GnhSentryUpload=false` (it has no effect with `-SkipPublish`).
 - **Source of truth:** the version comes from `ApplicationDisplayVersion` and `ApplicationVersion` in `GnollHackM.csproj`. The pinned `appimagetool` and type-2 runtime, with their SHA-256 values, are constants at the top of the script, and must be present in WSL under `~/.cache/gnollhack-packaging/tools/`. The script never downloads.
 - **Where it runs:** the publish runs on Windows, from `Platforms/Avalonia`, whose `global.json` pins the SDK. Staging and packaging run in WSL (`-WslDistro`, default the default WSL distribution), in the WSL home, so Linux permissions survive. That distribution needs `rsync` and `binutils` (`strip`, `readelf`, `objdump`). Outputs land in `GnollHackM/bin/LinuxPackages/<version>/`, which is gitignored; the staged tree stays at `~/.cache/gnollhack-packaging/stage-<version>/`. A full run takes a few minutes and ends with a size and SHA-256 summary.
 - **Pinned AppImage tools:** the file names in `$AppImageToolFile` and `$AppImageRuntimeFile` are the GitHub release assets `appimagetool-x86_64.AppImage` (AppImage/appimagetool) and `runtime-x86_64` (AppImage/type2-runtime) of the versions named in the comment above them, saved under the pinned names. Downloading them is the user's call, never the script's.
@@ -277,10 +280,10 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 | `GnollHackM/Platforms/{Windows,Android,iOS}/gnh/nhdat` | `afterdlb.proj` / `afterdroidutils.proj` |
 | `GnollHackM/Platforms/Windows/gnh/recover.exe` | `recoverwin.vcxproj` (from `gnollhackwin.vcxproj`) |
 | `GnollHackM/Platforms/Linux/gnh/recover` (committed) | `Build-LinuxRecover.ps1` (manual) |
-| `GnollHackM/Platforms/Linux/libs/libgnollhacklinux.so` | `gnollhacklinux.vcxproj` (manual, built by no platform) |
+| `GnollHackM/Platforms/Linux/libs/libgnollhacklinux.so` | `gnollhacklinux.vcxproj` (`Linux` platform; the last configuration built) |
 | `win/win32/xpl/gnollhacklinux/date_unix.h` | `afterdroidutils.proj` (WSL pipeline) |
-| `GnollHackM/Platforms/*/tileset/*.ghpng` (3 each) | `copytilesetdroid.proj` |
-| `GnollHackM/Platforms/*/banks/*.bank` (6 each) | `update-wsl-in-*.bat` |
+| `GnollHackM/Platforms/*/tileset/*.ghpng` (3 each; WinUI 3, Android, iOS — the Avalonia port reads `win/win32/tileset`) | `copytilesetdroid.proj` |
+| `GnollHackM/Platforms/*/banks/*.bank` (6 each; WinUI 3, Android, iOS — the Avalonia port reads `win/win32/bank/Desktop`) | `update-wsl-in-*.bat` |
 | 31 generated `.xaml` in `GnollHackM/` | `makedefsdroid` `InitialBuild` |
 
 ## Troubleshooting
@@ -294,11 +297,12 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 | No tile graphics | Tilesets missing from `win/win32/tileset/`, or `copytilesetdroid.proj` didn't run. |
 | `bad interpreter` in WSL step | Missing `dos2unix` call or package. |
 | WSL connection refused | Run `sudo service ssh start`; check VS Connection Manager. |
-| `update-wsl-in-*.bat` fails on fresh machine | `C:\wsl-in\` directories don't exist. |
+| `MSB4057: The target "GetRecipeFile" does not exist` on `makedefs.vcxproj`, command line only | A Linux project lost `AddSyntheticProjectReferencesForSolutionDependencies=false` (`WA-BUILD-0003`). |
 | Link/runtime errors after switching Debug↔Release | Rebuild both solutions in the same config. |
 | Data file works on Windows but missing on mobile | Added to `<DlbList>` only — see [Two Data Pipelines](#two-data-pipelines). |
 | Avalonia build picks the wrong SDK or fails to restore | `dotnet` not run from `Platforms/Avalonia`, or its pinned SDK/workload missing. |
-| `Build-LinuxPackages.ps1`: `Missing ...libgnollhacklinux.so` | Build `gnollhacklinux.vcxproj` — see [Native prerequisites](#native-prerequisites-of-the-linux-flavor). |
+| `Build-LinuxPackages.ps1`: `Missing ...libgnollhacklinux.so` | Build `GnollHack.sln` with the `Linux` platform in Release — see [Native prerequisites](#native-prerequisites-of-the-linux-flavor). |
+| Avalonia build: `GNHNI001`, `GNHNI002` or `GNHNI003` | A native input is missing; build or install what the message names. |
 | `... needs GLIBC_2.xx, above the ... floor` | A Linux binary was built without the sysroot; run `Install-LinuxSysroot.ps1` in the distribution that built it, then rebuild. |
 | `error: the glibc 2.27 sysroot is missing` | Run `Install-LinuxSysroot.ps1` in the distribution the Connection Manager points to. |
 | `undefined reference to '...'` linking a Linux binary | `-z defs` caught a function glibc 2.27 lacks (or keeps in `libdl`/`librt`); avoid it or link its library. |

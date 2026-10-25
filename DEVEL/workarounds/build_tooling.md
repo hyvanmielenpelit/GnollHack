@@ -82,3 +82,45 @@ Android clause of the condition with that property. Then:
 
 Checks:
 - 2026-10-23 | Visual Studio 2026 18.11.1 | unverified | Not re-tested; no upstream report.
+
+## WA-BUILD-0003: Linux toolset asks Windows project dependencies for GetRecipeFile
+
+- Status: active
+- Added: 2026-10-25
+- GnollHack version: 3.31 (431)
+- Component: Visual Studio
+- Package: Visual Studio
+- Defective version: Visual Studio 2026 18.11.1 (Linux and embedded development with C++, application type Linux 1.0)
+- Platforms: Android, iOS, Linux (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-25
+- Code: `win/win32/vs/makedefsdroid.vcxproj` (`AddSyntheticProjectReferencesForSolutionDependencies`); `win/win32/vs/levcompdroid.vcxproj` (`AddSyntheticProjectReferencesForSolutionDependencies`); `win/win32/vs/dgncompdroid.vcxproj` (`AddSyntheticProjectReferencesForSolutionDependencies`); `win/win32/vs/dlbdroid.vcxproj` (`AddSyntheticProjectReferencesForSolutionDependencies`); `win/win32/vs/gnollhacklinux.vcxproj` (`AddSyntheticProjectReferencesForSolutionDependencies`)
+- Remove when: the Linux toolset asks only Linux project references for recipe files, and Verify removal passes.
+
+**Symptom.** A command-line build of `GnollHack.sln` with a platform that includes the
+WSL data tools (`Linux`, `MauiAndroid`, `MauiAll`) stops in `makedefsdroid` with
+`makedefs.vcxproj : error MSB4057: The target "GetRecipeFile" does not exist in the
+project.` The same build from the Visual Studio IDE succeeds.
+
+**Cause.** Outside Visual Studio, `AssignProjectConfiguration` in
+`Microsoft.Common.CurrentVersion.targets` turns each solution dependency into a synthetic
+project reference. The Linux toolset's `_AssignProjectReferencesPlatformType`
+(`Application Type\Linux\1.0\Linux.targets`) marks every project reference as a Linux
+project, and `CreateRecipeFile` (`Linux.Common.targets`) then calls `GetRecipeFile` on all
+of them, including the Windows `makedefs`, `levcomp` and `dgncomp`, which do not define it.
+Visual Studio sets `BuildingInsideVisualStudio`, so no synthetic references are made there.
+
+**Workaround.** The five Linux projects set
+`AddSyntheticProjectReferencesForSolutionDependencies` to `false`, as a Visual Studio build
+effectively does. The solution still builds each project's dependencies first.
+
+**Verify removal.** Remove the property group from the five projects. Then:
+- Start the WSL sshd, and build
+  `msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform=Linux`
+  with the 64-bit MSBuild.
+- Confirm that it succeeds, with no `MSB4057` for `GetRecipeFile`.
+
+Checks:
+- 2026-10-25 | Visual Studio 2026 18.11.1 | still-needed | Reproduced with the `Linux` platform; with the property both configurations build the eight projects.

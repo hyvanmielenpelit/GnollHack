@@ -1078,9 +1078,11 @@
     <Content Include="Platforms\Windows\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <!-- Banks and tile sets from their install folders, so no native build has to stage them; the WinUI 3 items above
+       read the staged copies in Platforms\Windows. A tile set's .ghpng is its .png under another name. -->
   <ItemGroup Condition="'$(GnhAvalonia)' == 'true'">
-    <Content Include="Platforms\Windows\banks\*.bank" Link="banks\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="Platforms\Windows\tileset\*.ghpng" Link="tileset\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\bank\Desktop\*.bank" Link="banks\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\tileset\gnollhack_64x96_transparent_32bits*.png" Link="tileset\%(Filename).ghpng" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsMonoRuntime)' == 'true'">
@@ -1681,6 +1683,25 @@
       <MauiIcon Include="Resources\AppIcon\Windows\MSIX\appicon.png" ForegroundFile="Resources\AppIcon\Windows\MSIX\appiconmsix.png" ForegroundScale="1.0" />
     </ItemGroup>
   </Target>-->
+  <!-- Avalonia: the native files and assets the game needs to start. The items that copy them are wildcards, so a
+       missing file would otherwise give a game without data, graphics or sound. GnhAllowMissingNativeInputs=true
+       reports the problems as warnings. -->
+  <Target Name="GnhCheckAvaloniaNativeInputs" BeforeTargets="BeforeBuild" Condition="'$(GnhAvalonia)' == 'true' And '$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <_GnhNativeSolutionRemedy>Build win\win32\vs\GnollHack.sln with the x64 solution platform.</_GnhNativeSolutionRemedy>
+      <_GnhNativeSolutionRemedy Condition="$(RuntimeIdentifier.StartsWith('linux'))">Build win\win32\vs\GnollHack.sln with the Linux solution platform in Release.</_GnhNativeSolutionRemedy>
+      <_GnhAssetRemedy>See the GnollHack wiki page Development/Install Tile Sets and FMOD Sound Banks.</_GnhAssetRemedy>
+    </PropertyGroup>
+    <ItemGroup>
+      <_GnhNativeInput Include="Platforms\Windows\libs\gnollhackwin.dll;Platforms\Windows\gnh\nhdat" Condition="!$(RuntimeIdentifier.StartsWith('linux'))" Code="GNHNI001" Remedy="$(_GnhNativeSolutionRemedy)" />
+      <_GnhNativeInput Include="Platforms\Linux\libs\libgnollhacklinux.so;Platforms\Android\gnh\nhdat" Condition="$(RuntimeIdentifier.StartsWith('linux'))" Code="GNHNI001" Remedy="$(_GnhNativeSolutionRemedy)" />
+      <_GnhNativeInput Include="..\..\bank\Desktop\Auxiliary.bank;..\..\bank\Desktop\Intro.bank;..\..\bank\Desktop\Master.bank;..\..\bank\Desktop\Master.strings.bank;..\..\bank\Desktop\Music.bank;..\..\bank\Desktop\Preliminary.bank" Code="GNHNI002" Remedy="Install the Desktop sound banks in win\win32\bank\Desktop. $(_GnhAssetRemedy)" />
+      <_GnhNativeInput Include="..\..\tileset\gnollhack_64x96_transparent_32bits.png;..\..\tileset\gnollhack_64x96_transparent_32bits-2.png;..\..\tileset\gnollhack_64x96_transparent_32bits-3.png" Code="GNHNI003" Remedy="Install the tile sets in win\win32\tileset. $(_GnhAssetRemedy)" />
+      <_GnhMissingNativeInput Include="@(_GnhNativeInput)" Condition="!Exists('%(FullPath)')" />
+    </ItemGroup>
+    <Warning Condition="'$(GnhAllowMissingNativeInputs)' == 'true' And '@(_GnhMissingNativeInput)' != ''" Code="%(_GnhMissingNativeInput.Code)" Text="%(_GnhMissingNativeInput.FullPath) is missing. %(_GnhMissingNativeInput.Remedy)" />
+    <Error Condition="'$(GnhAllowMissingNativeInputs)' != 'true' And '@(_GnhMissingNativeInput)' != ''" Code="%(_GnhMissingNativeInput.Code)" Text="%(_GnhMissingNativeInput.FullPath) is missing. %(_GnhMissingNativeInput.Remedy) To build without it, pass -p:GnhAllowMissingNativeInputs=true." ContinueOnError="ErrorAndContinue" />
+  </Target>
   <Import Project="GnhSentryNative.targets" />
 </Project>
                                                                                                                                                                                                                                                                      

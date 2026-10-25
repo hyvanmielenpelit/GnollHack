@@ -113,7 +113,8 @@ function Resolve-WslDistro
     if ([string]::IsNullOrEmpty($Name))
     {
         # Not wsl.exe -l, whose UTF-16 output Windows PowerShell reads as interleaved null characters
-        $resolved = & wsl.exe -e sh -c 'echo $WSL_DISTRO_NAME' | Select-Object -First 1
+        # @() lets wsl.exe finish, so that $LASTEXITCODE is its own exit code; Select-Object -First alone would stop it
+        $resolved = @(& wsl.exe -e sh -c 'echo $WSL_DISTRO_NAME') | Select-Object -First 1
         if (($LASTEXITCODE -ne 0) -or [string]::IsNullOrWhiteSpace($resolved))
         {
             throw 'The default WSL distribution cannot run commands. Install Ubuntu in WSL, or pass -WslDistro.'
