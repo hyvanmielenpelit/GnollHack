@@ -17,7 +17,8 @@ public static class AndroidExitInfoReporter
     private const long FirstRunLookbackMilliseconds = 7L * 24L * 60L * 60L * 1000L;
     private const int MaxExitInfosRead = 16;
     private const int MaxReportsPerLaunch = 5;
-    private const int MaxTraceHeaderLines = 40;
+    /* The header before the thread dump can run to dozens of lines; reading stops at the dump line */
+    private const int MaxTraceHeaderLines = 1000;
     private const int MaxExtraLength = 1000;
 
     private static int _started = 0;
