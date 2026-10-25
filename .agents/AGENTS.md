@@ -146,6 +146,7 @@ Git stores all text files with **LF** line endings in the repository. On checkou
 ## Build Prerequisites
 
 - Visual Studio 2026 with C++ Desktop (v143 build tools) and .NET MAUI workloads
+  - `GnollHack.sln` also contains the legacy Xamarin projects `GnollHackX.Android`, `GnollHackX.Android.Bindings` and `GnollHackX.iOS`, which VS 2026 cannot build: it has no Xamarin. The `MauiAndroid`, `MauiAll` and `x64` solution platforms skip them; `Android+Windows`, `ARM64` and `iPhone` need Visual Studio 2022, or VS 2026 with those projects unloaded (IDE only; a command-line build ignores unloading).
 - .NET 10.0 SDK
 - The .NET MAUI workload. Building from the command line rather than the Visual Studio IDE requires installing it explicitly: `dotnet workload install maui`
 - Windows SDK — install the versions the projects actually target. Check `WindowsTargetPlatformVersion` in the `.vcxproj` files under `win/win32/vs/` (currently the Windows 11 SDK, not the Windows 10 SDK) and the Windows target framework moniker in `GnollHackM.csproj`. Do not assume a fixed version; these move.

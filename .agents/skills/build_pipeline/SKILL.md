@@ -81,10 +81,14 @@ Building this solution: compiles build utilities → runs data pipeline → comp
 
 **For MAUI work, prefer `MauiAndroid` or `MauiAll`.** `x64` is the only WSL-free platform but does **not** run `makedefsdroid` — no XAML translation, tileset staging, or sound-bank staging.
 
+`Android+Windows` and `ARM64` also build the legacy Xamarin projects `GnollHackX.Android` and `GnollHackX.Android.Bindings` (`iPhone` builds `GnollHackX.iOS`). Visual Studio 2026 has no Xamarin, so they need Visual Studio 2022, or Visual Studio 2026 with those projects unloaded. Unloading is IDE state that a command-line build ignores, and `vswhere -latest` returns VS 2026's MSBuild whenever VS 2026 is installed. `MauiAndroid` builds everything else `Android+Windows` does.
+
 The solution defines five further platforms — `Android x64`, `iPhoneSimulator`, `Win32`, `ARM`, and `Any CPU` — which are legacy or niche; avoid them unless you specifically need one. `Any CPU` in particular is not a safe default: it builds the legacy ASCII/GUI targets and the Xamarin projects as well.
 
+Use the 64-bit MSBuild, as Visual Studio does. `-find MSBuild\**\Bin\MSBuild.exe` returns the 32-bit host, which fail-fasts with no output on Visual Studio's Linux projects (`gnollhacklinux` and the `*droid` data tools).
+
 ```powershell
-$msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+$msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\amd64\MSBuild.exe
 & $msbuild win/win32/vs/GnollHack.sln /t:Rebuild /p:Configuration=Debug /p:Platform=MauiAndroid
 ```
 
@@ -204,7 +208,7 @@ dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-ios 
 
 `GnollHackM.csproj` with `-p:GnhAvalonia=true` targets `net11.0` on Avalonia.Controls.Maui instead of the platform backends. The runtime identifier defaults to the host's, so a build on Windows is the `win-x64` flavor (development and testing only, not shipped; `Platforms/Windows` libs and `gnh`, data in `%LOCALAPPDATA%\GnollHack-Avalonia`), and `-r linux-x64` is the shipped Linux flavor (`LINUX` and `SENTRY` defined). Both take the `Platforms/Windows` tilesets and Desktop banks. Human-facing walkthroughs: wiki pages `Development/Avalonia Port`, `Development/Build Instructions for Avalonia Linux Version on Windows`, `Development/Build Instructions for Avalonia Windows Version on Windows`.
 
-- **Always run `dotnet` from `GnollHackM/Platforms/Avalonia`.** Its `global.json` pins the SDK and workload set (`rollForward: disable`); from the repository root or `GnollHackM` another SDK is chosen. Install the workload there with `dotnet workload install maui`.
+- **Always run `dotnet` from `GnollHackM/Platforms/Avalonia`.** Its `global.json` pins the SDK and workload set; from the repository root or `GnollHackM` another SDK is chosen. First install the SDK named by `sdk.version` in that file (it may be a preview or release candidate), then run `dotnet workload install maui` in that folder, so that the pinned `workloadVersion` is installed.
 - **No `-t:Compile`** for this flavor (MSB4057); verify with a full build, about 30 s.
 
 ```powershell
@@ -216,19 +220,26 @@ dotnet publish ..\..\GnollHackM.csproj -p:GnhAvalonia=true -r linux-x64 -f net11
 
 Publish needs `-f net11.0`. A Release publish uploads Sentry symbols when the machine-wide `SENTRY_AUTH_TOKEN` is set; `-p:GnhSentryUpload=false` suppresses it. `Build-LinuxPackages.ps1` publishes **without** that flag, so for a non-release package run the publish above yourself and then the script with `-SkipPublish`.
 
+### Windows flavor
+
+1. **Native solution**: build `GnollHack.sln` once with `MauiAndroid`, after creating the `C:\wsl-in\` folders (see [External Assets](#external-assets)). It writes `Platforms/Windows/libs/gnollhackwin.dll` and `Platforms/Windows/gnh/nhdat`, and stages `Platforms/Windows/tileset/` and the Desktop banks in `Platforms/Windows/banks/`. Afterwards `x64` is enough when only C code or `dat/` changes; it needs no WSL, but stages no assets and converts no XAML. The Avalonia build takes whichever `gnollhackwin.dll` was built last, so build the native solution in Release before a Release publish.
+2. **Build** from `Platforms/Avalonia`: `dotnet build ..\..\GnollHackM.csproj -p:GnhAvalonia=true`.
+3. **Run** `GnollHackM/bin/Debug/net11.0/win-x64/GnollHackM.exe`. To debug, attach Visual Studio to it (Managed .NET Core); starting `GnollHackM.sln` runs the WinUI 3 app instead.
+
+The Avalonia native items in `GnollHackM.csproj` are wildcards, so a skipped native step does not fail the build: the game starts without data, graphics or sound. Check the files in [Verifying the Build](#verifying-the-build).
+
 ### Native prerequisites of the Linux flavor
 
 **One WSL distribution**, any Ubuntu LTS from 20.04 to 26.04, on WSL 2 (26.04's `tar` fails on WSL 1, and WSLg testing needs WSL 2; 20.04 also works on WSL 1). It runs sshd for Visual Studio's Connection Manager (`127.0.0.1:22`), the WSL data pipeline, the Linux builds, packaging and testing. Every GnollHack-built Linux binary (engine, `recover`, `libsentry.so`) compiles and links against the **glibc 2.27 sysroot** in `/opt/gnollhack/sysroot-glibc-2.27`, so the host's glibc never reaches the output; install it once per distribution with `Platforms/Linux/Packaging/Install-LinuxSysroot.ps1` (pinned, hash-checked Ubuntu 18.04 packages; it makes the packages' absolute dev symlinks relative, without which `libdl.so` resolves to the host's empty stub). Its link options are `--sysroot` plus `-L<sysroot>/usr/lib/x86_64-linux-gnu -L<sysroot>/lib/x86_64-linux-gnu` (Ubuntu's GCC searches the host's multiarch directory before the sysroot's), `-B<sysroot>/usr/lib/x86_64-linux-gnu` (the sysroot's start files), and `-Wl,-z,defs` (a function glibc 2.27 lacks would otherwise link unversioned and pass every `GLIBC_` floor check). The `Build-Linux*.ps1` and installer scripts default to the default WSL distribution, print it, and refuse `docker-desktop*`; `-WslDistro` overrides.
 
 **C standard:** Visual Studio's Linux toolset already passes `-std=c11` (`CLanguageStandard` default in `Linux.props`); do not add another. GCC 14+ makes implicit declarations errors, so `levcompdroid` and `dgncompdroid` add `-Wno-error=implicit-function-declaration` for the lex files' `fileno`, as the engine does. The Unix hints (`sys/unix/hints/linux*`) set `-std=gnu17`, since GCC 15 defaults to C23, where `E void srand48();` conflicts with glibc.
 
-1. **WSL data pipeline**: build `GnollHack.sln` once with `MauiAndroid` or `Android+Windows` (not `x64`). Linux ships the Android `nhdat` (`Platforms/Android/gnh/*`), and `afterdroidutils.proj` writes `win/win32/xpl/gnollhacklinux/date_unix.h` (gitignored), which `gnollhacklinux` compiles against. The same build stages the Windows tilesets and banks both flavors use.
-2. **`libgnollhacklinux.so`**: `win/win32/vs/gnollhacklinux.vcxproj` (Release|x64) is built by **no** solution platform except `Any CPU`; build it explicitly. It remote-compiles over the Connection Manager's SSH connection against the sysroot (`GnhLinuxSysroot`; a `RemotePreBuildEvent` stops with a clear message when the sysroot's stamp file is missing), and `CopyToMauiLinuxLibs` copies it to `Platforms/Linux/libs/`. From the command line use the **64-bit** MSBuild; the 32-bit one that `vswhere -find` returns first fail-fasts with no output on Linux projects:
+1. **WSL data pipeline**: build `GnollHack.sln` once with `MauiAndroid` (not `x64`, which skips the WSL pipeline, and not `Android+Windows`, see [Platform Configurations](#platform-configurations)). Linux ships the Android `nhdat` (`Platforms/Android/gnh/*`), and `afterdroidutils.proj` writes `win/win32/xpl/gnollhacklinux/date_unix.h` (gitignored), which `gnollhacklinux` compiles against. The same build stages the Windows tilesets and banks both flavors use.
+2. **`libgnollhacklinux.so`**: `win/win32/vs/gnollhacklinux.vcxproj` (Release|x64) is built by **no** solution platform except `Any CPU`; build it explicitly. It remote-compiles over the Connection Manager's SSH connection against the sysroot (`GnhLinuxSysroot`; a `RemotePreBuildEvent` stops with a clear message when the sysroot's stamp file is missing), and `CopyToMauiLinuxLibs` copies it to `Platforms/Linux/libs/`. **Build Release**: `CopyToMauiLinuxLibs` runs after every build of either configuration, and `Build-LinuxPackages.ps1` ships whatever library is there, so a later Debug build replaces the one a package would ship. From the command line use the 64-bit `$msbuild` from [Platform Configurations](#platform-configurations):
 
 ```powershell
 wsl -d <distro> -u root -e /usr/sbin/service ssh start          # plain 'service' is not on root's -e PATH
-$vs = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationPath
-cmd /c "`"$vs\MSBuild\Current\Bin\amd64\MSBuild.exe`" win\win32\vs\gnollhacklinux.vcxproj /t:Build /p:Configuration=Release /p:Platform=x64 /v:m > %TEMP%\gnollhacklinux.log 2>&1"
+& $msbuild win\win32\vs\gnollhacklinux.vcxproj /t:Build /p:Configuration=Release /p:Platform=x64 /v:m
 ```
 
 `Could not connect to the remote system` means sshd is not running or the Connection Manager entry is missing.
