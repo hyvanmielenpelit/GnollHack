@@ -56,6 +56,7 @@ When in wizard mode, special commands become available:
   dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -t:Run -f net10.0-windows10.0.19041.0
   ```
   > **Note:** The exact target framework moniker may change over time. Check `GnollHackM.csproj` for the current value.
+- The Avalonia port (Linux and Windows flavors) is built and run differently, from `Platforms/Avalonia` with `-p:GnhAvalonia=true`; see the Avalonia section of `build_pipeline`.
 - Use `Debug.WriteLine` in C# for console output.
 - For native C debug output, use `raw_printf` (only visible if the console is attached).
 
