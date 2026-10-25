@@ -108,7 +108,7 @@ Checks:
 
 ## WA-LINUX-0004: glibc 2.29 re-versioned exp, exp2, log, log2 and pow
 
-- Status: active
+- Status: removed
 - Added: 2026-10-24
 - GnollHack version: 3.31 (431)
 - Component: glibc
@@ -118,10 +118,11 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: not-needed
 - Upstream status: not-needed
-- Last checked: 2026-10-24
+- Last checked: 2026-10-25
 - Code: `win/win32/xpl/gnollhacklinux/linuxconf.h` (`LINUXCONF_H`)
 - Remove when: the Linux glibc floor (`$MaxGlibcVersion` in `Build-LinuxPackages.ps1`) is raised to 2.29 or later, or the engine is built against glibc 2.28 or older.
 - Related: GNOLLHACK-HS
+- Removed: 2026-10-25, 3.31 (431)
 
 **Symptom.** `libgnollhacklinux.so` does not load on glibc older than 2.29 (Debian 10, Ubuntu
 18.04, RHEL 8): `version 'GLIBC_2.29' not found (required by libgnollhacklinux.so)`, and the game
@@ -140,3 +141,4 @@ with `.symver`, which every glibc still exports.
 
 Checks:
 - 2026-10-24 | glibc 2.31 (build host) | still-needed | Without the pin, pow imports GLIBC_2.29.
+- 2026-10-25 | glibc 2.27 (sysroot) | removed | The engine is built against the glibc 2.27 sysroot from Install-LinuxSysroot.ps1. Without the pins it needs at most GLIBC_2.14, and pow imports GLIBC_2.2.5, built on Ubuntu 20.04 (GCC 9.4) and 26.04 (GCC 15.2).

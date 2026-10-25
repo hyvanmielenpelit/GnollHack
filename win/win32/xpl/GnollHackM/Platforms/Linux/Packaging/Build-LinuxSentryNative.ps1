@@ -17,12 +17,14 @@
     commit, the normalized hash of the vendored header, the SHA-256 of libsentry.so and its GNU build ID, which
     GnhSentryNative.targets checks at build time.
 
-    The script never downloads anything. The build tools and the pinned checkout must already be in WSL; when they are
-    not, the script stops with the command that installs or clones them.
+    The library is compiled and linked against the glibc 2.27 sysroot that Install-LinuxSysroot.ps1 installs in
+    /opt/gnollhack/sysroot-glibc-2.27, so any Ubuntu from 20.04 on can build it.
+
+    The script never downloads anything. The build tools, the sysroot and the pinned checkout must already be in WSL;
+    when they are not, the script stops with the command that installs or clones them.
 
 .PARAMETER WslDistro
-    The WSL distribution that builds the library. Default: Ubuntu-20.04 (glibc 2.31); the library must still need no glibc
-    symbol version above GLIBC_2.27, the floor of the Linux packages.
+    The WSL distribution that builds the library. Default: the default WSL distribution.
 
 .PARAMETER SourceDir
     The sentry-native checkout in WSL. A leading $HOME or ~ is expanded inside WSL.
@@ -31,7 +33,7 @@
 .EXAMPLE
     .\Build-LinuxSentryNative.ps1
 
-    Builds libsentry.so in Ubuntu-20.04 from the default checkout.
+    Builds libsentry.so in the default WSL distribution from the default checkout.
 
 .EXAMPLE
     .\Build-LinuxSentryNative.ps1 -SourceDir /root/src/sentry-native
@@ -40,7 +42,7 @@
 #>
 [CmdletBinding()]
 param(
-    [string]$WslDistro = 'Ubuntu-20.04',
+    [string]$WslDistro = '',
 
     [string]$SourceDir = '$HOME/.cache/gnollhack-sentry-native/sentry-native'
 )
@@ -54,6 +56,9 @@ $SentryNativeCommit = 'd043b2bcbdc24eb9fd3a17d0fe0a510526e5902a'
 # The highest glibc symbol version the library may need
 $MaxGlibcVersion = '2.27'
 
+# The glibc 2.27 sysroot that Install-LinuxSysroot.ps1 installs
+$SysrootPath = '/opt/gnollhack/sysroot-glibc-2.27'
+
 # ---------------------------------------------------------------------------------------------------
 # Helper functions
 # ---------------------------------------------------------------------------------------------------
@@ -63,6 +68,28 @@ function Write-Step
     param([string]$Message)
     Write-Host ''
     Write-Host "==> $Message" -ForegroundColor Cyan
+}
+
+# Returns the WSL distribution to use: the given name, or the name of the default distribution. Docker Desktop's
+# distributions are refused, since they cannot build anything.
+function Resolve-WslDistro
+{
+    param([AllowEmptyString()][string]$Name)
+    if ([string]::IsNullOrEmpty($Name))
+    {
+        # Not wsl.exe -l, whose UTF-16 output Windows PowerShell reads as interleaved null characters
+        $resolved = & wsl.exe -e sh -c 'echo $WSL_DISTRO_NAME' | Select-Object -First 1
+        if (($LASTEXITCODE -ne 0) -or [string]::IsNullOrWhiteSpace($resolved))
+        {
+            throw 'The default WSL distribution cannot run commands. Install Ubuntu in WSL, or pass -WslDistro.'
+        }
+        $Name = $resolved.Trim()
+    }
+    if ($Name -like 'docker-desktop*')
+    {
+        throw "'$Name' is Docker Desktop's WSL distribution, which cannot build GnollHack. Pass -WslDistro <name>, or make an Ubuntu distribution the default with 'wsl --set-default <name>'."
+    }
+    return $Name
 }
 
 # Maps an absolute Windows path on a drive letter to its WSL path: C:\x\y becomes /mnt/c/x/y.
@@ -254,9 +281,12 @@ CLONE_COMMAND="git clone --depth 1 --branch $SENTRY_VERSION https://github.com/g
 fail() { echo "error: $*" >&2; exit 1; }
 warn() { echo "warning: $*" >&2; }
 build_id() { readelf -n "$1" 2>/dev/null | sed -n '/Build ID:/{s/.*Build ID: \([0-9a-f]*\).*/\1/p;q;}' || true; }
+# CMAKE_SYSROOT adds --sysroot; -L: the sysroot's libc.so and libm.so; -B: its start files; -z defs: no symbol glibc
+# 2.27 lacks. The executable flags make CMake's feature checks link against the sysroot too.
+SYSROOT_LINK_FLAGS="-B$SYSROOT/usr/lib/x86_64-linux-gnu -L$SYSROOT/usr/lib/x86_64-linux-gnu -L$SYSROOT/lib/x86_64-linux-gnu -Wl,-z,defs"
 '@
 
-# Tools and source: every missing package in one install command, then the pinned checkout.
+# Tools and source: every missing package in one install command, then the sysroot and the pinned checkout.
 $BashCheck = @'
 missing=()
 for entry in cmake:cmake make:make gcc:gcc g++:g++ git:git strip:binutils readelf:binutils objdump:binutils \
@@ -276,6 +306,7 @@ if [ "${#missing[@]}" -gt 0 ]; then
 fi
 echo "cmake: $(cmake --version | head -n 1)"
 echo "gcc:   $(gcc --version | head -n 1)"
+[ -f "$SYSROOT/gnollhack-sysroot.txt" ] || fail "the glibc 2.27 sysroot is missing from $SYSROOT. Install it with Install-LinuxSysroot.ps1 -WslDistro $WSL_DISTRO."
 
 if [ ! -f "$SOURCE_DIR/CMakeLists.txt" ]; then
     if [ -e "$SOURCE_DIR" ]; then
@@ -313,7 +344,9 @@ rm -rf "$BUILD_DIR"
 mkdir -p "$BUILD_DIR"
 cmake -S "$SOURCE_DIR" -B "$BUILD_DIR" -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DSENTRY_BACKEND=inproc -DSENTRY_TRANSPORT=none -DSENTRY_BUILD_SHARED_LIBS=ON \
-    -DSENTRY_BUILD_TESTS=OFF -DSENTRY_BUILD_EXAMPLES=OFF -DSENTRY_ENABLE_INSTALL=OFF
+    -DSENTRY_BUILD_TESTS=OFF -DSENTRY_BUILD_EXAMPLES=OFF -DSENTRY_ENABLE_INSTALL=OFF \
+    -DCMAKE_SYSROOT="$SYSROOT" -DCMAKE_SHARED_LINKER_FLAGS="$SYSROOT_LINK_FLAGS" \
+    -DCMAKE_EXE_LINKER_FLAGS="$SYSROOT_LINK_FLAGS"
 cmake --build "$BUILD_DIR" --parallel
 [ -f "$BUILD_DIR/libsentry.so" ] || fail "the build did not create $BUILD_DIR/libsentry.so."
 '@
@@ -415,6 +448,9 @@ if ($null -eq (Get-Command 'wsl.exe' -ErrorAction SilentlyContinue))
     throw 'wsl.exe was not found. The build runs in WSL.'
 }
 
+$WslDistro = Resolve-WslDistro $WslDistro
+Write-Host "WSL distribution: $WslDistro"
+
 & wsl.exe -d $WslDistro -e true
 if ($LASTEXITCODE -ne 0)
 {
@@ -426,6 +462,7 @@ $wslVariables = [ordered]@{
     SENTRY_VERSION     = $SentryNativeVersion
     SENTRY_COMMIT      = $SentryNativeCommit
     MAX_GLIBC          = $MaxGlibcVersion
+    SYSROOT            = $SysrootPath
     SOURCE_DIR         = $SourceDir
     VENDORED_HEADER    = (ConvertTo-WslPath $VendoredHeaderPath)
     COMPARE_API_SCRIPT = $CompareApiScriptPath

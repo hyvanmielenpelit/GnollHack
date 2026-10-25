@@ -6,7 +6,9 @@
     Copies include\, sys\unix\ and util\recover.c from this repository to $HOME/.cache/gnollhack-recover in WSL, which
     is recreated on every run, configures them with sys/unix/setup.sh and the release hints in sys/unix/hints/linux,
     and compiles recover.c with exactly the CC, CFLAGS, LFLAGS and LIBS of the generated util/Makefile, with
-    GAME=gnollhack. The repository is never written to, except for the finished binary.
+    GAME=gnollhack, against the glibc 2.27 sysroot that Install-LinuxSysroot.ps1 installs in
+    /opt/gnollhack/sysroot-glibc-2.27, so any Ubuntu from 20.04 on can build it. The repository is never written to,
+    except for the finished binary.
 
     The binary is stripped with strip --strip-all, which keeps its build ID, and checked: libc.so.6 is its only NEEDED
     entry, no glibc symbol version is above $MaxGlibcVersion, and it prints its usage line. Only then is it copied to
@@ -17,17 +19,16 @@
     it.
 
 .PARAMETER WslDistro
-    The WSL distribution that builds the utility. Default: Ubuntu-20.04 (glibc 2.31), which also builds
-    libgnollhacklinux.so.
+    The WSL distribution that builds the utility. Default: the default WSL distribution.
 
 .EXAMPLE
     .\Build-LinuxRecover.ps1
 
-    Builds recover in Ubuntu-20.04 and copies it to Platforms\Linux\gnh\recover.
+    Builds recover in the default WSL distribution and copies it to Platforms\Linux\gnh\recover.
 #>
 [CmdletBinding()]
 param(
-    [string]$WslDistro = 'Ubuntu-20.04'
+    [string]$WslDistro = ''
 )
 
 Set-StrictMode -Version 2
@@ -35,6 +36,9 @@ $ErrorActionPreference = 'Stop'
 
 # The highest glibc symbol version the utility may need: the floor of the Linux packages
 $MaxGlibcVersion = '2.27'
+
+# The glibc 2.27 sysroot that Install-LinuxSysroot.ps1 installs
+$SysrootPath = '/opt/gnollhack/sysroot-glibc-2.27'
 
 # ---------------------------------------------------------------------------------------------------
 # Helper functions
@@ -45,6 +49,28 @@ function Write-Step
     param([string]$Message)
     Write-Host ''
     Write-Host "==> $Message" -ForegroundColor Cyan
+}
+
+# Returns the WSL distribution to use: the given name, or the name of the default distribution. Docker Desktop's
+# distributions are refused, since they cannot build anything.
+function Resolve-WslDistro
+{
+    param([AllowEmptyString()][string]$Name)
+    if ([string]::IsNullOrEmpty($Name))
+    {
+        # Not wsl.exe -l, whose UTF-16 output Windows PowerShell reads as interleaved null characters
+        $resolved = & wsl.exe -e sh -c 'echo $WSL_DISTRO_NAME' | Select-Object -First 1
+        if (($LASTEXITCODE -ne 0) -or [string]::IsNullOrWhiteSpace($resolved))
+        {
+            throw 'The default WSL distribution cannot run commands. Install Ubuntu in WSL, or pass -WslDistro.'
+        }
+        $Name = $resolved.Trim()
+    }
+    if ($Name -like 'docker-desktop*')
+    {
+        throw "'$Name' is Docker Desktop's WSL distribution, which cannot build GnollHack. Pass -WslDistro <name>, or make an Ubuntu distribution the default with 'wsl --set-default <name>'."
+    }
+    return $Name
 }
 
 # Maps an absolute Windows path on a drive letter to its WSL path: C:\x\y becomes /mnt/c/x/y.
@@ -155,9 +181,11 @@ OUT="$WORK/out"
 BIN="$OUT/recover"
 fail() { echo "error: $*" >&2; exit 1; }
 build_id() { readelf -n "$1" 2>/dev/null | sed -n '/Build ID:/{s/.*Build ID: \([0-9a-f]*\).*/\1/p;q;}' || true; }
+# -L: the sysroot's libc.so; -B: its start files, which must match its libc in an executable
+SYSROOT_LINK_OPTIONS="--sysroot=$SYSROOT -B$SYSROOT/usr/lib/x86_64-linux-gnu -L$SYSROOT/usr/lib/x86_64-linux-gnu -L$SYSROOT/lib/x86_64-linux-gnu"
 '@
 
-# Tools and sources: every missing package in one install command.
+# Tools and sources: every missing package in one install command, then the sysroot.
 $BashCheck = @'
 missing=()
 for entry in gcc:gcc make:make strip:binutils readelf:binutils objdump:binutils sed:sed awk:gawk \
@@ -176,6 +204,7 @@ if [ "${#missing[@]}" -gt 0 ]; then
     fail "install the missing tools with: wsl -d $WSL_DISTRO -- sudo apt-get install -y ${missing[*]}"
 fi
 echo "gcc: $(gcc --version | head -n 1)"
+[ -f "$SYSROOT/gnollhack-sysroot.txt" ] || fail "the glibc 2.27 sysroot is missing from $SYSROOT. Install it with Install-LinuxSysroot.ps1 -WslDistro $WSL_DISTRO."
 for path in util/recover.c include/global.h sys/unix/setup.sh sys/unix/Makefile.utl sys/unix/hints/linux; do
     [ -f "$REPO_DIR/$path" ] || fail "$REPO_DIR/$path is missing."
 done
@@ -210,8 +239,8 @@ echo "CFLAGS: $cflags"
 echo "LFLAGS: $lflags"
 echo "LIBS:   $libs"
 # eval: the flags hold shell quoting (-DHACKDIR=\"...\"), which make would hand to sh the same way
-eval "$cc $cflags -c recover.c -o recover.o"
-eval "$cc $lflags -o recover recover.o $libs"
+eval "$cc $cflags --sysroot=$SYSROOT -c recover.c -o recover.o"
+eval "$cc $lflags $SYSROOT_LINK_OPTIONS -o recover recover.o $libs"
 [ -f recover ] || fail "the build did not create $TREE/util/recover."
 '@
 
@@ -286,6 +315,9 @@ if ($null -eq (Get-Command 'wsl.exe' -ErrorAction SilentlyContinue))
     throw 'wsl.exe was not found. The build runs in WSL.'
 }
 
+$WslDistro = Resolve-WslDistro $WslDistro
+Write-Host "WSL distribution: $WslDistro"
+
 & wsl.exe -d $WslDistro -e true
 if ($LASTEXITCODE -ne 0)
 {
@@ -295,6 +327,7 @@ if ($LASTEXITCODE -ne 0)
 $wslVariables = [ordered]@{
     WSL_DISTRO  = $WslDistro
     MAX_GLIBC   = $MaxGlibcVersion
+    SYSROOT     = $SysrootPath
     REPO_DIR    = (ConvertTo-WslPath $RepoRoot)
     WIN_GNH_DIR = (ConvertTo-WslPath $GnhDir)
 }

@@ -40,6 +40,8 @@
     <RemoteIntDir>$(RemoteRootDir)/$(SolutionName)/obj/gnollhacklinux/$(Configuration)</RemoteIntDir>
     <RemoteDeployDir>$(RemoteRootDir)/$(SolutionName)/lib/$(Configuration)</RemoteDeployDir>
     <RemoteDebuggerWorkingDirectory>$(RemoteOutDir)</RemoteDebuggerWorkingDirectory>
+    <!-- glibc 2.27 sysroot from Install-LinuxSysroot.ps1: the library loads on glibc 2.27 whichever Ubuntu builds it -->
+    <GnhLinuxSysroot>/opt/gnollhack/sysroot-glibc-2.27</GnhLinuxSysroot>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings" />
@@ -58,13 +60,18 @@
       <PositionIndependentCode>true</PositionIndependentCode>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>FullDebug</DebugInformationFormat>
-      <AdditionalOptions>-Wall -Wno-unused-parameter -Wno-stringop-truncation -Wno-stringop-overflow -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>--sysroot=$(GnhLinuxSysroot) -Wall -Wno-unused-parameter -Wno-stringop-truncation -Wno-stringop-overflow -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion %(AdditionalOptions)</AdditionalOptions>
       <CAdditionalWarning>switch;no-deprecated-declarations;empty-body;return-type;parentheses;no-pointer-sign;no-format;uninitialized;unreachable-code;unused-function;unused-value;unused-variable</CAdditionalWarning>
     </ClCompile>
     <Link>
       <OutputFile>$(TargetPath)</OutputFile>
       <LibraryDependencies>m;pthread;%(LibraryDependencies)</LibraryDependencies>
+      <!-- -L: the sysroot's libc.so and libm.so; -B: its start files; -z defs: no symbol glibc 2.27 lacks -->
+      <AdditionalOptions>--sysroot=$(GnhLinuxSysroot) -B$(GnhLinuxSysroot)/usr/lib/x86_64-linux-gnu -L$(GnhLinuxSysroot)/usr/lib/x86_64-linux-gnu -L$(GnhLinuxSysroot)/lib/x86_64-linux-gnu -Wl,-z,defs %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <RemotePreBuildEvent>
+      <Command>test -f $(GnhLinuxSysroot)/gnollhack-sysroot.txt || { echo "error: the glibc 2.27 sysroot is missing from $(GnhLinuxSysroot); run Install-LinuxSysroot.ps1"; exit 1; }</Command>
+    </RemotePreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
@@ -73,13 +80,18 @@
       <PositionIndependentCode>true</PositionIndependentCode>
       <Optimization>MaxSpeed</Optimization>
       <DebugInformationFormat>FullDebug</DebugInformationFormat>
-      <AdditionalOptions>-Wall -Wno-unused-parameter -Wno-stringop-truncation -Wno-stringop-overflow -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>--sysroot=$(GnhLinuxSysroot) -Wall -Wno-unused-parameter -Wno-stringop-truncation -Wno-stringop-overflow -Wno-error=implicit-function-declaration -Wno-error=incompatible-pointer-types -Wno-error=int-conversion %(AdditionalOptions)</AdditionalOptions>
       <CAdditionalWarning>switch;no-deprecated-declarations;empty-body;return-type;parentheses;no-pointer-sign;no-format;uninitialized;unreachable-code;unused-function;unused-value;unused-variable</CAdditionalWarning>
     </ClCompile>
     <Link>
       <OutputFile>$(TargetPath)</OutputFile>
       <LibraryDependencies>m;pthread;%(LibraryDependencies)</LibraryDependencies>
+      <!-- -L: the sysroot's libc.so and libm.so; -B: its start files; -z defs: no symbol glibc 2.27 lacks -->
+      <AdditionalOptions>--sysroot=$(GnhLinuxSysroot) -B$(GnhLinuxSysroot)/usr/lib/x86_64-linux-gnu -L$(GnhLinuxSysroot)/usr/lib/x86_64-linux-gnu -L$(GnhLinuxSysroot)/lib/x86_64-linux-gnu -Wl,-z,defs %(AdditionalOptions)</AdditionalOptions>
     </Link>
+    <RemotePreBuildEvent>
+      <Command>test -f $(GnhLinuxSysroot)/gnollhack-sysroot.txt || { echo "error: the glibc 2.27 sysroot is missing from $(GnhLinuxSysroot); run Install-LinuxSysroot.ps1"; exit 1; }</Command>
+    </RemotePreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(SrcDir)allmain.c" />

@@ -50,7 +50,7 @@
     Default: <GnollHackM>\bin\LinuxPackages.
 
 .PARAMETER WslDistro
-    The WSL distribution that runs the Linux steps. Default: Ubuntu-24.04.
+    The WSL distribution that runs the Linux steps. Default: the default WSL distribution.
 
 .EXAMPLE
     .\Build-LinuxPackages.ps1
@@ -91,7 +91,7 @@ param(
 
     [string]$OutputRoot = '',
 
-    [string]$WslDistro = 'Ubuntu-24.04'
+    [string]$WslDistro = ''
 )
 
 Set-StrictMode -Version 2
@@ -122,6 +122,28 @@ function Write-Step
     param([string]$Message)
     Write-Host ''
     Write-Host "==> $Message" -ForegroundColor Cyan
+}
+
+# Returns the WSL distribution to use: the given name, or the name of the default distribution. Docker Desktop's
+# distributions are refused, since they cannot build anything.
+function Resolve-WslDistro
+{
+    param([AllowEmptyString()][string]$Name)
+    if ([string]::IsNullOrEmpty($Name))
+    {
+        # Not wsl.exe -l, whose UTF-16 output Windows PowerShell reads as interleaved null characters
+        $resolved = & wsl.exe -e sh -c 'echo $WSL_DISTRO_NAME' | Select-Object -First 1
+        if (($LASTEXITCODE -ne 0) -or [string]::IsNullOrWhiteSpace($resolved))
+        {
+            throw 'The default WSL distribution cannot run commands. Install Ubuntu in WSL, or pass -WslDistro.'
+        }
+        $Name = $resolved.Trim()
+    }
+    if ($Name -like 'docker-desktop*')
+    {
+        throw "'$Name' is Docker Desktop's WSL distribution, which cannot build GnollHack. Pass -WslDistro <name>, or make an Ubuntu distribution the default with 'wsl --set-default <name>'."
+    }
+    return $Name
 }
 
 # Maps an absolute Windows path on a drive letter to its WSL path: C:\x\y becomes /mnt/c/x/y.
@@ -573,6 +595,9 @@ if ($BuildSteam)
         throw "-SteamRuntime steamrt4 needs the bundled libraries in '$SteamRt4LibsDir', which does not exist."
     }
 }
+
+$WslDistro = Resolve-WslDistro $WslDistro
+Write-Host "WSL distribution: $WslDistro"
 
 & wsl.exe -d $WslDistro -e true
 if ($LASTEXITCODE -ne 0)

@@ -82,6 +82,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>$(IncDir);$(LibDroidDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;DEBUG;GNH_MOBILE;GNH_ANDROID;USE_TILES;DLB;LIB_GRAPHICS;SAFEPROCS;NOTTYGRAPHICS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalOptions>-Wno-error=implicit-function-declaration %(AdditionalOptions)</AdditionalOptions>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
     </ClCompile>
