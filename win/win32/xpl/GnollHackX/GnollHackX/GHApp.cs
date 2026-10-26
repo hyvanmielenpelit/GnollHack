@@ -877,6 +877,7 @@ namespace GnollHackX
 #if ENABLE_RAW_RENDERING
         private static int _rawRenderingLivenessChecks = 0;
         private static int _rawRenderingSilentActiveChecks = 0;
+        private static int _rawRenderingLivenessCheckStarted = 0;
         private static readonly Action _rawRenderingCallback = RawRenderingCallback;
 
         private static void RawRenderingCallback()
@@ -885,32 +886,57 @@ namespace GnollHackX
         }
 
         // WORKAROUND(WA-WINUI-0002): CompositionTarget.Rendering allocates event-args wrappers every frame
+        /* Called once the MAUI window exists: before that, MainThread cannot reach the UI thread from the thread pool */
+        public static void StartRawRenderingLivenessCheck()
+        {
+            if (_windowsRenderSubscription != 2 || Interlocked.Exchange(ref _rawRenderingLivenessCheckStarted, 1) != 0)
+                return;
+            ScheduleRawRenderingLivenessCheck();
+        }
+
+        // WORKAROUND(WA-WINUI-0002): CompositionTarget.Rendering allocates event-args wrappers every frame
         private static void ScheduleRawRenderingLivenessCheck()
         {
             Task.Delay(GHConstants.RawRenderingLivenessCheckMs).ContinueWith(t =>
             {
-                MainThread.BeginInvokeOnMainThread(() =>
+                try
                 {
-                    if (_windowsRenderSubscription != 2 || RenderingSubscriptionWindows.CallbackCount > 0)
-                        return;
-                    if (PlatformAppActive)
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        if (++_rawRenderingSilentActiveChecks >= 2)
+                        try
                         {
-                            RenderingSubscriptionWindows.Unsubscribe();
-                            SubscribeManagedRendering();
-                            MaybeWriteGHLog("Render loop: raw Rendering subscription delivered no frames; using the managed subscription",
-                                            true, GHConstants.SentryGnollHackGeneralCategoryName);
-                            return;
+                            if (_windowsRenderSubscription != 2 || RenderingSubscriptionWindows.CallbackCount > 0)
+                                return;
+                            if (PlatformAppActive)
+                            {
+                                if (++_rawRenderingSilentActiveChecks >= 2)
+                                {
+                                    RenderingSubscriptionWindows.Unsubscribe();
+                                    SubscribeManagedRendering();
+                                    MaybeWriteGHLog("Render loop: raw Rendering subscription delivered no frames; using the managed subscription",
+                                                    true, GHConstants.SentryGnollHackGeneralCategoryName);
+                                    return;
+                                }
+                            }
+                            else
+                            {
+                                _rawRenderingSilentActiveChecks = 0;
+                            }
+                            if (++_rawRenderingLivenessChecks < 12)
+                                ScheduleRawRenderingLivenessCheck();
                         }
-                    }
-                    else
-                    {
-                        _rawRenderingSilentActiveChecks = 0;
-                    }
-                    if (++_rawRenderingLivenessChecks < 12)
-                        ScheduleRawRenderingLivenessCheck();
-                });
+                        catch (Exception ex)
+                        {
+                            MaybeWriteGHLog("Render loop: raw Rendering liveness check failed: " + ex.Message,
+                                            true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        }
+                    });
+                }
+                catch (Exception ex)
+                {
+                    /* The UI dispatcher queue has shut down */
+                    Debug.WriteLine(ex.Message);
+                }
             });
         }
 #endif
@@ -992,7 +1018,6 @@ namespace GnollHackX
             if (RenderingSubscriptionWindows.TrySubscribe(_rawRenderingCallback))
             {
                 _windowsRenderSubscription = 2;
-                ScheduleRawRenderingLivenessCheck();
             }
             else
             {

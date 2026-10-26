@@ -61,7 +61,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: reported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Windows/RenderingSubscriptionWindows.cs` (`RenderingSubscriptionWindows`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.InitializePlatformRenderLoop`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.ScheduleRawRenderingLivenessCheck`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Windows/RenderingSubscriptionWindows.cs` (`RenderingSubscriptionWindows`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.InitializePlatformRenderLoop`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.StartRawRenderingLivenessCheck`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.ScheduleRawRenderingLivenessCheck`); `win/win32/xpl/GnollHackM/MauiProgram.cs` (`CreateMauiApp`, Windows `OnWindowCreated` liveness-check start)
 - Remove when: GnollHack uses a Windows App SDK release that resolves microsoft-ui-xaml#12112, or a CsWinRT release that resolves CsWinRT#2594, and Verify removal passes.
 - Related: WA-WINUI-0001, WA-WINUI-0003, KI-WINUI-0001
 
@@ -81,7 +81,11 @@ needed. A handler failure is returned as `E_FAIL`, because `RPC_E_DISCONNECTED` 
 `RPC_E_SERVER_UNAVAILABLE` make XAML drop the handler silently. `InitializePlatformRenderLoop`
 falls back to the managed event if the raw subscription fails, and
 `ScheduleRawRenderingLivenessCheck` switches to it if no raw callback arrives while the app
-is active. The code is compiled under `ENABLE_RAW_RENDERING`, defined in `GnollHackM.csproj`.
+is active. The Windows `OnWindowCreated` handler in `MauiProgram.CreateMauiApp` starts that
+check through `StartRawRenderingLivenessCheck` once the MAUI window exists: before then,
+`MainThread.BeginInvokeOnMainThread` from the thread pool throws "Unable to find main
+thread." (GNOLLHACK-HY). The code is compiled under `ENABLE_RAW_RENDERING`, defined in
+`GnollHackM.csproj`.
 
 **Verify removal.** Remove `ENABLE_RAW_RENDERING` from `DefineConstants` in
 `GnollHackM.csproj`, so that the managed subscription is used. Then:

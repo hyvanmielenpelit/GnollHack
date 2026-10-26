@@ -334,6 +334,10 @@ public static class MauiProgram
                         var handle = WinRT.Interop.WindowNative.GetWindowHandle(window);
                         EnvironmentStateWindows.Start(window);
                         MainScreenPauseWindows.Start();
+#if ENABLE_RAW_RENDERING
+                        // WORKAROUND(WA-WINUI-0002): CompositionTarget.Rendering allocates event-args wrappers every frame
+                        GHApp.StartRawRenderingLivenessCheck();
+#endif
 #if SENTRY
                         ProcessMemoryWindows.SetMainWindowHandle(handle);
 #endif
