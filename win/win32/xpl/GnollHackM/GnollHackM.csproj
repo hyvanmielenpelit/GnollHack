@@ -283,6 +283,7 @@
     <None Remove="..\GnollHackX\GnollHackX\GHRefList.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHResponse.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHRequest.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHSaveFileTrackingResults.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHScreenText.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHSecureStore.cs" />
@@ -553,6 +554,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\GHRefList.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHResponse.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHRequest.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHSaveFileTrackingResults.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHScreenFilter.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHScreenText.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHSecureStore.cs" />

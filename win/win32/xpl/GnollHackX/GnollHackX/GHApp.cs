@@ -7973,13 +7973,40 @@ namespace GnollHackX
                                 {
                                     if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.NotFound)
                                         tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Server Unavailable", "Save file tracking server is not available for verifying the save file.\n\nTry again?", "Yes", "No");
+                                    else if (res.HasHttpStatusCode && GHSaveFileTrackingResults.IsRejection(res.StatusCode))
+                                    {
+                                        bool isSilent = specialConflictMessage == SilentMessageValue;
+                                        SendResult check = new SendResult();
+                                        if (GHSaveFileTrackingResults.NeedsCredentialCheck(res.StatusCode))
+                                        {
+                                            MaybeWriteGHLog("Save file tracking on load answered " + (int)res.StatusCode + " (" + res.Message + "); checking the credentials");
+                                            /* Sets the credential flags from its own result */
+                                            check = await SendXLogEntry("", 1, 0, new List<GHPostAttachment>(), true);
+                                        }
+
+                                        SaveFileTrackingRejection outcome = GHSaveFileTrackingResults.Decide(res.StatusCode, check.IsSuccess, check.HasHttpStatusCode, check.StatusCode, isSilent);
+                                        MaybeWriteGHLog("Save file tracking on load: " + outcome + ": " + res.Message);
+                                        switch (outcome)
+                                        {
+                                            case SaveFileTrackingRejection.SaveFileNotAccepted:
+                                                await DisplayMessageBox(displayPage, "Save File Not Accepted",
+                                                    "The server did not accept this save file. Your user name and password are correct, but the save file does not match what the server recorded when the game was saved. This happens when the save file was changed or replaced after saving, or when the game was saved while you were signed in with another GnollHack account."
+                                                    + "\n\nTo keep this save file tracked, answer No to the next question. You will return to the main menu. If you saved the game with another account, switch to that account in Settings, then load the game again."
+                                                    + "\n\nStatus Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                                break;
+                                            case SaveFileTrackingRejection.SaveFileNotAcceptedSilently:
+                                                break;
+                                            case SaveFileTrackingRejection.CredentialsRefused:
+                                                await DisplayMessageBox(displayPage, "Credentials Error", "Sending a save file tracking verification request to the server upon loading a saved game failed, likely due to incorrect credentials provided to the server. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
+                                                break;
+                                            case SaveFileTrackingRejection.CheckFailed:
+                                            default:
+                                                tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
+                                                break;
+                                        }
+                                    }
                                     else
                                     {
-                                        if (XlogUserNameVerified && res.HasHttpStatusCode && (res.StatusCode == HttpStatusCode.Forbidden /* 403 */)) // || res.StatusCode == HttpStatusCode.Locked /* 423 */
-                                            SetXlogUserNameVerified(false, null, null);
-                                        if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.Forbidden)
-                                            XlogCredentialsIncorrect = true;
-
                                         if (!XlogCredentialsIncorrect && XlogUserNameVerified)
                                         {
                                             if (res.HasHttpStatusCode && res.StatusCode == HttpStatusCode.Conflict)
@@ -7997,8 +8024,6 @@ namespace GnollHackX
                                             else
                                                 tryAgain = await DisplayMessageBox(displayPage, "Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message + "\n\nTry again?", "Yes", "No");
                                         }
-                                        else if (XlogCredentialsIncorrect)
-                                            await DisplayMessageBox(displayPage, "Credentials Error", "Sending a save file tracking verification request to the server upon loading a saved game failed, likely due to incorrect credentials provided to the server. Please check your user name and password. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                         else
                                             await DisplayMessageBox(displayPage, "Save File Tracking Error", "Save file tracking verification failed upon loading a saved game. Status Code: " + (int)res.StatusCode + ", Error: " + res.Message, "OK");
                                     }
