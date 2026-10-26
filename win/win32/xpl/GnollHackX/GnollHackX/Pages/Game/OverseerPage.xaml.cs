@@ -68,6 +68,9 @@ namespace GnollHackX.Pages.Game
             _baseOverseerUrl = baseOverseerUrl;
             _snapshotText = snapshotText;
 
+            if (IsTestServerUrl(baseOverseerUrl))
+                TitleLabel.Text = "Test Gnoll Overseer";
+
 #if GNH_AVALONIA
             _avaloniaHost = new GHAvaloniaOverseerHost(DisplayWebView,
                 (json, senderUrl) => HandleWebMessage(json, senderUrl),
@@ -123,6 +126,15 @@ namespace GnollHackX.Pages.Game
             DisplayWebView.IsVisible = !_avaloniaHost.DrawsAboveAvalonia || (!ProgressOverlay.IsVisible && !MessagePopup.IsVisible);
         }
 #endif
+
+        /* The test Overseer server lives at the production host with a "test-" prefix (see GHApp.OverseerAddress) */
+        private static bool IsTestServerUrl(string url)
+        {
+            Uri uri;
+            if (string.IsNullOrEmpty(url) || !Uri.TryCreate(url, UriKind.Absolute, out uri))
+                return false;
+            return uri.Host.StartsWith("test-", StringComparison.OrdinalIgnoreCase);
+        }
 
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
