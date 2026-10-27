@@ -41,6 +41,7 @@ namespace GnollHackM
             AcmCheckBoxHandler.Mapper.AppendToMapping(nameof(ICheckBox.Foreground), MapCheckBoxColor);
             AcmCheckBoxHandler.Mapper.AppendToMapping("Color", MapCheckBoxColor);
             AcmButtonHandler.Mapper.AppendToMapping(nameof(ITextStyle.TextColor), MapButtonDisabledTextColor);
+            AcmButtonHandler.Mapper.AppendToMapping(nameof(IView.Background), MapButtonDisabledBackground);
         }
 
         // WORKAROUND(WA-AVALONIA-0008): ACM leaves some control colors to the Fluent theme
@@ -57,6 +58,23 @@ namespace GnollHackM
                 platformButton.Resources.Remove("ButtonForegroundDisabled");
             else
                 platformButton.Resources["ButtonForegroundDisabled"] = ToBrush(color);
+        }
+
+        // WORKAROUND(WA-AVALONIA-0008): ACM leaves some control colors to the Fluent theme
+        /* A disabled button's background in its own background, as MAUI's WinUI handler sets it. ACM sets the
+           pointer-over and pressed backgrounds only, which left the Fluent theme's translucent disabled background
+           over transparent buttons. Runs after ACM's mapping has set the platform background. */
+        private static void MapButtonDisabledBackground(AcmButtonHandler handler, IButton button)
+        {
+            Avalonia.Controls.Button platformButton = ((IElementHandler)handler).PlatformView as Avalonia.Controls.Button;
+            if (platformButton == null)
+                return;
+
+            Avalonia.Media.IBrush brush = button.Background == null ? null : platformButton.Background;
+            if (brush == null)
+                platformButton.Resources.Remove("ButtonBackgroundDisabled");
+            else
+                platformButton.Resources["ButtonBackgroundDisabled"] = brush;
         }
 
         // WORKAROUND(WA-AVALONIA-0008): ACM leaves some control colors to the Fluent theme

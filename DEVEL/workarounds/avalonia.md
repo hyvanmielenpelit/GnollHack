@@ -254,28 +254,38 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapButtonDisabledTextColor`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapCaret`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapCheckBoxColor`)
+- Last checked: 2026-10-27
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapButtonDisabledTextColor`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapButtonDisabledBackground`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapCaret`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapCheckBoxColor`)
 - Remove when: ACM maps these colors as MAUI's WinUI handlers do, in a release GnollHack uses, and Verify removal passes.
 
-**Symptom.** A disabled button's text is the Fluent theme's faint disabled color, the
-text caret is black on GnollHack's transparent text boxes, and a check box's box ignores
-its color.
+**Symptom.** A disabled button's text is the Fluent theme's faint disabled color, a
+disabled transparent button, such as the one inside every `CustomImageButton`, is
+covered by a translucent gray (dark theme) or black (light theme) layer, the text caret
+is black on GnollHack's transparent text boxes, and a check box's box ignores its color.
+The gray layer is most visible on the Steam Deck, whose dark theme Avalonia follows, for
+example over the main menu's upper buttons when Exit disables them.
 
-**Cause.** ACM sets only the pointer-over and pressed button foregrounds, sets no
-`CaretBrush` (Avalonia then draws the inverse of the background), and does not map the
-check box color to the Fluent resources the template draws the box from.
+**Cause.** ACM sets only the pointer-over and pressed button foregrounds and
+backgrounds, so the Fluent `:disabled` style draws `ButtonBackgroundDisabled`
+(`SystemBaseLowColor`, 20 % white in the dark theme and 20 % black in the light theme)
+instead of the button's background. ACM also sets no `CaretBrush` (Avalonia then draws
+the inverse of the background), and does not map the check box color to the Fluent
+resources the template draws the box from.
 
 **Workaround.** Appended mappings set the `ButtonForegroundDisabled` resource and the
-caret brush from the text color, and the check box stroke and fill resources from its
-color, as MAUI's WinUI handlers show them.
+caret brush from the text color, the `ButtonBackgroundDisabled` resource from the
+button's background, and the check box stroke and fill resources from its color, as
+MAUI's WinUI handlers show them.
 
-**Verify removal.** Remove the three mappings in `GHAvaloniaControlTheming.Register`.
-Build the Avalonia flavor; disabled buttons, the caret in Entry and Editor fields, and
-colored check boxes must look as on WinUI.
+**Verify removal.** Remove the four mappings in `GHAvaloniaControlTheming.Register`.
+Build the Avalonia flavor and run it in the dark theme (the Steam Deck, or Windows in
+dark mode); disabled buttons, including the main menu's upper buttons after pressing
+Exit, the caret in Entry and Editor fields, and colored check boxes must look as on
+WinUI.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-10-27 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | still-needed | Disabled button background seen on the Steam Deck; ACM's ButtonExtensions sets no ButtonBackgroundDisabled. Background mapping added.
 
 ## WA-AVALONIA-0009: ACM Skia controls raise no hover touch actions
 
