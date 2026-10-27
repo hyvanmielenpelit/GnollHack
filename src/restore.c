@@ -2302,10 +2302,17 @@ select_saved_game(winid bannerwin, uchar style, struct save_game_data *saved)
         {
             char namebuf[BUFSZ], characterbuf[BUFSZ], adventuringbuf[BUFSZ];
             char playingbuf[BUFSZ], savedbuf[BUFSZ];
+            boolean elsewhere = FALSE;
             //char adventuringbuf[BUFSZ], lvlbuf[BUFSZ], dgnbuf[BUFSZ], totallevelbuf[BUFSZ] = "";
             //boolean has_lvl_name = FALSE;
 
-            Sprintf(namebuf, "%s%s%s%s", saved[k].playername, saved[k].is_running ? " [Crashed]" : "", saved[k].is_error_save_file ? " [Saved upon Error]" : "", saved[k].is_imported_save_file ? " [Imported]" : "");
+#ifdef GNH_MOBILE
+            elsewhere = game_in_progress_elsewhere(saved[k].playername);
+#endif
+            Sprintf(namebuf, "%s%s%s%s", saved[k].playername,
+                    elsewhere ? " [Running in another window]" : saved[k].is_running ? " [Crashed]" : "",
+                    saved[k].is_error_save_file ? " [Saved upon Error]" : "",
+                    saved[k].is_imported_save_file ? " [Imported]" : "");
             print_character_description(characterbuf, saved[k].gamestats.ulevel, saved[k].gamestats.rolenum, saved[k].gamestats.racenum, saved[k].gamestats.gender, saved[k].gamestats.alignment, prefix);
             print_location_description(adventuringbuf, saved[k].gamestats.level_name, saved[k].gamestats.dgn_name, (int)saved[k].gamestats.dlevel, saved[k].gamestats.depth, prefix);
             print_mode_duration_description(playingbuf, saved[k].gamestats.game_difficulty, saved[k].gamestats.umoves, saved[k].gamestats.debug_mode, saved[k].gamestats.explore_mode, saved[k].gamestats.modern_mode, saved[k].gamestats.casual_mode, (boolean)((saved[k].gamestats.save_flags& SAVEFLAGS_NON_SCORING) != 0), (boolean)((saved[k].gamestats.save_flags& SAVEFLAGS_TOURNAMENT_MODE) != 0), prefix);
@@ -2379,6 +2386,21 @@ select_saved_game(winid bannerwin, uchar style, struct save_game_data *saved)
                 plname_from_error_savefile = saved[ch - 1].is_error_save_file;
                 plname_from_imported_savefile = saved[ch - 1].is_imported_save_file;
                 is_running = saved[ch - 1].is_running;
+#ifdef GNH_MOBILE
+                if (game_in_progress_elsewhere(plname))
+                {
+                    show_game_already_running(style == 1
+                        ? "This character is being played in another GnollHack window, so its files cannot be deleted now."
+                        : "This character is already being played in another GnollHack window. "
+                          "Save or exit the game there, then load it here.");
+                    *plname = 0;
+                    plname_from_error_savefile = FALSE;
+                    plname_from_imported_savefile = FALSE;
+                    ch = 0;
+                    repeat = TRUE;
+                }
+                else
+#endif
                 if (style == 1)
                 {
                     shoulddelete = TRUE;

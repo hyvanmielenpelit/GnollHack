@@ -57,6 +57,12 @@ getlock(void)
     set_levelfile_name(lock, 0);
 
     fq_lock = fqname(lock, LEVELPREFIX, 0);
+    if (acquire_game_instance_lock(fq_lock) == GAME_INSTANCE_LOCK_ELSEWHERE)
+    {
+        unlock_file(HLOCK);
+        refuse_game_in_progress_elsewhere(); /* does not return */
+    }
+    program_state.levelfiles_claimed = 1;
     if((fd = open(fq_lock, 0)) == -1)
     {
         if(errno == ENOENT)
@@ -140,6 +146,12 @@ check_crash(void)
     set_levelfile_name(recover_lock, 0);
 
     fq_lock = fqname(recover_lock, LEVELPREFIX, 0);
+    if (probe_game_instance_lock(fq_lock) == GAME_INSTANCE_LOCK_ELSEWHERE)
+    {
+        debugprint("check_crash: game in progress in another process");
+        issue_breadcrumb("check_crash: game in progress in another process");
+        goto nofilefound;
+    }
     if ((fd = open(fq_lock, 0)) == -1)
     {
         if (errno == ENOENT)

@@ -1031,6 +1031,12 @@ clearlocks(void)
     if (program_state.preserve_locks)
         return;
 #endif
+#ifdef GNH_MOBILE
+    /* Before getlock(), lock may still name a finished game's files, which another process may
+       now be playing */
+    if (!program_state.levelfiles_claimed)
+        return;
+#endif
 #if !defined(PC_LOCKING) && defined(MFLOPPY) && !defined(AMIGA)
     eraseall(levels, alllevels);
     if (ramdisk)
@@ -1943,6 +1949,123 @@ read_savefile_header(const char *fq_file, const char *plbuf,
     return ok;
 }
 
+#ifdef GNH_MOBILE
+/* Fixed phrase comparing the save file on disk with the running game: "missing", "unreadable",
+   "recovered elsewhere" when it records more crash recoveries than this game, so another
+   process rebuilt this game, else "not recovered" */
+const char *
+describe_savefile_recoveries(void)
+{
+    struct version_info vers;
+    struct save_game_stats stats;
+    const char *fq_save;
+
+    if (!*SAVEF)
+        return "missing";
+    fq_save = fqname(SAVEF, SAVEPREFIX, 0);
+    if (access(fq_save, F_OK) != 0)
+        return "missing";
+    if (!read_savefile_header(fq_save, plname, &vers, &stats))
+        return "unreadable";
+    return stats.num_recoveries > n_game_recoveries ? "recovered elsewhere" : "not recovered";
+}
+
+/* Fixed phrase for this process's instance lock. During a game "not held" means the acquire in
+   getlock() failed open. */
+const char *
+describe_game_instance_lock(void)
+{
+    switch (game_instance_lock_state())
+    {
+    case GAME_INSTANCE_LOCK_ACQUIRED:
+        return "held";
+    case GAME_INSTANCE_LOCK_NOT_HELD:
+        return "not held";
+    default:
+        return "unsupported";
+    }
+}
+
+/* TRUE if another process holds the instance lock of the named character's game; builds the
+   level 0 name the way getlock() and check_crash() do */
+boolean
+game_in_progress_elsewhere(const char *name)
+{
+    char namelock[BUFSZ];
+
+    if (!name || !*name)
+        return FALSE;
+    Sprintf(namelock, "%d%s", (int) getuid(), name);
+    regularize(namelock);
+    set_levelfile_name(namelock, 0);
+    return (boolean) (probe_game_instance_lock(fqname(namelock, LEVELPREFIX, 0))
+                      == GAME_INSTANCE_LOCK_ELSEWHERE);
+}
+
+/* Tells the player that another window is playing this character */
+void
+show_game_already_running(const char *text)
+{
+    if (open_special_view && iflags.window_inited)
+    {
+        struct special_view_info info = { 0 };
+        info.viewtype = SPECIAL_VIEW_MESSAGE;
+        info.title = "Game Already Running";
+        info.text = text;
+        (void) open_special_view(info);
+    }
+}
+
+/* Ends a game start whose character another process is playing. Called before
+   levelfiles_claimed is set, so clearlocks() leaves that process's files alone. Does not
+   return. */
+void
+refuse_game_in_progress_elsewhere(void)
+{
+    debugprint("getlock: game in progress in another process");
+    issue_breadcrumb("getlock: game in progress in another process");
+    show_game_already_running("This character is already being played in another GnollHack window. "
+                              "Save or exit the game there, then load it here.");
+    nh_bail(EXIT_SUCCESS, (char *) 0, TRUE);
+}
+
+/* Moves the backup save file to the imported save file name. The game is then listed as
+   imported, and loading it makes it non-scoring for good (reset_save_file_name()). No scoring
+   copy is left: the backup is moved, not copied, and the temporary and pre-recovery copies are
+   deleted. Returns 0 on success, -1 if there is no backup, -2 if an imported save file already
+   exists, -3 if the move failed. */
+int
+restore_backup_as_imported_savefile(void)
+{
+    char bakbuf[FQN_MAX_FILENAME + BUFSZ], impbuf[FQN_MAX_FILENAME + BUFSZ];
+
+    if (!sysopt.make_backup_savefiles || !*SAVEF)
+        return -1;
+    get_savefile_variant_name(bakbuf, BACKUP_EXTENSION, (const char *) 0, (const char *) 0);
+    get_savefile_variant_name(impbuf, IMPORTED_EXTENSION, (const char *) 0, (const char *) 0);
+    nh_uncompress(bakbuf);
+    if (access(bakbuf, F_OK) != 0)
+        return -1;
+    nh_uncompress(impbuf);
+    if (access(impbuf, F_OK) == 0)
+    {
+        /* Never overwrite another imported game */
+        nh_compress(impbuf);
+        nh_compress(bakbuf);
+        return -2;
+    }
+    if (rename(bakbuf, impbuf) != 0)
+    {
+        nh_compress(bakbuf);
+        return -3;
+    }
+    nh_compress(impbuf);
+    (void) delete_tmp_backup_savefile();
+    (void) delete_prerecovery_savefile();
+    return 0;
+}
+#endif /* GNH_MOBILE */
+
 /* TRUE if both headers describe the same game: role, race, difficulty and debug mode match, and
    explore, modern and casual modes match unless the game switched into explore mode between
    the older header and the newer one */
@@ -2338,7 +2461,6 @@ create_gamestate_levelfile(void)
     }
     else
     {
-        hackpid = 1;
         IGNORE_RESULT write(fd, (genericptr_t)&hackpid, sizeof(hackpid));
         close(fd);
     }
@@ -5728,6 +5850,34 @@ level0_file_lacks_checkpoint(const char *fq_level0)
     (void) close(fd);
     return lacks;
 }
+
+#ifdef GNH_MOBILE
+/* Fixed phrase for this game's level 0 file: "missing", or its owner, "ours" or "another
+   process's" by the PID at its start, and whether it holds a checkpoint */
+const char *
+describe_level0_file(void)
+{
+    char namelock[BUFSZ];
+    const char *fq_level0;
+    int fd, pid = 0;
+    boolean ours, checkpoint;
+
+    /* A copy, so the global lock name is left as the caller had it */
+    Strcpy(namelock, lock);
+    set_levelfile_name(namelock, 0);
+    fq_level0 = fqname(namelock, LEVELPREFIX, 0);
+    if ((fd = open(fq_level0, O_RDONLY | O_BINARY, 0)) < 0)
+        return "missing";
+    if ((int) read(fd, (genericptr_t) &pid, (readLenType) sizeof pid) != (int) sizeof pid)
+        pid = 0;
+    (void) close(fd);
+    ours = (boolean) (pid == hackpid);
+    checkpoint = (boolean) !level0_file_lacks_checkpoint(fq_level0);
+    if (ours)
+        return checkpoint ? "ours with checkpoint" : "ours without checkpoint";
+    return checkpoint ? "another process's with checkpoint" : "another process's without checkpoint";
+}
+#endif
 
 boolean
 recover_savefile(void)

@@ -21,6 +21,26 @@ description: Guidelines on modifying the save/load system, which is complex and 
 2. **Version Check**: Compares the save file's version struct with the compiled binary's version. If they mismatch, restoration fails.
 3. **State Loading**: Reconstructs pointers. Pointers in the binary dump are invalid; the restore code runs an address-fixup pass to re-link linked lists (`nmon`, `nobj`).
 
+## Level Files and the Instance Lock
+
+While a game runs, each visited level lives in its own file, `<lock>.<ledger>`, beside level 0,
+which holds the checkpoint. In the app builds (`GNH_MOBILE`) `<lock>` is the user ID and
+character name, with no process ID, so two processes playing one character would share every
+file. Level 0 and every level file start with the writing process's ID (`hackpid`, the real
+`getpid()`). It is compared only with files this process wrote in the same game
+(`savestateinlock()`, and `getlev()` from `goto_level()` and `dosave0()`); recovery, restoring
+from a save and bones ignore it, so a restarted process can always recover. Older builds stored
+the constant 1, inherited from Gurr's Android port, so a level 0 holding 1 is from such a build.
+
+`getlock()` therefore takes a per-character instance lock (`acquire_game_instance_lock()`: a
+named mutex on Windows, `flock` on Linux, none on Android and iOS) and refuses the start when
+another process holds it. `check_crash()` does not offer to recover a game that is still
+running, and the saved-games menu does not delete one (`game_in_progress_elsewhere()`).
+`gnollhack_exit()` releases the lock. The global `lock` keeps the previous game's name until
+`getlock()` sets it, so `clearlocks()` does nothing until `getlock()` has set
+`program_state.levelfiles_claimed`. Any new code that deletes level files before that point must
+check `game_in_progress_elsewhere()` first.
+
 ## Modifying State
 - If you add a new field to a struct, add it to the END of the struct to minimize padding shifts.
 - If the new field contains pointers, you MUST add corresponding fixup logic in `restore.c`.

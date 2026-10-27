@@ -28,6 +28,117 @@ regularize(char *s)    /* normalize file name - we don't like .'s, /'s, spaces *
         *lp = '_';
 }
 
+#if defined(GNH_LINUX)
+#include <sys/file.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+/* flock() on "<level 0 path>.lock": the lock goes with the process, and O_CLOEXEC keeps it out
+   of child processes. The file is never deleted; unlinking a lock file others may open races. */
+static int game_instance_fd = -1;
+static char game_instance_path[FQN_MAX_FILENAME + BUFSZ] = "";
+
+void
+release_game_instance_lock(void)
+{
+    if (game_instance_fd >= 0)
+    {
+        (void) close(game_instance_fd);
+        game_instance_fd = -1;
+    }
+    game_instance_path[0] = '\0';
+}
+
+int
+acquire_game_instance_lock(const char *fq_level0)
+{
+    char path[FQN_MAX_FILENAME + BUFSZ];
+    int fd, err, tries;
+
+    /* One game runs per process, so a descriptor still held belongs to a finished game */
+    release_game_instance_lock();
+    Sprintf(path, "%s.lock", fq_level0);
+    fd = open(path, O_RDWR | O_CREAT | O_CLOEXEC, FCMASK);
+    if (fd < 0)
+    {
+        debugprint("acquire_game_instance_lock: open failed (errno %d)", errno);
+        issue_breadcrumb("acquire_game_instance_lock: unavailable");
+        return GAME_INSTANCE_LOCK_UNSUPPORTED;
+    }
+    /* Another process's probe_game_instance_lock() holds the lock for an instant, so a
+       conflict is retried twice before it counts as a running game */
+    for (tries = 0; flock(fd, LOCK_EX | LOCK_NB) != 0; tries++)
+    {
+        err = errno;
+        if (err == EWOULDBLOCK && tries < 2)
+        {
+            (void) usleep(20000);
+            continue;
+        }
+        (void) close(fd);
+        if (err == EWOULDBLOCK)
+            return GAME_INSTANCE_LOCK_ELSEWHERE;
+        debugprint("acquire_game_instance_lock: flock failed (errno %d)", err);
+        issue_breadcrumb("acquire_game_instance_lock: unavailable");
+        return GAME_INSTANCE_LOCK_UNSUPPORTED;
+    }
+    game_instance_fd = fd;
+    Strcpy(game_instance_path, path);
+    return GAME_INSTANCE_LOCK_ACQUIRED;
+}
+
+int
+probe_game_instance_lock(const char *fq_level0)
+{
+    char path[FQN_MAX_FILENAME + BUFSZ];
+    int fd, res;
+
+    Sprintf(path, "%s.lock", fq_level0);
+    if (game_instance_fd >= 0 && !strcmp(path, game_instance_path))
+        return GAME_INSTANCE_LOCK_FREE;
+    fd = open(path, O_RDONLY | O_CLOEXEC);
+    if (fd < 0)
+        return errno == ENOENT ? GAME_INSTANCE_LOCK_FREE : GAME_INSTANCE_LOCK_UNSUPPORTED;
+    if (flock(fd, LOCK_EX | LOCK_NB) == 0)
+        res = GAME_INSTANCE_LOCK_FREE; /* the close below releases it */
+    else
+        res = errno == EWOULDBLOCK ? GAME_INSTANCE_LOCK_ELSEWHERE : GAME_INSTANCE_LOCK_UNSUPPORTED;
+    (void) close(fd);
+    return res;
+}
+
+int
+game_instance_lock_state(void)
+{
+    return game_instance_fd >= 0 ? GAME_INSTANCE_LOCK_ACQUIRED : GAME_INSTANCE_LOCK_NOT_HELD;
+}
+#else
+/* Android and iOS run one process per app, so no other process can hold a game */
+void
+release_game_instance_lock(void)
+{
+    return;
+}
+
+int
+acquire_game_instance_lock(const char *fq_level0 UNUSED)
+{
+    return GAME_INSTANCE_LOCK_UNSUPPORTED;
+}
+
+int
+probe_game_instance_lock(const char *fq_level0 UNUSED)
+{
+    return GAME_INSTANCE_LOCK_UNSUPPORTED;
+}
+
+int
+game_instance_lock_state(void)
+{
+    return GAME_INSTANCE_LOCK_UNSUPPORTED;
+}
+#endif /* GNH_LINUX */
+
 static int
 eraseoldlocks(void)
 {
@@ -69,6 +180,12 @@ getlock(void)
     set_levelfile_name(lock, 0);
 
     fq_lock = fqname(lock, LEVELPREFIX, 0);
+    if (acquire_game_instance_lock(fq_lock) == GAME_INSTANCE_LOCK_ELSEWHERE)
+    {
+        unlock_file(HLOCK);
+        refuse_game_in_progress_elsewhere(); /* does not return */
+    }
+    program_state.levelfiles_claimed = 1;
     if((fd = open(fq_lock, 0)) == -1)
     {
         if(errno == ENOENT)
@@ -152,6 +269,12 @@ check_crash(void)
     set_levelfile_name(recover_lock, 0);
 
     fq_lock = fqname(recover_lock, LEVELPREFIX, 0);
+    if (probe_game_instance_lock(fq_lock) == GAME_INSTANCE_LOCK_ELSEWHERE)
+    {
+        debugprint("check_crash: game in progress in another process");
+        issue_breadcrumb("check_crash: game in progress in another process");
+        goto nofilefound;
+    }
     if ((fd = open(fq_lock, 0)) == -1)
     {
         if (errno == ENOENT)
@@ -225,6 +348,8 @@ thread_lock_unlock(void)
 void
 gnollhack_exit(int code)
 {
+    /* Before exit_hack(), which may start the next game on a new thread */
+    release_game_instance_lock();
     if (exit_hack)
         exit_hack(exit_hack_code);
 

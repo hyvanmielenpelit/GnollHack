@@ -217,6 +217,7 @@ E NEARDATA struct sinfo {
     int wizkit_wishing;
     int in_tricked;
     int in_lifesaving;          /* done() is using up a life-saving item */
+    int levelfiles_claimed;     /* getlock() has taken charge of the level files that lock names */
 } program_state;
 
 E int exit_hack_code;
@@ -224,6 +225,13 @@ E int exit_hack_code;
 #define EXITHACK_RESTART_EXISTING   1 /* Restart game to an existing GamePage without saying welcome back; ExitHack should prepare the game to be loaded after exit */
 #define EXITHACK_RECOVER_NEW        2 /* Recover game to a new GamePage without saying welcome back; the original GamePage has been destroyed by OS and should be regenerated */
 #define EXITHACK_EXITTHREAD         3 /* Exiting thread; ExitHack should not do anything */
+
+/* Results of acquire_game_instance_lock(), probe_game_instance_lock() and game_instance_lock_state() */
+#define GAME_INSTANCE_LOCK_UNSUPPORTED 0 /* no lock on this platform, or the OS call failed */
+#define GAME_INSTANCE_LOCK_ACQUIRED    1 /* this process holds it */
+#define GAME_INSTANCE_LOCK_FREE        2 /* no other process holds it */
+#define GAME_INSTANCE_LOCK_ELSEWHERE   3 /* another process holds it */
+#define GAME_INSTANCE_LOCK_NOT_HELD    4 /* this process holds none */
 
 E boolean restoring;
 E boolean saving;

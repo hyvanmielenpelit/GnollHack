@@ -1361,6 +1361,17 @@ E boolean level0_file_lacks_checkpoint(const char *);
 E boolean recover_savefile(void);
 E const char *get_recover_savefile_failure_reason(void);
 #endif
+#if defined(GNH_MOBILE)
+E boolean game_in_progress_elsewhere(const char *);
+E void show_game_already_running(const char *);
+E void refuse_game_in_progress_elsewhere(void);
+E const char *describe_savefile_recoveries(void);
+E const char *describe_game_instance_lock(void);
+E int restore_backup_as_imported_savefile(void);
+#ifdef SELF_RECOVER
+E const char *describe_level0_file(void);
+#endif
+#endif
 #ifdef SYSCF_FILE
 E void assure_syscf_file(void);
 #endif
@@ -1438,6 +1449,11 @@ E void thread_lock_init(void);
 E void thread_lock_destroy(void);
 E void thread_lock_lock(void);
 E void thread_lock_unlock(void);
+/* gnhunix.c, and winnt.c in the GNH_WIN build */
+E int acquire_game_instance_lock(const char *);
+E int probe_game_instance_lock(const char *);
+E void release_game_instance_lock(void);
+E int game_instance_lock_state(void);
 #endif /* GNH_MOBILE */
 
 /* ### hack.c ### */

@@ -25,6 +25,10 @@ int dotcnt, dotrow; /* also used in restore */
 #endif
 
 static boolean precheck_save_file_tracking(const char*);
+#ifdef GNH_MOBILE
+static void offer_unsaveable_game_choices(void);
+static void restore_backup_after_failed_save(void);
+#endif
 
 static void savelevchn(int, int);
 static void savedamage(int, int);
@@ -81,6 +85,7 @@ static struct save_procs {
 static unsigned ustuck_id = 0, usteed_id = 0;
 /* one report per game; a steed that is off the level stays off it at every later save */
 static boolean steed_off_level_reported = FALSE;
+static boolean save_precheck_failed = FALSE; /* the last dosave0() was refused by its precheck */
 boolean saving = FALSE;
 boolean check_pointing = FALSE;
 boolean ignore_onsleep_autosave = FALSE;
@@ -150,10 +155,80 @@ dosave(void)
             nh_terminate(EXIT_SUCCESS);
         }
         else
+        {
+#ifdef GNH_MOBILE
+            if (save_precheck_failed)
+                offer_unsaveable_game_choices(); /* returns only if the player keeps playing */
+#endif
             (void) doredraw();
+        }
     }
     return 0;
 }
+
+#ifdef GNH_MOBILE
+/* After the precheck has refused to save, offers the ways out of a game that can be neither
+   saved nor closed: quitting, or, outside tournament mode, continuing later from the backup as
+   a non-scoring game. Each is confirmed; returns if the player keeps playing. */
+static void
+offer_unsaveable_game_choices(void)
+{
+    boolean can_restore;
+    char ans;
+
+    /* Only classic and modern games lack a save file here; casual, wizard and explore keep theirs */
+    can_restore = !TournamentMode && !check_existing_save_file() && check_has_backup_savefile();
+    if (can_restore)
+        ans = yn_function_core(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_NEGATIVE, NO_GLYPH, "Cannot Save",
+                               "Some of this game's level files are missing, so it cannot be saved. "
+                               "You can keep playing, quit, or continue later from the backup made "
+                               "when you last loaded the game, as a non-scoring game.",
+                               "nqr", 'n', "Keep Playing\nQuit\nRestore Backup", (const char *) 0, 0UL);
+    else
+        ans = yn_function_core(YN_STYLE_GENERAL, ATR_NONE, CLR_MSG_NEGATIVE, NO_GLYPH, "Cannot Save",
+                               "Some of this game's level files are missing, so it cannot be saved. "
+                               "You can keep playing or quit.",
+                               "nq", 'n', "Keep Playing\nQuit", (const char *) 0, 0UL);
+
+    if (ans == 'q')
+    {
+        issue_breadcrumb("dosave: quit chosen after a failed save");
+        (void) done2(); /* asks "Confirm Quit"; returns if declined */
+    }
+    else if (ans == 'r')
+    {
+        restore_backup_after_failed_save();
+    }
+}
+
+/* Ends the session without saving and leaves the backup as an imported, non-scoring save, after
+   a confirmation. Returns if the player declines or the backup cannot be moved. */
+static void
+restore_backup_after_failed_save(void)
+{
+    int res;
+
+    if (!paranoid_query_ex(ATR_NONE, CLR_MSG_NEGATIVE, ParanoidQuit, "Restore Backup",
+                           "This ends the session without saving. The game continues later from the "
+                           "backup made when you last loaded it, and it stays non-scoring for good. "
+                           "Continue?"))
+        return;
+
+    res = restore_backup_as_imported_savefile();
+    if (res != 0)
+    {
+        debugprint("dosave: backup restore failed (%d)", res);
+        pline("The backup could not be restored.");
+        return;
+    }
+    debugprint("dosave: backup restored as a non-scoring imported save");
+    issue_breadcrumb("dosave: backup restored as a non-scoring imported save");
+    clearlocks();
+    u.uhp = -1; /* universal game's over indicator */
+    exit_nhwindows((char *) 0);
+    nh_terminate(EXIT_SUCCESS);
+}
+#endif
 
 char saved_dgnlvl_name_buf[BUFSZ * 2] = "";
 
@@ -206,6 +281,7 @@ dosave0(boolean quietly)
     Strcpy(saved_dgnlvl_name_buf, "");
     debugprint("dosave0");
     issue_breadcrumb("Start dosave0");
+    save_precheck_failed = FALSE;
 
 #ifdef WHEREIS_FILE
     delete_whereis();
@@ -297,16 +373,23 @@ dosave0(boolean quietly)
         }
         if (n_missing)
         {
+            char diagbuf[BUFSZ] = "";
+
+#ifdef GNH_MOBILE
+            Sprintf(diagbuf, "; level 0 %s, save %s, instance lock %s", describe_level0_file(),
+                    describe_savefile_recoveries(), describe_game_instance_lock());
+#endif
             debugprint("dosave0 precheck: %s Missing:%s of max %d", whynot, missbuf, (int) chkmax);
             HUP pline1(whynot);
             if (quietly)
                 silent_nonfatal_error(
-                    "dosave0 precheck: %d level file(s) cannot be opened (first ledger %d, player on %d/%d)",
-                    n_missing, first_missing, (int) u.uz.dnum, (int) u.uz.dlevel);
+                    "dosave0 precheck: %d level file(s) cannot be opened (first ledger %d, player on %d/%d)%s",
+                    n_missing, first_missing, (int) u.uz.dnum, (int) u.uz.dlevel, diagbuf);
             else
                 nonfatal_error(
-                    "dosave0 precheck: %d level file(s) cannot be opened (first ledger %d, player on %d/%d)",
-                    n_missing, first_missing, (int) u.uz.dnum, (int) u.uz.dlevel);
+                    "dosave0 precheck: %d level file(s) cannot be opened (first ledger %d, player on %d/%d)%s",
+                    n_missing, first_missing, (int) u.uz.dnum, (int) u.uz.dlevel, diagbuf);
+            save_precheck_failed = TRUE;
             saving = FALSE;
             return 0;
         }
@@ -701,7 +784,8 @@ savestateinlock(void)
                     hpid, hackpid);
             pline1(whynot);
 #ifdef GNH_MOBILE
-            nonfatal_error("savestateinlock: %s", whynot);
+            debugprint("savestateinlock: %s", whynot);
+            nonfatal_error("savestateinlock: level 0 belongs to another process");
             (void)nhclose(fd);
             return;
 #else

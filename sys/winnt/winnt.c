@@ -494,9 +494,116 @@ void nhassert_failed(const char * exp, const char * file, int line)
     fatal_error("%s", message);
 }
 
+#ifdef GNH_WIN
+/* A named mutex per level 0 file: its full path names both the install's data folder and the
+   character, and the mutex exists for as long as some process has it open */
+static HANDLE game_instance_mutex = NULL;
+static char game_instance_mutex_name[64] = "";
+
+/* "Local\GnollHackGame-" and the FNV-1a 64 hash of the full path, lowercased like the file
+   system. fqname() gives a name relative to the data folder, which is the working directory. */
+static void
+make_game_instance_mutex_name(const char *fq_level0, char *buf)
+{
+    char fullpath[FQN_MAX_FILENAME + BUFSZ];
+    const char *path = fq_level0;
+    DWORD len;
+    uint64_t h = 14695981039346656037ULL;
+    const unsigned char *p;
+
+    len = GetFullPathNameA(fq_level0, (DWORD) sizeof fullpath, fullpath, (LPSTR *) 0);
+    if (len > 0 && len < (DWORD) sizeof fullpath)
+        path = fullpath;
+    for (p = (const unsigned char *) path; *p; p++)
+    {
+        h ^= (uint64_t) (*p < 128 ? tolower(*p) : *p);
+        h *= 1099511628211ULL;
+    }
+    Sprintf(buf, "Local\\GnollHackGame-%016llx", (unsigned long long) h);
+}
+
+void
+release_game_instance_lock(void)
+{
+    if (game_instance_mutex)
+    {
+        (void) CloseHandle(game_instance_mutex);
+        game_instance_mutex = NULL;
+    }
+    game_instance_mutex_name[0] = '\0';
+}
+
+int
+acquire_game_instance_lock(const char *fq_level0)
+{
+    char name[64];
+    HANDLE h;
+    DWORD err;
+
+    /* One game runs per process, so a handle still held belongs to a finished game */
+    release_game_instance_lock();
+    make_game_instance_mutex_name(fq_level0, name);
+    SetLastError(0);
+    h = CreateMutexA((LPSECURITY_ATTRIBUTES) 0, FALSE, name);
+    err = GetLastError();
+    if (!h)
+    {
+        /* Access denied: created by a process at another integrity level */
+        if (err == ERROR_ACCESS_DENIED)
+            return GAME_INSTANCE_LOCK_ELSEWHERE;
+        debugprint("acquire_game_instance_lock: CreateMutex failed (%lu)", (unsigned long) err);
+        issue_breadcrumb("acquire_game_instance_lock: unavailable");
+        return GAME_INSTANCE_LOCK_UNSUPPORTED;
+    }
+    if (err == ERROR_ALREADY_EXISTS)
+    {
+        (void) CloseHandle(h);
+        return GAME_INSTANCE_LOCK_ELSEWHERE;
+    }
+    game_instance_mutex = h;
+    Strcpy(game_instance_mutex_name, name);
+    return GAME_INSTANCE_LOCK_ACQUIRED;
+}
+
+int
+probe_game_instance_lock(const char *fq_level0)
+{
+    char name[64];
+    HANDLE h;
+    DWORD err;
+
+    make_game_instance_mutex_name(fq_level0, name);
+    if (game_instance_mutex && !strcmp(name, game_instance_mutex_name))
+        return GAME_INSTANCE_LOCK_FREE;
+    h = OpenMutexA(SYNCHRONIZE, FALSE, name);
+    if (h)
+    {
+        (void) CloseHandle(h);
+        return GAME_INSTANCE_LOCK_ELSEWHERE;
+    }
+    err = GetLastError();
+    if (err == ERROR_FILE_NOT_FOUND)
+        return GAME_INSTANCE_LOCK_FREE;
+    if (err == ERROR_ACCESS_DENIED)
+        return GAME_INSTANCE_LOCK_ELSEWHERE;
+    debugprint("probe_game_instance_lock: OpenMutex failed (%lu)", (unsigned long) err);
+    return GAME_INSTANCE_LOCK_UNSUPPORTED;
+}
+
+int
+game_instance_lock_state(void)
+{
+    return game_instance_mutex ? GAME_INSTANCE_LOCK_ACQUIRED : GAME_INSTANCE_LOCK_NOT_HELD;
+}
+#endif /* GNH_WIN */
+
 void
 gnollhack_exit(int code)
 {
+#ifdef GNH_WIN
+    /* Before exit_hack(), which may start the next game on a new thread */
+    release_game_instance_lock();
+#endif
     /* Only if we started from the GUI, not the command prompt,
      * we need to get one last return, so the score board does
      * not vanish instantly after being created.

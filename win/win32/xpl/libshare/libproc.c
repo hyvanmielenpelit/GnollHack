@@ -181,9 +181,18 @@ void lib_askname(void)
                         if (check_saved_game_exists())
                         {
                             char qbuf[BUFSZ] = "";
+                            char ans;
                             Sprintf(qbuf, "There is already a saved game for a character named \'%s\'. Do you want to overwrite the save file and delete the existing character?", plname);
-                            char ans = lib_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, NO_GLYPH, "Overwrite Existing Character?",
-                                qbuf, "ynql", 'n', "Yes\nNo\nQuit\nLoad", (const char*)0, 0UL);
+                            if (game_in_progress_elsewhere(plname))
+                            {
+                                show_game_already_running("This character is being played in another "
+                                                          "GnollHack window. Choose another name, or "
+                                                          "save or exit the game there first.");
+                                ans = 'n';
+                            }
+                            else
+                                ans = lib_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, NO_GLYPH, "Overwrite Existing Character?",
+                                    qbuf, "ynql", 'n', "Yes\nNo\nQuit\nLoad", (const char*)0, 0UL);
                             if (ans == 'l')
                             {
                                 return;
