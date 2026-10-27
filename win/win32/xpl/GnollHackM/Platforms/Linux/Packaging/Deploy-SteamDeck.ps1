@@ -304,6 +304,10 @@ remote() { ssh "${SSH_OPTS[@]}" "$TARGET" "$@"; }
 echo "Connecting to $TARGET, with the host key checked as '$HOST_KEY_ALIAS'"
 if ! check_errors=$(remote true 2>&1 >/dev/null); then
     printf '%s\n' "$check_errors" >&2
+    where="$DECK_HOST at $DECK_ADDRESS"
+    if [ "$DECK_HOST" = "$DECK_ADDRESS" ]; then
+        where="the Deck at $DECK_ADDRESS"
+    fi
     case "$check_errors" in
     *"REMOTE HOST IDENTIFICATION HAS CHANGED"*)
         fail "The device at $DECK_ADDRESS is not the one trusted as '$HOST_KEY_ALIAS': a reinstalled Deck, or another device. Find out which before changing ~/.ssh/known_hosts in WSL. A second Deck needs its own -HostKeyAlias."
@@ -318,11 +322,10 @@ if ! check_errors=$(remote true 2>&1 >/dev/null); then
     $copy_id
 If WSL has no SSH key yet, first run: wsl -d $WSL_DISTRO ssh-keygen -t ed25519"
         ;;
+    *"Connection refused"*)
+        fail "$where answered, but no SSH server is running on it. On the Deck, in Desktop Mode, in Konsole, run: passwd (once, if the deck user has no password yet), then sudo systemctl enable --now sshd"
+        ;;
     *)
-        where="$DECK_HOST at $DECK_ADDRESS"
-        if [ "$DECK_HOST" = "$DECK_ADDRESS" ]; then
-            where="the Deck at $DECK_ADDRESS"
-        fi
         fail "Cannot reach $where. Check that the Deck is awake, on the same network or cable as this PC, and has sshd enabled (sudo systemctl enable --now sshd, in Desktop Mode)."
         ;;
     esac
