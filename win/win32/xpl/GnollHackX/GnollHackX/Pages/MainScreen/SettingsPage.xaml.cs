@@ -1603,7 +1603,7 @@ namespace GnollHackX.Pages.MainScreen
             save_file_tracking = GHApp.SaveFileTracking;
             disablewindowskey = Preferences.Get("DisableWindowsKey", false);
             defaultvikeys = Preferences.Get("DefaultVIKeys", false);
-            showkeyboardshortcuts = Preferences.Get("ShowKeyboardShortcuts", GHApp.IsDesktop);
+            showkeyboardshortcuts = Preferences.Get("ShowKeyboardShortcuts", GHApp.IsShowKeyboardShortcutsDefault);
             singlecmdpage = Preferences.Get("UseSingleMoreCommandsPage", GHApp.IsDesktop);
             skillbutton = Preferences.Get("ShowSkillContextButton", true);
             polearmbutton = Preferences.Get("ShowPolearmContextButton", GHConstants.DefaultShowPolearmContextButton);

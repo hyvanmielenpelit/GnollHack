@@ -341,7 +341,7 @@ namespace GnollHackX
             UseTextBlobCaching = Preferences.Get("UseTextBlobCaching", GHConstants.DefaultTextBlobCaching);
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
-            ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsDesktop);
+            ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsShowKeyboardShortcutsDefault);
             UseSingleMoreCommandsPage = Preferences.Get("UseSingleMoreCommandsPage", IsDesktop);
             ShowSkillContextButton = Preferences.Get("ShowSkillContextButton", true);
             ShowPolearmContextButton = Preferences.Get("ShowPolearmContextButton", GHConstants.DefaultShowPolearmContextButton);
@@ -2784,6 +2784,14 @@ namespace GnollHackX
             }
         }
 
+        public static bool IsShowKeyboardShortcutsDefault
+        {
+            get
+            {
+                return IsDesktop && !IsSteamDeck;
+            }
+        }
+
         public static bool IsUseMainMipMapDefault
         {
             get
@@ -4358,6 +4366,33 @@ namespace GnollHackX
             {
                 string manufacturer = DeviceInfo.Manufacturer;
                 return (manufacturer != null && manufacturer.ToLower() == "samsung");
+            }
+        }
+
+        private static int _isSteamDeck = -1; /* -1 until checked */
+
+        /* A Valve Steam Deck: DMI model Jupiter (LCD) or Galileo (OLED) */
+        public static bool IsSteamDeck
+        {
+            get
+            {
+                if (_isSteamDeck < 0)
+                {
+                    bool res = false;
+                    try
+                    {
+                        string model = DeviceInfo.Model;
+                        res = string.Equals(DeviceInfo.Manufacturer, "Valve", StringComparison.OrdinalIgnoreCase)
+                            && (string.Equals(model, "Jupiter", StringComparison.OrdinalIgnoreCase)
+                                || string.Equals(model, "Galileo", StringComparison.OrdinalIgnoreCase));
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                    _isSteamDeck = res ? 1 : 0;
+                }
+                return _isSteamDeck == 1;
             }
         }
 
