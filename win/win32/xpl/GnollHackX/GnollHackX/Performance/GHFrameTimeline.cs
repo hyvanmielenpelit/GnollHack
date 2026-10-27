@@ -613,7 +613,8 @@ namespace GnollHackX.Performance
         {
             long now = Stopwatch.GetTimestamp();
             long id;
-            if (_hasPaintTicket)
+            bool ticketed = _hasPaintTicket;
+            if (ticketed)
             {
                 id = _paintTicket;
                 _paintTicket = 0;
@@ -658,6 +659,8 @@ namespace GnollHackX.Performance
             _ring[idx].PaintStartTicks = now;
             _ring[idx].PaintOnUiThread = onUiThread;
             _ring[idx].Paint = outcome;
+            if (ticketed)
+                _ring[idx].Flags |= GHFrameFlags.DeferredPaint;
             if (takeOver)
                 Interlocked.Exchange(ref _currentPaintFrameId, id);
             return id;

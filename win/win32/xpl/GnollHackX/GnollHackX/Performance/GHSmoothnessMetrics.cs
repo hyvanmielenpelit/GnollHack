@@ -21,7 +21,8 @@ namespace GnollHackX.Performance
         Compositor = 10,        /* the app was on time; the frame was dropped or shown late downstream */
         Unattributed = 11,
         UiThreadRequests = 12,  /* a display callback was late after the UI thread handled game requests */
-        FrameworkCadence = 13   /* the UI framework delivered display callbacks below the panel's rate */
+        FrameworkCadence = 13,  /* the UI framework delivered display callbacks below the panel's rate */
+        ContentAhead = 14       /* a deferred paint drew a later tick's content (Avalonia's pipelined paint) */
     }
 
     /* One distinct frame that reached the display */
@@ -129,7 +130,7 @@ namespace GnollHackX.Performance
        summary records the share of ticks corrected. */
     public static class GHSmoothnessMetrics
     {
-        public const int CauseCount = 14;
+        public const int CauseCount = 15;
         public const int ContentEventKinds = 10;
 
         /* The version of the metric definitions; results of different versions do not compare */
@@ -146,7 +147,7 @@ namespace GnollHackX.Performance
         {
             "None", "DisplayMode", "UiThreadLateGc", "UiThreadLate", "PacingPolicy", "PaintNotRun",
             "DispatchLate", "GameLock", "PaintCpu", "Gpu", "Compositor", "Unattributed", "UiThreadRequests",
-            "FrameworkCadence"
+            "FrameworkCadence", "ContentAhead"
         };
 
         private static readonly string[] _contentEventNames = new string[]
@@ -253,7 +254,9 @@ namespace GnollHackX.Performance
             private readonly long[] _periods;
             private readonly int _count;
 
-            public VsyncGrid(GHFrameRecord[] records, int n, long fallbackPeriod)
+            /* fromPaintStarts: the points are the paint starts of the painted records, each with
+               fallbackPeriod, for a run whose paints ran at the render thread's swap-paced ticks */
+            public VsyncGrid(GHFrameRecord[] records, int n, long fallbackPeriod, bool fromPaintStarts)
             {
                 bool haveVsync = false;
                 for (int i = 0; i < n && !haveVsync; i++)
@@ -265,11 +268,17 @@ namespace GnollHackX.Performance
                 long last = long.MinValue;
                 for (int i = 0; i < n; i++)
                 {
-                    long t = haveVsync ? records[i].VsyncTicks : records[i].CallbackStartTicks;
+                    long t;
+                    if (haveVsync)
+                        t = records[i].VsyncTicks;
+                    else if (fromPaintStarts)
+                        t = records[i].Paint == GHPaintOutcome.Painted ? records[i].PaintStartTicks : 0;
+                    else
+                        t = records[i].CallbackStartTicks;
                     if (t == 0 || t <= last)
                         continue;
                     _times[k] = t;
-                    _periods[k] = records[i].RefreshPeriodTicks > 0 ? records[i].RefreshPeriodTicks : fallbackPeriod;
+                    _periods[k] = !fromPaintStarts && records[i].RefreshPeriodTicks > 0 ? records[i].RefreshPeriodTicks : fallbackPeriod;
                     last = t;
                     k++;
                 }
@@ -608,7 +617,17 @@ namespace GnollHackX.Performance
                     s.CompositorReportsLost += compositor[k].DroppedSinceLast;
             }
 
-            VsyncGrid grid = new VsyncGrid(records, n, period);
+            /* Without vsync times, a run whose paints ran later at the render thread's ticks
+               (Avalonia) takes those paint starts as the display grid: the UI callbacks follow a
+               sleep timer, while the render thread's ticks follow the buffer swap */
+            bool haveVsyncTimes = false, deferredPaint = false;
+            for (int i = 0; i < n; i++)
+            {
+                haveVsyncTimes |= records[i].VsyncTicks != 0;
+                deferredPaint |= (records[i].Flags & GHFrameFlags.DeferredPaint) != 0;
+            }
+            deferredPaint &= !haveVsyncTimes;
+            VsyncGrid grid = new VsyncGrid(records, n, period, deferredPaint);
 
             /* 1. Display time of every painted frame */
             List<Candidate> candidates = new List<Candidate>();
@@ -886,7 +905,7 @@ namespace GnollHackX.Performance
                 if (displayed[j].IsHitch || displayed[j].IsJudder)
                 {
                     GHHitchCause cause = Attribute(records, n, prevIdx, curIdx, compositor, m, isDisplayed, target, refresh,
-                                                   gap, displayed[j].DisplayDelayTicks, pauseAvailable, dwmCompositor);
+                                                   gap, displayed[j].DisplayDelayTicks, pauseAvailable, dwmCompositor, deferredPaint);
                     displayed[j].Cause = cause;
                     s.CauseCount[(int)cause]++;
                     if (displayed[j].IsHitch)
@@ -961,17 +980,25 @@ namespace GnollHackX.Performance
             return r.CallbackEndTicks - r.FlushEndTicks;
         }
 
+        /* A deferred paint that drew a main counter other than its own tick's */
+        private static bool DrewLaterContent(ref GHFrameRecord r)
+        {
+            return (r.Flags & GHFrameFlags.DeferredPaint) != 0 && r.PaintedMainCounter != 0 && r.MainCounter != 0
+                && r.PaintedMainCounter != r.MainCounter;
+        }
+
         /* Charges the gap before a late or uneven frame to the first stage, in pipeline
            order, that exceeded its budget. prevIdx and curIdx are the records of the
            displayed frames on either side of the gap; n is the number of records.
            pauseAvailable says the records carry GC pause time; without it a collection in
            the gap is judged by the GC counts alone. vsyncIsLatestVblank says every record's
            vsync time is the latest vblank at its callback, as a record's
-           GHFrameFlags.VsyncIsLatestVblank does for that record. */
+           GHFrameFlags.VsyncIsLatestVblank does for that record. deferredPaint says the run's
+           paints ran one render tick after their ticks (GHFrameFlags.DeferredPaint). */
         public static GHHitchCause Attribute(GHFrameRecord[] records, int n, int prevIdx, int curIdx,
                                              GHCompositorFrame[] compositor, int m, bool[] isDisplayed,
                                              long targetPeriod, long refreshPeriod, long gapTicks, long displayDelayTicks,
-                                             bool pauseAvailable, bool vsyncIsLatestVblank = false)
+                                             bool pauseAvailable, bool vsyncIsLatestVblank = false, bool deferredPaint = false)
         {
             long halfRefresh = refreshPeriod / 2;
 
@@ -1106,14 +1133,21 @@ namespace GnollHackX.Performance
                     return GHHitchCause.PaintNotRun;
             }
 
+            /* 4b. A deferred paint on either side of the gap drew a later tick's content than its
+               own tick's: the frames are on time, but the content steps the viewer sees are uneven */
+            if (deferredPaint && (DrewLaterContent(ref records[prevIdx]) || DrewLaterContent(ref records[curIdx])))
+                return GHHitchCause.ContentAhead;
+
             /* 5-8. The stages of every frame painted in the gap, oldest first: a frame that
-               ran late can miss its vsync and be overwritten by the next one */
+               ran late can miss its vsync and be overwritten by the next one. A deferred paint
+               is due one refresh after its invalidation, at the next render tick. */
             for (int i = prevIdx + 1; i <= curIdx; i++)
             {
                 GHFrameRecord r = records[i];
                 if (r.Paint != GHPaintOutcome.Painted)
                     continue;
-                if (r.InvalidateTicks != 0 && r.PaintStartTicks - r.InvalidateTicks > halfRefresh)
+                long dispatchBudget = (r.Flags & GHFrameFlags.DeferredPaint) != 0 ? refreshPeriod + halfRefresh : halfRefresh;
+                if (r.InvalidateTicks != 0 && r.PaintStartTicks - r.InvalidateTicks > dispatchBudget)
                     return GHHitchCause.DispatchLate;
                 if (r.LockAttemptTicks != 0 && r.LockResultTicks - r.LockAttemptTicks > targetPeriod / 4)
                     return GHHitchCause.GameLock;

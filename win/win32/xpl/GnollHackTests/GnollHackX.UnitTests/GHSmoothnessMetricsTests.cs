@@ -1556,6 +1556,115 @@ namespace GnollHackX.UnitTests
             Assert.Equal(0, s.RepresentedCount);
         }
 
+        /* An Avalonia-like run on a 90 Hz panel with no vsync times. The callbacks follow a sleep
+           timer, alternately on the refresh and 4 ms after it; each tick's paint starts 0.5 ms
+           after the next refresh, at the render thread's swap-paced tick, and flushes 3.3 ms
+           later. flagged marks the paints DeferredPaint; on every tick i with i % 4 == 1 the
+           paint draws the next tick's main counter when ahead is true. */
+        private static Timeline DeferredPaintTimeline(int ticks, bool flagged, bool ahead)
+        {
+            Timeline t = new Timeline();
+            long period = F / 90;
+            long start = 1000 * F;
+            for (int i = 0; i < ticks; i++)
+            {
+                GHFrameRecord r = new GHFrameRecord();
+                r.FrameId = ++t.FrameId;
+                r.RefreshPeriodTicks = period;
+                r.CallbackStartTicks = start + i * period + (i % 2 == 1 ? Ms(4.0) : 0);
+                r.CallbackEndTicks = r.CallbackStartTicks + Ms(0.02);
+                r.TargetFps = 90;
+                r.AssumedRefreshHz = 90;
+                r.Pacing = GHPacingDecision.Rendered;
+                r.MainCounter = 1000 + i;
+                r.GeneralCounter = r.MainCounter / 3;
+                r.Invalidate = GHInvalidateOutcome.Invalidated;
+                r.InvalidateTicks = r.CallbackStartTicks + Ms(0.01);
+                r.Paint = GHPaintOutcome.Painted;
+                r.PaintOnUiThread = false;
+                r.PaintStartTicks = start + (i + 1) * period + Ms(0.5);
+                r.LockAttemptTicks = r.PaintStartTicks + Ms(0.01);
+                r.LockResultTicks = r.LockAttemptTicks;
+                r.LockAcquired = true;
+                r.DrawEndTicks = r.PaintStartTicks + Ms(2.8);
+                r.FlushEndTicks = r.DrawEndTicks + Ms(0.5);
+                r.PaintedMainCounter = ahead && i % 4 == 1 ? r.MainCounter + 1 : r.MainCounter;
+                r.PaintedGeneralCounter = r.PaintedMainCounter / 3;
+                if (flagged)
+                    r.Flags |= GHFrameFlags.DeferredPaint;
+                t.Records.Add(r);
+            }
+            return t;
+        }
+
+        /* The paint starts are even, so a deferred-paint run shows no hitch or judder and charges
+           nothing to DispatchLate, although every paint starts about a refresh after its invalidation */
+        [Fact]
+        public void DeferredPaint_EvenPaintStarts_AreSmooth()
+        {
+            Timeline t = DeferredPaintTimeline(270, true, false);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(270, s.DisplayedCount);
+            Assert.Equal(0, s.HitchCount);
+            Assert.Equal(0, s.JudderCount);
+            Assert.Equal(0, s.CauseCount[(int)GHHitchCause.DispatchLate]);
+        }
+
+        /* The same records without the flag keep the callback grid, on which the timer jitter
+           alternates the estimated display times */
+        [Fact]
+        public void DeferredPaint_WithoutTheFlag_KeepsTheCallbackGrid()
+        {
+            Timeline t = DeferredPaintTimeline(270, false, false);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.True(s.JudderCount > 0);
+            Assert.Equal(GHHitchCause.DispatchLate, DominantCause(s));
+        }
+
+        /* A deferred paint two refreshes after its invalidation is late dispatch */
+        [Fact]
+        public void DeferredPaint_TwoRefreshesLate_IsDispatchLate()
+        {
+            Timeline t = DeferredPaintTimeline(270, true, false);
+            long period = F / 90;
+            int late = 100;
+            GHFrameRecord r = t.Records[late];
+            long delay = period + Ms(3.0);
+            r.PaintStartTicks += delay;
+            r.LockAttemptTicks += delay;
+            r.LockResultTicks += delay;
+            r.DrawEndTicks += delay;
+            r.FlushEndTicks += delay;
+            t.Records[late] = r;
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.True(s.HitchCount >= 1);
+            Assert.True(s.CauseHitchCount[(int)GHHitchCause.DispatchLate] >= 1);
+        }
+
+        /* Paints that drew a later tick's counter make the content steps uneven: judder charged
+           to ContentAhead, with no hitch */
+        [Fact]
+        public void DeferredPaint_DrawingALaterTick_IsContentAhead()
+        {
+            Timeline t = DeferredPaintTimeline(270, true, true);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(0, s.HitchCount);
+            Assert.True(s.JudderCount > 0);
+            Assert.Equal(s.JudderCount, s.CauseCount[(int)GHHitchCause.ContentAhead]);
+        }
+
         /* Adds collections to the cumulative counts of record idx and every later one */
         private static void AddCollections(Timeline t, int idx, int gen0, int gen1, int gen2)
         {

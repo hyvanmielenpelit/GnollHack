@@ -249,6 +249,28 @@ namespace GnollHackX.UnitTests
             Assert.Equal(orphansBefore, GHFrameTimeline.OrphanPaintCount);
         }
 
+        /* Only a paint that took its frame from a ticket is deferred */
+        [Fact]
+        public void TicketedPaint_FlagsItsRecordDeferred_UnticketedPaintDoesNot()
+        {
+            Restart();
+            long first = RenderedTick(1);
+            Assert.Equal(first, TicketedPaint(GHFrameTimeline.ClaimPendingPaint(), 1));
+            long second = RenderedTick(2);
+            long painted = GHFrameTimeline.BeginPaint(false);
+            GHFrameTimeline.EndPaint(painted, 2, 0, 0);
+            Assert.Equal(second, painted);
+            RenderedTick(3);
+            TicketedPaint(0, 3);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(3, n);
+            Assert.Equal(GHFrameFlags.DeferredPaint, r[0].Flags & GHFrameFlags.DeferredPaint);
+            Assert.Equal(GHFrameFlags.None, r[1].Flags & GHFrameFlags.DeferredPaint);
+            Assert.Equal(GHFrameFlags.None, r[2].Flags & GHFrameFlags.DeferredPaint);
+        }
+
         [Fact]
         public void TicketZero_IsAnOrphanPaintFlaggedOnTheNewestTick()
         {

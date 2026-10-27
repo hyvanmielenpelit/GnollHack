@@ -152,7 +152,10 @@ Offline, the `smoothness` report has a **Marked moments** section: for each mark
 A frame is *displayed* at the first vsync after it was ready; when two frames are ready for
 the same vsync only the later one is shown, and the earlier one counts as dropped. Ready is
 the flush end or, on Android, the completion of the HWUI frame that carried it (for a
-GL-thread paint, the first HWUI frame whose sync began after the flush). In the app the
+GL-thread paint, the first HWUI frame whose sync began after the flush). Without vsync times
+the vsyncs are taken to be the display callbacks, except on a run whose records carry
+`DeferredPaint` (Avalonia), where they are the paint starts: there the callbacks follow a
+sleep timer, while the render thread paints at ticks paced by the buffer swap. In the app the
 display time is always this estimate, and the in-app reports say so; their `Compositor`
 cause and dropped frames are inferences. Measured display times come only from the offline
 analyzer, which joins PresentMon or Perfetto display times to a record; every record says
@@ -225,8 +228,10 @@ forced collection while the map is hidden falls in a paused gap and tags nothing
 **Orphan paints and re-presented ticks.** `GHFrameFlags.OrphanPaint` (2) is set by the
 timeline when a paint runs that no tick asked for (after a layout pass, say), on the tick
 that was newest when the paint ran. `GHFrameFlags.Represented` (64) marks a skipped tick that
-showed the previous frame again instead of painting (Avalonia). Both appear in the frame
-timeline CSV's `Flags` column.
+showed the previous frame again instead of painting (Avalonia). `GHFrameFlags.DeferredPaint`
+(128) marks a tick whose paint ran later on another thread from a ticket: on Avalonia the
+render thread paints a tick's batch at its next render tick, about one refresh after the
+invalidation. All three appear in the frame timeline CSV's `Flags` column.
 
 The render loop's callback intervals, paint and lock durations, GC and allocation data are
 still collected by `FrameTimeProfiler` and shown on the dashboard's FRAME section; they are
@@ -247,7 +252,8 @@ that exceeded its budget:
 | 2 | `UiThreadLate` | A late or missed callback that nothing above explains |
 | 3 | `PacingPolicy` | A modulo skip, or a catch-up render that bypassed a skip pattern, in the gap (a catch-up render at or below the target rate renders exactly as a regular tick and is not a cause), or a refresh-to-target ratio the divisor pattern cannot pace evenly; either only when the gap is within the pattern's longest hold (two divisor steps) |
 | 4 | `PaintNotRun` | A rendered tick in the gap produced no paint (coalesced, early return, no invalidation) |
-| 5 | `DispatchLate` | A paint started more than `R/2` after its invalidation |
+| 4b | `ContentAhead` | On a `DeferredPaint` run, the frame before or after the gap drew a later tick's main counter than its own tick's: the frames are on time, but the content steps are uneven |
+| 5 | `DispatchLate` | A paint started more than `R/2` after its invalidation, or more than `R + R/2` for a `DeferredPaint` paint |
 | 6 | `GameLock` | Map data lock wait over `T/4` |
 | 7 | `PaintCpu` | Draw over `3T/4` |
 | 8 | `Gpu` | Flush over `T/2`, a swap wait inside the callback over `T/2`, or a compositor frame's GPU time over `R` |

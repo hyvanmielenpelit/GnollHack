@@ -80,7 +80,8 @@ namespace GnollHackX.Performance
         LifecycleBreak = 8,     /* the app was suspended or resumed before this callback */
         VsyncIsLatestVblank = 16, /* VsyncTicks is the latest vblank at the callback (Windows DWM), not its own vsync */
         ForcedCollection = 32,  /* the app forced a collection since the previous callback */
-        Represented = 64        /* a skipped tick showed the previous frame again (Avalonia) */
+        Represented = 64,       /* a skipped tick showed the previous frame again (Avalonia) */
+        DeferredPaint = 128     /* the tick's paint ran later on another thread, from a ticket (Avalonia) */
     }
 
     /* One display callback and everything that followed from it. Every tick field is in the
