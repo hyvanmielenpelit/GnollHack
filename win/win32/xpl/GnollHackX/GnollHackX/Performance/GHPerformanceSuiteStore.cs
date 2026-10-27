@@ -1389,7 +1389,7 @@ namespace GnollHackX.Performance
             if (suite.Fingerprint != null
                 && suite.Fingerprint.TryGetValue(GHEnvironmentFingerprint.SettingsKey("backgroundSampler"), out samplerSetting))
                 suite.BackgroundSamplerEnabled = samplerSetting == "true";
-            /* The setting is a MapRefreshRateStyle name such as "MapFPS60"; without digits the
+            /* The setting is a Map FPS name such as "MapFPS60"; without digits the
                suite's measured target rate stands in */
             if (suite.MapFpsSetting <= 0)
                 suite.MapFpsSetting = manifest.TargetFps;

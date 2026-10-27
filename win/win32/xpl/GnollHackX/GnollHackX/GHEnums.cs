@@ -185,19 +185,6 @@ namespace GnollHackX
         ASCII = 0,
         Tiles
     }
-    public enum MapRefreshRateStyle
-    {
-        MapFPS20 = 0,
-        MapFPS30,
-        MapFPS40,
-        MapFPS60,
-        MapFPS72,
-        MapFPS80,
-        MapFPS90,
-        MapFPS120,
-        MapFPS144,
-    }
-
     public enum GHMapMode
     {
         Normal = 0,

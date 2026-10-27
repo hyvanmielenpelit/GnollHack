@@ -214,28 +214,7 @@ namespace GnollHackX.Pages.MainScreen
                 PopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
             }
 
-            MapRefreshRateStyle defaultRefresh = UIUtils.GetDefaultMapFPS();
-            List<MapRefreshRateItem> list = new List<MapRefreshRateItem>
-            {
-                new MapRefreshRateItem("Default (" + UIUtils.GetMainCanvasAnimationFrequency(defaultRefresh) + " FPS)", true, defaultRefresh),
-                new MapRefreshRateItem("20 FPS", false, MapRefreshRateStyle.MapFPS20),
-                new MapRefreshRateItem("30 FPS", false, MapRefreshRateStyle.MapFPS30),
-                new MapRefreshRateItem("40 FPS", false, MapRefreshRateStyle.MapFPS40),
-                new MapRefreshRateItem("60 FPS", false, MapRefreshRateStyle.MapFPS60),
-            };
-
-            int roundedScreenRefreshRate = GHApp.RoundedReconciledRefreshRate;
-            if (roundedScreenRefreshRate >= 72)
-                list.Add(new MapRefreshRateItem("72 FPS", false, MapRefreshRateStyle.MapFPS72));
-            if (roundedScreenRefreshRate >= 80)
-                list.Add(new MapRefreshRateItem("80 FPS", false, MapRefreshRateStyle.MapFPS80));
-#if GNH_AVALONIA
-            if (roundedScreenRefreshRate >= 90)
-                list.Add(new MapRefreshRateItem("90 FPS", false, MapRefreshRateStyle.MapFPS90));
-#endif
-            //if (roundedScreenRefreshRate >= 120)
-            //    list.Add("120 fps");
-            RefreshRatePicker.ItemsSource = list;
+            RefreshRatePicker.ItemsSource = BuildMapRefreshRateItems(GHApp.RoundedReconciledRefreshRate, GHApp.UsePlatformRenderLoop);
 
             PrimaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(false);
             SecondaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(true);
@@ -552,27 +531,60 @@ namespace GnollHackX.Pages.MainScreen
             CloudStorageTitleLabel.TextColor = usedDefColor;
         }
 
-        private void UpdateDefaultMapRefreshRate()
+        /* The Default item (value -1), then the Map FPS values the refresh rate offers, ascending; an unknown rate counts as 60 Hz */
+        private static List<MapRefreshRateItem> BuildMapRefreshRateItems(int roundedRefreshRate, bool platformLoop)
         {
-            int selIdx = RefreshRatePicker.SelectedIndex;
+            int rate = roundedRefreshRate > 0 ? roundedRefreshRate : 60;
+            List<MapRefreshRateItem> list = new List<MapRefreshRateItem>();
+            list.Add(new MapRefreshRateItem("Default (" + UIUtils.GetDefaultMapFPS(rate, platformLoop) + " FPS)", true, -1));
+            foreach (int fps in UIUtils.GetOfferedMapFPS(rate))
+                list.Add(new MapRefreshRateItem(fps + " FPS", false, fps));
+            return list;
+        }
+
+        /* Selects the item with this Map FPS value; the Default item for -1 or a value that is not offered */
+        private void SelectMapRefreshRateItem(int mapRefreshSetting)
+        {
             var source = RefreshRatePicker.ItemsSource;
-            RefreshRatePicker.ItemsSource = null;
-            if (source != null && source.Count > 0)
+            if (source == null)
+                return;
+
+            int defaultIdx = -1;
+            int i;
+            for (i = 0; i < source.Count; i++)
             {
-                var item = source[0] as MapRefreshRateItem;
-                if (item != null)
+                MapRefreshRateItem item = source[i] as MapRefreshRateItem;
+                if (item == null)
+                    continue;
+                if (item.IsDefault)
                 {
-#if WINDOWS
-                    int roundedRefreshRate = (int)DisplaySettingsHelper.GetCurrentResolution()?.RefreshRate;
-#else
-                    int roundedRefreshRate = GHApp.RoundedReconciledRefreshRate;
-#endif
-                    item.Value = UIUtils.GetDefaultMapFPS(roundedRefreshRate, PlatformRenderLoopGrid.IsVisible && PlatformRenderLoopSwitch.IsToggled);
-                    item.DisplayName = "Default (" + UIUtils.GetMainCanvasAnimationFrequency(item.Value) + " FPS)";
+                    if (defaultIdx < 0)
+                        defaultIdx = i;
+                }
+                else if (mapRefreshSetting > 0 && item.Value == mapRefreshSetting)
+                {
+                    RefreshRatePicker.SelectedIndex = i;
+                    return;
                 }
             }
-            RefreshRatePicker.ItemsSource = source;
-            RefreshRatePicker.SelectedIndex = selIdx;
+            if (defaultIdx >= 0)
+                RefreshRatePicker.SelectedIndex = defaultIdx;
+        }
+
+        /* Rebuilds the Map FPS list for the current refresh rate and render loop, keeping the selection where it is still offered */
+        private void UpdateDefaultMapRefreshRate()
+        {
+            int selectedSetting = -1;
+            MapRefreshRateItem selected = RefreshRatePicker.SelectedItem as MapRefreshRateItem;
+            if (selected != null && !selected.IsDefault)
+                selectedSetting = selected.Value;
+#if WINDOWS
+            int roundedRefreshRate = (int)DisplaySettingsHelper.GetCurrentResolution()?.RefreshRate;
+#else
+            int roundedRefreshRate = GHApp.RoundedReconciledRefreshRate;
+#endif
+            RefreshRatePicker.ItemsSource = BuildMapRefreshRateItems(roundedRefreshRate, PlatformRenderLoopGrid.IsVisible && PlatformRenderLoopSwitch.IsToggled);
+            SelectMapRefreshRateItem(selectedSetting);
         }
 
         private async Task SetSettingValues()
@@ -602,9 +614,11 @@ namespace GnollHackX.Pages.MainScreen
 
             if (RefreshRatePicker.SelectedIndex > -1 && RefreshRatePicker.SelectedItem != null && RefreshRatePicker.SelectedItem is MapRefreshRateItem)
             {
+                MapRefreshRateItem refreshRateItem = (MapRefreshRateItem)RefreshRatePicker.SelectedItem;
+                int mapRefreshSetting = refreshRateItem.IsDefault ? -1 : refreshRateItem.Value;
                 if (_gamePage != null)
-                    _gamePage.MapRefreshRate = ((MapRefreshRateItem)RefreshRatePicker.SelectedItem).Value;
-                Preferences.Set("MapRefreshRate", (int)((MapRefreshRateItem)RefreshRatePicker.SelectedItem).Value);
+                    _gamePage.MapRefreshRate = mapRefreshSetting;
+                Preferences.Set("MapRefreshFPS", mapRefreshSetting);
             }
 
             if (ScreenScalePicker.SelectedIndex > -1 && ScreenScalePicker.SelectedItem != null && ScreenScalePicker.SelectedItem is ScreenScaleItem)
@@ -1595,7 +1609,7 @@ namespace GnollHackX.Pages.MainScreen
             polearmbutton = Preferences.Get("ShowPolearmContextButton", GHConstants.DefaultShowPolearmContextButton);
             equipmentflipanimation = Preferences.Get("EquipmentFlipAnimation", true);
             showequipmenticons = Preferences.Get("ShowEquipmentIcons", true);
-            maprefresh = Preferences.Get("MapRefreshRate", -1);
+            maprefresh = GHApp.GetMapRefreshFPSPreference();
             if (_gamePage == null)
             {
                 cursor = Preferences.Get("CursorStyle", 1);
@@ -1737,21 +1751,7 @@ namespace GnollHackX.Pages.MainScreen
             GraphicsPicker.SelectedIndex = graphics;
             GridOpacityPicker.SelectedIndex = gridopacity;
             //RefreshRatePicker.SelectedIndex = Math.Min(RefreshRatePicker.Items.Count - 1, maprefresh);
-            if (RefreshRatePicker.ItemsSource != null)
-            {
-                for (int i = 0; i < RefreshRatePicker.ItemsSource.Count; i++)
-                {
-                    object o = RefreshRatePicker.ItemsSource[i];
-                    if (o is MapRefreshRateItem)
-                    {
-                        if (maprefresh == -1 ? ((MapRefreshRateItem)o).IsDefault : (int)((MapRefreshRateItem)o).Value == maprefresh)
-                        {
-                            RefreshRatePicker.SelectedIndex = i;
-                            break;
-                        }
-                    }
-                }
-            }
+            SelectMapRefreshRateItem(maprefresh);
 
             if (ScreenScalePicker.ItemsSource != null)
             {

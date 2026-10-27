@@ -131,9 +131,7 @@ namespace GnollHackX.Performance
 
             try
             {
-                int value = Preferences.Get("MapRefreshRate", -1);
-                MapRefreshRateStyle style = value < 0 ? UIUtils.GetDefaultMapFPS() : (MapRefreshRateStyle)value;
-                f.MapRefreshRateSetting = style.ToString();
+                f.MapRefreshRateSetting = "MapFPS" + UIUtils.GetMainCanvasAnimationFrequency(GHApp.GetMapRefreshFPSPreference()).ToString(CultureInfo.InvariantCulture);
             }
             catch { }
 

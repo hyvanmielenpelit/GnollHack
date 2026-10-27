@@ -587,7 +587,7 @@ namespace GnollHackX.Pages.Game
         //private readonly object _styleLock = new object();
         private int _cursorStyle;
         private int _graphicsStyle;
-        private int _mapRefreshRate = (int)MapRefreshRateStyle.MapFPS60;
+        private int _mapRefreshRate = -1;
 
         public int NumDisplayedMessages { get { return Interlocked.CompareExchange(ref _shownMessageRows, 0, 0); } set { Interlocked.Exchange(ref _shownMessageRows, value); } }
         public int ActualDisplayedMessages { get { return ForceAllMessages ? (LongerMessageHistory ? GHConstants.MaxLongerMessageHistoryLength : GHConstants.AllMessageRows) : NumDisplayedMessages; } }
@@ -606,16 +606,17 @@ namespace GnollHackX.Pages.Game
                     game.UseAscii = (value == GHGraphicsStyle.ASCII);
             }
         }
-        public MapRefreshRateStyle MapRefreshRate
+        /* The Map FPS setting: frames per second, or -1 for the default; UIUtils.GetMainCanvasAnimationFrequency resolves it */
+        public int MapRefreshRate
         {
             get
             {
                 //lock (_styleLock) { return _mapRefreshRate; }
-                return (MapRefreshRateStyle)Interlocked.CompareExchange(ref _mapRefreshRate, 0, 0);
+                return Interlocked.CompareExchange(ref _mapRefreshRate, 0, 0);
             }
             set
             {
-                if (Interlocked.Exchange(ref _mapRefreshRate, (int)value) == (int)value)
+                if (Interlocked.Exchange(ref _mapRefreshRate, value) == value)
                     return;
                 //lock (_styleLock)
                 //{
@@ -1053,8 +1054,7 @@ namespace GnollHackX.Pages.Game
             //}
             SetLayerDrawOrder();
 
-            int mapRefreshValue = Preferences.Get("MapRefreshRate", -1);
-            MapRefreshRate = mapRefreshValue < 0 ? UIUtils.GetDefaultMapFPS() : (MapRefreshRateStyle)mapRefreshValue;
+            MapRefreshRate = GHApp.GetMapRefreshFPSPreference();
             CursorStyle = (TTYCursorStyle)Preferences.Get("CursorStyle", 1);
             GraphicsStyle = (GHGraphicsStyle)Preferences.Get("GraphicsStyle", 1);
             ShowFPS = Preferences.Get("ShowFPS", false);
@@ -2182,7 +2182,7 @@ namespace GnollHackX.Pages.Game
             t.Start();
         }
 
-        public void UpdateMainCanvas(MapRefreshRateStyle refreshRateStyle)
+        public void UpdateMainCanvas(int refreshRateStyle)
         {
             FrameTimeProfiler.StampUpdate();
             if (GHFrameTimeline.IsEnabled)
@@ -2317,7 +2317,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void UpdateCommandCanvas(MapRefreshRateStyle refreshRateStyle)
+        public void UpdateCommandCanvas(int refreshRateStyle)
         {
             if (MoreCommandsGrid.ThreadSafeIsVisible && !IsResizing)
             {
@@ -2362,7 +2362,7 @@ namespace GnollHackX.Pages.Game
         }
 
         //private int _menuUpdateGCCounter = 0;
-        public void UpdateMenuCanvas(MapRefreshRateStyle refreshRateStyle)
+        public void UpdateMenuCanvas(int refreshRateStyle)
         {
             if (MenuRefresh && !IsResizing)
             {
@@ -2495,7 +2495,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        public void UpdateTextCanvas(MapRefreshRateStyle refreshRateStyle)
+        public void UpdateTextCanvas(int refreshRateStyle)
         {
             if (TextGrid.ThreadSafeIsVisible && !IsResizing)
             {
@@ -2627,7 +2627,7 @@ namespace GnollHackX.Pages.Game
         {
             if (GHApp.UsePlatformRenderLoop)
                 return;
-            MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
+            int refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
             Animation commandAnimation = new Animation(v => CommandCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(CommandCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime,
@@ -2649,7 +2649,7 @@ namespace GnollHackX.Pages.Game
         {
             if (GHApp.UsePlatformRenderLoop)
                 return;
-            MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
+            int refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
             Animation commandAnimation = new Animation(v => MenuCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(MenuCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
@@ -2671,7 +2671,7 @@ namespace GnollHackX.Pages.Game
         {
             if (GHApp.UsePlatformRenderLoop)
                 return;
-            MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
+            int refreshRateStyle = MapRefreshRate;
             uint auxAnimationLength = GHConstants.AuxiliaryCanvasAnimationTime / UIUtils.GetAuxiliaryCanvasAnimationInterval(refreshRateStyle);
             Animation commandAnimation = new Animation(v => TextCanvas.GeneralAnimationCounter = (long)v, 1, auxAnimationLength);
             commandAnimation.Commit(TextCanvas, "GeneralAnimationCounter", length: GHConstants.AuxiliaryCanvasAnimationTime, 
@@ -2689,54 +2689,24 @@ namespace GnollHackX.Pages.Game
             //    _mapUpdateStopWatch.Stop();
         }
 
-        private double GetAnimationCounterFrameSpeed(MapRefreshRateStyle refreshRateStyle, bool isMainCanvas)
+        private double GetAnimationCounterFrameSpeed(int mapRefreshSetting, bool isMainCanvas)
         {
-            double framespeed = 1.0;
+            int fps = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshSetting);
             if (!isMainCanvas) /* Auxiliary canvas runs at least at 60 FPS, otherwise the same as the main canvas */
             {
                 //int auxRefreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(refreshRateStyle);
                 //int mainFps = UIUtils.GetMainCanvasAnimationFrequency(refreshRateStyle);
                 //if (mainFps > 0)
                 //    framespeed *= (double)mainFps / (double)auxRefreshRate;
-                if (refreshRateStyle < MapRefreshRateStyle.MapFPS60)
-                    refreshRateStyle = MapRefreshRateStyle.MapFPS60;
+                fps = Math.Max(60, fps);
             }
 
-            switch (refreshRateStyle)
-            {
-                case MapRefreshRateStyle.MapFPS20:
-                    framespeed *= 2.0; /* Animations skip at every other frame at 20fps to get 40fps */
-                    break;
-                case MapRefreshRateStyle.MapFPS30:
-                    break;
-                case MapRefreshRateStyle.MapFPS40:
-                    break;
-                case MapRefreshRateStyle.MapFPS60:
-                case MapRefreshRateStyle.MapFPS72:
-                    framespeed *= 0.5;
-                    //subCounterMax = 1; /* Animations proceed at every other frame at 60fps to get 30fps */
-                    break;
-                case MapRefreshRateStyle.MapFPS80:
-                    framespeed *= 0.5;
-                    //subCounterMax = 1; /* Animations proceed at every other frame at 80fps to get 40fps */
-                    break;
-                case MapRefreshRateStyle.MapFPS90:
-                    framespeed *= 1.0 / 3.0;
-                    //subCounterMax = 2; /* Animations proceed at every third frame at 90fps to get 30fps */
-                    break;
-                case MapRefreshRateStyle.MapFPS120:
-                    framespeed *= 1.0 / 3.0;
-                    //subCounterMax = 2; /* Animations proceed at every third frame at 120fps to get 40fps */
-                    break;
-                case MapRefreshRateStyle.MapFPS144:
-                    framespeed *= 1.0 / 4.0;
-                    //subCounterMax = 3; /* Animations proceed at every fourth frame at 144fps to get 36fps */
-                    break;
-            }
-            return framespeed;
+            /* Tile animations step on every frame up to 40 fps, every other frame up to 80 fps, every third up to 120 fps,
+               and so on, e.g. 30 steps per second at 60 and 90 fps; at 20 fps they advance two steps a frame to get 40 */
+            return GHMapFps.GetTileAnimationFrameSpeed(fps);
         }
 
-        /* Main counter runs at the defined MapRefreshRateStyle rate, e.g. 60 fps, 120 fps or 20 fps. It may, however, run at a different speed if the animation system cannot adhere to the full speed. This case is not considered currently. */
+        /* Main counter runs at the defined Map FPS rate, e.g. 60 fps, 120 fps or 20 fps. It may, however, run at a different speed if the animation system cannot adhere to the full speed. This case is not considered currently. */
         /* General animation counter runs at 30fps or 40 fps based on the factor from GetAnimationCounterFrameSpeed applied on the main counter. This counter is intended for tile animations (also found in the legacy Windows version), which are designed to run at this rate so that there are not overly many frames to take memory / to be drawn by the artist. */ 
         /* However, this rate is too low for GUI animations, which need to be run at 60 FPS. Note also that if the main counter runs at a speed different from the intended full speed, then the animation counter runs equally differently as well. */
         
@@ -2749,44 +2719,13 @@ namespace GnollHackX.Pages.Game
         /* _mainFPSCounterValue, however, does not necessarily measure how often the map bitmap on the screen is updated, as this depends on further factors than just running through the drawing instructions in PaintSurface. */
         /* One could potentially use StopWatch to determine the necessary counter increments, but this could lead to unnecessarily dropped frames, so we have decided that it is better to advance animations potentially at an uneven speed rather than drop some frames. */
 
-        private double GetMainCounterIncrementMultiplierForGUIAnimations(MapRefreshRateStyle refreshRateStyle)
+        private double GetMainCounterIncrementMultiplierForGUIAnimations(int mapRefreshSetting)
         {
-            double framespeed = 1.0;
-            switch (refreshRateStyle)
-            {
-                case MapRefreshRateStyle.MapFPS20:
-                    framespeed = 3.0;
-                    break;
-                case MapRefreshRateStyle.MapFPS30:
-                    framespeed = 2.0;
-                    break;
-                case MapRefreshRateStyle.MapFPS40:
-                    framespeed = 1.5;
-                    break;
-                case MapRefreshRateStyle.MapFPS60:
-                    framespeed = 1;
-                    break;
-                case MapRefreshRateStyle.MapFPS72:
-                    framespeed = 5.0 / 6.0;
-                    break;
-                case MapRefreshRateStyle.MapFPS80:
-                    framespeed = 0.75;
-                    break;
-                case MapRefreshRateStyle.MapFPS90:
-                    framespeed = 2.0 / 3.0;
-                    break;
-                case MapRefreshRateStyle.MapFPS120:
-                    framespeed = 0.5;
-                    break;
-                case MapRefreshRateStyle.MapFPS144:
-                    framespeed = 5.0 / 12.0;
-                    break;
-            }
-            return framespeed;
+            return GHMapFps.GetGuiAnimationMultiplier(UIUtils.GetMainCanvasAnimationFrequency(mapRefreshSetting));
         }
 
         private int _subCounter = 0;
-        public long GetAnimationCounterIncrement(MapRefreshRateStyle refreshRateStyle, bool isMainCanvas)
+        public long GetAnimationCounterIncrement(int refreshRateStyle, bool isMainCanvas)
         {
             long counter_increment = 1;
             int subCounterMax = 0;
@@ -2817,7 +2756,7 @@ namespace GnollHackX.Pages.Game
             return counter_increment;
         }
 
-        public void IncrementCounters(MapRefreshRateStyle refreshRateStyle, bool isMainCanvas)
+        public void IncrementCounters(int refreshRateStyle, bool isMainCanvas)
         {
             GHGame curGame = GHApp.CurrentGHGame;
             if (curGame == null)
@@ -5502,7 +5441,7 @@ namespace GnollHackX.Pages.Game
 
         public void RenderCanvasByCanvasType(CanvasTypes canvasType)
         {
-            MapRefreshRateStyle refreshRateStyle = MapRefreshRate;
+            int refreshRateStyle = MapRefreshRate;
             switch (canvasType)
             {
                 case CanvasTypes.MainCanvas:
@@ -8100,7 +8039,7 @@ namespace GnollHackX.Pages.Game
             float messageTextMultiplier = UIUtils.CalculateMessageFontSizeMultiplier(stdButtonWidth, stdButtonHeight, statusBarSkiaHeight, textscale * GHConstants.WindowMessageFontSize, 
                 canvaswidth, canvasheight, canvasViewWidth, canvasViewHeight, usingDesktopButtons, usingSimpleCmdLayout, inverse_canvas_scale, customScale);
             float messageTextScale = textscale * messageTextMultiplier;
-            MapRefreshRateStyle mapRefreshRate = MapRefreshRate;
+            int mapRefreshRate = MapRefreshRate;
             double mainCounter2AnimationMultiplier = GetMainCounterIncrementMultiplierForGUIAnimations(mapRefreshRate); /* Many animations using generalcounterdiff used to be benchmarked to 60 FPS */
             if (mainCounter2AnimationMultiplier <= 0.0)
                 mainCounter2AnimationMultiplier = 1.0;

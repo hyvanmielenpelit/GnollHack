@@ -45,6 +45,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\GHReplayFiles.cs" Link="Shared\GHReplayFiles.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHSaveFileTrackingResults.cs" Link="Shared\GHSaveFileTrackingResults.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHBonesFiles.cs" Link="Shared\GHBonesFiles.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHMapFps.cs" Link="Shared\GHMapFps.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Android\FrameworkObjectDisposedFilter.cs" Link="Shared\FrameworkObjectDisposedFilter.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Avalonia\GHRefreshRateEstimator.cs" Link="Shared\GHRefreshRateEstimator.cs" />
   </ItemGroup>

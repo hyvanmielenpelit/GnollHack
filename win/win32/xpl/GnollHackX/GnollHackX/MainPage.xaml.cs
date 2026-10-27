@@ -1378,6 +1378,7 @@ namespace GnollHackX
         private async Task StartUpTasks()
         {
             GHApp.InitFileDescriptors();
+            GHApp.MigrateMapRefreshRatePreference();
 
             TryReadSettings();
             await InitializeServices();

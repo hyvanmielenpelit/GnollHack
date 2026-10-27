@@ -409,6 +409,33 @@ namespace GnollHackX
 #endif
         }
 
+        /* Map FPS: enum index in MapRefreshRate to frames per second in MapRefreshFPS, the retired default level to -1.
+           Called from the main page's start-up tasks rather than DoMigrations, since the retired default depended on the
+           refresh rate, which is known only once the main page is up (and on Avalonia after the first frames). */
+        public static void MigrateMapRefreshRatePreference()
+        {
+            if (Preferences.ContainsKey("MapRefreshFPS") || !Preferences.ContainsKey("MapRefreshRate"))
+                return;
+#if GNH_AVALONIA
+            bool isAvalonia = true;
+#else
+            bool isAvalonia = false;
+#endif
+            int legacyIndex = Preferences.Get("MapRefreshRate", -1);
+            int rate = RoundedReconciledRefreshRate;
+            int fps = GHMapFps.MigrateLegacyIndex(legacyIndex, rate, UsePlatformRenderLoop, isAvalonia);
+            Preferences.Set("MapRefreshFPS", fps);
+            MaybeWriteGHLog("Map FPS setting migrated: index " + legacyIndex + " at " + rate + " Hz -> " + fps);
+        }
+
+        /* The Map FPS setting: frames per second, or -1 for the default. Whether the refresh rate
+           offers it is decided per frame by UIUtils.GetMainCanvasAnimationFrequency. */
+        public static int GetMapRefreshFPSPreference()
+        {
+            int value = Preferences.Get("MapRefreshFPS", -1);
+            return value > 0 ? value : -1;
+        }
+
         private static void CheckSaveGameBreakingVersionWarning()
         {
             /* Version warnings */
@@ -1299,19 +1326,19 @@ namespace GnollHackX
 #else
                 int screenRefreshRate = RoundedReconciledRefreshRate;
 #endif
-                MapRefreshRateStyle mapRefreshRateStyle = curGamePage.MapRefreshRate;
+                int mapRefreshSetting = curGamePage.MapRefreshRate;
                 CanvasTypes canvasType = curGamePage.GetActiveCanvas();
                 FrameTimeProfiler.TrackCanvasType(canvasType == CanvasTypes.MainCanvas);
                 int refreshRate;
                 switch (canvasType)
                 {
                     case CanvasTypes.MainCanvas:
-                        refreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRateStyle, screenRefreshRate);
+                        refreshRate = UIUtils.GetMainCanvasAnimationFrequency(mapRefreshSetting, screenRefreshRate);
                         break;
                     case CanvasTypes.MenuCanvas:
                     case CanvasTypes.CommandCanvas:
                     case CanvasTypes.TextCanvas:
-                        refreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(mapRefreshRateStyle, screenRefreshRate);
+                        refreshRate = UIUtils.GetAuxiliaryCanvasAnimationFrequency(mapRefreshSetting, screenRefreshRate);
                         break;
                     default:
                         refreshRate = 60;
@@ -13974,8 +14001,8 @@ namespace GnollHackX
     {
         public string DisplayName = "";
         public readonly bool IsDefault = false;
-        public MapRefreshRateStyle Value = MapRefreshRateStyle.MapFPS60;
-        public MapRefreshRateItem(string displayName, bool isDefault, MapRefreshRateStyle value)
+        public int Value = -1; /* frames per second; -1 for the Default item */
+        public MapRefreshRateItem(string displayName, bool isDefault, int value)
         {
             DisplayName = displayName;
             IsDefault = isDefault;
