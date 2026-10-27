@@ -87,6 +87,12 @@ namespace GnollHackM
         private volatile bool _carriesFrameTimeline = false;
         /* UI thread: the frame id of the last draw operation that asked for a paint */
         private long _lastOperationFrameId = 0;
+        /* The paint state handed over by the last request that gave one, taken by Render; any thread */
+        private object _claimedPaintState = null;
+        /* UI thread: the paint state of the last draw operation that asked for a paint */
+        private object _lastOperationPaintState = null;
+        /* Paint thread: the paint state of the request whose paint runs on this thread */
+        [ThreadStatic] private static object _currentPaintState;
         /* Render thread: the last sequence whose frame id was handed to a paint */
         private long _ticketedSequence = -1;
         /* Render thread writes, UI thread reads: 1 when the last draw had a GPU context */
@@ -115,6 +121,15 @@ namespace GnollHackM
            ticket, so it leaves the invalidation pending. */
         public void RequestRender(bool claimTimelineFrame)
         {
+            RequestRender(claimTimelineFrame, null);
+        }
+
+        /* The same, with the state the paint should draw, as of this request; null keeps an earlier
+           state no Render has taken yet. The paint reads it through CurrentPaintState. */
+        public void RequestRender(bool claimTimelineFrame, object paintState)
+        {
+            if (paintState != null)
+                Interlocked.Exchange(ref _claimedPaintState, paintState);
             Interlocked.Exchange(ref _renderRequested, 1);
             if (claimTimelineFrame && !ForceSoftwareRendering)
             {
@@ -194,17 +209,18 @@ namespace GnollHackM
                 return;
 
             double scaling = Avalonia.Controls.TopLevel.GetTopLevel(this)?.RenderScaling ?? 1.0;
-            /* A re-present repeats the last operation's sequence and frame id; any other Render paints */
+            /* A re-present repeats the last operation's sequence, frame id and paint state; any other Render paints */
             bool renderRequested = Interlocked.Exchange(ref _renderRequested, 0) != 0;
             bool presentOnly = Interlocked.Exchange(ref _presentRequested, 0) != 0 && !renderRequested;
             if (!presentOnly)
             {
                 _renderRequestSequence++;
                 _lastOperationFrameId = Interlocked.Exchange(ref _claimedFrameId, 0);
+                _lastOperationPaintState = Interlocked.Exchange(ref _claimedPaintState, null);
             }
             GHAvaloniaFrameLoop.NoteFrameSubmitted();
             context.Custom(new GLDrawOperation(this, new AvRect(bounds.Size), IgnorePixelScaling, scaling, _renderRequestSequence,
-                _lastOperationFrameId, _carriesFrameTimeline));
+                _lastOperationFrameId, _carriesFrameTimeline, _lastOperationPaintState));
         }
 
         protected override void OnAttachedToVisualTree(Avalonia.VisualTreeAttachmentEventArgs e)
@@ -339,9 +355,10 @@ namespace GnollHackM
         }
 
         /* Render thread. frameId is the frame timeline's id for the sequence's paint, 0 when none was claimed;
-           carriesFrameTimeline hands it to the paint as a ticket. */
+           carriesFrameTimeline hands it to the paint as a ticket. paintState is the request's state for the
+           paint, or null. */
         private void RenderFrame(Avalonia.Media.ImmediateDrawingContext context, AvRect bounds, bool ignorePixelScaling, double scaling, long sequence,
-            long frameId, bool carriesFrameTimeline)
+            long frameId, bool carriesFrameTimeline, object paintState)
         {
 #pragma warning disable CS0618
             Avalonia.Skia.ISkiaSharpApiLeaseFeature leaseFeature =
@@ -366,7 +383,7 @@ namespace GnollHackM
                        paint into a raster surface for this frame, as ACM's control does */
                     ReportSwapIntervalOnce(GHSwapIntervalState.NotGlx, "no GPU context");
                     if (pixelWidth > 0 && pixelHeight > 0)
-                        RenderRaster(canvas, bounds, ignorePixelScaling, scaling, pixelWidth, pixelHeight, sequence, frameId, carriesFrameTimeline);
+                        RenderRaster(canvas, bounds, ignorePixelScaling, scaling, pixelWidth, pixelHeight, sequence, frameId, carriesFrameTimeline, paintState);
                     return;
                 }
 
@@ -397,7 +414,7 @@ namespace GnollHackM
                     if (resources.PaintedSequence != sequence)
                     {
                         long paintStart = Stopwatch.GetTimestamp();
-                        if (PaintGpu(resources, bounds, ignorePixelScaling, scaling, sequence, frameId, carriesFrameTimeline))
+                        if (PaintGpu(resources, bounds, ignorePixelScaling, scaling, sequence, frameId, carriesFrameTimeline, paintState))
                             resources.PaintedSequence = sequence;
                         paintMs = (Stopwatch.GetTimestamp() - paintStart) * 1000.0 / Stopwatch.Frequency;
                     }
@@ -420,32 +437,45 @@ namespace GnollHackM
         }
 #pragma warning restore CS0618
 
-        /* Render thread: runs the paint, with the sequence's frame id as its ticket when the control carries
-           the frame timeline. Only the first paint of a sequence gets the id; a repeat gets ticket 0. */
+        /* The state the request of the paint running on this thread handed over, or null; read by paint
+           handlers so that they draw the state as of their request rather than the live one */
+        public static object CurrentPaintState { get { return _currentPaintState; } }
+
+        /* Render thread: runs the paint with its request's paint state, and with the sequence's frame id as
+           its ticket when the control carries the frame timeline. Only the first paint of a sequence gets the
+           id; a repeat gets ticket 0. Every paint of a sequence gets its state. */
         private void InvokePaint(Action<SKPaintGLSurfaceEventArgs> paintAction, SKPaintGLSurfaceEventArgs args, long sequence,
-            long frameId, bool carriesFrameTimeline)
+            long frameId, bool carriesFrameTimeline, object paintState)
         {
             long ticket = sequence != _ticketedSequence ? frameId : 0;
             _ticketedSequence = sequence;
-            if (!carriesFrameTimeline)
-            {
-                paintAction(args);
-                return;
-            }
-
-            GHFrameTimeline.BeginTicketedPaint(ticket);
+            _currentPaintState = paintState;
             try
             {
-                paintAction(args);
+                if (!carriesFrameTimeline)
+                {
+                    paintAction(args);
+                    return;
+                }
+
+                GHFrameTimeline.BeginTicketedPaint(ticket);
+                try
+                {
+                    paintAction(args);
+                }
+                finally
+                {
+                    GHFrameTimeline.EndTicketedPaint();
+                }
             }
             finally
             {
-                GHFrameTimeline.EndTicketedPaint();
+                _currentPaintState = null;
             }
         }
 
         private bool PaintGpu(SurfaceResources resources, AvRect bounds, bool ignorePixelScaling, double scaling, long sequence,
-            long frameId, bool carriesFrameTimeline)
+            long frameId, bool carriesFrameTimeline, object paintState)
         {
             Action<SKPaintGLSurfaceEventArgs> paintAction = PaintSurfaceAction;
             if (paintAction == null)
@@ -465,7 +495,7 @@ namespace GnollHackM
                     surfaceCanvas.Scale((float)scaling);
                 }
                 InvokePaint(paintAction, new SKPaintGLSurfaceEventArgs(surface, resources.RenderTarget, GRSurfaceOrigin.BottomLeft, info, rawInfo),
-                    sequence, frameId, carriesFrameTimeline);
+                    sequence, frameId, carriesFrameTimeline, paintState);
             }
             finally
             {
@@ -475,7 +505,7 @@ namespace GnollHackM
         }
 
         private void RenderRaster(SKCanvas canvas, AvRect bounds, bool ignorePixelScaling, double scaling, int pixelWidth, int pixelHeight,
-            long sequence, long frameId, bool carriesFrameTimeline)
+            long sequence, long frameId, bool carriesFrameTimeline, object paintState)
         {
             Action<SKPaintGLSurfaceEventArgs> paintAction = PaintSurfaceAction;
             if (paintAction == null)
@@ -497,7 +527,7 @@ namespace GnollHackM
                 using (GRBackendRenderTarget renderTarget = new GRBackendRenderTarget(pixelWidth, pixelHeight, 0, 8, new GRGlFramebufferInfo(0, GL_RGBA8)))
                 {
                     InvokePaint(paintAction, new SKPaintGLSurfaceEventArgs(surface, renderTarget, GRSurfaceOrigin.BottomLeft, info, rawInfo),
-                        sequence, frameId, carriesFrameTimeline);
+                        sequence, frameId, carriesFrameTimeline, paintState);
                 }
 
                 using (SKImage snapshot = surface.Snapshot())
@@ -601,9 +631,10 @@ namespace GnollHackM
             private readonly long _sequence;
             private readonly long _frameId;
             private readonly bool _carriesFrameTimeline;
+            private readonly object _paintState;
 
             public GLDrawOperation(GHAvaloniaGLControl owner, AvRect bounds, bool ignorePixelScaling, double scaling, long sequence,
-                long frameId, bool carriesFrameTimeline)
+                long frameId, bool carriesFrameTimeline, object paintState)
             {
                 _owner = owner;
                 Bounds = bounds;
@@ -612,6 +643,7 @@ namespace GnollHackM
                 _sequence = sequence;
                 _frameId = frameId;
                 _carriesFrameTimeline = carriesFrameTimeline;
+                _paintState = paintState;
             }
 
             public AvRect Bounds { get; }
@@ -626,7 +658,7 @@ namespace GnollHackM
 
             public void Render(Avalonia.Media.ImmediateDrawingContext context)
             {
-                _owner.RenderFrame(context, Bounds, _ignorePixelScaling, _scaling, _sequence, _frameId, _carriesFrameTimeline);
+                _owner.RenderFrame(context, Bounds, _ignorePixelScaling, _scaling, _sequence, _frameId, _carriesFrameTimeline, _paintState);
             }
         }
     }
