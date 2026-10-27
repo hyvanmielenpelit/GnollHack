@@ -6,7 +6,7 @@ namespace GnollHackX.UnitTests
 {
     /* Covers GHRefreshRateEstimator: the minimum count, the trimmed mean against hitches, the snap to the
        monitor's rate and the 1 Hz publish rule without one, irregular callbacks off the monitor rate, and
-       the median for vsync-paced frames. */
+       the median for vsync-paced frames, and ModeRefreshRate for RandR mode timings. */
     public class GHRefreshRateEstimatorTests
     {
         private const double Ms60 = 1000.0 / 60.0;
@@ -152,6 +152,33 @@ namespace GnollHackX.UnitTests
 
             Assert.Equal(0.0f, estimator.Published);
             Assert.True(float.IsNaN(Feed(estimator, Ms60, GHRefreshRateEstimator.MinimumCount - 1)));
+        }
+
+        [Fact]
+        public void ModeRefreshRate_1080p60_Is60()
+        {
+            Assert.Equal(60, GHRefreshRateEstimator.ModeRefreshRate(148500000, 2200, 1125, false, false));
+        }
+
+        [Fact]
+        public void ModeRefreshRate_Interlace_Doubles()
+        {
+            Assert.Equal(120, GHRefreshRateEstimator.ModeRefreshRate(148500000, 2200, 1125, true, false));
+        }
+
+        [Fact]
+        public void ModeRefreshRate_DoubleScan_Halves()
+        {
+            Assert.Equal(30, GHRefreshRateEstimator.ModeRefreshRate(148500000, 2200, 1125, false, true));
+        }
+
+        [Theory]
+        [InlineData(0UL, 2200U, 1125U)]
+        [InlineData(148500000UL, 0U, 1125U)]
+        [InlineData(148500000UL, 2200U, 0U)]
+        public void ModeRefreshRate_ZeroTiming_IsZero(ulong dotClock, uint hTotal, uint vTotal)
+        {
+            Assert.Equal(0, GHRefreshRateEstimator.ModeRefreshRate(dotClock, hTotal, vTotal, false, false));
         }
     }
 }

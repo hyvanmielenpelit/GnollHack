@@ -321,9 +321,10 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-10-27
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasViewHandler.cs` (`GHAvaloniaCanvasViewHandler.CreatePlatformView`)
 - Remove when: ACM's canvas view raises `PaintSurface` where a handler may change MAUI properties, as SkiaSharp's views do on other platforms, and Verify removal passes.
+- Related: WA-AVALONIA-0021
 
 **Symptom.** GnollHack's raster views cannot paint safely through ACM's canvas control:
 they read and write MAUI properties while painting.
@@ -333,7 +334,8 @@ changes to the visual tree are not allowed.
 
 **Workaround.** `GHAvaloniaCanvasControl` paints into its own raster surface on the UI
 thread, in one coalesced dispatcher operation below layout priority, and `Render` only
-draws the last painted image.
+draws the last painted image. A request made inside the platform frame callback paints at
+once instead, which is also outside the render pass (WA-AVALONIA-0021).
 
 **Verify removal.** Make the canvas handler create ACM's own control. Build the Avalonia
 flavor, play a game and open menus, popups and the message window; nothing may throw or
@@ -341,6 +343,7 @@ log a paint failure, and every canvas must update.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-10-27 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | Requests inside the platform frame callback paint at once, for WA-AVALONIA-0021.
 
 ## WA-AVALONIA-0011: ACM font registrar misreads UTF-16 font names
 
@@ -486,29 +489,34 @@ Checks:
 - Component: Avalonia
 - Package: Avalonia
 - Defective version: Avalonia 12.1.4 (via Avalonia.Controls.Maui 11.0.0-rc.2.26287.618)
-- Platforms: Windows (Avalonia)
+- Platforms: Linux, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaMonitorRefreshRate.cs` (`GHAvaloniaMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaDeviceDisplay.cs` (`GHAvaloniaDeviceDisplay.UpdateMonitorRefreshRate`)
+- Last checked: 2026-10-27
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaMonitorRefreshRate.cs` (`GHAvaloniaMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaDeviceDisplay.cs` (`GHAvaloniaDeviceDisplay.UpdateMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHRandr.cs` (`GHRandr`)
 - Remove when: Avalonia's `Screen` reports the display mode's refresh rate in a release GnollHack uses, and Verify removal passes.
 
 **Symptom.** DeviceDisplay's refresh rate can only be estimated from frame deltas, and
-does not settle on the monitor's exact rate.
+does not settle on the monitor's exact rate. On Linux the estimate also follows any
+irregular frame timing, since it has nothing to snap to.
 
-**Cause.** Avalonia's `Screen` has no refresh rate.
+**Cause.** Avalonia's `Screen` has no refresh rate. Avalonia's X11 backend reads the RandR
+rates internally, for its render timer, but does not expose them.
 
 **Workaround.** On Windows the rate of the window's monitor is read with
-`MonitorFromWindow`, `GetMonitorInfoW` and `EnumDisplaySettingsW`, and the frame loop's
-estimate snaps to it.
+`MonitorFromWindow`, `GetMonitorInfoW` and `EnumDisplaySettingsW`; on Linux, `GHRandr`
+reads the mode of the X11 RandR CRTC under the window's screen on its own display
+connection. The frame loop's estimate snaps to that rate.
 
-**Verify removal.** Replace the user32 reads with Avalonia's rate. Build the Avalonia
-flavor for Windows, move the window between monitors of different rates, and check that
-DeviceDisplay reports each monitor's rate.
+**Verify removal.** Replace the user32 and RandR reads with Avalonia's rate. Build the
+Avalonia flavor for Windows, move the window between monitors of different rates, and check
+that DeviceDisplay reports each monitor's rate. Build the Linux flavor, start it with debug
+log messages on, and check that the log shows the monitor rate read from RandR.
 
 Checks:
 - 2026-10-23 | Avalonia 12.1.4 | unverified | No upstream issue found.
+- 2026-10-27 | Avalonia 12.1.4 | unverified | Extended to Linux through X11 RandR.
 
 ## WA-AVALONIA-0016: NativeControlHost ignores render transform changes
 
@@ -690,3 +698,45 @@ Settings and nothing on the main page may react.
 
 Checks:
 - 2026-10-27 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+
+## WA-AVALONIA-0021: An animation frame that commits nothing waits for a 16 ms timer
+
+- Status: active
+- Added: 2026-10-27
+- GnollHack version: 3.32 (432)
+- Component: Avalonia
+- Package: Avalonia
+- Defective version: Avalonia 12.1.4 (via Avalonia.Controls.Maui 11.0.0-rc.2.26287.618)
+- Platforms: Linux, Windows (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-27
+- Code: `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.CompositionTarget_Rendering`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLControl.cs` (`GHAvaloniaGLControl.RequestPresent`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.RequestPaint`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.RequestPresent`)
+- Remove when: An animation frame that commits nothing is followed by one at the display's next refresh in a release GnollHack uses, and Verify removal passes.
+- Related: WA-AVALONIA-0010
+
+**Symptom.** At a Map FPS below the refresh rate the map judders: each skipped tick lasts
+about 16 ms instead of one refresh, so frames reach the screen on a free-running clock. Raster
+canvases (menus, text windows, the command page) miss the display's timing even when they
+render every tick.
+
+**Cause.** `MediaContext.RenderCore` (Avalonia `src/Avalonia.Base/Media/MediaContext.cs`)
+starts `_animationsTimer`, a dispatcher timer fixed at 16 ms, when a pending
+`RequestAnimationFrame` exists and the frame committed nothing. Only a committed frame makes
+the next animation frame follow the compositor's render loop. A raster canvas's posted paint
+(WA-AVALONIA-0010) runs below render priority, after its frame's render pass.
+
+**Workaround.** Every tick of the platform frame loop commits a frame. On a tick the pacing
+logic skips, `GamePage.PresentCanvasByCanvasType` makes the active canvas show its last image
+again (`RequestPresent`; the GL control redraws its cached surface without painting), and a
+raster canvas asked to paint inside the frame callback paints at once, before the render pass.
+
+**Verify removal.** Make `GamePage.PresentCanvasByCanvasType` return false at once and remove
+the in-callback branch of `GHAvaloniaCanvasControl.RequestPaint`. Build and deploy the Linux
+flavor, set Map FPS 45 on a 90 Hz display, and run the in-game performance test. The
+workaround is still needed if the callback intervals after skipped ticks cluster at 15 to
+17 ms in the frame timeline CSV.
+
+Checks:
+- 2026-10-27 | Avalonia 12.1.4 | still-needed | Measured on a Steam Deck OLED in Desktop Mode, before the workaround: 15.75 ms median after skipped ticks. No upstream issue found.

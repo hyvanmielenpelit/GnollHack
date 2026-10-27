@@ -65,7 +65,10 @@ namespace GnollHackX.UnitTests
 
         [Theory]
         [InlineData(60, 1)]
-        [InlineData(99, 1)]
+        [InlineData(79, 1)]
+        [InlineData(80, 2)]
+        [InlineData(90, 2)]
+        [InlineData(99, 2)]
         [InlineData(100, 2)]
         [InlineData(149, 2)]
         [InlineData(150, 3)]
@@ -76,7 +79,7 @@ namespace GnollHackX.UnitTests
         [InlineData(299, 5)]
         [InlineData(300, 6)]
         [InlineData(480, 6)]
-        public void GetDefaultDivisor_StepsEvery50HzFrom100(int rate, int expected)
+        public void GetDefaultDivisor_HalvesFrom80AndStepsEvery50HzFrom150(int rate, int expected)
         {
             Assert.Equal(expected, GHMapFps.GetDefaultDivisor(rate));
         }
@@ -87,9 +90,11 @@ namespace GnollHackX.UnitTests
         [InlineData(60, 60, 60)]
         [InlineData(72, 72, 36)]
         [InlineData(75, 75, 25)]
-        [InlineData(80, 80, 40)]
-        [InlineData(90, 90, 45)]
-        [InlineData(99, 99, 33)]
+        [InlineData(79, 79, 79)]
+        [InlineData(80, 40, 40)]
+        [InlineData(85, 85, 85)]
+        [InlineData(90, 45, 45)]
+        [InlineData(99, 33, 33)]
         [InlineData(100, 50, 50)]
         [InlineData(101, 101, 101)]
         [InlineData(120, 60, 60)]
@@ -126,7 +131,7 @@ namespace GnollHackX.UnitTests
         [InlineData(60, 144, 72)]
         [InlineData(72, 144, 72)]
         [InlineData(-1, 144, 72)]
-        [InlineData(-1, 90, 90)]
+        [InlineData(-1, 90, 45)]
         [InlineData(1000, 60, 60)]
         [InlineData(90, 0, 60)]
         [InlineData(30, 0, 30)]

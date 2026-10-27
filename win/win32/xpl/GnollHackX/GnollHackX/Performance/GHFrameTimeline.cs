@@ -52,6 +52,10 @@ namespace GnollHackX.Performance
         private static long _orphanPaintCount = 0;
         private static long _coalescedCount = 0;
 
+        /* Set on the paint thread around a paint whose frame was claimed when it was asked for */
+        [ThreadStatic] private static bool _hasPaintTicket;
+        [ThreadStatic] private static long _paintTicket;
+
         /* Platform frame timing handed over by the platform callback just before the tick */
         private static long _pendingVsyncTicks = 0;
         private static long _pendingExpectedPresentTicks = 0;
@@ -529,6 +533,18 @@ namespace GnollHackX.Performance
             }
         }
 
+        /* The current tick showed the previous frame again instead of painting */
+        public static void StampRepresented()
+        {
+            if (!IsEnabled)
+                return;
+            long id = Interlocked.Read(ref _lastFrameId);
+            if (id <= 0)
+                return;
+            int idx = IndexOf(id);
+            _ring[idx].Flags |= GHFrameFlags.Represented;
+        }
+
         public static void EndTick(GHPacingDecision decision)
         {
             if (!IsEnabled)
@@ -548,6 +564,29 @@ namespace GnollHackX.Performance
         }
 
         /* ---- Paint (paint thread) ---- */
+
+        /* UI thread: takes the pending invalidation for a paint that will run later on another
+           thread, and returns its frame id, or 0 */
+        public static long ClaimPendingPaint()
+        {
+            if (!IsEnabled)
+                return 0;
+            return Interlocked.Exchange(ref _pendingPaintFrameId, 0);
+        }
+
+        /* Paint thread: the next BeginPaint or SkipPaint on this thread takes frameId (0 for a
+           paint no tick asked for) instead of the pending invalidation */
+        public static void BeginTicketedPaint(long frameId)
+        {
+            _hasPaintTicket = true;
+            _paintTicket = frameId;
+        }
+
+        public static void EndTicketedPaint()
+        {
+            _hasPaintTicket = false;
+            _paintTicket = 0;
+        }
 
         /* Called by the map's paint handler once it is going to draw; its early returns call
            SkipPaint instead. Takes the pending invalidation, marks every earlier invalidation
@@ -573,10 +612,25 @@ namespace GnollHackX.Performance
         private static long TakePendingPaint(bool onUiThread, GHPaintOutcome outcome, bool takeOver)
         {
             long now = Stopwatch.GetTimestamp();
-            long id = Interlocked.Exchange(ref _pendingPaintFrameId, 0);
+            long id;
+            if (_hasPaintTicket)
+            {
+                id = _paintTicket;
+                _paintTicket = 0;
+            }
+            else
+            {
+                id = Interlocked.Exchange(ref _pendingPaintFrameId, 0);
+            }
             if (id <= 0)
             {
                 Interlocked.Increment(ref _orphanPaintCount);
+                /* The newest record may not be stored yet while BeginTick runs */
+                long newest = Interlocked.Read(ref _lastFrameId);
+                if (newest > 0 && _ring[IndexOf(newest)].FrameId == newest)
+                    _ring[IndexOf(newest)].Flags |= GHFrameFlags.OrphanPaint;
+                else if (newest - 1 > 0 && _ring[IndexOf(newest - 1)].FrameId == newest - 1)
+                    _ring[IndexOf(newest - 1)].Flags |= GHFrameFlags.OrphanPaint;
                 if (takeOver)
                     Interlocked.Exchange(ref _currentPaintFrameId, 0);
                 return 0;
@@ -595,7 +649,8 @@ namespace GnollHackX.Performance
                     Interlocked.Increment(ref _coalescedCount);
                 }
             }
-            Interlocked.Exchange(ref _lastPaintedFrameId, id);
+            if (id > last)
+                Interlocked.Exchange(ref _lastPaintedFrameId, id);
 
             int idx = IndexOf(id);
             if (_ring[idx].FrameId != id)

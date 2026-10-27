@@ -54,6 +54,8 @@ namespace GnollHackX.Performance
         public int DroppedCount;            /* painted, overwritten before it could be shown */
         public int CoalescedCount;
         public int NotRunCount;             /* rendered ticks whose paint returned early */
+        public int OrphanPaintCount;        /* ticks during which a paint no tick asked for ran */
+        public int RepresentedCount;        /* skipped ticks that showed the previous frame again */
         public int PausedGapCount;
         public int CompositorReportsLost;   /* FrameMetrics reports the listener missed over the records' span */
         public double CompositorCoverage = -1;  /* share of GL-thread paints a report carried; -1 when not applicable */
@@ -621,6 +623,10 @@ namespace GnollHackX.Performance
                 else if (IsRenderedPacing(r.Pacing) && r.Invalidate == GHInvalidateOutcome.Invalidated
                          && r.Paint != GHPaintOutcome.Painted && r.Paint != GHPaintOutcome.None)
                     s.NotRunCount++;
+                if ((r.Flags & GHFrameFlags.OrphanPaint) != 0)
+                    s.OrphanPaintCount++;
+                if ((r.Flags & GHFrameFlags.Represented) != 0)
+                    s.RepresentedCount++;
 
                 if (r.VsyncTicks != 0 && r.CallbackStartTicks > r.VsyncTicks)
                     callbackLateMs.Add(TicksToMs(r.CallbackStartTicks - r.VsyncTicks));

@@ -109,6 +109,8 @@ namespace GnollHackX.Performance
         public int LongStallCount = -1;
         public float LongStallMs = float.NaN;
         public int CompositorReportsLost = -1;
+        public int OrphanPaintCount = -1;           /* ticks during which a paint no tick asked for ran */
+        public int RepresentedCount = -1;           /* skipped ticks that showed the previous frame again */
         public double CompositorCoverage = -1;      /* GL-thread paints with a FrameMetrics report, 0-1; -1 n/a */
         public double VsyncCorrectedShare = -1;     /* ticks whose stale vsync time was corrected, 0-1; -1 n/a */
         public string PresentSource;               /* a GHPerformanceDiagnosis.PresentSource* value */
@@ -1865,6 +1867,8 @@ namespace GnollHackX.Performance
             Fact(sb, "pausedGapCount", CountText(f.PausedGapCount));
             Fact(sb, "quietGapCount", CountText(f.QuietGapCount));
             Fact(sb, "quietHitchCount", CountText(f.QuietHitchCount));
+            Fact(sb, "orphanPaintCount", CountText(f.OrphanPaintCount));
+            Fact(sb, "representedCount", CountText(f.RepresentedCount));
             FactCounts(sb, "eventGapCounts", f.EventGapCounts);
             FactCounts(sb, "eventHitchCounts", f.EventHitchCounts);
             Fact(sb, "metricsVersion", CountText(f.MetricsVersion));

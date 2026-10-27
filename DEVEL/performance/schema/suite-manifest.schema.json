@@ -122,6 +122,8 @@
         "measuredRefreshHz": { "type": "number" },
         "targetFps": { "type": "number" },
         "compositorReportsLost": { "type": "integer", "description": "FrameMetrics reports the listener missed (Android); not display drops" },
+        "orphanPaintCount": { "type": "integer", "description": "Ticks during which a paint no tick asked for ran (GHFrameFlags.OrphanPaint)" },
+        "representedCount": { "type": "integer", "description": "Skipped ticks that showed the previous frame again (GHFrameFlags.Represented, Avalonia)" },
         "compositorCoverage": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "The share of GL-thread paints carried by a FrameMetrics report (Android); null elsewhere" },
         "vsyncCorrectedShare": { "type": ["number", "null"], "minimum": 0, "maximum": 1, "description": "Android: share of ticks whose Choreographer frame time was one refresh behind HWUI's and was corrected; null elsewhere" },
         "syncOffsetP50Ms": { "type": "number", "description": "Median FrameMetrics sync offset" },

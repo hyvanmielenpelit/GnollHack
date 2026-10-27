@@ -1516,6 +1516,46 @@ namespace GnollHackX.UnitTests
             Assert.Equal(0, s.ForcedGcCount);
         }
 
+        [Fact]
+        public void OrphanAndRepresentedCounts_CountTheFlaggedTicks()
+        {
+            Timeline t = new Timeline();
+            t.Run(2.0, 60, 60, 30);
+            int skipped = 0;
+            for (int i = 0; i < t.Records.Count; i++)
+            {
+                GHFrameRecord r = t.Records[i];
+                if (r.Pacing == GHPacingDecision.SkippedDivisor && skipped < 5)
+                {
+                    r.Flags |= GHFrameFlags.Represented;
+                    skipped++;
+                }
+                if (i == 10 || i == 21 || i == 40)
+                    r.Flags |= GHFrameFlags.OrphanPaint;
+                t.Records[i] = r;
+            }
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(5, skipped);
+            Assert.Equal(3, s.OrphanPaintCount);
+            Assert.Equal(5, s.RepresentedCount);
+        }
+
+        [Fact]
+        public void OrphanAndRepresentedCounts_NoFlaggedTicks_AreZero()
+        {
+            Timeline t = new Timeline();
+            t.Run(2.0, 60, 60, 30);
+            GHDisplayedFrame[] d;
+            int n;
+            GHSmoothnessSummary s = t.Analyze(out d, out n);
+
+            Assert.Equal(0, s.OrphanPaintCount);
+            Assert.Equal(0, s.RepresentedCount);
+        }
+
         /* Adds collections to the cumulative counts of record idx and every later one */
         private static void AddCollections(Timeline t, int idx, int gen0, int gen1, int gen2)
         {

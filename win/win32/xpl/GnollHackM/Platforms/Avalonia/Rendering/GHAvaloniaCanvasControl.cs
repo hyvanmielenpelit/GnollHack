@@ -19,7 +19,8 @@ namespace GnollHackM
     // WORKAROUND(WA-AVALONIA-0010): ACM canvas view paints inside the render pass
     /* ACM's SKCanvasViewControl, painting on the UI thread outside Avalonia's render pass, because
        GnollHack's raster views read and write MAUI properties while painting. Paint requests are
-       coalesced into one posted paint below layout priority; Render only draws the last painted image.
+       coalesced into one posted paint below layout priority, except that a request made inside the
+       platform frame callback paints at once; Render only draws the last painted image.
        Touch handling is ACM's; mouse hover, and Cancelled for a touch ACM drops, are raised here. */
     public class GHAvaloniaCanvasControl : Avalonia.Controls.Maui.SkiaSharp.Views.Controls.SKCanvasViewControl
     {
@@ -49,13 +50,42 @@ namespace GnollHackM
         public void RequestPaint()
         {
             Interlocked.Exchange(ref _paintRequested, 1);
+            // WORKAROUND(WA-AVALONIA-0021): An animation frame that commits nothing waits for a 16 ms timer
+            /* Inside the frame callback the paint runs at once, before the render pass, so that this
+               frame commits it */
+            if (GHAvaloniaFrameLoop.IsInFrameCallback && !_isPainting && AvDispatcher.UIThread.CheckAccess())
+            {
+                PaintIfRequested();
+                return;
+            }
             if (Interlocked.CompareExchange(ref _paintPosted, 1, 0) == 0)
                 AvDispatcher.UIThread.Post(PaintNow, _isPainting ? RepaintPriority : PaintPriority);
+        }
+
+        // WORKAROUND(WA-AVALONIA-0021): An animation frame that commits nothing waits for a 16 ms timer
+        /* Shows the last painted image again without painting, so that the frame commits and the next
+           animation frame follows the render loop. UI thread; false when nothing was asked for */
+        public bool RequestPresent()
+        {
+            if (!AvDispatcher.UIThread.CheckAccess())
+                return false;
+            if (_topLevel == null || !IsEffectivelyVisible || _currentImage == null)
+                return false;
+
+            /* Render draws the last painted image */
+            InvalidateVisual();
+            return true;
         }
 
         private void PaintNow()
         {
             Interlocked.Exchange(ref _paintPosted, 0);
+            PaintIfRequested();
+        }
+
+        /* UI thread */
+        private void PaintIfRequested()
+        {
             if (_isPainting)
             {
                 /* Re-entered from inside a paint; the outer paint posts again on finishing */
@@ -160,6 +190,7 @@ namespace GnollHackM
             if (!image.AddRef())
                 return;
 
+            GHAvaloniaFrameLoop.NoteFrameSubmitted();
             context.Custom(new ImageDrawOperation(new AvRect(bounds.Size), image, _currentImageScaling));
         }
 

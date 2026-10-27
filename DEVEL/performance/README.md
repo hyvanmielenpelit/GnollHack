@@ -222,6 +222,12 @@ flagged tick because the collection stops every thread, so it often delays the f
 already in flight before that tick. The text reports tag those hitches `forced GC`. A
 forced collection while the map is hidden falls in a paused gap and tags nothing.
 
+**Orphan paints and re-presented ticks.** `GHFrameFlags.OrphanPaint` (2) is set by the
+timeline when a paint runs that no tick asked for (after a layout pass, say), on the tick
+that was newest when the paint ran. `GHFrameFlags.Represented` (64) marks a skipped tick that
+showed the previous frame again instead of painting (Avalonia). Both appear in the frame
+timeline CSV's `Flags` column.
+
 The render loop's callback intervals, paint and lock durations, GC and allocation data are
 still collected by `FrameTimeProfiler` and shown on the dashboard's FRAME section; they are
 diagnostic series, not the measure of smoothness.
@@ -266,6 +272,10 @@ FrameMetrics' `dropCountSinceLastInvocation` counts FrameMetrics reports the lis
 missed, not frames the display dropped. It is data lost by the instrument and never a cause:
 Analyze Hitches gives it as `FrameMetrics reports lost: N`, and the record as
 `smoothness.compositorReportsLost`.
+
+A paint no tick asked for is attributed to no tick. `smoothness.orphanPaintCount` counts the
+ticks flagged `OrphanPaint`, and `smoothness.representedCount` the ticks flagged
+`Represented`; the suite manifest's run summaries carry both.
 
 ### Content events
 
@@ -782,7 +792,8 @@ window's last frame. The **Scene** line gives the level, the zoom mode (`normal`
 `alternate` or `minimap`) and the map font size just before the window; the **Content** line
 gives the hitch rates of the quiet gaps and of the gaps with content events (see
 [Content events](#content-events)). **Facts** is one `key=value` line per fact, `n/a` when
-unknown: `formatVersion` first, `metricsVersion` (see [Metrics](#metrics)), `frameMarker`
+unknown: `formatVersion` first, `orphanPaintCount` and `representedCount` (see
+[Hitch attribution](#hitch-attribution)), `metricsVersion` (see [Metrics](#metrics)), `frameMarker`
 (`off` when the marker was hidden during the window, as this test does), the `scene.*` keys, and last the health, location, primary and finding
 codes. Reports of different metrics versions do not compare.
 

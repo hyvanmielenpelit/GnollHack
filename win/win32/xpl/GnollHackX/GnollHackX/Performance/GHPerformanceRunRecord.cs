@@ -1240,6 +1240,8 @@ namespace GnollHackX.Performance
             j.NotRunCount = s.NotRunCount;
             j.PausedGapCount = s.PausedGapCount;
             j.CompositorReportsLost = s.CompositorReportsLost;
+            j.OrphanPaintCount = s.OrphanPaintCount;
+            j.RepresentedCount = s.RepresentedCount;
             j.CompositorCoverage = s.CompositorCoverage < 0 ? (double?)null : R(s.CompositorCoverage);
             j.VsyncCorrectedShare = s.VsyncCorrectedShare < 0 ? (double?)null : R(s.VsyncCorrectedShare);
             j.SyncOffsetP50Ms = R(s.SyncOffsetP50Ms);
@@ -1832,6 +1834,14 @@ namespace GnollHackX.Performance
             /* FrameMetrics reports the listener missed; not display drops */
             [JsonProperty("compositorReportsLost")]
             public int CompositorReportsLost;
+
+            /* Ticks during which a paint no tick asked for ran */
+            [JsonProperty("orphanPaintCount")]
+            public int OrphanPaintCount;
+
+            /* Skipped ticks that showed the previous frame again (Avalonia) */
+            [JsonProperty("representedCount")]
+            public int RepresentedCount;
 
             /* Share of GL-thread paints carried by a FrameMetrics report, 0-1; null where not applicable */
             [JsonProperty("compositorCoverage")]

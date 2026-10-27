@@ -239,8 +239,54 @@ namespace GnollHackM
             otherGpuPct = float.NaN;
             return false;
         }
+
+        private static void PutFingerprint(Dictionary<string, string> fingerprint, string key, string value)
+        {
+            if (!string.IsNullOrWhiteSpace(value))
+                fingerprint[key] = value.Trim();
+        }
+
         public void AddEnvironmentFingerprint(Dictionary<string, string> fingerprint, bool refresh)
         {
+            if (fingerprint == null)
+                return;
+            try
+            {
+                GHAvaloniaDeviceDisplay display = GHAvaloniaDeviceDisplay.Current;
+                int monitorHz = display != null ? display.MonitorRefreshRate : 0;
+                if (monitorHz > 0)
+                    PutFingerprint(fingerprint, "hardware.monitorRefreshHz", GHEnvironmentFingerprint.FormatValue(monitorHz));
+            }
+            catch
+            {
+            }
+            try
+            {
+                if (OperatingSystem.IsLinux())
+                    PutFingerprint(fingerprint, "driver.glxSwapInterval", GHAvaloniaFrameLoop.SwapIntervalState.ToString());
+            }
+            catch
+            {
+            }
+            try
+            {
+                if (OperatingSystem.IsLinux())
+                {
+                    string desktop = Environment.GetEnvironmentVariable("XDG_CURRENT_DESKTOP");
+                    string compositor;
+                    if (!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("GAMESCOPE_WAYLAND_DISPLAY"))
+                        || string.Equals(desktop, "gamescope", StringComparison.OrdinalIgnoreCase))
+                        compositor = "gamescope";
+                    else if (!string.IsNullOrWhiteSpace(desktop))
+                        compositor = desktop;
+                    else
+                        compositor = "unknown";
+                    PutFingerprint(fingerprint, "os.compositor", compositor);
+                }
+            }
+            catch
+            {
+            }
         }
     }
 }

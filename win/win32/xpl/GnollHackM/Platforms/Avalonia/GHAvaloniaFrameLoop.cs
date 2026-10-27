@@ -20,9 +20,9 @@ namespace GnollHackM
     }
 
     /* The Avalonia build's platform frame loop. It drives GHApp from
-       TopLevel.RequestAnimationFrame, estimates the refresh rate from the frame deltas,
-       raises Avalonia's render timer rate when it lags the estimate, and gathers pacing
-       statistics for the log. UI thread unless noted. */
+       TopLevel.RequestAnimationFrame, estimates the refresh rate from the deltas that follow a
+       frame a canvas control submitted, raises Avalonia's render timer rate when it lags the
+       estimate, and gathers pacing statistics for the log. UI thread unless noted. */
     public static class GHAvaloniaFrameLoop
     {
         /* The GL control samples glXGetSyncValuesOML once every this many frames */
@@ -38,6 +38,14 @@ namespace GnollHackM
         private static bool _hasLastFrameTime = false;
         private static TimeSpan _lastFrameTime;
 
+        /* True while GHApp.OnPlatformFrame runs inside the frame callback; UI thread */
+        private static bool _inFrameCallback = false;
+        public static bool IsInFrameCallback { get { return _inFrameCallback; } }
+
+        /* Set when a canvas control renders on the UI thread, which happens in the render pass that
+           commits; read and cleared by the next frame callback */
+        private static bool _frameSubmitted = false;
+
         /* Refresh-rate estimate from the recent frame deltas */
         private static readonly GHRefreshRateEstimator _estimator = new GHRefreshRateEstimator();
         private static float _estimatedRefreshRate = 0.0f;
@@ -47,6 +55,8 @@ namespace GnollHackM
         private static readonly object _statsLock = new object();
         private static readonly double[] _frameDeltasMs = new double[ReportCapacity];
         private static int _frameDeltaCount = 0;
+        /* Frame deltas left out of the estimate because the frame before them submitted nothing */
+        private static int _unsubmittedFrameDeltaCount = 0;
         private static readonly double[] _ustPerFrameMs = new double[ReportCapacity];
         private static int _presentSampleCount = 0;
         private static int _mscNotOneCount = 0;
@@ -117,6 +127,8 @@ namespace GnollHackM
 
         private static void OnFrame(TimeSpan time)
         {
+            bool previousSubmitted = _frameSubmitted;
+            _frameSubmitted = false;
             _frameRequested = false;
             Avalonia.Controls.TopLevel topLevel = _topLevel;
             if (!_running || topLevel == null)
@@ -138,8 +150,13 @@ namespace GnollHackM
                     {
                         if (_frameDeltaCount < ReportCapacity)
                             _frameDeltasMs[_frameDeltaCount++] = deltaMs;
+                        if (!previousSubmitted)
+                            _unsubmittedFrameDeltaCount++;
                     }
-                    UpdateEstimate(deltaMs);
+                    /* After a frame that committed nothing, the interval was timed by Avalonia's
+                       animation timer, not by the display */
+                    if (previousSubmitted)
+                        UpdateEstimate(deltaMs);
                 }
             }
             _lastFrameTime = time;
@@ -147,7 +164,15 @@ namespace GnollHackM
 
             MaybeAdjustRenderTimer();
             long callbackStart = Stopwatch.GetTimestamp();
-            GHApp.OnPlatformFrame(EstimatedRefreshRate);
+            _inFrameCallback = true;
+            try
+            {
+                GHApp.OnPlatformFrame(EstimatedRefreshRate);
+            }
+            finally
+            {
+                _inFrameCallback = false;
+            }
             double callbackMs = (Stopwatch.GetTimestamp() - callbackStart) * 1000.0 / Stopwatch.Frequency;
             lock (_statsLock)
             {
@@ -168,6 +193,12 @@ namespace GnollHackM
                 if (paintMs >= 0.0 && _glPaintCount < ReportCapacity)
                     _glPaintMs[_glPaintCount++] = paintMs;
             }
+        }
+
+        /* Called by the canvas controls' Render overrides; UI thread */
+        public static void NoteFrameSubmitted()
+        {
+            _frameSubmitted = true;
         }
 
         /* UI thread; 0 when unknown */
@@ -333,8 +364,9 @@ namespace GnollHackM
         }
 
         /* Two log lines covering the frames, GL draws and present samples since the previous report:
-           the frame loop's, returned, and the GL controls', in glReport. The present samples are included
-           only while the GLX swap interval is applied. Resets those statistics. */
+           the frame loop's, returned, and the GL controls', in glReport. "draw interval ms" includes the
+           draws that re-present the last paint. The present samples are included only while the GLX swap
+           interval is applied. Resets those statistics. */
         public static string GetReport(out string glReport)
         {
             GHSwapIntervalState swapIntervalState = SwapIntervalState;
@@ -345,6 +377,7 @@ namespace GnollHackM
             lock (_statsLock)
             {
                 AppendStatistics(sb, "frame delta ms", _frameDeltasMs, _frameDeltaCount);
+                sb.Append("; frame deltas without a submitted frame: ").Append(_unsubmittedFrameDeltaCount.ToString(CultureInfo.InvariantCulture));
                 AppendStatistics(sb, "frame callback ms", _frameCallbackMs, _frameCallbackCount);
                 AppendStatistics(glSb, "draw interval ms", _glDrawIntervalsMs, _glDrawIntervalCount);
                 AppendStatistics(glSb, "paint ms", _glPaintMs, _glPaintCount);
@@ -364,6 +397,7 @@ namespace GnollHackM
                 }
 
                 _frameDeltaCount = 0;
+                _unsubmittedFrameDeltaCount = 0;
                 _frameCallbackCount = 0;
                 _glDrawIntervalCount = 0;
                 _glPaintCount = 0;

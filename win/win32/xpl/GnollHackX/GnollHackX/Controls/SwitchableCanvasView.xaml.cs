@@ -325,7 +325,15 @@ namespace GnollHackX.Controls
 #endif
                         try
                         {
+#if GNH_MAUI && GNH_AVALONIA
+                            GHAvaloniaGLControl control = GetAvaloniaGLControl();
+                            if (control != null && !control.HasRenderLoop)
+                                control.RequestRender(ClaimsTimelineFrame);
+                            else
+                                _internalGLView.InvalidateSurface();
+#else
                             _internalGLView.InvalidateSurface();
+#endif
                         }
                         catch (Exception ex) 
                         {
@@ -348,6 +356,40 @@ namespace GnollHackX.Controls
                 }
             }
         }
+
+#if GNH_MAUI && GNH_AVALONIA
+        /* True for a canvas whose GL paints the frame timeline tracks */
+        protected virtual bool ClaimsTimelineFrame { get { return false; } }
+
+        /* The platform controls, read through IElementHandler: MAUI's ViewHandler getters throw when null */
+        private GHAvaloniaGLControl GetAvaloniaGLControl()
+        {
+            Microsoft.Maui.IElementHandler handler = _internalGLView?.Handler;
+            return handler?.PlatformView as GHAvaloniaGLControl;
+        }
+
+        private GHAvaloniaCanvasControl GetAvaloniaCanvasControl()
+        {
+            Microsoft.Maui.IElementHandler handler = internalCanvasView?.Handler;
+            return handler?.PlatformView as GHAvaloniaCanvasControl;
+        }
+
+        /* Shows the last painted frame again without painting; UI thread. True when a frame was asked for */
+        public bool PresentSurface()
+        {
+            if (IsShutDown || !ThreadSafeIsVisible)
+                return false;
+
+            if (UseGL && HasGL)
+            {
+                GHAvaloniaGLControl glControl = GetAvaloniaGLControl();
+                return glControl != null && glControl.RequestPresent();
+            }
+
+            GHAvaloniaCanvasControl canvasControl = GetAvaloniaCanvasControl();
+            return canvasControl != null && canvasControl.RequestPresent();
+        }
+#endif
 
         //protected override SizeRequest OnMeasure(double widthConstraint, double heightConstraint)
         //{
@@ -861,6 +903,11 @@ namespace GnollHackX.Controls
     /* The game map's canvas */
     public class SwitchableMapCanvasView : SwitchableCanvasView
     {
+#if GNH_MAUI && GNH_AVALONIA
+        /* The map's paints are the ones the frame timeline tracks */
+        protected override bool ClaimsTimelineFrame { get { return true; } }
+
+#endif
 #if GNH_MAUI && ANDROID
         protected override SKGLView CreateGLView()
         {

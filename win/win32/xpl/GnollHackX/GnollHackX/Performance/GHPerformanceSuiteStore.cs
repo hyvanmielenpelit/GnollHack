@@ -1161,6 +1161,8 @@ namespace GnollHackX.Performance
             j.MeasuredRefreshHz = R(s.MeasuredRefreshHz);
             j.TargetFps = R(s.TargetFps);
             j.CompositorReportsLost = s.CompositorReportsLost;
+            j.OrphanPaintCount = s.OrphanPaintCount;
+            j.RepresentedCount = s.RepresentedCount;
             j.CompositorCoverage = s.CompositorCoverage < 0 ? (double?)null : R(s.CompositorCoverage);
             j.VsyncCorrectedShare = s.VsyncCorrectedShare < 0 ? (double?)null : R(s.VsyncCorrectedShare);
             j.SyncOffsetP50Ms = R(s.SyncOffsetP50Ms);
@@ -1445,6 +1447,8 @@ namespace GnollHackX.Performance
             s.MeasuredRefreshHz = j.MeasuredRefreshHz;
             s.TargetFps = j.TargetFps;
             s.CompositorReportsLost = j.CompositorReportsLost;
+            s.OrphanPaintCount = j.OrphanPaintCount;
+            s.RepresentedCount = j.RepresentedCount;
             s.CompositorCoverage = j.CompositorCoverage.HasValue ? j.CompositorCoverage.Value : -1;
             s.VsyncCorrectedShare = j.VsyncCorrectedShare.HasValue ? j.VsyncCorrectedShare.Value : -1;
             s.SyncOffsetP50Ms = j.SyncOffsetP50Ms;
@@ -2359,6 +2363,14 @@ namespace GnollHackX.Performance
 
             [JsonProperty("compositorReportsLost")]
             public int CompositorReportsLost;
+
+            /* Absent in older summaries, which reads as 0 */
+            [JsonProperty("orphanPaintCount")]
+            public int OrphanPaintCount;
+
+            /* Absent in older summaries, which reads as 0 */
+            [JsonProperty("representedCount")]
+            public int RepresentedCount;
 
             /* Share of GL-thread paints carried by a FrameMetrics report; null (or absent) where not applicable */
             [JsonProperty("compositorCoverage")]

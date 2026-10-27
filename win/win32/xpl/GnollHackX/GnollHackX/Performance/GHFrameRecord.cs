@@ -79,14 +79,17 @@ namespace GnollHackX.Performance
         UserMark = 4,           /* the user marked this frame as a felt stutter */
         LifecycleBreak = 8,     /* the app was suspended or resumed before this callback */
         VsyncIsLatestVblank = 16, /* VsyncTicks is the latest vblank at the callback (Windows DWM), not its own vsync */
-        ForcedCollection = 32   /* the app forced a collection since the previous callback */
+        ForcedCollection = 32,  /* the app forced a collection since the previous callback */
+        Represented = 64        /* a skipped tick showed the previous frame again (Avalonia) */
     }
 
     /* One display callback and everything that followed from it. Every tick field is in the
        Stopwatch domain; zero means "did not happen" or "unknown". PlatformFrameTicks is in
        Stopwatch units but with the platform's own epoch, so only its differences are
        meaningful. Written from the UI thread (tick fields) and the paint thread (paint
-       fields); fields are never shared between the two writers. */
+       fields); fields are never shared between the two writers, except Flags: the UI
+       thread, the paint thread (OrphanPaint) and MarkUser (any thread) all OR bits into it,
+       so a bit can occasionally be lost. */
     public struct GHFrameRecord
     {
         public long FrameId;

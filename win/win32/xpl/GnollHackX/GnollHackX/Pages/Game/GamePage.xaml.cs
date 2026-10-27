@@ -5472,6 +5472,37 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+#if GNH_MAUI && GNH_AVALONIA
+        /* Shows the active canvas's last frame again on a tick that skips rendering; true when a
+           frame was asked for. The conditions are those of the matching Update*Canvas method. */
+        public bool PresentCanvasByCanvasType(CanvasTypes canvasType)
+        {
+            switch (canvasType)
+            {
+                case CanvasTypes.MainCanvas:
+                    /* PresentSurface checks the canvas's own visibility */
+                    if (RefreshScreen && !IsResizing)
+                        return MainCanvasView.PresentSurface();
+                    break;
+                case CanvasTypes.CommandCanvas:
+                    if (MoreCommandsGrid.ThreadSafeIsVisible && !IsResizing)
+                        return CommandCanvas.PresentSurface();
+                    break;
+                case CanvasTypes.MenuCanvas:
+                    if (MenuRefresh && !IsResizing && MenuGrid.ThreadSafeIsVisible)
+                        return MenuCanvas.PresentSurface();
+                    break;
+                case CanvasTypes.TextCanvas:
+                    if (TextGrid.ThreadSafeIsVisible && !IsResizing)
+                        return TextCanvas.PresentSurface();
+                    break;
+                default:
+                    break;
+            }
+            return false;
+        }
+#endif
+
         private float[] _gridIntervals = { 2.0f, 2.0f };
 
         //public float GetTextScale()

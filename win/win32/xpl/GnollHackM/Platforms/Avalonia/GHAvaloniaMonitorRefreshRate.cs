@@ -7,14 +7,20 @@ using GnollHackX;
 namespace GnollHackM
 {
     // WORKAROUND(WA-AVALONIA-0015): Avalonia's Screen reports no refresh rate
-    /* The refresh rate of a monitor's current display mode, read with user32 since Avalonia's Screen does
-       not report one. Windows only; elsewhere every call returns 0. UI thread. */
+    /* The refresh rate of a monitor's current display mode, since Avalonia's Screen does not report one.
+       Windows: user32; Linux: X11 RandR; elsewhere every call returns 0. UI thread. */
     public static class GHAvaloniaMonitorRefreshRate
     {
         private const uint MONITOR_DEFAULTTONEAREST = 2;
         private const int ENUM_CURRENT_SETTINGS = -1;
 
         private static int _failureLogged = 0;
+
+#if LINUX
+        /* The screen bounds last looked up and their CRTC */
+        private static Avalonia.PixelRect _lastScreenBounds = default(Avalonia.PixelRect);
+        private static IntPtr _lastCrtc = IntPtr.Zero;
+#endif
 
         [StructLayout(LayoutKind.Sequential)]
         private struct RECT
@@ -90,10 +96,18 @@ namespace GnollHackM
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool EnumDisplaySettingsW(string lpszDeviceName, int iModeNum, ref DEVMODEW lpDevMode);
 
-        /* The monitor nearest to the window; IntPtr.Zero when unknown */
+        /* The monitor nearest to the window; IntPtr.Zero when unknown. On Linux, the RandR CRTC at the center
+           of the window's screen. */
         public static IntPtr GetMonitor(Avalonia.Controls.TopLevel topLevel)
         {
-            if (topLevel == null || !OperatingSystem.IsWindows())
+            if (topLevel == null)
+                return IntPtr.Zero;
+
+#if LINUX
+            if (OperatingSystem.IsLinux())
+                return GetLinuxMonitor(topLevel);
+#endif
+            if (!OperatingSystem.IsWindows())
                 return IntPtr.Zero;
 
             try
@@ -113,7 +127,24 @@ namespace GnollHackM
         /* In Hz; 0 when unknown, or when the mode leaves the rate to the hardware's default */
         public static int GetRefreshRate(IntPtr monitor)
         {
-            if (monitor == IntPtr.Zero || !OperatingSystem.IsWindows())
+            if (monitor == IntPtr.Zero)
+                return 0;
+
+#if LINUX
+            if (OperatingSystem.IsLinux())
+            {
+                try
+                {
+                    return GHRandr.GetRefreshRate(monitor);
+                }
+                catch (Exception ex)
+                {
+                    LogFailureOnce(ex);
+                    return 0;
+                }
+            }
+#endif
+            if (!OperatingSystem.IsWindows())
                 return 0;
 
             try
@@ -137,6 +168,39 @@ namespace GnollHackM
                 return 0;
             }
         }
+
+#if LINUX
+        /* RandR is queried only when the screen bounds differ from the last lookup: a window drag raises
+           many position changes */
+        private static IntPtr GetLinuxMonitor(Avalonia.Controls.TopLevel topLevel)
+        {
+            try
+            {
+                Avalonia.Controls.Window window = topLevel as Avalonia.Controls.Window;
+                if (window == null)
+                    return IntPtr.Zero;
+
+                Avalonia.Controls.Screens screens = window.Screens;
+                Avalonia.Platform.Screen screen = screens == null ? null : (screens.ScreenFromWindow(window) ?? screens.Primary);
+                if (screen == null)
+                    return IntPtr.Zero;
+
+                Avalonia.PixelRect bounds = screen.Bounds;
+                if (bounds == _lastScreenBounds)
+                    return _lastCrtc;
+
+                IntPtr crtc = GHRandr.FindCrtc(bounds.X + bounds.Width / 2, bounds.Y + bounds.Height / 2);
+                _lastScreenBounds = bounds;
+                _lastCrtc = crtc;
+                return crtc;
+            }
+            catch (Exception ex)
+            {
+                LogFailureOnce(ex);
+                return IntPtr.Zero;
+            }
+        }
+#endif
 
         private static void LogFailureOnce(Exception ex)
         {

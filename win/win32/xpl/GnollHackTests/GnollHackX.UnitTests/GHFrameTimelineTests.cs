@@ -206,6 +206,146 @@ namespace GnollHackX.UnitTests
             Assert.Equal(1, GHFrameTimeline.OrphanPaintCount);
         }
 
+        /* A paint that runs with the ticket its tick claimed, as a paint posted to another thread does */
+        private static long TicketedPaint(long ticket, long mainCounter)
+        {
+            GHFrameTimeline.BeginTicketedPaint(ticket);
+            try
+            {
+                long painted = GHFrameTimeline.BeginPaint(false);
+                GHFrameTimeline.EndPaint(painted, mainCounter, 0, 0);
+                return painted;
+            }
+            finally
+            {
+                GHFrameTimeline.EndTicketedPaint();
+            }
+        }
+
+        /* Tick 2 invalidates before the paint of tick 1 runs; the tickets keep each paint on its own tick */
+        [Fact]
+        public void TicketedPaints_AreAttributedToTheTicksThatClaimedThem()
+        {
+            Restart();
+            long first = RenderedTick(1);
+            long firstClaim = GHFrameTimeline.ClaimPendingPaint();
+            Assert.Equal(first, firstClaim);
+            long second = RenderedTick(2);
+            long secondClaim = GHFrameTimeline.ClaimPendingPaint();
+            Assert.Equal(second, secondClaim);
+            long orphansBefore = GHFrameTimeline.OrphanPaintCount;
+
+            Assert.Equal(first, TicketedPaint(firstClaim, 1));
+            Assert.Equal(second, TicketedPaint(secondClaim, 2));
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(2, n);
+            Assert.Equal(GHPaintOutcome.Painted, r[0].Paint);
+            Assert.Equal(GHPaintOutcome.Painted, r[1].Paint);
+            Assert.Equal(1, r[0].PaintedMainCounter);
+            Assert.Equal(2, r[1].PaintedMainCounter);
+            Assert.Equal(0, GHFrameTimeline.CoalescedCount);
+            Assert.Equal(orphansBefore, GHFrameTimeline.OrphanPaintCount);
+        }
+
+        [Fact]
+        public void TicketZero_IsAnOrphanPaintFlaggedOnTheNewestTick()
+        {
+            Restart();
+            RenderedTick(1);
+            GHFrameTimeline.BeginTicketedPaint(0);
+            try
+            {
+                Assert.Equal(0, GHFrameTimeline.BeginPaint(false));
+                GHFrameTimeline.EndPaint(0, 0, 0, 0);
+            }
+            finally
+            {
+                GHFrameTimeline.EndTicketedPaint();
+            }
+            Assert.Equal(1, GHFrameTimeline.OrphanPaintCount);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(1, n);
+            Assert.Equal(GHFrameFlags.OrphanPaint, r[0].Flags & GHFrameFlags.OrphanPaint);
+            Assert.Equal(GHPaintOutcome.None, r[0].Paint);
+        }
+
+        [Fact]
+        public void OrphanPaint_BeforeAnyTick_FlagsNothing()
+        {
+            Restart();
+            Assert.Equal(0, GHFrameTimeline.BeginPaint(true));
+            Assert.Equal(1, GHFrameTimeline.OrphanPaintCount);
+
+            int n;
+            Snapshot(out n);
+            Assert.Equal(0, n);
+
+            RenderedTick(1);
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(1, n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.OrphanPaint);
+        }
+
+        [Fact]
+        public void TicketedPaint_StillCoalescesAnUnclaimedEarlierInvalidation()
+        {
+            Restart();
+            long first = RenderedTick(1);
+            long second = RenderedTick(2);
+            long claim = GHFrameTimeline.ClaimPendingPaint();
+            Assert.Equal(second, claim);
+            Assert.Equal(second, TicketedPaint(claim, 2));
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(2, n);
+            Assert.Equal(first, r[0].FrameId);
+            Assert.Equal(GHPaintOutcome.Coalesced, r[0].Paint);
+            Assert.Equal(GHPaintOutcome.Painted, r[1].Paint);
+            Assert.Equal(1, GHFrameTimeline.CoalescedCount);
+        }
+
+        [Fact]
+        public void PaintWithoutTicket_AfterATicketedPaint_TakesThePendingInvalidation()
+        {
+            Restart();
+            long first = RenderedTick(1);
+            Assert.Equal(first, TicketedPaint(GHFrameTimeline.ClaimPendingPaint(), 1));
+            long second = RenderedTick(2);
+            long painted = GHFrameTimeline.BeginPaint(false);
+            Assert.Equal(second, painted);
+            GHFrameTimeline.EndPaint(painted, 2, 0, 0);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(GHPaintOutcome.Painted, r[0].Paint);
+            Assert.Equal(GHPaintOutcome.Painted, r[1].Paint);
+            Assert.Equal(0, GHFrameTimeline.OrphanPaintCount);
+            Assert.Equal(0, GHFrameTimeline.CoalescedCount);
+        }
+
+        [Fact]
+        public void StampRepresented_FlagsOnlyTheCurrentTick()
+        {
+            Restart();
+            RenderedTick(1);
+            GHFrameTimeline.BeginTick();
+            GHFrameTimeline.StampRepresented();
+            GHFrameTimeline.EndTick(GHPacingDecision.SkippedDivisor);
+            RenderedTick(3);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(3, n);
+            Assert.Equal(GHFrameFlags.None, r[0].Flags & GHFrameFlags.Represented);
+            Assert.Equal(GHFrameFlags.Represented, r[1].Flags & GHFrameFlags.Represented);
+            Assert.Equal(GHFrameFlags.None, r[2].Flags & GHFrameFlags.Represented);
+        }
+
         [Fact]
         public void EarlyReturn_RecordsItsOutcome()
         {

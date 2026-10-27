@@ -16,7 +16,7 @@ namespace GnollHackM
        until OnWindowOpened, MainDisplayInfo is 0 x 0 pixels, density 1, 60 Hz, landscape. Afterwards
        it follows the window's screen (pixel bounds, scaling, orientation), and the refresh rate is the
        frame loop's estimate, since Avalonia does not report one; the estimate snaps to the monitor's
-       display-mode rate where that is known (Windows). MainDisplayInfoChanged is
+       display-mode rate where that is known (Windows and Linux). MainDisplayInfoChanged is
        raised on the Avalonia UI thread whenever any value changes, the refresh rate included. */
     public sealed class GHAvaloniaDeviceDisplay : IDeviceDisplay
     {
@@ -42,9 +42,14 @@ namespace GnollHackM
         private AvWindow _trackedWindow = null;
         private AvScreens _trackedScreens = null;
         private IntPtr _monitor = IntPtr.Zero;
+
+        /* Written on the UI thread; read from any thread through MonitorRefreshRate */
         private int _monitorRefreshRate = 0;
 
         public event EventHandler<DisplayInfoChangedEventArgs> MainDisplayInfoChanged;
+
+        /* The monitor's display-mode refresh rate; 0 when unknown */
+        public int MonitorRefreshRate { get { return Volatile.Read(ref _monitorRefreshRate); } }
 
         /* Stored only; it has no effect in this build */
         public bool KeepScreenOn
@@ -200,7 +205,7 @@ namespace GnollHackM
             int hz = GHAvaloniaMonitorRefreshRate.GetRefreshRate(monitor);
             if (hz == _monitorRefreshRate)
                 return;
-            _monitorRefreshRate = hz;
+            Volatile.Write(ref _monitorRefreshRate, hz);
             GHAvaloniaFrameLoop.SetMonitorRefreshRate(hz);
             if (hz > 0)
                 GnollHackX.GHApp.MaybeWriteGHLog("Avalonia display: monitor refresh rate " + hz + " Hz");

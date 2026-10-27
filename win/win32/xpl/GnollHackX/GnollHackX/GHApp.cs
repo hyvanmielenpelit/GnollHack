@@ -1423,6 +1423,11 @@ namespace GnollHackX
                             if ((counter / divisor) % num == 0)
                             {
                                 pacing = GHPacingDecision.SkippedModulo;
+#if GNH_AVALONIA
+                                // WORKAROUND(WA-AVALONIA-0021): An animation frame that commits nothing waits for a 16 ms timer
+                                if (curGamePage.PresentCanvasByCanvasType(canvasType) && canvasType == CanvasTypes.MainCanvas)
+                                    GHFrameTimeline.StampRepresented();
+#endif
                                 return;
                             }
                         }
@@ -1432,6 +1437,11 @@ namespace GnollHackX
                     else
                     {
                         pacing = GHPacingDecision.SkippedDivisor;
+#if GNH_AVALONIA
+                        // WORKAROUND(WA-AVALONIA-0021): An animation frame that commits nothing waits for a 16 ms timer
+                        if (curGamePage.PresentCanvasByCanvasType(canvasType) && canvasType == CanvasTypes.MainCanvas)
+                            GHFrameTimeline.StampRepresented();
+#endif
                     }
                 }
             }

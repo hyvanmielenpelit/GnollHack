@@ -95,5 +95,21 @@ namespace GnollHackM
             _hasPublished = false;
             _published = 0.0f;
         }
+
+        /* Refresh rate of an X11 RandR mode in whole Hz, as Avalonia computes it; 0 when a timing
+           value is 0 */
+        public static int ModeRefreshRate(ulong dotClock, uint hTotal, uint vTotal, bool interlace, bool doubleScan)
+        {
+            if (dotClock == 0 || hTotal == 0 || vTotal == 0)
+                return 0;
+
+            double multiplier = 1.0;
+            if (interlace)
+                multiplier *= 2.0;
+            if (doubleScan)
+                multiplier /= 2.0;
+            double hz = dotClock / ((double)hTotal * vTotal) * multiplier;
+            return (int)Math.Round(hz, MidpointRounding.ToEven);
+        }
     }
 }

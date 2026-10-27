@@ -9,7 +9,8 @@ namespace GnollHackX
     public static class GHMapFps
     {
         public const int MinimumFps = 20;
-        public const int DefaultDivisorStepHz = 50; /* the default divisor rises by one per step from 100 Hz */
+        public const int HalvedDefaultMinimumHz = 80; /* the default divisor is at least 2 from this rate */
+        public const int DefaultDivisorStepHz = 50; /* the default divisor rises by one per step from 150 Hz */
         public const int MaximumDefaultDivisor = 6;
         public const int TimerLoopDefaultMaxFps = 60;
         public const int UnknownRateFps = 60;
@@ -28,12 +29,13 @@ namespace GnollHackX
             return roundedRefreshRate;
         }
 
-        /* 1 below 100 Hz, else refreshRate / DefaultDivisorStepHz, at most MaximumDefaultDivisor */
+        /* 1 below HalvedDefaultMinimumHz, else refreshRate / DefaultDivisorStepHz, at least 2 and at most
+           MaximumDefaultDivisor */
         public static int GetDefaultDivisor(int refreshRate)
         {
-            if (refreshRate < 2 * DefaultDivisorStepHz)
+            if (refreshRate < HalvedDefaultMinimumHz)
                 return 1;
-            return Math.Min(MaximumDefaultDivisor, refreshRate / DefaultDivisorStepHz);
+            return Math.Max(2, Math.Min(MaximumDefaultDivisor, refreshRate / DefaultDivisorStepHz));
         }
 
         /* Ascending: every exact division refreshRate / n >= MinimumFps for n = 2, 3, ..., then the
