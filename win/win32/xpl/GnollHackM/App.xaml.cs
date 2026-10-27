@@ -406,6 +406,8 @@ public partial class App : Application
         Window window = new Window(new AppShell());
 #if GNH_AVALONIA
         window.Title = "GnollHack";
+        window.ModalPushed += GHAvaloniaFocusGuard.OnModalPushed;
+        window.ModalPopped += GHAvaloniaFocusGuard.OnModalPopped;
 #endif
         window.Activated += WindowActivated;
         window.Deactivated += WindowDeactivated;

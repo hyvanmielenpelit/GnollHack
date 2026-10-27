@@ -17,6 +17,8 @@ namespace GnollHackM
         /* The current keystroke was offered to the game on KeyDown, so its TextInput is not */
         private static bool _keyDownRouted = false;
 
+        internal static bool KeyDownRouted { get { return _keyDownRouted; } }
+
         public static void Attach(Avalonia.Controls.Window window)
         {
             if (window == null)

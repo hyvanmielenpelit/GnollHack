@@ -653,3 +653,40 @@ Avalonia harness, or on a device, check that every `Pressed` is followed by `Rel
 
 Checks:
 - 2026-10-27 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | still-needed | Reproduced in Avalonia.Headless 12.1.4: stock controls leave the touch open in all three cases. No upstream issue found.
+
+## WA-AVALONIA-0020: ACM modal overlays do not trap keyboard focus
+
+- Status: active
+- Added: 2026-10-27
+- GnollHack version: 3.32 (432)
+- Component: Avalonia.Controls.Maui
+- Package: Avalonia.Controls.Maui
+- Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
+- Platforms: Linux, Windows (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-27
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaFocusGuard.cs` (`GHAvaloniaFocusGuard.ClearFocusOutsideTopPage`)
+- Remove when: ACM's modal presentation keeps keyboard focus inside the top-most modal page (Tab, arrows, and a focus held by the page below) in a release GnollHack uses, and Verify removal passes. The guard stays for GnollHack's own in-page overlays; only the tag and this entry go.
+
+**Symptom.** With a modal page open, Tab and the D-Pad move the focus ring onto the
+page below, drawn over the modal, and a button of the page below that still holds focus
+clicks on Space.
+
+**Cause.** `ModalOverlayHelper.Present` adds a scrim and a wrapper to the window's root
+grid and leaves the page below attached, visible and enabled, and Avalonia's tab and
+directional navigation never consider what is painted above a candidate.
+
+**Workaround.** `GHAvaloniaFocusGuard` redirects a keyboard focus change away from any
+control whose center a pointer could not reach, clears a focus outside the top-most page
+when a modal page is pushed or popped, and clears a covered focus on the next key,
+dropping the key when the game declined it.
+
+**Verify removal.** Make `ClearFocusOutsideTopPage` return without doing anything and
+make `IsCovered` return false. Build the Avalonia flavor, open Settings from the main
+page with the mouse, press Tab repeatedly and then Space: the ring must stay inside
+Settings and nothing on the main page may react.
+
+Checks:
+- 2026-10-27 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.

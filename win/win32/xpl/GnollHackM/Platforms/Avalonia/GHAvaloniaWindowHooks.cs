@@ -25,6 +25,7 @@ namespace GnollHackM
             MainWindow = window;
 
             GHAvaloniaKeyboard.Attach(window);
+            GHAvaloniaFocusGuard.Attach(window);
 
             Avalonia.Controls.WindowIcon icon = LoadWindowIcon();
             if (icon != null)
@@ -68,6 +69,7 @@ namespace GnollHackM
                 reportTimer.Stop();
                 GHAvaloniaFrameLoop.Stop();
                 GHAvaloniaKeyboard.Detach(window);
+                GHAvaloniaFocusGuard.Detach(window);
 #if LINUX
                 GHCefRuntime.CloseAllBrowsersIfInitialized();
 #endif
