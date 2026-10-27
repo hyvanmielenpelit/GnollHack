@@ -358,30 +358,6 @@ namespace GnollHackX.Controls
         }
 
 #if GNH_MAUI && GNH_AVALONIA
-        /* InvalidateSurface, handing the GL paint the state it should draw, as of this request; the paint reads
-           it through GHAvaloniaGLControl.CurrentPaintState. Other canvases ignore it. */
-        public void InvalidateSurface(object paintState)
-        {
-            if (IsShutDown)
-                return;
-
-            GHAvaloniaGLControl control = UseGL && HasGL ? GetAvaloniaGLControl() : null;
-            if (control == null || control.HasRenderLoop)
-            {
-                InvalidateSurface();
-                return;
-            }
-
-            try
-            {
-                control.RequestRender(ClaimsTimelineFrame, paintState);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-        }
-
         /* True for a canvas whose GL paints the frame timeline tracks */
         protected virtual bool ClaimsTimelineFrame { get { return false; } }
 

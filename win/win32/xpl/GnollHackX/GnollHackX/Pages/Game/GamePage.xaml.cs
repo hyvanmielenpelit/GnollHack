@@ -2312,11 +2312,7 @@ namespace GnollHackX.Pages.Game
                     }
                     /* Callers run on the UI thread: the platform render loop and the animation counter */
                     GHFrameTimeline.StampInvalidate(GHInvalidateOutcome.Invalidated);
-#if GNH_MAUI && GNH_AVALONIA
-                    MainCanvasView.InvalidateSurface(TakeMapPaintSnapshot());
-#else
                     MainCanvasView.InvalidateSurface();
-#endif
                 }
             }
         }
@@ -5477,47 +5473,6 @@ namespace GnollHackX.Pages.Game
         }
 
 #if GNH_MAUI && GNH_AVALONIA
-        /* The animation state a GL map paint draws, as of the tick that requested it: Avalonia's render thread
-           paints a tick later, when the UI thread may already have advanced the live state */
-        private sealed class MapPaintSnapshot
-        {
-            public long MainCounter;
-            public long GeneralCounter;
-            public float MapOffsetX;
-            public float MapOffsetY;
-            public float MapMiniOffsetX;
-            public float MapMiniOffsetY;
-        }
-
-        /* Reused in turn, so that a request allocates nothing; at most two requests are in flight. UI thread only. */
-        private readonly MapPaintSnapshot[] _mapPaintSnapshots =
-        {
-            new MapPaintSnapshot(), new MapPaintSnapshot(), new MapPaintSnapshot(), new MapPaintSnapshot(),
-            new MapPaintSnapshot(), new MapPaintSnapshot(), new MapPaintSnapshot(), new MapPaintSnapshot()
-        };
-        private int _mapPaintSnapshotIndex = 0;
-
-        /* The next snapshot, filled with the current counters and map offsets; null without a game. UI thread. */
-        private MapPaintSnapshot TakeMapPaintSnapshot()
-        {
-            GHGame game = GHApp.CurrentGHGame;
-            if (game == null)
-                return null;
-
-            MapPaintSnapshot snapshot = _mapPaintSnapshots[_mapPaintSnapshotIndex];
-            _mapPaintSnapshotIndex = (_mapPaintSnapshotIndex + 1) % _mapPaintSnapshots.Length;
-            snapshot.MainCounter = game.MainCounterValue;
-            snapshot.GeneralCounter = game.GeneralAnimationCounter;
-            lock (_mapOffsetLock)
-            {
-                snapshot.MapOffsetX = _mapOffsetX;
-                snapshot.MapOffsetY = _mapOffsetY;
-                snapshot.MapMiniOffsetX = _mapMiniOffsetX;
-                snapshot.MapMiniOffsetY = _mapMiniOffsetY;
-            }
-            return snapshot;
-        }
-
         /* Shows the active canvas's last frame again on a tick that skips rendering; true when a
            frame was asked for. The conditions are those of the matching Update*Canvas method. */
         public bool PresentCanvasByCanvasType(CanvasTypes canvasType)
@@ -8192,15 +8147,6 @@ namespace GnollHackX.Pages.Game
             maincountervalue = curGame.MainCounterValue; // Interlocked.CompareExchange(ref _mainCounterValue, 0L, 0L);
             /* Moved general_animation_counter outside of the lock to minimize the time spent in lock;  since InvalidateSurface is called after IncrementCounters and nothing else modifies general_animation_counter, generalcountervalue should be consistent of the copy result below */
             generalcountervalue = curGame.GeneralAnimationCounter; // Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
-#if GNH_MAUI && GNH_AVALONIA
-            /* A GL paint draws the state of the tick that requested it */
-            MapPaintSnapshot requestedState = GnollHackM.GHAvaloniaGLControl.CurrentPaintState as MapPaintSnapshot;
-            if (requestedState != null)
-            {
-                maincountervalue = requestedState.MainCounter;
-                generalcountervalue = requestedState.GeneralCounter;
-            }
-#endif
             _paintedMainCounterValue = maincountervalue;
             _paintedGeneralCounterValue = generalcountervalue;
             //lock (AnimationTimerLock)
@@ -8263,15 +8209,6 @@ namespace GnollHackX.Pages.Game
                     Monitor.Exit(_mapOffsetLock);
             }
             lockTaken = false;
-#if GNH_MAUI && GNH_AVALONIA
-            if (requestedState != null)
-            {
-                _localMapOffsetX = requestedState.MapOffsetX;
-                _localMapOffsetY = requestedState.MapOffsetY;
-                _localMapMiniOffsetX = requestedState.MapMiniOffsetX;
-                _localMapMiniOffsetY = requestedState.MapMiniOffsetY;
-            }
-#endif
 
             //lock (_statusOffsetLock)
             try
