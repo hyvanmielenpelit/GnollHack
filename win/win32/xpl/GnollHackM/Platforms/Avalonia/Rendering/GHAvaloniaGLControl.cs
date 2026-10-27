@@ -7,7 +7,10 @@ using SkiaSharp.Views.Maui;
 using AvDispatcher = Avalonia.Threading.Dispatcher;
 using AvDispatcherPriority = Avalonia.Threading.DispatcherPriority;
 using AvPoint = Avalonia.Point;
+using AvPointerCaptureLostEventArgs = Avalonia.Input.PointerCaptureLostEventArgs;
 using AvPointerEventArgs = Avalonia.Input.PointerEventArgs;
+using AvPointerPressedEventArgs = Avalonia.Input.PointerPressedEventArgs;
+using AvPointerReleasedEventArgs = Avalonia.Input.PointerReleasedEventArgs;
 using AvPointerType = Avalonia.Input.PointerType;
 using AvRect = Avalonia.Rect;
 
@@ -66,6 +69,9 @@ namespace GnollHackM
 
         /* Stopwatch timestamp of the last raised hover move */
         private long _lastHoverMoveTicks = 0;
+
+        /* Touch ids ACM has raised Pressed for; UI thread only */
+        private readonly GHAvaloniaTouchTracker _touchTracker = new GHAvaloniaTouchTracker();
 
         /* UI thread: one number per Render call, so a replay of the same render data does not repaint */
         private long _renderRequestSequence = 0;
@@ -202,6 +208,51 @@ namespace GnollHackM
                 return;
 
             GHAvaloniaPointerHover.Raise(this, e, action, IgnorePixelScaling, touchAction);
+        }
+
+        // WORKAROUND(WA-AVALONIA-0019): ACM Skia controls drop touches without Released or Cancelled
+        protected override void OnPointerPressed(AvPointerPressedEventArgs e)
+        {
+            Func<SKTouchEventArgs, bool> touchAction = TouchAction;
+            if (!EnableTouchEvents || touchAction == null)
+            {
+                base.OnPointerPressed(e);
+                return;
+            }
+
+            /* ACM gives a pointer pressed again a new id without releasing the old one */
+            Avalonia.Input.IPointer pointer = e.Pointer;
+            _touchTracker.Cancel(pointer, touchAction);
+
+            Func<SKTouchEventArgs, bool> trackingAction = args =>
+            {
+                if (args.ActionType == SKTouchAction.Pressed)
+                    _touchTracker.Track(pointer, args);
+                return touchAction(args);
+            };
+            TouchAction = trackingAction;
+            try
+            {
+                base.OnPointerPressed(e);
+            }
+            finally
+            {
+                if (ReferenceEquals(TouchAction, trackingAction))
+                    TouchAction = touchAction;
+            }
+        }
+
+        protected override void OnPointerReleased(AvPointerReleasedEventArgs e)
+        {
+            base.OnPointerReleased(e);
+            _touchTracker.Forget(e.Pointer);
+        }
+
+        /* ACM forgets the pointer here without raising an action; after a release there is nothing to cancel */
+        protected override void OnPointerCaptureLost(AvPointerCaptureLostEventArgs e)
+        {
+            base.OnPointerCaptureLost(e);
+            _touchTracker.Cancel(e.Pointer, EnableTouchEvents ? TouchAction : null);
         }
 
         private void ReleaseResources()

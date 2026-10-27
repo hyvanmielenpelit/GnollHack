@@ -607,3 +607,49 @@ open only in the system browser.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.WebView 12.1.1 | unverified | No upstream issue found.
+
+## WA-AVALONIA-0019: ACM Skia controls drop touches without Released or Cancelled
+
+- Status: active
+- Added: 2026-10-27
+- GnollHack version: 3.32 (432)
+- Component: Avalonia.Controls.Maui
+- Package: Avalonia.Controls.Maui.SkiaSharp.Views
+- Defective version: Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618
+- Platforms: Linux, Windows (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-27
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaTouchTracker.cs` (`GHAvaloniaTouchTracker`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.OnPointerPressed`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLControl.cs` (`GHAvaloniaGLControl.OnPointerPressed`)
+- Remove when: ACM's Skia controls raise Released or Cancelled for every touch they raised Pressed for, in a release GnollHack uses, and Verify removal passes.
+- Related: WA-AVALONIA-0009, WA-WINUI-0004, WA-SKIASHARP-0010
+
+**Symptom.** After some multi-finger touches, on Steam Deck for example, a finger stays
+"stuck" on the main canvas: nothing can be clicked any more, and every drag pans or
+zooms the map.
+
+**Cause.** ACM's `SKCanvasViewControl` and `SKGLViewControl` keep a private pointer-to-id
+map. `OnPointerCaptureLost` removes a pointer from it without raising an action, and
+`OnPointerPressed` on a pointer that is already pressed replaces its id without releasing
+the old one. Avalonia raises capture loss before or instead of a release in several
+cases: a touch cancel, a touch end that X11 turns into a cancel while a transient child
+window is active, a disabled window, a gesture recognizer taking the pointer, and the
+control leaving the visual tree with a finger down. A second mouse button pressed while
+the first is held re-presses the same pointer. GamePage's touch dictionary then keeps the
+orphaned id forever.
+
+**Workaround.** GnollHack's canvas and GL controls wrap `TouchAction` during
+`OnPointerPressed` to record the id ACM raises `Pressed` for, and raise `Cancelled` for it
+when the pointer loses capture without a release or is pressed again.
+
+**Verify removal.** Delete `GHAvaloniaTouchTracker.cs` and the three pointer overrides and
+the `_touchTracker` field in both controls. Build the Avalonia flavor. In a headless
+Avalonia harness, or on a device, check that every `Pressed` is followed by `Released` or
+`Cancelled` for the same id in each of these cases:
+- the second of two fingers loses capture
+- the control is removed from its window while a finger is down
+- a mouse's left button is held while the right is clicked
+
+Checks:
+- 2026-10-27 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | still-needed | Reproduced in Avalonia.Headless 12.1.4: stock controls leave the touch open in all three cases. No upstream issue found.

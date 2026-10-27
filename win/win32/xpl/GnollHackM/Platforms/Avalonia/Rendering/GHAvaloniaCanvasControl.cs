@@ -7,7 +7,10 @@ using SkiaSharp.Views.Maui;
 using AvDispatcher = Avalonia.Threading.Dispatcher;
 using AvDispatcherPriority = Avalonia.Threading.DispatcherPriority;
 using AvPoint = Avalonia.Point;
+using AvPointerCaptureLostEventArgs = Avalonia.Input.PointerCaptureLostEventArgs;
 using AvPointerEventArgs = Avalonia.Input.PointerEventArgs;
+using AvPointerPressedEventArgs = Avalonia.Input.PointerPressedEventArgs;
+using AvPointerReleasedEventArgs = Avalonia.Input.PointerReleasedEventArgs;
 using AvPointerType = Avalonia.Input.PointerType;
 using AvRect = Avalonia.Rect;
 
@@ -17,7 +20,7 @@ namespace GnollHackM
     /* ACM's SKCanvasViewControl, painting on the UI thread outside Avalonia's render pass, because
        GnollHack's raster views read and write MAUI properties while painting. Paint requests are
        coalesced into one posted paint below layout priority; Render only draws the last painted image.
-       Touch handling is ACM's; mouse hover is raised here. */
+       Touch handling is ACM's; mouse hover, and Cancelled for a touch ACM drops, are raised here. */
     public class GHAvaloniaCanvasControl : Avalonia.Controls.Maui.SkiaSharp.Views.Controls.SKCanvasViewControl
     {
         /* Normal requests run after layout; requests made by a paint itself run below input, so a view
@@ -38,6 +41,9 @@ namespace GnollHackM
 
         /* Stopwatch timestamp of the last raised hover move */
         private long _lastHoverMoveTicks = 0;
+
+        /* Touch ids ACM has raised Pressed for; UI thread only */
+        private readonly GHAvaloniaTouchTracker _touchTracker = new GHAvaloniaTouchTracker();
 
         /* Marks the view dirty and posts one paint unless one is already posted; any thread */
         public void RequestPaint()
@@ -229,6 +235,51 @@ namespace GnollHackM
                 return;
 
             GHAvaloniaPointerHover.Raise(this, e, action, IgnorePixelScaling, touchAction);
+        }
+
+        // WORKAROUND(WA-AVALONIA-0019): ACM Skia controls drop touches without Released or Cancelled
+        protected override void OnPointerPressed(AvPointerPressedEventArgs e)
+        {
+            Func<SKTouchEventArgs, bool> touchAction = TouchAction;
+            if (!EnableTouchEvents || touchAction == null)
+            {
+                base.OnPointerPressed(e);
+                return;
+            }
+
+            /* ACM gives a pointer pressed again a new id without releasing the old one */
+            Avalonia.Input.IPointer pointer = e.Pointer;
+            _touchTracker.Cancel(pointer, touchAction);
+
+            Func<SKTouchEventArgs, bool> trackingAction = args =>
+            {
+                if (args.ActionType == SKTouchAction.Pressed)
+                    _touchTracker.Track(pointer, args);
+                return touchAction(args);
+            };
+            TouchAction = trackingAction;
+            try
+            {
+                base.OnPointerPressed(e);
+            }
+            finally
+            {
+                if (ReferenceEquals(TouchAction, trackingAction))
+                    TouchAction = touchAction;
+            }
+        }
+
+        protected override void OnPointerReleased(AvPointerReleasedEventArgs e)
+        {
+            base.OnPointerReleased(e);
+            _touchTracker.Forget(e.Pointer);
+        }
+
+        /* ACM forgets the pointer here without raising an action; after a release there is nothing to cancel */
+        protected override void OnPointerCaptureLost(AvPointerCaptureLostEventArgs e)
+        {
+            base.OnPointerCaptureLost(e);
+            _touchTracker.Cancel(e.Pointer, EnableTouchEvents ? TouchAction : null);
         }
 
         /* Draws one painted image on the render thread; holds its own reference until disposed */
