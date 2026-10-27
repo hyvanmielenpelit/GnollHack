@@ -1136,9 +1136,39 @@ namespace GnollHackX
             bool platformLoop = GHApp.UsePlatformRenderLoop;
             return GetDefaultMapFPS(roundedScreenRefreshRate, platformLoop);
         }
+#if GNH_AVALONIA
+        private static int _isSteamDeckOled = -1; /* -1 until checked */
+
+        /* A Steam Deck OLED (DMI Valve Galileo), whose panel runs at 90 Hz; the LCD model, Jupiter, runs at 60 Hz */
+        private static bool IsSteamDeckOled
+        {
+            get
+            {
+                if (_isSteamDeckOled < 0)
+                {
+                    bool res = false;
+                    try
+                    {
+                        res = string.Equals(Microsoft.Maui.Devices.DeviceInfo.Manufacturer, "Valve", StringComparison.OrdinalIgnoreCase)
+                            && string.Equals(Microsoft.Maui.Devices.DeviceInfo.Model, "Galileo", StringComparison.OrdinalIgnoreCase);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                    _isSteamDeckOled = res ? 1 : 0;
+                }
+                return _isSteamDeckOled == 1;
+            }
+        }
+#endif
+
         public static MapRefreshRateStyle GetDefaultMapFPS(int roundedScreenRefreshRate, bool platformLoop)
         {
 #if GNH_AVALONIA
+            /* The Steam Deck OLED's panel rate, unless the estimate is clearly lower (a reduced refresh rate in Gaming Mode) */
+            if (platformLoop && IsSteamDeckOled && (roundedScreenRefreshRate <= 0 || roundedScreenRefreshRate >= 85))
+                return MapRefreshRateStyle.MapFPS90;
             if (platformLoop && roundedScreenRefreshRate >= 90 && roundedScreenRefreshRate % 90 == 0)
                 return MapRefreshRateStyle.MapFPS90;
 #endif
