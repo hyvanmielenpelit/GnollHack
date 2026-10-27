@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using GnollHackX;
 using System.Diagnostics;
+using System.Globalization;
 
 #if __IOS__
 using Foundation;
@@ -566,15 +567,27 @@ namespace GnollHackX.Unknown
                     }
                 }
 
+                string versionKey = "";
+                try
+                {
+                    string versionId = GetVersionId();
+                    if (!string.IsNullOrEmpty(versionId))
+                        versionKey = versionId + "|" + GHApp.GetPortVersionString() + "|" + GHApp.GetPortBuildString();
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+
                 foreach (string binfile in GHApp.BinFilesList)
                 {
                     string fulltargetpath = Path.Combine(filesdir, binfile);
-                    if (File.Exists(fulltargetpath))
-                    {
-                        /* Should check whether the current one is an up-to-date version; assume for now that it is not */
-                        File.Delete(fulltargetpath);
-                        //continue;
-                    }
+                    string stampkey = "BinFile_" + binfile + "_Stamp";
+#if !DEBUG
+                    /* Debug builds always copy, so dat/ edits take effect without a version change */
+                    if (IsBinFileCurrent(fulltargetpath, stampkey, versionKey))
+                        continue;
+#endif
 
 #if __IOS__
                     string extension = Path.GetExtension(binfile);
@@ -596,16 +609,48 @@ namespace GnollHackX.Unknown
                     string fullsourcepath = Path.Combine(assetsourcedir, binfile);
                     Stream src = File.OpenRead(fullsourcepath);
 #endif
+                    /* Copied whole to a temporary file first, so an interrupted copy never replaces a good one */
+                    string temppath = fulltargetpath + ".tmp";
                     using (src)
-                    using (FileStream dst = new FileStream(fulltargetpath, FileMode.Create, FileAccess.Write))
+                    using (FileStream dst = new FileStream(temppath, FileMode.Create, FileAccess.Write))
                     {
                         src.CopyTo(dst);
+                        dst.Flush(true);
                     }
+                    if (File.Exists(fulltargetpath))
+                        File.Delete(fulltargetpath);
+                    File.Move(temppath, fulltargetpath);
+                    if (versionKey != "")
+                        Preferences.Set(stampkey, GetBinFileStamp(fulltargetpath, versionKey));
                 }
             }
             catch (Exception)
             {
                 await Task.Delay(5);
+            }
+        }
+
+        /* The version key, length and last write time of a bin file, as stored after copying it */
+        private static string GetBinFileStamp(string filepath, string versionKey)
+        {
+            FileInfo fileinfo = new FileInfo(filepath);
+            return versionKey + "|" + fileinfo.Length.ToString(CultureInfo.InvariantCulture)
+                + "|" + fileinfo.LastWriteTimeUtc.Ticks.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /* True if the bin file exists and its stamp matches the one stored when it was copied for this version key */
+        private static bool IsBinFileCurrent(string filepath, string stampkey, string versionKey)
+        {
+            try
+            {
+                if (versionKey == "" || !File.Exists(filepath))
+                    return false;
+                return Preferences.Get(stampkey, "") == GetBinFileStamp(filepath, versionKey);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return false;
             }
         }
 
