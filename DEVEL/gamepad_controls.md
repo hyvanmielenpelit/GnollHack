@@ -34,6 +34,7 @@ shortcuts are X Play Game, Y About, Menu Settings and View Vault, each when its 
 available. On every page, L2/R2 go to the first and last entry of the scrolling list (or of the
 page when it has none).
 
+On every page with a scrolling list, the right stick scrolls it, faster the further it is pushed.
 The other pages work the same way, with these additions:
 
 - **Settings:** the focus walks the rows in order, and the focused row is tinted. A flips a
@@ -67,16 +68,17 @@ and Page Down.
 Both shoulder buttons are **hold modifiers** on the map, each for the controls the other hand
 uses: **L1** changes the right-side controls (A, B, X, Y, R2, Menu) and **R1** the left-side
 controls (D-pad, left stick, View). Neither does anything on its own. A layer is sampled when
-the other button is pressed, and the hint strip shows the layer while a modifier is held.
+the other button is pressed. The hint strip shows the layer while a modifier is held, with the
+held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 
 | Control | Alone | L1 held | R1 held | L1 + R1 held |
 |---------|-------|---------|---------|--------------|
-| A | **Context command**: nothing when there is none, runs it when there is exactly one, opens the Actions radial when there are several | Open the **commands radial** | -- | **Repeat** |
+| A | **Context command**: nothing when there is none, runs it when there is exactly one, opens the Actions radial when there are several | Open the **commands radial** | -- | -- |
 | B | Cancel: close an overlay, else Escape; interrupts running and other occupations | Wait | -- | Rest |
 | X | Pick up | Pick and Stash | -- | -- |
-| Y | Search | Search 20 times | -- | -- |
-| R2 | Fire | Swap weapons | -- | -- |
-| L2 | Kick | Kick | Cast a spell | Kick |
+| Y | **Repeat** | Search | -- | Search 20 times |
+| R2 | R2's **assigned action** (default Fire) | **Right Quick** radial (R2's quick actions) | **Set R2** radial | R2's assigned action |
+| L2 | L2's **assigned action** (default Cast) | **Set L2** radial | **Left Quick** radial (L2's quick actions) | L2's assigned action |
 | Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
 | View | Inventory | -- | Equipment (all equipment in use) | -- |
 | D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, Left toggles the minimap, Right returns to normal zoom | -- |
@@ -89,6 +91,19 @@ The grips are set in **Settings, Controller**. Their pickers appear only when th
 has grips, and they work only with the GnollHack Steam Input layout (see below); with any other
 layout they do nothing, which the game cannot detect.
 
+**Trigger quick actions.** L2 and R2 each have eight quick actions, set in **Settings, Trigger
+Quick Actions** (any command the bar buttons can hold, or None):
+
+| Trigger | Defaults, slots 1-8 | Assigned by default |
+|---|---|---|
+| R2 | Fire, Swap, Kick, Cast, Throw, Search, Search 20, Wait | Fire |
+| L2 | Apply, Cast, Quick Cast, Zap, Quick Zap, Eat, Pick-axe, Polearm | Cast |
+
+The modifier on the trigger's own side (R1 + R2, L1 + L2) opens the teal **Set** radial: choosing
+a slot makes it the trigger's action when pressed alone (the current one is marked NOW). The
+modifier on the other side (L1 + R2, R1 + L2) opens the gold **Right Quick** or **Left Quick**
+radial, which runs the chosen action at once. Pressing the trigger again closes either radial.
+
 **Map overlays.** While More Messages or the Status Screen (the extended status bar) is open
 (both from the Toggles radial), the right stick and D-pad Up/Down scroll it, B closes it, and the left stick
 still walks.
@@ -97,8 +112,17 @@ still walks.
 push; the right stick pans. A selects, B cancels, L1/R1 go to the previous/next interesting
 spot, L2/R2 to the previous/next monster, and Y puts the cursor on the hero.
 
-**Choosing a direction** (getdir): aim with the left stick or the D-pad, confirm with A, cancel
-with B. L1 is up (`<`) and R1 is down (`>`).
+**Choosing a direction** (getdir): a D-pad press picks the direction at once (two directions
+pressed together pick the diagonal); or aim with the left stick and confirm with A. B cancels.
+L1 is up (`<`) and R1 is down (`>`).
+
+**Hint badges.** The hints on the map, in menus and dialogs, and in the radials draw button
+badges: A, B, X and Y as white circles with a black letter (drawn symbols on PlayStation pads),
+L1/R1 as shoulder bumpers labeled with the pad's name for them (L1, LB or L), L2/R2 as triggers,
+L3/R3 as stick caps, the back grips as paddles, Menu as three lines, View as two overlapping
+squares, and the D-pad and sticks as a plus and a ring. An outlined up arrow after a badge means
+**hold** the button. A long hint strip wraps onto two centered lines; with no modifier held,
+the map strip starts its second line at L1.
 
 **Replays:** A pauses, L1/R1 change the speed, B quits.
 

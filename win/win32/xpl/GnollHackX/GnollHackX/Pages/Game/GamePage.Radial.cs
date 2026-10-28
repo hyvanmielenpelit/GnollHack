@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using GnollHackX;
 using SkiaSharp;
@@ -9,6 +10,7 @@ using SkiaSharp.Views.Maui;
 namespace GnollHackM
 #else
 using SkiaSharp.Views.Forms;
+using Xamarin.Essentials;
 
 namespace GnollHackX.Pages.Game
 #endif
@@ -22,6 +24,9 @@ namespace GnollHackX.Pages.Game
         private const float RadialTapSlopDips = 12f;            /* a touch that moves farther is a drag */
         private const int RadialWheelNotch = 120;               /* wheel units per page */
         private const double RadialWheelIdleSeconds = 0.3;      /* the first wheel event after this pages at once */
+        private const float GamepadHintFontSizeDips = 14f;      /* the hint strip's label size */
+        private const float GamepadHintMaxWidthShare = 0.9f;    /* of the canvas width, backing included */
+        private const float GamepadHintExtraHeightDips = 2f;    /* above the backing */
 
         private readonly GHRadialMenuState _radialState = new GHRadialMenuState();
         private GHRadialMenuRenderer _radialRenderer;
@@ -123,6 +128,9 @@ namespace GnollHackX.Pages.Game
                 break;
             case GHGamepadButton.L3:
             case GHGamepadButton.R3:
+            case GHGamepadButton.LT:
+            case GHGamepadButton.RT:
+                /* The button that opened the radial closes it */
                 hasInput = pressed && e.Button == opener;
                 input = GHRadialInput.OpenerPressed;
                 break;
@@ -150,7 +158,7 @@ namespace GnollHackX.Pages.Game
                 }
                 break;
             default:
-                /* Y is reserved; LT, RT, View and the back grips are swallowed */
+                /* Y is reserved; View and the back grips are swallowed */
                 break;
             }
             if (hasInput)
@@ -203,7 +211,7 @@ namespace GnollHackX.Pages.Game
                 InvalidateRadialCanvas();
         }
 
-        /* Resets the state without callbacks and frees the renderer, when the canvases shut down */
+        /* Resets the state without callbacks and frees the radial and hint strip renderers, when the canvases shut down */
         public void ShutDownRadial()
         {
             _radialState.Reset();
@@ -212,6 +220,10 @@ namespace GnollHackX.Pages.Game
             _radialRenderer = null;
             if (renderer != null)
                 renderer.Dispose();
+            GHGamepadHintRenderer hintRenderer = _gamepadHintRenderer;
+            _gamepadHintRenderer = null;
+            if (hintRenderer != null)
+                hintRenderer.Dispose();
             if (_radialCanvasShown)
             {
                 _radialCanvasShown = false;
@@ -260,6 +272,10 @@ namespace GnollHackX.Pages.Game
                 return GHGamepadButton.R3;
             if (def.MenuId == "L3")
                 return GHGamepadButton.L3;
+            if (def.MenuId == "LT")
+                return GHGamepadButton.LT;
+            if (def.MenuId == "RT")
+                return GHGamepadButton.RT;
             return def.OwningStick == 1 ? GHGamepadButton.R3 : GHGamepadButton.L3;
         }
 
@@ -447,6 +463,73 @@ namespace GnollHackX.Pages.Game
             float r;
             double a;
             return g.HitTest(x, y, out r, out a) == GHRadialHitZone.Ring;
+        }
+
+        private GHGamepadHintRenderer EnsureGamepadHintRenderer()
+        {
+            if (CanvasViewsShutDown)
+                return null;
+            if (_gamepadHintRenderer == null)
+            {
+                GHGamepadHintRenderer renderer = new GHGamepadHintRenderer();
+                renderer.LabelTypeface = GHApp.LatoRegular;
+                renderer.BoldTypeface = GHApp.LatoBold;
+                renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
+                _gamepadHintRenderer = renderer;
+            }
+            return _gamepadHintRenderer;
+        }
+
+        /* The gamepad hint strip, painted on the UI thread (UseGL is off): the row is centered at the bottom, at
+           most GamepadHintMaxWidthShare of the width with its backing, and wraps onto a second line that grows
+           upward; the canvas height follows the row */
+        private void GamepadHintCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        {
+            SKCanvas canvas = e.Surface.Canvas;
+            canvas.Clear(SKColors.Transparent);
+            List<GHGamepadHint> hints = _gamepadHints;
+            if (hints.Count == 0 || CanvasViewsShutDown)
+                return;
+            GHGamepadHintRenderer renderer = EnsureGamepadHintRenderer();
+            if (renderer == null)
+                return;
+
+            int pixelWidth = e.Info.Width;
+            int pixelHeight = e.Info.Height;
+            double dipWidth = GamepadHintCanvas.Width;
+            float scale;
+            if (dipWidth > 0 && pixelWidth > 0)
+                scale = (float)(pixelWidth / dipWidth);
+            else
+                scale = GHApp.DisplayDensity > 0 ? GHApp.DisplayDensity : 1.0f;
+
+            renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
+            float fontSize = GamepadHintFontSizeDips * scale;
+            float maxWidth = pixelWidth * GamepadHintMaxWidthShare - 2f * fontSize * GHGamepadHintRenderer.BackingPadOfFont;
+            renderer.LayoutRow(hints, _gamepadHintStyle, fontSize, maxWidth);
+            if (renderer.LineCount == 0)
+                return;
+
+            float padY = renderer.BackingPadY;
+            renderer.DrawRow(canvas, hints, _gamepadHintStyle, pixelWidth * 0.5f, pixelHeight - padY, 1.0f, true);
+
+            /* The height the row needs, set after the paint and only when it changes; the layout does not depend on
+               the height, so the next paint asks for the same */
+            float neededDips = (float)Math.Ceiling((renderer.RowHeight + 2f * padY) / scale) + GamepadHintExtraHeightDips;
+            if (Math.Abs(neededDips - _gamepadHintCanvasHeight) > 1f && Math.Abs(neededDips - GamepadHintCanvas.HeightRequest) > 1f)
+            {
+                _gamepadHintCanvasHeight = neededDips;
+                if (_applyGamepadHintCanvasHeight == null)
+                    _applyGamepadHintCanvasHeight = ApplyGamepadHintCanvasHeight;
+                MainThread.BeginInvokeOnMainThread(_applyGamepadHintCanvasHeight);
+            }
+        }
+
+        private void ApplyGamepadHintCanvasHeight()
+        {
+            float height = _gamepadHintCanvasHeight;
+            if (height > 0f && !CanvasViewsShutDown && Math.Abs(height - GamepadHintCanvas.HeightRequest) > 1f)
+                GamepadHintCanvas.HeightRequest = height;
         }
 
         private void RadialCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)

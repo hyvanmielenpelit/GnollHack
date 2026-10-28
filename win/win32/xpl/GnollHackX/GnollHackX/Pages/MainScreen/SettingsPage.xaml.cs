@@ -186,7 +186,33 @@ namespace GnollHackX.Pages.MainScreen
             { "Client Data Access", ("Let Gnoll Overseer request full message history.", "When enabled (default), the Gnoll Overseer can request additional data from your game client, such as full message history. This data is sent to your AI provider for processing.") },
             { "Game Actions", ("Let Gnoll Overseer suggest and perform in-game actions.", "When enabled, the Gnoll Overseer can suggest and perform in-game actions on your behalf. All actions require your confirmation. (Unavailable in this version.)") },
             { "Data Consent", ("Manage AI data processing consent.", "Shows whether you have accepted the AI data processing disclosure. Press Reset to revoke your consent; the disclosure will appear again the next time you open Overseer.") },
+            { "R2 Action", ("What R2 does when pressed alone.", "The action R2 performs when pressed alone, chosen from R2's eight quick actions. R1 + R2 also chooses it during a game.") },
+            { "L2 Action", ("What L2 does when pressed alone.", "The action L2 performs when pressed alone, chosen from L2's eight quick actions. L1 + L2 also chooses it during a game.") },
+            { "R2 Quick Action 1", GamepadTriggerSlotDescription("R2", 1, "L1", "R1") },
+            { "R2 Quick Action 2", GamepadTriggerSlotDescription("R2", 2, "L1", "R1") },
+            { "R2 Quick Action 3", GamepadTriggerSlotDescription("R2", 3, "L1", "R1") },
+            { "R2 Quick Action 4", GamepadTriggerSlotDescription("R2", 4, "L1", "R1") },
+            { "R2 Quick Action 5", GamepadTriggerSlotDescription("R2", 5, "L1", "R1") },
+            { "R2 Quick Action 6", GamepadTriggerSlotDescription("R2", 6, "L1", "R1") },
+            { "R2 Quick Action 7", GamepadTriggerSlotDescription("R2", 7, "L1", "R1") },
+            { "R2 Quick Action 8", GamepadTriggerSlotDescription("R2", 8, "L1", "R1") },
+            { "L2 Quick Action 1", GamepadTriggerSlotDescription("L2", 1, "R1", "L1") },
+            { "L2 Quick Action 2", GamepadTriggerSlotDescription("L2", 2, "R1", "L1") },
+            { "L2 Quick Action 3", GamepadTriggerSlotDescription("L2", 3, "R1", "L1") },
+            { "L2 Quick Action 4", GamepadTriggerSlotDescription("L2", 4, "R1", "L1") },
+            { "L2 Quick Action 5", GamepadTriggerSlotDescription("L2", 5, "R1", "L1") },
+            { "L2 Quick Action 6", GamepadTriggerSlotDescription("L2", 6, "R1", "L1") },
+            { "L2 Quick Action 7", GamepadTriggerSlotDescription("L2", 7, "R1", "L1") },
+            { "L2 Quick Action 8", GamepadTriggerSlotDescription("L2", 8, "R1", "L1") },
         };
+
+        /* quickModifier opens the trigger's quick actions, chooseModifier chooses its action */
+        private static (string Tooltip, string Description) GamepadTriggerSlotDescription(string trigger, int slot, string quickModifier, string chooseModifier)
+        {
+            return ("Quick action " + slot + " of " + trigger + ".",
+                "An action in " + trigger + "'s quick actions, which " + quickModifier + " + " + trigger + " opens during a game. "
+                + chooseModifier + " + " + trigger + " chooses among the same actions what " + trigger + " does when pressed alone (" + trigger + " Action).");
+        }
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
         {
@@ -324,6 +350,15 @@ namespace GnollHackX.Pages.MainScreen
             {
                 gripPicker.ItemsSource = GHApp.GamepadGripCommandItems;
                 gripPicker.ItemDisplayBinding = new Binding("Name");
+            }
+            foreach (Picker[] slotPickers in GamepadTriggerSlotPickers)
+            {
+                foreach (Picker slotPicker in slotPickers)
+                {
+                    slotPicker.ItemsSource = GHApp.GamepadGripCommandItems;
+                    slotPicker.ItemDisplayBinding = new Binding("Name");
+                    slotPicker.SelectedIndexChanged += GamepadTriggerSlotPicker_SelectedIndexChanged;
+                }
             }
 
             EngraveQuickTextValidationExpression = new Regex(@"^[\x20-\x7E]{0," + GHConstants.MaxEngraveQuickTextLength + "}$");
@@ -2251,6 +2286,29 @@ namespace GnollHackX.Pages.MainScreen
             get { return new Picker[] { GamepadGripL4Picker, GamepadGripL5Picker, GamepadGripR4Picker, GamepadGripR5Picker }; }
         }
 
+        /* In the order of GHApp.GamepadTriggers (L2, R2); each has GHApp.GamepadTriggerSlotCount slot pickers */
+        private Picker[][] GamepadTriggerSlotPickers
+        {
+            get
+            {
+                return new Picker[][]
+                {
+                    new Picker[] { GamepadTriggerLTSlot1Picker, GamepadTriggerLTSlot2Picker, GamepadTriggerLTSlot3Picker, GamepadTriggerLTSlot4Picker,
+                        GamepadTriggerLTSlot5Picker, GamepadTriggerLTSlot6Picker, GamepadTriggerLTSlot7Picker, GamepadTriggerLTSlot8Picker },
+                    new Picker[] { GamepadTriggerRTSlot1Picker, GamepadTriggerRTSlot2Picker, GamepadTriggerRTSlot3Picker, GamepadTriggerRTSlot4Picker,
+                        GamepadTriggerRTSlot5Picker, GamepadTriggerRTSlot6Picker, GamepadTriggerRTSlot7Picker, GamepadTriggerRTSlot8Picker },
+                };
+            }
+        }
+
+        /* In the order of GHApp.GamepadTriggers; the items are the trigger's slots by their current picker names */
+        private Picker[] GamepadTriggerAssignedPickers
+        {
+            get { return new Picker[] { GamepadTriggerLTAssignedPicker, GamepadTriggerRTAssignedPicker }; }
+        }
+
+        private bool _refreshingGamepadTriggerAssignedPicker = false;
+
         /* The Controller section is shown whenever a gamepad backend runs, whatever the Use Controller setting,
            so that the setting can always be turned back on; the grip pickers only when grips exist */
         private void SetGamepadInitialValues()
@@ -2258,6 +2316,7 @@ namespace GnollHackX.Pages.MainScreen
             bool available = GHApp.IsGamepadAvailable;
             GamepadSettingsLayout.IsVisible = available;
             GamepadGripLayout.IsVisible = available && GHGamepadService.Capabilities.HasGrips;
+            GamepadTriggerLayout.IsVisible = available;
             GamepadEnabledSwitch.IsToggled = GHApp.GamepadEnabled;
 
             Picker[] pickers = GamepadGripPickers;
@@ -2266,6 +2325,70 @@ namespace GnollHackX.Pages.MainScreen
             {
                 GHGamepadButton grip = GHApp.GamepadGrips[i];
                 pickers[i].SelectedIndex = GHApp.GamepadGripCommandIndexInList(GHApp.GetGamepadGripCommand(grip), GHApp.DefaultGamepadGripCommand(grip));
+            }
+
+            Picker[][] slotPickers = GamepadTriggerSlotPickers;
+            int t, slot;
+            for (t = 0; t < slotPickers.Length && t < GHApp.GamepadTriggers.Length; t++)
+            {
+                GHGamepadButton trigger = GHApp.GamepadTriggers[t];
+                for (slot = 0; slot < slotPickers[t].Length && slot < GHApp.GamepadTriggerSlotCount; slot++)
+                {
+                    slotPickers[t][slot].SelectedIndex = GHApp.GamepadGripCommandIndexInList(
+                        GHApp.GetGamepadTriggerSlotCommand(trigger, slot), GHApp.DefaultGamepadTriggerSlotCommand(trigger, slot));
+                }
+                RefreshGamepadTriggerAssignedPicker(t, GHApp.GetGamepadTriggerAssignedSlot(trigger));
+            }
+        }
+
+        /* Rebuilds trigger t's assigned picker from its slot pickers ("1. Fire" ...) and selects selectedSlot */
+        private void RefreshGamepadTriggerAssignedPicker(int t, int selectedSlot)
+        {
+            Picker[][] slotPickers = GamepadTriggerSlotPickers;
+            Picker[] assignedPickers = GamepadTriggerAssignedPickers;
+            if (t < 0 || t >= slotPickers.Length || t >= assignedPickers.Length)
+                return;
+
+            List<string> items = new List<string>();
+            int slot;
+            for (slot = 0; slot < slotPickers[t].Length; slot++)
+            {
+                int index = slotPickers[t][slot].SelectedIndex;
+                if (index < 0 || index >= GHApp.GamepadGripCommandItems.Count)
+                    index = 0;
+                items.Add((slot + 1).ToString() + ". " + GHApp.GamepadGripCommandItems[index].Name);
+            }
+
+            if (selectedSlot < 0 || selectedSlot >= items.Count)
+                selectedSlot = GHApp.DefaultGamepadTriggerAssignedSlot(GHApp.GamepadTriggers[t]);
+
+            _refreshingGamepadTriggerAssignedPicker = true;
+            try
+            {
+                assignedPickers[t].ItemsSource = items;
+                assignedPickers[t].SelectedIndex = selectedSlot;
+            }
+            finally
+            {
+                _refreshingGamepadTriggerAssignedPicker = false;
+            }
+        }
+
+        /* A changed slot renames its entry in the trigger's assigned picker; the selection is kept */
+        private void GamepadTriggerSlotPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_isManualTogglingEnabled || _refreshingGamepadTriggerAssignedPicker)
+                return;
+
+            Picker[][] slotPickers = GamepadTriggerSlotPickers;
+            int t;
+            for (t = 0; t < slotPickers.Length; t++)
+            {
+                if (Array.IndexOf(slotPickers[t], sender) >= 0)
+                {
+                    RefreshGamepadTriggerAssignedPicker(t, GamepadTriggerAssignedPickers[t].SelectedIndex);
+                    return;
+                }
             }
         }
 
@@ -2286,6 +2409,30 @@ namespace GnollHackX.Pages.MainScreen
                 int command = GHApp.GamepadGripCommandItems[index].GHCommand;
                 GHApp.SetGamepadGripCommand(grip, command);
                 Preferences.Set(GHApp.GamepadGripPreferenceKey(grip), command);
+            }
+
+            Picker[][] slotPickers = GamepadTriggerSlotPickers;
+            Picker[] assignedPickers = GamepadTriggerAssignedPickers;
+            int t, slot;
+            for (t = 0; t < slotPickers.Length && t < GHApp.GamepadTriggers.Length; t++)
+            {
+                GHGamepadButton trigger = GHApp.GamepadTriggers[t];
+                for (slot = 0; slot < slotPickers[t].Length && slot < GHApp.GamepadTriggerSlotCount; slot++)
+                {
+                    int index = slotPickers[t][slot].SelectedIndex;
+                    if (index < 0 || index >= GHApp.GamepadGripCommandItems.Count)
+                        continue;
+                    int command = GHApp.GamepadGripCommandItems[index].GHCommand;
+                    GHApp.SetGamepadTriggerSlotCommand(trigger, slot, command);
+                    Preferences.Set(GHApp.GamepadTriggerSlotPreferenceKey(trigger, slot), command);
+                }
+
+                int assigned = assignedPickers[t].SelectedIndex;
+                if (assigned >= 0 && assigned < GHApp.GamepadTriggerSlotCount)
+                {
+                    GHApp.SetGamepadTriggerAssignedSlot(trigger, assigned);
+                    Preferences.Set(GHApp.GamepadTriggerAssignedPreferenceKey(trigger), assigned);
+                }
             }
         }
 
@@ -3883,6 +4030,7 @@ namespace GnollHackX.Pages.MainScreen
 
         public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
         {
+            _gamepadNavigator.UpdateSticks(sticks, dtSeconds);
         }
 
         public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e) => MessagePopup.HandleGamepadButton(e);

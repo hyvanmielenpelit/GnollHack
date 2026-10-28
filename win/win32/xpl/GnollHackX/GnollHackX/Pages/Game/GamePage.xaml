@@ -506,10 +506,11 @@
                                  ProgressColor="LightBlue" Progress="0" Margin="0,10" />
                 </StackLayout>
             </gnh:MeasurableGrid>
-            <Grid x:Name="GamepadHintGrid" IsVisible="False" InputTransparent="True" VerticalOptions="End" HorizontalOptions="Center"
-                  Margin="0,0,0,140" Padding="10,4" BackgroundColor="#99000000">
-                <Label x:Name="GamepadHintLabel" Text="" FontFamily="LatoRegular" FontSize="14" TextColor="White" LineBreakMode="NoWrap"
-                       HorizontalTextAlignment="Center" VerticalTextAlignment="Center" />
+            <Grid x:Name="GamepadHintGrid" IsVisible="False" InputTransparent="True" VerticalOptions="End" HorizontalOptions="Fill"
+                  Margin="0,0,0,140" BackgroundColor="Transparent">
+                <controls:SwitchableCanvasView x:Name="GamepadHintCanvas" UseGL="False" HeightRequest="36"
+                                               PaintSurface="GamepadHintCanvas_PaintSurface"
+                                               HorizontalOptions="Fill" VerticalOptions="End" />
             </Grid>
             <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>

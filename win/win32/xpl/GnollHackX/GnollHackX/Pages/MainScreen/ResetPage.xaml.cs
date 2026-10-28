@@ -793,6 +793,7 @@ namespace GnollHackX.Pages.MainScreen
 
         public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
         {
+            _gamepadNavigator.UpdateSticks(sticks, dtSeconds);
         }
 
         public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e) => MessagePopup.HandleGamepadButton(e);

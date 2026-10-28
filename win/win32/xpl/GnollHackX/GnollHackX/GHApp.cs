@@ -351,6 +351,13 @@ namespace GnollHackX
             GamepadEnabled = Preferences.Get("GamepadEnabled", true);
             foreach (GHGamepadButton grip in GamepadGrips)
                 SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));
+            foreach (GHGamepadButton trigger in GamepadTriggers)
+            {
+                int slot;
+                for (slot = 0; slot < GamepadTriggerSlotCount; slot++)
+                    SetGamepadTriggerSlotCommand(trigger, slot, Preferences.Get(GamepadTriggerSlotPreferenceKey(trigger, slot), DefaultGamepadTriggerSlotCommand(trigger, slot)));
+                SetGamepadTriggerAssignedSlot(trigger, Preferences.Get(GamepadTriggerAssignedPreferenceKey(trigger), DefaultGamepadTriggerAssignedSlot(trigger)));
+            }
             UseSingleMoreCommandsPage = Preferences.Get("UseSingleMoreCommandsPage", IsDesktop);
             ShowSkillContextButton = Preferences.Get("ShowSkillContextButton", true);
             ShowPolearmContextButton = Preferences.Get("ShowPolearmContextButton", GHConstants.DefaultShowPolearmContextButton);
@@ -3974,6 +3981,101 @@ namespace GnollHackX
                 default:
                     break;
             }
+        }
+
+        /* Trigger quick actions: L2 and R2 each have GamepadTriggerSlotCount slots of SelectableShortcutButton.GHCommand
+           values (0 is None) and an assigned slot, which the trigger runs when pressed alone */
+        public const int GamepadTriggerSlotCount = 8;
+        public static readonly GHGamepadButton[] GamepadTriggers = { GHGamepadButton.LT, GHGamepadButton.RT };
+
+        /* L2 Apply, Cast, Quick Cast, Zap, Quick Zap, Eat, Pick-axe, Polearm */
+        private static readonly int[] _defaultGamepadLTSlots = { 'a', 'Z', GHUtils.Meta(26), 'z', GHUtils.Meta(27), 'e', GHUtils.Meta('X'), GHUtils.Meta('P') };
+        /* R2 Fire, Swap, Kick, Cast, Throw, Search, Search 20, Wait */
+        private static readonly int[] _defaultGamepadRTSlots = { 'f', 'x', GHUtils.Ctrl('d'), 'Z', 't', 's', -102, '.' };
+        private static readonly int[] _gamepadTriggerSlotCommands = new int[2 * GamepadTriggerSlotCount];
+        private static readonly int[] _gamepadTriggerAssignedSlots = new int[2];
+
+        /* 0 L2, 1 R2, -1 other buttons */
+        private static int GamepadTriggerIndex(GHGamepadButton trigger)
+        {
+            return trigger == GHGamepadButton.LT ? 0 : trigger == GHGamepadButton.RT ? 1 : -1;
+        }
+
+        private static bool IsGamepadTriggerSlot(GHGamepadButton trigger, int slot)
+        {
+            return GamepadTriggerIndex(trigger) >= 0 && slot >= 0 && slot < GamepadTriggerSlotCount;
+        }
+
+        /* slot is 0-based; the key numbers slots from 1 */
+        public static string GamepadTriggerSlotPreferenceKey(GHGamepadButton trigger, int slot)
+        {
+            return "GamepadTrigger" + trigger.ToString() + "Slot" + (slot + 1).ToString() + "Command";
+        }
+
+        public static string GamepadTriggerAssignedPreferenceKey(GHGamepadButton trigger)
+        {
+            return "GamepadTrigger" + trigger.ToString() + "Assigned";
+        }
+
+        public static int DefaultGamepadTriggerSlotCommand(GHGamepadButton trigger, int slot)
+        {
+            if (!IsGamepadTriggerSlot(trigger, slot))
+                return 0;
+            return trigger == GHGamepadButton.LT ? _defaultGamepadLTSlots[slot] : _defaultGamepadRTSlots[slot];
+        }
+
+        /* R2 Fire (slot 1), L2 Cast (slot 2) */
+        public static int DefaultGamepadTriggerAssignedSlot(GHGamepadButton trigger)
+        {
+            return trigger == GHGamepadButton.LT ? 1 : 0;
+        }
+
+        /* The GHCommand in a trigger slot; 0 is None */
+        public static int GetGamepadTriggerSlotCommand(GHGamepadButton trigger, int slot)
+        {
+            if (!IsGamepadTriggerSlot(trigger, slot))
+                return 0;
+            return Interlocked.CompareExchange(ref _gamepadTriggerSlotCommands[GamepadTriggerIndex(trigger) * GamepadTriggerSlotCount + slot], 0, 0);
+        }
+
+        /* A command not in GamepadGripCommandItems falls back to the slot's default */
+        public static void SetGamepadTriggerSlotCommand(GHGamepadButton trigger, int slot, int command)
+        {
+            if (!IsGamepadTriggerSlot(trigger, slot))
+                return;
+            int index = GamepadGripCommandIndexInList(command, DefaultGamepadTriggerSlotCommand(trigger, slot));
+            Interlocked.Exchange(ref _gamepadTriggerSlotCommands[GamepadTriggerIndex(trigger) * GamepadTriggerSlotCount + slot],
+                GamepadGripCommandItems[index].GHCommand);
+        }
+
+        /* 0-based */
+        public static int GetGamepadTriggerAssignedSlot(GHGamepadButton trigger)
+        {
+            int t = GamepadTriggerIndex(trigger);
+            return t < 0 ? 0 : Interlocked.CompareExchange(ref _gamepadTriggerAssignedSlots[t], 0, 0);
+        }
+
+        /* An out-of-range slot falls back to the trigger's default */
+        public static void SetGamepadTriggerAssignedSlot(GHGamepadButton trigger, int slot)
+        {
+            int t = GamepadTriggerIndex(trigger);
+            if (t < 0)
+                return;
+            if (slot < 0 || slot >= GamepadTriggerSlotCount)
+                slot = DefaultGamepadTriggerAssignedSlot(trigger);
+            Interlocked.Exchange(ref _gamepadTriggerAssignedSlots[t], slot);
+        }
+
+        /* The GHCommand a trigger runs when pressed alone; 0 is None */
+        public static int GetGamepadTriggerCommand(GHGamepadButton trigger)
+        {
+            return GetGamepadTriggerSlotCommand(trigger, GetGamepadTriggerAssignedSlot(trigger));
+        }
+
+        /* The picker item for a command, for its name, label and icon; None when the command is 0 or unknown */
+        public static SelectableShortcutButton GetGamepadCommandItem(int command)
+        {
+            return GamepadGripCommandItems[GamepadGripCommandIndexInList(command, 0)];
         }
         public static bool UseSingleMoreCommandsPage { get { return Interlocked.CompareExchange(ref _useSingleMoreCommandsPage, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSingleMoreCommandsPage, value ? 1 : 0); } }
         public static bool ShowSkillContextButton { get { return Interlocked.CompareExchange(ref _showSkillContextButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showSkillContextButton, value ? 1 : 0); } }

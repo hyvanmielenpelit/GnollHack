@@ -1044,6 +1044,7 @@ namespace GnollHackX.Pages.MainScreen
 
         public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
         {
+            _gamepadNavigator.UpdateSticks(sticks, dtSeconds);
         }
         private double _currentPageWidth = 0;
         private double _currentPageHeight = 0;

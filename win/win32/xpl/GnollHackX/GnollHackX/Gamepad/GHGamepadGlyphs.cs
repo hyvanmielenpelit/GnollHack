@@ -76,6 +76,82 @@ namespace GnollHackX
             return stick == 0 ? "L-stick" : "R-stick";
         }
 
+        /* The shape a hint badge draws for a button */
+        public static GHGamepadBadgeKind GetBadgeKind(GHGamepadButton button, GHGamepadStyle style)
+        {
+            switch (button)
+            {
+            case GHGamepadButton.A:
+            case GHGamepadButton.B:
+            case GHGamepadButton.X:
+            case GHGamepadButton.Y:
+                return style == GHGamepadStyle.PlayStation ? GHGamepadBadgeKind.PlayStationSymbol : GHGamepadBadgeKind.FaceButton;
+            case GHGamepadButton.LB:
+            case GHGamepadButton.RB:
+                return GHGamepadBadgeKind.Bumper;
+            case GHGamepadButton.LT:
+            case GHGamepadButton.RT:
+                return GHGamepadBadgeKind.Trigger;
+            case GHGamepadButton.L3:
+            case GHGamepadButton.R3:
+                return GHGamepadBadgeKind.StickClick;
+            case GHGamepadButton.L4:
+            case GHGamepadButton.L5:
+            case GHGamepadButton.R4:
+            case GHGamepadButton.R5:
+                return GHGamepadBadgeKind.Grip;
+            case GHGamepadButton.Menu:
+                return GHGamepadBadgeKind.Menu;
+            case GHGamepadButton.View:
+                return GHGamepadBadgeKind.View;
+            case GHGamepadButton.DPadUp:
+            case GHGamepadButton.DPadDown:
+            case GHGamepadButton.DPadLeft:
+            case GHGamepadButton.DPadRight:
+                return GHGamepadBadgeKind.DPad;
+            default:
+                return GHGamepadBadgeKind.Stick;
+            }
+        }
+
+        /* The short text inside a badge; empty for badges that are a symbol only (Menu, View, D-pad, PlayStation
+           face buttons). L1/R1 show the style's label (L1, LB or L); sticks show "L"/"R" inside the ring. */
+        public static string GetBadgeText(GHGamepadButton button, GHGamepadStyle style)
+        {
+            switch (GetBadgeKind(button, style))
+            {
+            case GHGamepadBadgeKind.FaceButton:
+            case GHGamepadBadgeKind.Bumper:
+            case GHGamepadBadgeKind.Trigger:
+            case GHGamepadBadgeKind.StickClick:
+            case GHGamepadBadgeKind.Grip:
+                return GetLabel(button, style);
+            case GHGamepadBadgeKind.Stick:
+                return button >= GHGamepadButton.RightStickUp && button <= GHGamepadButton.RightStickRight ? "R" : "L";
+            default:
+                return "";
+            }
+        }
+
+        /* The badge for a hint symbol that stands for a group of controls */
+        public static GHGamepadBadgeKind GetSymbolBadgeKind(GHGamepadHintSymbol symbol)
+        {
+            return symbol == GHGamepadHintSymbol.DPad ? GHGamepadBadgeKind.DPad : GHGamepadBadgeKind.Stick;
+        }
+
+        public static string GetSymbolBadgeText(GHGamepadHintSymbol symbol)
+        {
+            switch (symbol)
+            {
+            case GHGamepadHintSymbol.LeftStick:
+                return "L";
+            case GHGamepadHintSymbol.RightStick:
+                return "R";
+            default:
+                return "";
+            }
+        }
+
         private static bool IsXboxLike(GHGamepadStyle style)
         {
             return style == GHGamepadStyle.Xbox || style == GHGamepadStyle.Generic;

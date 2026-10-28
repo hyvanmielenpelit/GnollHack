@@ -2793,6 +2793,7 @@ namespace GnollHackX
 
         public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
         {
+            _gamepadNavigator.UpdateSticks(sticks, dtSeconds);
         }
 
         private async void EventOkButton_Clicked(object sender, EventArgs e)

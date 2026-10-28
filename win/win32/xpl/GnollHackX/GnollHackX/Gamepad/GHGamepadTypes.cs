@@ -123,18 +123,69 @@ namespace GnollHackX
         public float DirectionRelease = 0.4f;
     }
 
-    /* One hint-strip entry; the button name comes from GHGamepadGlyphs */
+    /* The shape of a hint badge (GHGamepadGlyphs.GetBadgeKind) */
+    public enum GHGamepadBadgeKind
+    {
+        FaceButton,         /* white circle, black letter */
+        PlayStationSymbol,  /* white circle with a drawn cross, circle, square or triangle */
+        Bumper,             /* L1/R1: a wide shoulder button with its label (L1, LB or L) */
+        Trigger,
+        StickClick,         /* L3/R3: a stick cap */
+        Grip,
+        Menu,               /* three horizontal lines */
+        View,               /* two overlapping squares */
+        DPad,
+        Stick,
+    }
+
+    /* A hint badge standing for a group of controls instead of one button */
+    public enum GHGamepadHintSymbol
+    {
+        None,
+        DPad,
+        LeftStick,
+        RightStick,
+    }
+
+    /* One hint-strip entry: one or two button badges (or a symbol) and a label. Hold adds an outlined
+       up arrow after the badges; Highlight draws the badges and that arrow highlighted, e.g. a held
+       modifier. LineBreakBefore starts a hint row's second line at this entry. */
     public struct GHGamepadHint
     {
         public GHGamepadButton Button;
         public string Label;
         public bool Hold;
+        public bool HasButton2;
+        public GHGamepadButton Button2;
+        public GHGamepadHintSymbol Symbol;  /* drawn instead of Button when not None */
+        public bool Highlight;
+        public bool LineBreakBefore;
 
         public GHGamepadHint(GHGamepadButton button, string label, bool hold)
         {
             Button = button;
             Label = label;
             Hold = hold;
+            HasButton2 = false;
+            Button2 = button;
+            Symbol = GHGamepadHintSymbol.None;
+            Highlight = false;
+            LineBreakBefore = false;
+        }
+
+        public static GHGamepadHint Pair(GHGamepadButton first, GHGamepadButton second, string label)
+        {
+            GHGamepadHint hint = new GHGamepadHint(first, label, false);
+            hint.HasButton2 = true;
+            hint.Button2 = second;
+            return hint;
+        }
+
+        public static GHGamepadHint ForSymbol(GHGamepadHintSymbol symbol, string label)
+        {
+            GHGamepadHint hint = new GHGamepadHint(GHGamepadButton.A, label, false);
+            hint.Symbol = symbol;
+            return hint;
         }
     }
 

@@ -26,6 +26,7 @@ namespace GnollHackX.Controls
        as one entry whose Up/Down move its selection. X runs an entry's secondary action, armed like A. Section
        stops make LB/RB jump between sections; without them LB/RB page ScrollsContent layers. LT/RT go to the first
        and last entry inside the layer's ScrollView (of the whole layer when none is inside).
+       The right stick scrolls the shown layer's ScrollView in proportion to its push, through UpdateSticks.
        An overlay gets its initial focus each time it becomes active; the main layer keeps its focus.
        UI thread only. */
     public sealed class GHGamepadPageNavigator
@@ -589,6 +590,9 @@ namespace GnollHackX.Controls
 
         private const double LineScrollStep = 48.0;
         private const double PageScrollFraction = 0.85;
+        /* DIP per second at full right-stick push; the push is raised to RightStickScrollExponent first */
+        private const double RightStickScrollSpeed = 1200.0;
+        private const double RightStickScrollExponent = 1.5;
 
         private readonly Layer _main = new Layer(null);
         private readonly List<Layer> _overlays = new List<Layer>();
@@ -598,6 +602,9 @@ namespace GnollHackX.Controls
         private int _aPressId = 0;
         private bool _xArmed = false;
         private int _xPressId = 0;
+        /* Right-stick scrolling below one DIP not yet applied, for _stickScrollLayer */
+        private double _stickScrollRemainder = 0.0;
+        private Layer _stickScrollLayer;
 
         public GHGamepadPageNavigator()
         {
@@ -802,6 +809,47 @@ namespace GnollHackX.Controls
             return true;
         }
 
+        /* Right stick, every gamepad tick: scrolls the shown layer's ScrollView by RightY at up to
+           RightStickScrollSpeed, finer for small pushes, in whole DIPs; leaves the focus and the active layer as
+           they are */
+        public void UpdateSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+            try
+            {
+                if (sticks.IsNeutral || sticks.RightY == 0f || !GHGamepadService.IsActive
+                    || GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen || (IsBusy != null && IsBusy()))
+                {
+                    _stickScrollRemainder = 0.0;
+                    return;
+                }
+                if (dtSeconds <= 0.0)
+                    return;
+
+                Layer layer = FindShownLayer();
+                if (!ReferenceEquals(layer, _stickScrollLayer))
+                {
+                    _stickScrollLayer = layer;
+                    _stickScrollRemainder = 0.0;
+                }
+                if (layer.ScrollView == null)
+                    return;
+
+                double y = sticks.RightY;
+                double speed = RightStickScrollSpeed * Math.Pow(Math.Abs(y), RightStickScrollExponent);
+                _stickScrollRemainder += (y < 0.0 ? -speed : speed) * dtSeconds;
+                if (Math.Abs(_stickScrollRemainder) < 1.0)
+                    return;
+                double step = Math.Truncate(_stickScrollRemainder);
+                _stickScrollRemainder -= step;
+                ScrollContentBy(layer, step);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                _stickScrollRemainder = 0.0;
+            }
+        }
+
         /* Wraps only on a fresh press, so a held direction stops at the end */
         private void MoveFocus(Layer layer, int dir, bool vertical, GHGamepadButtonEventKind kind)
         {
@@ -884,17 +932,20 @@ namespace GnollHackX.Controls
             return false;
         }
 
-        private Layer UpdateActiveLayer()
+        /* The first shown overlay in AddOverlay order, else the main layer; changes nothing */
+        private Layer FindShownLayer()
         {
-            Layer layer = _main;
             foreach (Layer overlay in _overlays)
             {
                 if (overlay.IsShown())
-                {
-                    layer = overlay;
-                    break;
-                }
+                    return overlay;
             }
+            return _main;
+        }
+
+        private Layer UpdateActiveLayer()
+        {
+            Layer layer = FindShownLayer();
             if (!ReferenceEquals(layer, _active))
             {
                 _active.Focus.ClearVisuals();

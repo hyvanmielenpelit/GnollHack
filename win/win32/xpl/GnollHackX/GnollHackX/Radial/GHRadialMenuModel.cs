@@ -153,6 +153,12 @@ namespace GnollHackX
         }
     }
 
+    public enum GHRadialAccent
+    {
+        Gold,
+        Teal,
+    }
+
     /* A whole radial menu as the host builds it for one opening. OnActivate and OnClosed run on
        the thread that calls GHRadialMenuState, which is the UI thread. */
     public sealed class GHRadialMenuDefinition
@@ -177,13 +183,18 @@ namespace GnollHackX
         public string SecondaryHintOnSwitchedSet;       /* "Context", shown from SwitchSetPageIndex on */
         public string GroupHint;                        /* "Group" */
 
-        /* Button names, which the host sets from the controller style */
-        public string ConfirmGlyph = "A";
-        public string CancelGlyph = "B";
-        public string SecondaryGlyph = "X";
-        public string PrevPageGlyph = "L1";
-        public string NextPageGlyph = "R1";
-        public string GroupGlyph = "LT/RT";
+        /* The hint and chip buttons, drawn as badges in Style, which the host sets from the controller */
+        public GHGamepadStyle Style = GHGamepadStyle.SteamDeck;
+        public GHGamepadButton ConfirmButton = GHGamepadButton.A;
+        public GHGamepadButton CancelButton = GHGamepadButton.B;
+        public GHGamepadButton SecondaryButton = GHGamepadButton.X;
+        public GHGamepadButton PrevPageButton = GHGamepadButton.LB;
+        public GHGamepadButton NextPageButton = GHGamepadButton.RB;
+        public GHGamepadButton GroupButton = GHGamepadButton.LT;      /* shown as a pair with GroupButton2 */
+        public GHGamepadButton GroupButton2 = GHGamepadButton.RT;
+
+        /* The highlight colors: Gold for radials that act, Teal for one that assigns (the trigger assign radial) */
+        public GHRadialAccent Accent = GHRadialAccent.Gold;
 
         public int PageCount { get { return Pages == null ? 0 : Pages.Count; } }
 

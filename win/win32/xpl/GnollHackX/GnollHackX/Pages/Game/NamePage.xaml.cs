@@ -345,6 +345,7 @@ namespace GnollHackX.Pages.Game
 
         public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
         {
+            _gamepadNavigator.UpdateSticks(sticks, dtSeconds);
         }
     }
 }

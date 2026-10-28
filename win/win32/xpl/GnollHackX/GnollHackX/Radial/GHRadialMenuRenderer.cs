@@ -13,6 +13,11 @@ namespace GnollHackX
          per layout; item, page and hint text layouts are cached per definition and layout. A
          paint at rest therefore allocates nothing; the first paint after opening fills the
          caches.
+       - Controller buttons are drawn as badges by an owned GHGamepadHintRenderer, which takes
+         this renderer's typefaces and text blob cache setting.
+       - The definition's Accent picks the gold or teal border, highlight, glow and flash colors.
+         A teal radial assigns: its toggle items mark only the current choice, with a "NOW" pill,
+         and its hub shows no "Currently: On/Off" line.
        - Free of GHApp: the host supplies the typefaces, the icon lookup, the text blob cache
          setting and the keyboard shortcut setting.
        - Opacity and scale animate through a layer and a canvas transform only while animating;
@@ -35,11 +40,16 @@ namespace GnollHackX
         public static readonly string OffText = "Off";
         public static readonly string PillOnText = "ON";
         public static readonly string PillOffText = "OFF";
+        public static readonly string PillNowText = "NOW";
 
         private static readonly SKColor Gold = new SKColor(0xD4, 0xA0, 0x17);
+        private static readonly SKColor GoldHighlightFill = new SKColor(58, 46, 10, 0xE6);
+        private static readonly SKColor GoldFlashFill = new SKColor(128, 102, 26, 0xF0);
+        private static readonly SKColor Teal = new SKColor(0x20, 0xB2, 0xAA);
+        private static readonly SKColor TealHighlightFill = new SKColor(10, 52, 50, 0xE6);
+        private static readonly SKColor TealFlashFill = new SKColor(16, 89, 85, 0xF0);
+        private static readonly SKColor TealTitle = new SKColor(0x9F, 0xE8, 0xE2);
         private static readonly SKColor SliceFill = new SKColor(38, 38, 38, 0xD9);
-        private static readonly SKColor HighlightFill = new SKColor(58, 46, 10, 0xE6);
-        private static readonly SKColor FlashFill = new SKColor(128, 102, 26, 0xF0);
         private static readonly SKColor SliceBorder = new SKColor(255, 255, 255, 0x40);
         private static readonly SKColor EmptyOutline = new SKColor(255, 255, 255, 0x20);
         private static readonly SKColor DisabledBorder = new SKColor(128, 128, 128, 0xFF);
@@ -49,8 +59,6 @@ namespace GnollHackX
         private static readonly SKColor OnGreen = SKColors.LightGreen;
         private static readonly SKColor PillDarkText = new SKColor(20, 20, 20);
         private static readonly SKColor StickGhostColor = new SKColor(255, 255, 255, 0x50);
-        private static readonly SKColor HintDisc = new SKColor(255, 255, 255, 0xE6);
-        private static readonly SKColor HintGlyphText = new SKColor(24, 24, 24);
         private static readonly SKColor VignetteInner = new SKColor(0, 0, 0, 0x40);
         private static readonly SKColor VignetteOuter = new SKColor(0, 0, 0, 0);
         private static readonly string Ellipsis = ((char)0x2026).ToString();
@@ -74,9 +82,9 @@ namespace GnollHackX
 
         private sealed class HintBar
         {
-            public readonly string[] Glyphs = new string[4];
+            public readonly GHGamepadHint[] Hints = new GHGamepadHint[4];    /* the badges; the label is in Labels */
             public readonly string[] Labels = new string[4];
-            public readonly float[] GlyphWidths = new float[4];
+            public readonly float[] BadgeWidths = new float[4];
             public readonly float[] LabelWidths = new float[4];
             public int Count;
             public float TotalWidth;
@@ -110,6 +118,7 @@ namespace GnollHackX
         private SKTypeface _layoutLabelTypeface;
         private SKTypeface _layoutBoldTypeface;
         private SKTypeface _layoutDescriptionTypeface;
+        private GHGamepadStyle _layoutStyle;
         private float[] _pageTitleSizes = new float[0];
         private float[] _hubIdleTitleSizes = new float[0];
         private float[] _hubCounterSizes = new float[0];
@@ -121,16 +130,22 @@ namespace GnollHackX
         private float _idleTextBaseSize;
         private float _pillOnWidth;
         private float _pillOffWidth;
+        private float _pillNowWidth;
         private float _currentlyWidth;
         private float _onWidth;
         private float _offWidth;
         private float _statusSize;
-        private float _prevGlyphWidth;
-        private float _nextGlyphWidth;
-        private float _hubSecondaryGlyphWidth;
+        private float _hubSecondaryBadgeWidth;
         private float _hubSecondaryLabelWidth;
         private readonly HintBar _hintsMain = new HintBar();
         private readonly HintBar _hintsSwitched = new HintBar();
+        private GHGamepadHintRenderer _badgeRenderer;   /* created by the first paint */
+
+        /* The definition's accent colors, resolved at the top of each paint */
+        private bool _tealAccent;
+        private SKColor _accent = Gold;
+        private SKColor _accentHighlightFill = GoldHighlightFill;
+        private SKColor _accentFlashFill = GoldFlashFill;
         private bool _disposed;
 
         public GHRadialMenuRenderer()
@@ -159,6 +174,9 @@ namespace GnollHackX
         public void RequestTextCacheClear()
         {
             _textPaint.RequestBlobCacheClear();
+            GHGamepadHintRenderer badges = _badgeRenderer;
+            if (badges != null)
+                badges.RequestTextCacheClear();
         }
 
         /* Draws the state on a canvas of info's size; dipScale is canvas pixels per
@@ -172,12 +190,14 @@ namespace GnollHackX
                 return;
 
             _textPaint.SyncBlobCache(UseTextBlobCaching);
+            BeginBadgePaint();
             GHRadialGeometry g = state.Geometry;
             g.Update(info.Width, info.Height, dipScale);
             if (!g.IsValid)
                 return;
             EnsureResources(g);
             GHRadialMenuDefinition def = state.Definition;
+            ResolveAccent(def.Accent);
             EnsureLayouts(def, g);
 
             float opacity = state.Opacity;
@@ -191,7 +211,7 @@ namespace GnollHackX
             DrawHeader(canvas, state, def, g, opacity, still);
             DrawChips(canvas, state, def, g, opacity, still);
             HintBar hints = def.IsSwitchedSetPage(state.PageIndex) ? _hintsSwitched : _hintsMain;
-            DrawHintBar(canvas, hints, g, g.HintCenterY, opacity, still);
+            DrawHintBar(canvas, hints, def.Style, g, g.HintCenterY, opacity, still);
 
             if (opacity < 0.997f)
             {
@@ -284,16 +304,16 @@ namespace GnollHackX
             canvas.Translate(g.CenterX + dirX * offset, g.CenterY + dirY * offset);
             if (e > 0f && enabled)
             {
-                _glowPaint.Color = Gold.WithAlpha(ToByte(e * 0x60 / 255f));
+                _glowPaint.Color = _accent.WithAlpha(ToByte(e * 0x60 / 255f));
                 canvas.DrawPath(path, _glowPaint);
             }
-            SKColor fill = LerpColor(SliceFill, HighlightFill, enabled ? e : e * 0.5f);
+            SKColor fill = LerpColor(SliceFill, _accentHighlightFill, enabled ? e : e * 0.5f);
             float flash = isCurrent && state.FlashSlot == slot ? state.FlashIntensity : 0f;
             if (flash > 0f)
-                fill = LerpColor(fill, FlashFill, flash);
+                fill = LerpColor(fill, _accentFlashFill, flash);
             _sliceFill.Color = fill;
             canvas.DrawPath(path, _sliceFill);
-            _sliceStroke.Color = LerpColor(SliceBorder, enabled ? Gold : DisabledBorder, e);
+            _sliceStroke.Color = LerpColor(SliceBorder, enabled ? _accent : DisabledBorder, e);
             _sliceStroke.StrokeWidth = g.DipScale * (1f + ((float)GHRadialTuning.HighlightBorderDip - 1f) * e);
             canvas.DrawPath(path, _sliceStroke);
             canvas.Restore();
@@ -359,10 +379,12 @@ namespace GnollHackX
                 _textPaint.DrawTextOnCanvas(canvas, layout.Label, tx, ty, SKTextAlign.Center);
             }
 
-            if (isToggle)
+            /* A teal radial marks only the current choice */
+            if (isToggle && (isOn || !_tealAccent))
                 DrawPill(canvas, g, dirX, dirY, offset, isOn, snap);
         }
 
+        /* ON (green) or OFF (outline); in a teal radial, NOW (teal) */
         private void DrawPill(SKCanvas canvas, GHRadialGeometry g, float dirX, float dirY, float offset, bool isOn, bool snap)
         {
             float r = g.OuterRadius + offset - (float)(GHRadialTuning.PillInset * g.OuterRadius);
@@ -370,11 +392,13 @@ namespace GnollHackX
             float py = g.CenterY + dirY * r;
             float fs = g.PillFontSize;
             float h = fs * 1.5f;
-            float w = (isOn ? _pillOnWidth : _pillOffWidth) + fs * 1.2f;
+            float textWidth = !isOn ? _pillOffWidth : _tealAccent ? _pillNowWidth : _pillOnWidth;
+            string text = !isOn ? PillOffText : _tealAccent ? PillNowText : PillOnText;
+            float w = textWidth + fs * 1.2f;
             SKRect rect = new SKRect(px - w / 2, py - h / 2, px + w / 2, py + h / 2);
             if (isOn)
             {
-                _plainFill.Color = OnGreen;
+                _plainFill.Color = _tealAccent ? Teal : OnGreen;
                 canvas.DrawRoundRect(rect, h / 2, h / 2, _plainFill);
             }
             else
@@ -394,7 +418,7 @@ namespace GnollHackX
                 tx = Snap(tx);
                 ty = Snap(ty);
             }
-            _textPaint.DrawTextOnCanvas(canvas, isOn ? PillOnText : PillOffText, tx, ty, SKTextAlign.Center);
+            _textPaint.DrawTextOnCanvas(canvas, text, tx, ty, SKTextAlign.Center);
         }
 
         private void DrawHub(SKCanvas canvas, GHRadialMenuState state, GHRadialMenuDefinition def, GHRadialGeometry g, bool snap)
@@ -403,7 +427,7 @@ namespace GnollHackX
             float cy = g.CenterY;
             _plainFill.Color = HubFill;
             canvas.DrawCircle(cx, cy, g.HubRadius, _plainFill);
-            _plainStroke.Color = Gold;
+            _plainStroke.Color = _accent;
             _plainStroke.StrokeWidth = (float)(GHRadialTuning.HubBorderDip * g.DipScale);
             canvas.DrawCircle(cx, cy, g.HubRadius, _plainStroke);
 
@@ -412,7 +436,7 @@ namespace GnollHackX
                 canvas.Save();
                 canvas.RotateDegrees(state.WedgeAngle, cx, cy);
                 canvas.Translate(cx, cy - g.HubRadius);
-                _plainFill.Color = Gold.WithAlpha(ToByte(state.WedgeOpacity));
+                _plainFill.Color = _accent.WithAlpha(ToByte(state.WedgeOpacity));
                 canvas.DrawPath(_wedgePath, _plainFill);
                 canvas.Restore();
             }
@@ -435,7 +459,8 @@ namespace GnollHackX
 
         private void DrawHubItem(SKCanvas canvas, GHRadialMenuDefinition def, GHRadialGeometry g, GHRadialItem item, ItemLayout layout, bool snap)
         {
-            bool showStatus = item.IsToggle || !item.IsEnabled;
+            /* A teal radial's host states the current choice in its idle hub text instead */
+            bool showStatus = (item.IsToggle && !_tealAccent) || !item.IsEnabled;
             bool showShortcut = ShowKeyboardShortcuts && !string.IsNullOrEmpty(item.ShortcutText);
             float descSize = g.HubDescriptionFontSize;
 
@@ -583,15 +608,16 @@ namespace GnollHackX
             if (showSecondary)
             {
                 float gap = g.HintFontSize * 0.4f;
-                float total = _hubSecondaryGlyphWidth + gap + _hubSecondaryLabelWidth;
+                float total = _hubSecondaryBadgeWidth + gap + _hubSecondaryLabelWidth;
                 float x = cx - total / 2;
                 float centerY = y + hintH / 2;
-                DrawGlyph(canvas, def.SecondaryGlyph, x + _hubSecondaryGlyphWidth / 2, centerY, g.HintFontSize, _hubSecondaryGlyphWidth, 1f, snap);
+                _badgeRenderer.DrawBadge(canvas, def.SecondaryButton, def.Style, x + _hubSecondaryBadgeWidth / 2, centerY,
+                    BadgeHeight(g), 1f, false);
                 _textPaint.Typeface = LabelTypeface;
                 _textPaint.TextSize = g.HintFontSize;
                 _textPaint.Color = LighterGray;
                 SKFontMetrics m = _textPaint.FontMetrics;
-                float tx = x + _hubSecondaryGlyphWidth + gap;
+                float tx = x + _hubSecondaryBadgeWidth + gap;
                 float ty = centerY - (m.Ascent + m.Descent) / 2;
                 if (snap)
                 {
@@ -611,7 +637,7 @@ namespace GnollHackX
             {
                 _textPaint.Typeface = TitleTypeface;
                 _textPaint.TextSize = pageIndex < _pageTitleSizes.Length ? _pageTitleSizes[pageIndex] : g.PageTitleFontSize;
-                _textPaint.Color = SKColors.White.WithAlpha(a);
+                _textPaint.Color = (_tealAccent ? TealTitle : SKColors.White).WithAlpha(a);
                 DrawCentered(canvas, page.Title, g.CenterX, g.PageTitleBaselineY, snap);
             }
 
@@ -638,33 +664,36 @@ namespace GnollHackX
                 return;
             int pageIndex = state.PageIndex;
             if (pageIndex > 0)
-                DrawChip(canvas, g, g.CenterX - g.ChipOffsetX, def.PrevPageGlyph, _prevGlyphWidth, _chipTitles[pageIndex - 1], opacity, snap);
+                DrawChip(canvas, g, g.CenterX - g.ChipOffsetX, def.PrevPageButton, def.Style, _chipTitles[pageIndex - 1], opacity, snap);
             if (pageIndex < def.PageCount - 1)
-                DrawChip(canvas, g, g.CenterX + g.ChipOffsetX, def.NextPageGlyph, _nextGlyphWidth, _chipTitles[pageIndex + 1], opacity, snap);
+                DrawChip(canvas, g, g.CenterX + g.ChipOffsetX, def.NextPageButton, def.Style, _chipTitles[pageIndex + 1], opacity, snap);
         }
 
-        private void DrawChip(SKCanvas canvas, GHRadialGeometry g, float x, string glyph, float glyphWidth, string title, float opacity, bool snap)
+        /* The button's badge with the neighboring page's title below it */
+        private void DrawChip(SKCanvas canvas, GHRadialGeometry g, float x, GHGamepadButton button, GHGamepadStyle style, string title, float opacity, bool snap)
         {
             float fs = g.HintFontSize;
-            float glyphCenterY = g.CenterY - fs * 0.6f;
-            DrawGlyph(canvas, glyph, x, glyphCenterY, fs, glyphWidth, opacity, snap);
+            float badgeHeight = BadgeHeight(g);
+            float badgeCenterY = g.CenterY - fs * 0.6f;
+            _badgeRenderer.DrawBadge(canvas, button, style, x, badgeCenterY, badgeHeight, opacity, false);
             if (!string.IsNullOrEmpty(title))
             {
                 _textPaint.Typeface = LabelTypeface;
                 _textPaint.TextSize = fs;
                 _textPaint.Color = LighterGray.WithAlpha(ToByte(opacity));
-                float baseline = glyphCenterY + fs * 0.72f + fs * 0.4f - _textPaint.FontMetrics.Ascent;
+                float baseline = badgeCenterY + badgeHeight / 2 + fs * 0.4f - _textPaint.FontMetrics.Ascent;
                 DrawCentered(canvas, title, x, baseline, snap);
             }
         }
 
-        private void DrawHintBar(SKCanvas canvas, HintBar bar, GHRadialGeometry g, float centerY, float opacity, bool snap)
+        private void DrawHintBar(SKCanvas canvas, HintBar bar, GHGamepadStyle style, GHRadialGeometry g, float centerY, float opacity, bool snap)
         {
             if (bar.Count == 0)
                 return;
             float fs = g.HintFontSize;
             float smallGap = fs * 0.4f;
             float largeGap = fs * 1.4f;
+            float badgeHeight = BadgeHeight(g);
             float x = g.CenterX - bar.TotalWidth / 2;
             _textPaint.Typeface = LabelTypeface;
             _textPaint.TextSize = fs;
@@ -673,8 +702,8 @@ namespace GnollHackX
             int i;
             for (i = 0; i < bar.Count; i++)
             {
-                DrawGlyph(canvas, bar.Glyphs[i], x + bar.GlyphWidths[i] / 2, centerY, fs, bar.GlyphWidths[i], opacity, snap);
-                x += bar.GlyphWidths[i] + smallGap;
+                _badgeRenderer.DrawHintBadges(canvas, bar.Hints[i], style, x, centerY, badgeHeight, opacity);
+                x += bar.BadgeWidths[i] + smallGap;
                 _textPaint.Typeface = LabelTypeface;
                 _textPaint.TextSize = fs;
                 _textPaint.Color = SKColors.White.WithAlpha(ToByte(opacity));
@@ -690,42 +719,34 @@ namespace GnollHackX
             }
         }
 
-        /* A controller button: a disc for one character, a pill for longer names such as L1 */
-        private void DrawGlyph(SKCanvas canvas, string glyph, float centerX, float centerY, float fontSize, float width, float opacity, bool snap)
+        /* Controller badges are as tall as a hint strip's badges at the hint font size */
+        private static float BadgeHeight(GHRadialGeometry g)
         {
-            if (string.IsNullOrEmpty(glyph))
-                return;
-            float h = fontSize * 1.44f;
-            _plainFill.Color = HintDisc.WithAlpha(ToByte(opacity * HintDisc.Alpha / 255f));
-            if (glyph.Length == 1)
-                canvas.DrawCircle(centerX, centerY, h / 2, _plainFill);
-            else
-                canvas.DrawRoundRect(new SKRect(centerX - width / 2, centerY - h / 2, centerX + width / 2, centerY + h / 2), h / 2, h / 2, _plainFill);
-            _textPaint.Typeface = BoldTypeface;
-            _textPaint.TextSize = fontSize * 0.8f;
-            _textPaint.Color = HintGlyphText.WithAlpha(ToByte(opacity));
-            SKFontMetrics m = _textPaint.FontMetrics;
-            float tx = centerX;
-            float ty = centerY - (m.Ascent + m.Descent) / 2;
-            if (snap)
-            {
-                tx = Snap(tx);
-                ty = Snap(ty);
-            }
-            _textPaint.DrawTextOnCanvas(canvas, glyph, tx, ty, SKTextAlign.Center);
+            return g.HintFontSize * GHGamepadHintRenderer.BadgeHeightOfFont;
         }
 
-        /* Measures with the bold glyph font; call only while caches are built */
-        private float GetGlyphWidth(string glyph, float fontSize)
+        /* Creates the badge renderer on first use and passes it this renderer's typefaces and text
+           blob cache setting; once per paint, before any badge */
+        private void BeginBadgePaint()
         {
-            if (string.IsNullOrEmpty(glyph))
-                return 0f;
-            float h = fontSize * 1.44f;
-            if (glyph.Length == 1)
-                return h;
-            _textPaint.Typeface = BoldTypeface;
-            _textPaint.TextSize = fontSize * 0.8f;
-            return Math.Max(h, _textPaint.MeasureText(glyph) + fontSize * 0.9f);
+            GHGamepadHintRenderer badges = _badgeRenderer;
+            if (badges == null)
+            {
+                badges = new GHGamepadHintRenderer();
+                _badgeRenderer = badges;
+            }
+            badges.LabelTypeface = LabelTypeface;
+            badges.BoldTypeface = BoldTypeface;
+            badges.UseTextBlobCaching = UseTextBlobCaching;
+            badges.BeginPaint();
+        }
+
+        private void ResolveAccent(GHRadialAccent accent)
+        {
+            _tealAccent = accent == GHRadialAccent.Teal;
+            _accent = _tealAccent ? Teal : Gold;
+            _accentHighlightFill = _tealAccent ? TealHighlightFill : GoldHighlightFill;
+            _accentFlashFill = _tealAccent ? TealFlashFill : GoldFlashFill;
         }
 
         private void DrawCentered(SKCanvas canvas, string text, float x, float baseline, bool snap)
@@ -781,15 +802,18 @@ namespace GnollHackX
             return label != null && string.Equals(description.Trim(), label.Trim(), StringComparison.Ordinal);
         }
 
+        /* Keyed on the definition, its badge style, the geometry and the typefaces; the definition's
+           buttons are taken as fixed once it is shown. The accent changes no layout. */
         private void EnsureLayouts(GHRadialMenuDefinition def, GHRadialGeometry g)
         {
-            if (ReferenceEquals(def, _layoutDefinition) && g.Version == _layoutVersion
+            if (ReferenceEquals(def, _layoutDefinition) && def.Style == _layoutStyle && g.Version == _layoutVersion
                 && ReferenceEquals(TitleTypeface, _layoutTitleTypeface) && ReferenceEquals(LabelTypeface, _layoutLabelTypeface)
                 && ReferenceEquals(BoldTypeface, _layoutBoldTypeface) && ReferenceEquals(DescriptionTypeface, _layoutDescriptionTypeface))
                 return;
 
             _itemLayouts.Clear();
             _layoutDefinition = def;
+            _layoutStyle = def.Style;
             _layoutVersion = g.Version;
             _layoutTitleTypeface = TitleTypeface;
             _layoutLabelTypeface = LabelTypeface;
@@ -834,6 +858,7 @@ namespace GnollHackX
             _textPaint.TextSize = g.PillFontSize;
             _pillOnWidth = _textPaint.MeasureText(PillOnText);
             _pillOffWidth = _textPaint.MeasureText(PillOffText);
+            _pillNowWidth = _textPaint.MeasureText(PillNowText);
 
             _statusSize = g.HubDescriptionFontSize;
             _textPaint.Typeface = LabelTypeface;
@@ -843,9 +868,7 @@ namespace GnollHackX
             _onWidth = _textPaint.MeasureText(OnText);
             _offWidth = _textPaint.MeasureText(OffText);
 
-            _prevGlyphWidth = GetGlyphWidth(def.PrevPageGlyph, g.HintFontSize);
-            _nextGlyphWidth = GetGlyphWidth(def.NextPageGlyph, g.HintFontSize);
-            _hubSecondaryGlyphWidth = GetGlyphWidth(def.SecondaryGlyph, g.HintFontSize);
+            _hubSecondaryBadgeWidth = _badgeRenderer.MeasureBadge(def.SecondaryButton, def.Style, BadgeHeight(g));
             _hubSecondaryLabelWidth = MeasureLabel(def.SecondaryHint, g.HintFontSize);
 
             BuildHintBar(_hintsMain, def, g, false);
@@ -855,32 +878,33 @@ namespace GnollHackX
         private void BuildHintBar(HintBar bar, GHRadialMenuDefinition def, GHRadialGeometry g, bool switched)
         {
             bar.Count = 0;
-            AddHint(bar, def.ConfirmGlyph, def.ConfirmHint, g);
-            AddHint(bar, def.CancelGlyph, def.CancelHint, g);
+            AddHint(bar, new GHGamepadHint(def.ConfirmButton, null, false), def.ConfirmHint, def.Style, g);
+            AddHint(bar, new GHGamepadHint(def.CancelButton, null, false), def.CancelHint, def.Style, g);
             if (def.SwitchSetPageIndex > 0)
-                AddHint(bar, def.SecondaryGlyph, switched ? def.SecondaryHintOnSwitchedSet : def.SecondaryHint, g);
+                AddHint(bar, new GHGamepadHint(def.SecondaryButton, null, false), switched ? def.SecondaryHintOnSwitchedSet : def.SecondaryHint, def.Style, g);
             if (def.HasGroups)
-                AddHint(bar, def.GroupGlyph, def.GroupHint, g);
+                AddHint(bar, GHGamepadHint.Pair(def.GroupButton, def.GroupButton2, null), def.GroupHint, def.Style, g);
 
             float fs = g.HintFontSize;
             float total = 0f;
             int i;
             for (i = 0; i < bar.Count; i++)
             {
-                total += bar.GlyphWidths[i] + fs * 0.4f + bar.LabelWidths[i];
+                total += bar.BadgeWidths[i] + fs * 0.4f + bar.LabelWidths[i];
                 if (i > 0)
                     total += fs * 1.4f;
             }
             bar.TotalWidth = total;
         }
 
-        private void AddHint(HintBar bar, string glyph, string label, GHRadialGeometry g)
+        /* The hint's badges, measured; its label is drawn by this renderer */
+        private void AddHint(HintBar bar, GHGamepadHint hint, string label, GHGamepadStyle style, GHRadialGeometry g)
         {
-            if (string.IsNullOrEmpty(label) || string.IsNullOrEmpty(glyph) || bar.Count >= bar.Glyphs.Length)
+            if (string.IsNullOrEmpty(label) || bar.Count >= bar.Hints.Length)
                 return;
-            bar.Glyphs[bar.Count] = glyph;
+            bar.Hints[bar.Count] = hint;
             bar.Labels[bar.Count] = label;
-            bar.GlyphWidths[bar.Count] = GetGlyphWidth(glyph, g.HintFontSize);
+            bar.BadgeWidths[bar.Count] = _badgeRenderer.MeasureHintBadges(hint, style, BadgeHeight(g));
             bar.LabelWidths[bar.Count] = MeasureLabel(label, g.HintFontSize);
             bar.Count++;
         }
@@ -1148,6 +1172,8 @@ namespace GnollHackX
             _vignettePaint.Dispose();
             _layerPaint.Dispose();
             _iconPaint.Dispose();
+            DisposeObject(_badgeRenderer);
+            _badgeRenderer = null;
             _itemLayouts.Clear();
         }
     }
