@@ -11,6 +11,9 @@
     The staged publish is checked against the glibc floor in $MaxGlibcVersion and the libstdc++ floors in
     $MaxGlibcxxVersion and $MaxCxxabiVersion, and the script stops if any ELF file needs a newer glibc or libstdc++.
 
+    The Steam content root also gets the .vdf files of Packaging\steam\input\ as steam_input\: the Steam Input Action
+    Manifest and the controller_neptune.vdf layout exported from the Steam client. A missing layout is a warning.
+
     The script never downloads, uploads, publishes or signs in to anything. The pinned appimagetool
     and AppImage runtime must already be in $HOME/.cache/gnollhack-packaging/tools/ in WSL.
 
@@ -446,7 +449,8 @@ rm -f "$OUT/$TARGZ_NAME"
 tar -C "$TAR_ROOT" --owner=0 --group=0 --numeric-owner -czf "$OUT/$TARGZ_NAME" gnollhack
 '@
 
-# Steam: the staged copy as content/, the steamrt4 libraries when chosen, and the filled-in scripts.
+# Steam: the staged copy as content/, the steamrt4 libraries when chosen, the Steam Input configuration as
+# content/steam_input/, and the filled-in scripts.
 $BashSteam = @'
 STEAM_DIR="$OUT/steam"
 echo "Assembling the Steam content in $STEAM_DIR"
@@ -457,6 +461,15 @@ if [ -n "$STEAMRT4_DIR" ]; then
     echo "Adding the steamrt4 libraries from $STEAMRT4_DIR"
     rsync -a --chmod=D755,F644 "$STEAMRT4_DIR/" "$STEAM_DIR/content/"
 fi
+echo "Adding the Steam Input configuration from $STEAM_INPUT_DIR as steam_input/"
+mkdir -p "$STEAM_DIR/content/steam_input"
+chmod 755 "$STEAM_DIR/content/steam_input"
+for vdf in "$STEAM_INPUT_DIR"/*.vdf; do
+    [ -f "$vdf" ] || continue
+    target="$STEAM_DIR/content/steam_input/$(basename "$vdf")"
+    tr -d '\r' < "$vdf" > "$target"
+    chmod 644 "$target"
+done
 cp "$APP_VDF" "$STEAM_DIR/app_build_linux.vdf"
 cp "$DEPOT_VDF" "$STEAM_DIR/depot_build_linux.vdf"
 chmod 644 "$STEAM_DIR/app_build_linux.vdf" "$STEAM_DIR/depot_build_linux.vdf"
@@ -503,6 +516,9 @@ $NativeProjectPath = Join-Path $RepoRoot 'win\win32\vs\gnollhacklinux.vcxproj'
 $SteamRt4LibsDir = Join-Path $LinuxDir 'libs-steamrt4'
 $AppVdfTemplatePath = Join-Path $PackagingDir 'steam\app_build_linux.vdf.template'
 $DepotVdfTemplatePath = Join-Path $PackagingDir 'steam\depot_build_linux.vdf.template'
+$SteamInputDir = Join-Path $PackagingDir 'steam\input'
+$SteamInputManifestPath = Join-Path $SteamInputDir 'gnollhack_input_manifest.vdf'
+$SteamInputLayoutPath = Join-Path $SteamInputDir 'controller_neptune.vdf'
 $PublishDir = Join-Path $GnollHackMDir 'bin\Release\net11.0\linux-x64\publish'
 
 if (-not (Test-Path -LiteralPath $ProjectPath -PathType Leaf))
@@ -605,6 +621,15 @@ if ($BuildSteam)
     {
         throw "-SteamRuntime steamrt4 needs the bundled libraries in '$SteamRt4LibsDir', which does not exist."
     }
+    if (-not (Test-Path -LiteralPath $SteamInputManifestPath -PathType Leaf))
+    {
+        throw "Missing '$SteamInputManifestPath'."
+    }
+    # The Steamworks setting that activates the manifest waits until the layout ships in every live depot
+    if (-not (Test-Path -LiteralPath $SteamInputLayoutPath -PathType Leaf))
+    {
+        Write-Warning "'$SteamInputLayoutPath' does not exist: the Steam content gets the Steam Input manifest without the layout it names. Export the layout from the Steam client (DEVEL\gamepad_controls.md) before selecting the bundled configuration in Steamworks."
+    }
 }
 
 $WslDistro = Resolve-WslDistro $WslDistro
@@ -703,6 +728,7 @@ $wslVariables = [ordered]@{
     MAX_GLIBCXX         = $MaxGlibcxxVersion
     MAX_CXXABI          = $MaxCxxabiVersion
     STEAMRT4_DIR        = ''
+    STEAM_INPUT_DIR     = ''
     APP_VDF             = ''
     DEPOT_VDF           = ''
 }
@@ -738,6 +764,7 @@ try
         }
         $wslVariables['APP_VDF'] = ConvertTo-WslPath $AppVdfTempPath
         $wslVariables['DEPOT_VDF'] = ConvertTo-WslPath $DepotVdfTempPath
+        $wslVariables['STEAM_INPUT_DIR'] = ConvertTo-WslPath $SteamInputDir
         if ($SteamRuntime -eq 'steamrt4')
         {
             $wslVariables['STEAMRT4_DIR'] = ConvertTo-WslPath $SteamRt4LibsDir

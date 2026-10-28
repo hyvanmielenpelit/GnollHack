@@ -9250,6 +9250,11 @@ click_to_cmd(int x, int y, int mod)
     Sprintf(dbgbuf, "click_to_cmd: x=%d, y=%d, mod=%d, ux=%d, uy=%d, moves=%lld", x, y, mod, u.ux, u.uy, (long long)moves);
     issue_breadcrumb(dbgbuf);
 
+    /* A UI-only modifier: a primary click that performs the self-click action regardless of the option */
+    boolean force_self_action = (mod == CLICK_SELF_ACTION);
+    if (force_self_action)
+        mod = CLICK_PRIMARY;
+
     /* mod can be any value except CLICK_OFF */
     if (mod == CLICK_SECONDARY)
         mod = flags.right_click_command >= CLICK_OFF ? flags.right_click_command : iflags.clicklook ? CLICK_LOOK : CLICK_PRIMARY;
@@ -9829,7 +9834,7 @@ click_to_cmd(int x, int y, int mod)
 
         if (x == 0 && y == 0)
         {
-            if (!flags.self_click_action)
+            if (!flags.self_click_action && !force_self_action)
             {
                 cmd[0] = '\0';
                 return cmd;
@@ -9963,7 +9968,7 @@ click_to_cmd(int x, int y, int mod)
         if (x == 0 && y == 0) 
         {
             /* map click on player to "rest" command */
-            if (flags.self_click_action)
+            if (flags.self_click_action || force_self_action)
                 cmd[0] = cmd_from_func(donull);
             else
                 cmd[0] = '\0';

@@ -565,6 +565,31 @@ namespace GnollHackX
         public const int LostResumeDetectTimeoutMs = 400;   /* Frames still arriving while IsSuspended → force HandleResume */
         public const long MaxResizingDurationTicks = TimeSpan.TicksPerSecond; /* _isResizing safety cap (1 s) */
         public const int PaintStallWarningMs = 3000;        /* Diagnostic only: warn if paint stalls this long */
+
+        /* Gamepad routing on the game map (GamePage.Gamepad.cs). Stick magnitudes are 0..1 after the radial deadzone. */
+        public const float GamepadStickActivateMagnitude = 0.55f;   /* a stick direction engages at this magnitude */
+        public const float GamepadStickReleaseMagnitude = 0.30f;    /* and lets go below this; also re-arms a disarmed stick */
+        public const float GamepadStickSettleBypassMagnitude = 0.90f; /* a push this far skips the settle time */
+        public const double GamepadCardinalSectorDegrees = 40.0;    /* diagonal sectors get the rest, 50 degrees each */
+        public const double GamepadSectorHysteresisDegrees = 8.0;   /* the current sector holds this far past its edges */
+        public const int GamepadWalkSettleMs = 40;                  /* a new direction must hold this long before the first step */
+        public const int GamepadWalkFirstRepeatDelayMs = 220;
+        public const int GamepadWalkRepeatIntervalMs = 90;
+        public const int GamepadCursorFirstRepeatDelayMs = 200;     /* getpos cursor */
+        public const int GamepadCursorRepeatIntervalMs = 60;
+        public const float GamepadCursorJumpMagnitude = 0.95f;      /* a full push held this long moves the cursor 8 tiles at a time */
+        public const int GamepadCursorJumpHoldMs = 600;
+        public const int GamepadCursorJumpIntervalMs = 150;
+        public const float GamepadPanBaseTilesPerSecond = 2.0f;     /* panning speed = base + extra * magnitude^2 */
+        public const float GamepadPanExtraTilesPerSecond = 22.0f;
+        public const float GamepadStatusScrollPixelsPerSecond = 900.0f; /* Extended Status Bar at full push */
+        public const float GamepadMessageScrollUnitsPerSecond = 1200.0f; /* ScrollMessages units at full push; 1200 is one canvas height */
+        public const int GamepadMessageScrollStep = 120;            /* D-pad Up and Down while all messages are shown */
+        public const int GamepadPendingCommandMs = 350;             /* a refused discrete button waits this long for the game */
+        public const int GamepadInterruptMinBusyMs = 150;           /* B interrupts only a busy period at least this long */
+        public const float RadialMenuHighlightVolume = 0.06f;       /* the radial menu's highlight tick, a quiet Button Down */
+        /* UI-only nh_poskey modifier for the self-click action on the hero's square; mirrors CLICK_SELF_ACTION in include/wintype.h */
+        public const int ClickSelfAction = 100;
     }
 
 }

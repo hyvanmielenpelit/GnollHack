@@ -25,9 +25,17 @@ namespace GnollHackX.Controls
         private bool _acceptEnterSpaceForOkCancel = false;
         private CancellationTokenSource _popupTimeoutCts;
 
+        /* Gamepad focus over [OK, Cancel]; A activates only a press that began while this popup was open */
+        private readonly GHGamepadFocusList _gamepadFocus = new GHGamepadFocusList();
+        private bool _gamepadAArmed = false;
+        private int _gamepadAPressId = 0;
+        private bool _gamepadSubscribed = false;
+
         public MessagePopupView()
         {
             InitializeComponent();
+            _gamepadFocus.Add(MessagePopupOkButton, AcceptPopup, () => MessagePopupOkButton.IsVisible && MessagePopupOkButton.IsEnabled);
+            _gamepadFocus.Add(MessagePopupCancelButton, DismissPopup, () => MessagePopupCancelButton.IsVisible && MessagePopupCancelButton.IsEnabled);
 #if GNH_MAUI
             Loaded += OnLoaded;
             Unloaded += OnUnloaded;
@@ -61,6 +69,7 @@ namespace GnollHackX.Controls
         private void OnUnloaded(object sender, EventArgs e)
         {
             GHApp.MaybeWriteGHLog("MessagePopupView.OnUnloaded");
+            UpdateGamepadSubscription(false);
             try
             {
                 if (_parentPage != null)
@@ -86,6 +95,7 @@ namespace GnollHackX.Controls
             else
             {
                 GHApp.MaybeWriteGHLog("MessagePopupView.OnParentSet: False");
+                UpdateGamepadSubscription(false);
                 if (_parentPage != null)
                 {
                     CleanPopup();
@@ -265,6 +275,7 @@ namespace GnollHackX.Controls
                 MessagePopupCancelButton.HorizontalOptions = LayoutOptions.Start;
             }
 
+            ResetGamepadFocus();
             IsVisible = true;
             MessagePopupScrollView.ScrollToAsync(0, 0, false);
             return _messagePopupTcs.Task;
@@ -324,6 +335,7 @@ namespace GnollHackX.Controls
                 MessagePopupCancelButton.HorizontalOptions = LayoutOptions.Start;
             }
 
+            ResetGamepadFocus();
             IsVisible = true;
             MessagePopupScrollView.ScrollToAsync(0, 0, false);
             return _messagePopupTcs.Task;
@@ -462,6 +474,108 @@ namespace GnollHackX.Controls
                 return true;
             }
             return false;
+        }
+
+        protected override void OnPropertyChanged(string propertyName = null)
+        {
+            base.OnPropertyChanged(propertyName);
+            if (propertyName == nameof(IsVisible))
+                UpdateGamepadSubscription(IsVisible);
+        }
+
+        /* Subscribed only while the popup is shown, so the focus ring follows the input mode */
+        private void UpdateGamepadSubscription(bool subscribe)
+        {
+            if (subscribe == _gamepadSubscribed)
+                return;
+            _gamepadSubscribed = subscribe;
+            if (subscribe)
+            {
+                GHGamepadService.StateChanged += GamepadService_StateChanged;
+                _gamepadFocus.RefreshVisuals();
+            }
+            else
+            {
+                GHGamepadService.StateChanged -= GamepadService_StateChanged;
+            }
+        }
+
+        private void GamepadService_StateChanged()
+        {
+            if (IsPopupOpen)
+                _gamepadFocus.RefreshVisuals();
+        }
+
+        /* Initial focus follows the Enter key: Cancel when Enter would not accept, else OK */
+        private void ResetGamepadFocus()
+        {
+            _gamepadAArmed = false;
+            _gamepadFocus.SetFocus(MessagePopupCancelButton.IsVisible && !_acceptEnterSpaceForOkCancel ? 1 : 0);
+        }
+
+        /* Returns true while the popup is open */
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            if (!IsPopupOpen)
+                return false;
+            if (!MessagePopupOkButton.IsVisible && !MessagePopupCancelButton.IsVisible)
+                return true; /* Non-blocking popup */
+
+            if (e.RevealsUi)
+            {
+                if (e.Button == GHGamepadButton.A)
+                    _gamepadAArmed = false;
+                _gamepadFocus.RefreshVisuals();
+                return true;
+            }
+
+            bool isPressOrRepeat = e.Kind == GHGamepadButtonEventKind.Pressed || e.Kind == GHGamepadButtonEventKind.Repeat;
+            switch (e.Button)
+            {
+                case GHGamepadButton.DPadLeft:
+                case GHGamepadButton.LeftStickLeft:
+                    if (isPressOrRepeat)
+                        _gamepadFocus.Move(-1, false);
+                    break;
+                case GHGamepadButton.DPadRight:
+                case GHGamepadButton.LeftStickRight:
+                    if (isPressOrRepeat)
+                        _gamepadFocus.Move(1, false);
+                    break;
+                case GHGamepadButton.A:
+                    if (e.Kind == GHGamepadButtonEventKind.Pressed)
+                    {
+                        _gamepadAArmed = true;
+                        _gamepadAPressId = e.PressId;
+                    }
+                    else if (e.Kind == GHGamepadButtonEventKind.Released)
+                    {
+                        if (e.IsCancelled && e.PressId == _gamepadAPressId)
+                            _gamepadAArmed = false;
+                    }
+                    else if (e.Kind == GHGamepadButtonEventKind.ShortPressed)
+                    {
+                        if (_gamepadAArmed && e.PressId == _gamepadAPressId)
+                        {
+                            _gamepadAArmed = false;
+                            _gamepadFocus.Activate();
+                        }
+                    }
+                    break;
+                case GHGamepadButton.B:
+                    if (e.Kind == GHGamepadButtonEventKind.Pressed)
+                    {
+                        /* Escape semantics */
+                        if (MessagePopupCancelButton.IsVisible)
+                            DismissPopup();
+                        else
+                            AcceptPopup();
+                    }
+                    break;
+                default:
+                    break;
+            }
+            return true;
         }
     }
 }

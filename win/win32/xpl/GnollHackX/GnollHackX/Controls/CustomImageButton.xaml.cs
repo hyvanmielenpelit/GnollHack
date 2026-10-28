@@ -195,6 +195,32 @@ namespace GnollHackX.Controls
         private int _isPressed = 0;
         private bool IsPressed { get { return Interlocked.CompareExchange(ref _isPressed, 0, 0) != 0; } set { Interlocked.Exchange(ref _isPressed, value ? 1 : 0); } }
 
+        /* While the gamepad is the active input, the gamepad focus replaces the pointer hover */
+        private bool _gamepadFocused = false;
+        private bool _gamepadLookActive = false;
+        private bool IsHoverLook { get { return GHGamepadService.IsActive ? _gamepadFocused : _isHovering; } }
+
+        public bool GamepadFocused
+        {
+            get { return _gamepadFocused; }
+            set
+            {
+                bool active = GHGamepadService.IsActive;
+                if (_gamepadFocused == value && _gamepadLookActive == active)
+                    return;
+                _gamepadFocused = value;
+                _gamepadLookActive = active;
+                TextColor = TextColor;
+                customCanvasView.InvalidateSurface();
+            }
+        }
+
+        public void PerformClick()
+        {
+            if (IsEnabled)
+                CustomButton_Clicked(this, EventArgs.Empty);
+        }
+
         public event EventHandler Clicked;
 
         public static readonly BindableProperty ButtonRelativeWidthProperty = BindableProperty.Create(nameof(ButtonRelativeWidthProperty), typeof(double), typeof(CustomImageButton), 10.0 / 12.0);
@@ -211,7 +237,7 @@ namespace GnollHackX.Controls
             if (cib != null && newValue is Color)
             {
                 Color newColor = (Color)newValue;
-                cib.customButton.TextColor = cib._isHoveringEnabled && (!cib._isHovering || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, true) : UIUtils.HoveringColorAdjustment(newColor, true);
+                cib.customButton.TextColor = cib._isHoveringEnabled && (!cib.IsHoverLook || !cib.IsEnabled) ? UIUtils.NonHoveringColorAdjustment(newColor, true) : UIUtils.HoveringColorAdjustment(newColor, true);
             }
         }
 
@@ -226,7 +252,7 @@ namespace GnollHackX.Controls
             set 
             { 
                 SetValue(TextColorProperty, value);
-                customButton.TextColor = _isHoveringEnabled && (!_isHovering || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, true) : UIUtils.HoveringColorAdjustment(value, true);
+                customButton.TextColor = _isHoveringEnabled && (!IsHoverLook || !IsEnabled) ? UIUtils.NonHoveringColorAdjustment(value, true) : UIUtils.HoveringColorAdjustment(value, true);
             }
         }
         public Color NormalTextColor
@@ -331,7 +357,7 @@ namespace GnollHackX.Controls
             float canvaswidth = info.Width; // customCanvasView.CanvasSize.Width;
             float canvasheight = info.Height; // customCanvasView.CanvasSize.Height;
 #if WINDOWS || GNH_AVALONIA
-            SKImage targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : IsPressed && IsEnabled ? GHApp.ButtonSelectedBitmap : _isHovering && IsEnabled ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap;
+            SKImage targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : IsPressed && IsEnabled ? GHApp.ButtonSelectedBitmap : IsHoverLook && IsEnabled ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap;
 #else
             SKImage targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : !IsEnabled ? GHApp.ButtonDisabledBitmap : IsPressed ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap;
 #endif
@@ -350,6 +376,26 @@ namespace GnollHackX.Controls
                     new SKSamplingOptions(SKFilterMode.Linear),
 #endif
                     paint);
+            }
+
+            if (_gamepadFocused && GHGamepadService.IsActive)
+            {
+                /* Gamepad focus: a gold tint and a 3 dp rounded ring, inset within the button */
+                float dpScale = customCanvasView.Width > 0 ? canvaswidth / (float)customCanvasView.Width : 1.0f;
+                float strokeWidth = 3.0f * dpScale;
+                float radius = 0.18f * canvasheight;
+                SKRect ringRect = new SKRect(strokeWidth / 2, strokeWidth / 2, canvaswidth - strokeWidth / 2, canvasheight - strokeWidth / 2);
+                using (SKPaint focusPaint = new SKPaint())
+                {
+                    focusPaint.IsAntialias = true;
+                    focusPaint.Style = SKPaintStyle.Fill;
+                    focusPaint.Color = UIUtils.GamepadFocusTintSKColor;
+                    canvas.DrawRoundRect(ringRect, radius, radius, focusPaint);
+                    focusPaint.Style = SKPaintStyle.Stroke;
+                    focusPaint.StrokeWidth = strokeWidth;
+                    focusPaint.Color = UIUtils.GamepadFocusRingSKColor;
+                    canvas.DrawRoundRect(ringRect, radius, radius, focusPaint);
+                }
             }
         }
     }

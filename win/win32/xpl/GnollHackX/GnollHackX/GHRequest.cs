@@ -119,6 +119,7 @@ namespace GnollHackX
         SetDamageFormula,
         PlayMusic,
         UpdateGameMusic,
+        PlayRadialTickSound,
     }
 
     public struct AddContextMenuData
@@ -209,6 +210,7 @@ namespace GnollHackX
         public int RequestNhColor { get; set; }
         public int RequestGlyph { get; set; }
         public ulong RequestFlags { get; set; }
+        public int RequestDefaultResponse { get; set; }   /* ShowYnResponses: the default answer character, 0 = none */
         public GHMsgHistorySpan MessageHistory { get; set; } = null;
         public GHMsgHistoryItem MessageHistoryItem { get; set; } = null;
         public string Responses { get; set; }
@@ -436,6 +438,11 @@ namespace GnollHackX
             ResponseDescriptions = descriptions;
             IntroLineString = introline;
             RequestFlags = ynflags;
+        }
+        public GHRequest(GHGame ghGame, GHRequestType requesttype, int style, int attr, int color, int glyph, string titlestring, string requeststring, string responses, string descriptions, string introline, ulong ynflags, int defresponse)
+            : this(ghGame, requesttype, style, attr, color, glyph, titlestring, requeststring, responses, descriptions, introline, ynflags)
+        {
+            RequestDefaultResponse = defresponse;
         }
         public GHRequest(GHGame ghGame, GHRequestType requesttype, AddContextMenuData data)
         {

@@ -1738,6 +1738,7 @@ namespace GnollHackX
         MenuCanvas,
         TextCanvas,
         TipCanvas,
+        RadialCanvas,
     }
 
     public enum BorderStyles

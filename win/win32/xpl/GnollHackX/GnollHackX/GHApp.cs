@@ -342,6 +342,9 @@ namespace GnollHackX
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
             ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsShowKeyboardShortcutsDefault);
+            GamepadEnabled = Preferences.Get("GamepadEnabled", true);
+            foreach (GHGamepadButton grip in GamepadGrips)
+                SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));
             UseSingleMoreCommandsPage = Preferences.Get("UseSingleMoreCommandsPage", IsDesktop);
             ShowSkillContextButton = Preferences.Get("ShowSkillContextButton", true);
             ShowPolearmContextButton = Preferences.Get("ShowPolearmContextButton", GHConstants.DefaultShowPolearmContextButton);
@@ -3876,6 +3879,11 @@ namespace GnollHackX
         private static int _disableWindowsKey = 0;
         private static int _defaultVIKeys = 0;
         private static int _showKeyboardShortcuts = 0;
+        private static int _gamepadEnabled = 1;
+        private static int _gamepadGripL4Command = 0;
+        private static int _gamepadGripL5Command = 0;
+        private static int _gamepadGripR4Command = 0;
+        private static int _gamepadGripR5Command = 0;
         private static int _useSingleMoreCommandsPage = 0;
         private static int _showSkillContextButton = 0;
         private static int _showPolearmContextButton = 0;
@@ -3890,6 +3898,77 @@ namespace GnollHackX
         public static bool DisableWindowsKey { get { return Interlocked.CompareExchange(ref _disableWindowsKey, 0, 0) != 0; } set { Interlocked.Exchange(ref _disableWindowsKey, value ? 1 : 0); } }
         public static bool DefaultVIKeys { get { return Interlocked.CompareExchange(ref _defaultVIKeys, 0, 0) != 0; } set { Interlocked.Exchange(ref _defaultVIKeys, value ? 1 : 0); } }
         public static bool ShowKeyboardShortcuts { get { return Interlocked.CompareExchange(ref _showKeyboardShortcuts, 0, 0) != 0; } set { Interlocked.Exchange(ref _showKeyboardShortcuts, value ? 1 : 0); } }
+        /* The Use Controller setting; also applied to GHGamepadService */
+        public static bool GamepadEnabled { get { return Interlocked.CompareExchange(ref _gamepadEnabled, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadEnabled, value ? 1 : 0); GHGamepadService.SetEnabled(value); } }
+        /* A gamepad backend started; independent of the setting */
+        public static bool IsGamepadAvailable { get { return GHGamepadService.IsAvailable; } }
+
+        public static readonly GHGamepadButton[] GamepadGrips = { GHGamepadButton.L4, GHGamepadButton.L5, GHGamepadButton.R4, GHGamepadButton.R5 };
+
+        public static string GamepadGripPreferenceKey(GHGamepadButton grip)
+        {
+            return "GamepadGrip" + grip.ToString() + "Command";
+        }
+
+        /* L4 Apply, L5 Cast, R4 Quick Cast, R5 Quick Zap, as SelectableShortcutButton.GHCommand values */
+        public static int DefaultGamepadGripCommand(GHGamepadButton grip)
+        {
+            switch (grip)
+            {
+                case GHGamepadButton.L4:
+                    return 'a';
+                case GHGamepadButton.L5:
+                    return 'Z';
+                case GHGamepadButton.R4:
+                    return GHUtils.Meta(26);
+                case GHGamepadButton.R5:
+                    return GHUtils.Meta(27);
+                default:
+                    return 0;
+            }
+        }
+
+        /* The GHCommand bound to a grip; 0 is None */
+        public static int GetGamepadGripCommand(GHGamepadButton grip)
+        {
+            switch (grip)
+            {
+                case GHGamepadButton.L4:
+                    return Interlocked.CompareExchange(ref _gamepadGripL4Command, 0, 0);
+                case GHGamepadButton.L5:
+                    return Interlocked.CompareExchange(ref _gamepadGripL5Command, 0, 0);
+                case GHGamepadButton.R4:
+                    return Interlocked.CompareExchange(ref _gamepadGripR4Command, 0, 0);
+                case GHGamepadButton.R5:
+                    return Interlocked.CompareExchange(ref _gamepadGripR5Command, 0, 0);
+                default:
+                    return 0;
+            }
+        }
+
+        /* A command not in GamepadGripCommandItems falls back to the grip's default */
+        public static void SetGamepadGripCommand(GHGamepadButton grip, int command)
+        {
+            int index = GamepadGripCommandIndexInList(command, DefaultGamepadGripCommand(grip));
+            int value = GamepadGripCommandItems[index].GHCommand;
+            switch (grip)
+            {
+                case GHGamepadButton.L4:
+                    Interlocked.Exchange(ref _gamepadGripL4Command, value);
+                    break;
+                case GHGamepadButton.L5:
+                    Interlocked.Exchange(ref _gamepadGripL5Command, value);
+                    break;
+                case GHGamepadButton.R4:
+                    Interlocked.Exchange(ref _gamepadGripR4Command, value);
+                    break;
+                case GHGamepadButton.R5:
+                    Interlocked.Exchange(ref _gamepadGripR5Command, value);
+                    break;
+                default:
+                    break;
+            }
+        }
         public static bool UseSingleMoreCommandsPage { get { return Interlocked.CompareExchange(ref _useSingleMoreCommandsPage, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSingleMoreCommandsPage, value ? 1 : 0); } }
         public static bool ShowSkillContextButton { get { return Interlocked.CompareExchange(ref _showSkillContextButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showSkillContextButton, value ? 1 : 0); } }
         public static bool ShowPolearmContextButton { get { return Interlocked.CompareExchange(ref _showPolearmContextButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showPolearmContextButton, value ? 1 : 0); } }
@@ -5878,6 +5957,34 @@ namespace GnollHackX
             return -1;
         }
 
+        /* The grip picker's items: None (GHCommand 0), then SelectableShortcutButtons */
+        public static readonly List<SelectableShortcutButton> GamepadGripCommandItems = CreateGamepadGripCommandItems();
+
+        private static List<SelectableShortcutButton> CreateGamepadGripCommandItems()
+        {
+            List<SelectableShortcutButton> items = new List<SelectableShortcutButton>(SelectableShortcutButtons.Count + 1);
+            items.Add(new SelectableShortcutButton("None", "None", '\0', false, false, 0, null));
+            items.AddRange(SelectableShortcutButtons);
+            return items;
+        }
+
+        /* The index of cmd in GamepadGripCommandItems, else of defcmd, else 0 (None) */
+        public static int GamepadGripCommandIndexInList(int cmd, int defcmd)
+        {
+            int i;
+            for (i = 0; i < GamepadGripCommandItems.Count; i++)
+            {
+                if (GamepadGripCommandItems[i].GHCommand == cmd)
+                    return i;
+            }
+            for (i = 0; i < GamepadGripCommandItems.Count; i++)
+            {
+                if (GamepadGripCommandItems[i].GHCommand == defcmd)
+                    return i;
+            }
+            return 0;
+        }
+
         public static readonly List<MouseCommandItem> MouseCommandItems = new List<MouseCommandItem>()
         {
             new MouseCommandItem("Default", (int)NhGetPosMods.Default),
@@ -6084,6 +6191,31 @@ namespace GnollHackX
             if (_fmodService != null)
             {
                 _fmodService.PlayUISound(GHConstants.MenuSelectGHSound, GHConstants.MenuSelectEventPath, GHConstants.MenuSelectBankId, GHConstants.MenuSelectVolume, 1.0f);
+            }
+        }
+
+        /* The radial menu's highlight tick: Button Down at a reduced volume */
+        public static void PlayRadialHighlightSound()
+        {
+            var curGame = CurrentGHGame;
+            if (curGame != null)
+                curGame.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.PlayRadialTickSound));
+            else
+                PlayRadialHighlightSoundCore();
+        }
+
+        public static void PlayRadialHighlightSoundCore()
+        {
+            if (_fmodService != null)
+            {
+                try
+                {
+                    _fmodService.PlayUISound(GHConstants.ButtonClickGHSound, GHConstants.ButtonClickEventPath, GHConstants.ButtonClickBankId, GHConstants.RadialMenuHighlightVolume, 1.0f);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
             }
         }
 

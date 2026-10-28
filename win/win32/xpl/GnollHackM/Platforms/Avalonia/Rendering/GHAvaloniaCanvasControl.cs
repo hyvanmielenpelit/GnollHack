@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using GnollHackX;
@@ -46,6 +47,25 @@ namespace GnollHackM
         /* Touch ids ACM has raised Pressed for; UI thread only */
         private readonly GHAvaloniaTouchTracker _touchTracker = new GHAvaloniaTouchTracker();
 
+        /* Set by GHAvaloniaGamepad around GHGamepadService.Poll: requests made inside the frame callback are
+           collected and painted once each by FlushDeferredPaints; UI thread */
+        public static bool DeferImmediatePaint = false;
+        private static readonly List<GHAvaloniaCanvasControl> _deferredPaints = new List<GHAvaloniaCanvasControl>();
+
+        // WORKAROUND(WA-AVALONIA-0021): An animation frame that commits nothing waits for a 16 ms timer
+        /* Paints the views whose requests DeferImmediatePaint collected, still inside the frame callback; UI thread */
+        public static void FlushDeferredPaints()
+        {
+            int i;
+            for (i = 0; i < _deferredPaints.Count; i++)
+            {
+                GHAvaloniaCanvasControl control = _deferredPaints[i];
+                if (!control._isPainting)
+                    control.PaintIfRequested();
+            }
+            _deferredPaints.Clear();
+        }
+
         /* Marks the view dirty and posts one paint unless one is already posted; any thread */
         public void RequestPaint()
         {
@@ -55,6 +75,12 @@ namespace GnollHackM
                frame commits it */
             if (GHAvaloniaFrameLoop.IsInFrameCallback && !_isPainting && AvDispatcher.UIThread.CheckAccess())
             {
+                if (DeferImmediatePaint)
+                {
+                    if (!_deferredPaints.Contains(this))
+                        _deferredPaints.Add(this);
+                    return;
+                }
                 PaintIfRequested();
                 return;
             }

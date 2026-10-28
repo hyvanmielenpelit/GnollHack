@@ -20,6 +20,11 @@ namespace GnollHackX
 
         public readonly float GeneralVolume, MusicVolume, AmbientVolume, DialogueVolume, EffectsVolume, GameUIVolume;
 
+        /* GetChar and Location only. 0: untagged, consumed by whatever wait reads it. Positive: the key wait serial
+           this answer is for, dropped unless that wait is current and still unanswered. Negative: the rest of a
+           sequence whose first key carried the positive serial, dropped when that first key was dropped. */
+        public int WaitSerial;
+
         public GHResponse()
         {
 

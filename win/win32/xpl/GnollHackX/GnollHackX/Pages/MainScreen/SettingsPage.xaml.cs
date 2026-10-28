@@ -314,6 +314,12 @@ namespace GnollHackX.Pages.MainScreen
             FullCommandBarButton12Picker.ItemDisplayBinding = new Binding("Name");
             FullCommandBarButton13Picker.ItemDisplayBinding = new Binding("Name");
 
+            foreach (Picker gripPicker in GamepadGripPickers)
+            {
+                gripPicker.ItemsSource = GHApp.GamepadGripCommandItems;
+                gripPicker.ItemDisplayBinding = new Binding("Name");
+            }
+
             EngraveQuickTextValidationExpression = new Regex(@"^[\x20-\x7E]{0," + GHConstants.MaxEngraveQuickTextLength + "}$");
             XlogUserNameValidationExpression = new Regex(@"^[A-Za-z0-9_]{1," + GHConstants.MaxXlogUserNameLength + "}$");
             BonesAllowedUsersValidationExpression = new Regex(@"^([A-Za-z0-9_]*[ \,]+)*([A-Za-z0-9_]*)?$");
@@ -1155,6 +1161,8 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.ShowKeyboardShortcuts = ShowKeyboardShortcutsSwitch.IsToggled;
             Preferences.Set("ShowKeyboardShortcuts", ShowKeyboardShortcutsSwitch.IsToggled);
+
+            SaveGamepadSettings();
             
             GHApp.UseSingleMoreCommandsPage = UseSingleMoreCommandsPageSwitch.IsToggled;
             Preferences.Set("UseSingleMoreCommandsPage", UseSingleMoreCommandsPageSwitch.IsToggled);
@@ -2226,7 +2234,52 @@ namespace GnollHackX.Pages.MainScreen
             ShowPolearmContextButtonSwitch.IsToggled = polearmbutton;
             EquipmentFlipAnimationSwitch.IsToggled = equipmentflipanimation;
             ShowEquipmentIconsSwitch.IsToggled = showequipmenticons;
+            SetGamepadInitialValues();
             _doChangeVolume = true; // !GHApp.IsMuted;
+        }
+
+        /* In the order of GHApp.GamepadGrips */
+        private Picker[] GamepadGripPickers
+        {
+            get { return new Picker[] { GamepadGripL4Picker, GamepadGripL5Picker, GamepadGripR4Picker, GamepadGripR5Picker }; }
+        }
+
+        /* The Controller section is shown whenever a gamepad backend runs, whatever the Use Controller setting,
+           so that the setting can always be turned back on; the grip pickers only when grips exist */
+        private void SetGamepadInitialValues()
+        {
+            bool available = GHApp.IsGamepadAvailable;
+            GamepadSettingsLayout.IsVisible = available;
+            GamepadGripLayout.IsVisible = available && GHGamepadService.Capabilities.HasGrips;
+            GamepadEnabledSwitch.IsToggled = GHApp.GamepadEnabled;
+
+            Picker[] pickers = GamepadGripPickers;
+            int i;
+            for (i = 0; i < pickers.Length && i < GHApp.GamepadGrips.Length; i++)
+            {
+                GHGamepadButton grip = GHApp.GamepadGrips[i];
+                pickers[i].SelectedIndex = GHApp.GamepadGripCommandIndexInList(GHApp.GetGamepadGripCommand(grip), GHApp.DefaultGamepadGripCommand(grip));
+            }
+        }
+
+        /* Applied at once: the switch through GHApp.GamepadEnabled, which also sets GHGamepadService */
+        private void SaveGamepadSettings()
+        {
+            GHApp.GamepadEnabled = GamepadEnabledSwitch.IsToggled;
+            Preferences.Set("GamepadEnabled", GamepadEnabledSwitch.IsToggled);
+
+            Picker[] pickers = GamepadGripPickers;
+            int i;
+            for (i = 0; i < pickers.Length && i < GHApp.GamepadGrips.Length; i++)
+            {
+                int index = pickers[i].SelectedIndex;
+                if (index < 0 || index >= GHApp.GamepadGripCommandItems.Count)
+                    continue;
+                GHGamepadButton grip = GHApp.GamepadGrips[i];
+                int command = GHApp.GamepadGripCommandItems[index].GHCommand;
+                GHApp.SetGamepadGripCommand(grip, command);
+                Preferences.Set(GHApp.GamepadGripPreferenceKey(grip), command);
+            }
         }
 
 #if GNH_AVALONIA && LINUX

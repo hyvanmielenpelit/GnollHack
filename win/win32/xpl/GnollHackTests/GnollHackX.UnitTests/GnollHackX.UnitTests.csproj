@@ -46,6 +46,25 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\GHSaveFileTrackingResults.cs" Link="Shared\GHSaveFileTrackingResults.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHBonesFiles.cs" Link="Shared\GHBonesFiles.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHMapFps.cs" Link="Shared\GHMapFps.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadTypes.cs" Link="Shared\GHGamepadTypes.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHEvdevProtocol.cs" Link="Shared\GHEvdevProtocol.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHEvdevDeviceFilter.cs" Link="Shared\GHEvdevDeviceFilter.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHSteamVirtualGamepadInfo.cs" Link="Shared\GHSteamVirtualGamepadInfo.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadMath.cs" Link="Shared\GHGamepadMath.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadButtonTracker.cs" Link="Shared\GHGamepadButtonTracker.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadControllerSelector.cs" Link="Shared\GHGamepadControllerSelector.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadGlyphs.cs" Link="Shared\GHGamepadGlyphs.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadStateDiffer.cs" Link="Shared\GHGamepadStateDiffer.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHEvdevDecoder.cs" Link="Shared\GHEvdevDecoder.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadPressRouter.cs" Link="Shared\GHGamepadPressRouter.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadKeyMap.cs" Link="Shared\GHGamepadKeyMap.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadKeyBridge.cs" Link="Shared\GHGamepadKeyBridge.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialTuning.cs" Link="Shared\GHRadialTuning.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialGeometry.cs" Link="Shared\GHRadialGeometry.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialSelector.cs" Link="Shared\GHRadialSelector.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialSlotAssigner.cs" Link="Shared\GHRadialSlotAssigner.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialMenuModel.cs" Link="Shared\GHRadialMenuModel.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialMenuState.cs" Link="Shared\GHRadialMenuState.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Android\FrameworkObjectDisposedFilter.cs" Link="Shared\FrameworkObjectDisposedFilter.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Avalonia\GHRefreshRateEstimator.cs" Link="Shared\GHRefreshRateEstimator.cs" />
   </ItemGroup>
