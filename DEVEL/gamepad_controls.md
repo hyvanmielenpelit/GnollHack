@@ -23,10 +23,13 @@ View is Back and Menu is Start. The on-screen hints draw the glyphs of the contr
 A long press is 0.5 s. The D-pad, L1/R1 and stick directions repeat while held (0.4 s, then
 every 0.09 s) where they navigate.
 
-**Scope of this round.** Gamepad input is dropped while no game is running (the main menu).
-Pages over the game other than the game menu (Settings, Wiki, Library, the name page) get only
-a keyboard adapter: A is Enter, B is Escape, directions are arrow keys, L1/R1 are Page Up and
-Page Down. Starting a game and changing the grip bindings on the Deck use the touchscreen.
+**Pages outside the game.** The main menu and the About, Reset, Import/Export, Vault and Version
+pages work like the game menu: the D-pad or left stick moves a focus ring over the buttons, A
+presses the focused button and B goes back (on the main menu B does nothing; its in-page popups
+take A and B as well). The main menu starts on Play Game, and the Reset page starts on Close.
+Pages with switches, pickers, text entry or list rows (Settings, the name page, Library and
+similar) get a keyboard adapter instead: A is Enter, B is Escape (closes the page), directions
+are arrow keys, L1/R1 are Page Up and Page Down.
 
 ### On the Map
 
@@ -38,11 +41,11 @@ the other button is pressed, and the hint strip shows the layer while a modifier
 | Control | Alone | L1 held | R1 held | L1 + R1 held |
 |---------|-------|---------|---------|--------------|
 | A | **Context command**: nothing when there is none, runs it when there is exactly one, opens the Actions radial when there are several | Open the **commands radial** | -- | **Repeat** |
-| B | Cancel: close an overlay, else Escape; interrupts running and other occupations | Wait | -- | -- |
+| B | Cancel: close an overlay, else Escape; interrupts running and other occupations | Wait | -- | Rest |
 | X | Pick up | Pick and Stash | -- | -- |
 | Y | Search | Search 20 times | -- | -- |
 | R2 | Fire | Swap weapons | -- | -- |
-| L2 | Kick | Kick | Kick | Kick |
+| L2 | Kick | Kick | Cast a spell | Kick |
 | Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
 | View | Inventory | -- | Equipment (all equipment in use) | -- |
 | D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, Left toggles the minimap, Right returns to normal zoom | -- |
@@ -77,11 +80,12 @@ The radials stay open until an item is chosen or they are closed.
 - **A** activates it, **B** closes the radial (R3 also closes the Toggles radial), **L1/R1** change page.
   **Menu** closes the radial and opens the game menu.
 - **Toggles radial (R3):** More Messages, Extended Status Bar, Auto-Center, Look Mode,
-  Auto-Dig, Ignore Stopping, and the action **Center on Hero**, which recenters the map and
-  closes the radial. Toggling an option leaves the radial open.
+  Auto-Dig and Ignore Stopping. Toggling an option leaves the radial open.
 - **Actions radial** (A with several context commands, or L1 + A for the commands pages):
   the context buttons plus Skills, Polearm and Wield Last/Unwield (eight slots per page, overflowing onto further pages), then the **commands pages**:
-  every command of the single commands page in alphabetical order, eight per page with no gaps.
+  Rest, Search 20 and Extended first, then every other command of the single commands page in
+  alphabetical order, eight per page with no gaps. The hub shows the page number above the page
+  name.
   **X** switches between the context page and the first commands page; L1/R1 page.
 
 After a radial closes, both sticks stay disarmed until they return to center.
@@ -103,7 +107,9 @@ menu follow the same rules:
 | L2 / R2 | Menus: first or last row |
 
 A y/n prompt starts with the focus on its default answer, or on the leftmost button when it
-has none. Touch, moving the mouse or pressing a keyboard key leaves controller mode until the
+has none; Y answers Yes and X answers No when the prompt offers them. In an inventory or
+equipment menu, Menu flips between the item list and the equipment view, like the flip button;
+on the equipment view B closes the menu. Touch, moving the mouse or pressing a keyboard key leaves controller mode until the
 controller is used again; tapping a menu row moves the focus there.
 
 ## Steam Input

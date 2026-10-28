@@ -93,7 +93,9 @@ namespace GnollHackX
        group, which PrevGroup and NextGroup skip over. */
     public sealed class GHRadialPage
     {
-        public string Title;
+        public string Title;            /* the full title, counter included: "Commands 3/7" */
+        public string Name;             /* the title without its counter: "Commands" */
+        public string Counter;          /* the page's place in its run: "3/7"; null when it has none */
         public string Group;
         public int GroupIndex;
         public string EmptyText;        /* the hub text when no slot is filled */
@@ -104,9 +106,15 @@ namespace GnollHackX
             if (slotCount < 1)
                 slotCount = 1;
             Title = title;
+            Name = title;
             Group = title;
             Slots = new GHRadialItem[slotCount];
         }
+
+        public bool HasCounter { get { return !string.IsNullOrEmpty(Counter); } }
+
+        /* The name the hub shows below the counter, or the whole title when there is no counter */
+        public string DisplayName { get { return HasCounter ? (Name ?? "") : Title; } }
 
         public int SlotCount { get { return Slots.Length; } }
 
@@ -202,6 +210,30 @@ namespace GnollHackX
         public bool IsSwitchedSetPage(int pageIndex)
         {
             return SwitchSetPageIndex > 0 && pageIndex >= SwitchSetPageIndex;
+        }
+
+        /* The set of pages that pageIndex belongs to: the pages before SwitchSetPageIndex, or the
+           pages from it on; every page when SwitchSetPageIndex is unused. The page dots count
+           within this set. */
+        public void GetSetRange(int pageIndex, out int first, out int count)
+        {
+            int total = PageCount;
+            if (SwitchSetPageIndex > 0 && SwitchSetPageIndex < total)
+            {
+                if (pageIndex >= SwitchSetPageIndex)
+                {
+                    first = SwitchSetPageIndex;
+                    count = total - SwitchSetPageIndex;
+                }
+                else
+                {
+                    first = 0;
+                    count = SwitchSetPageIndex;
+                }
+                return;
+            }
+            first = 0;
+            count = total;
         }
     }
 }

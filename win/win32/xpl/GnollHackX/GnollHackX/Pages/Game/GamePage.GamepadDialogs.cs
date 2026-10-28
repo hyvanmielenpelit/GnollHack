@@ -214,7 +214,8 @@ namespace GnollHackX.Pages.Game
             bool isStep = isPress || (e.Kind == GHGamepadButtonEventKind.Repeat && armed);
             bool isTap = e.Kind == GHGamepadButtonEventKind.ShortPressed && armed;
             bool isLong = e.Kind == GHGamepadButtonEventKind.LongPressed && armed;
-            if (isLong)
+            /* Only A has a long-press action; the other buttons stay armed, so their repeats continue past it */
+            if (isLong && e.Button == GHGamepadButton.A)
                 _gamepadDialogArmedToken[b] = -1;
 
             switch (ctx)
@@ -428,11 +429,37 @@ namespace GnollHackX.Pages.Game
                         YnButton_Pressed(null, null, GHConstants.CancelChar);
                     }
                     return;
+                case GHGamepadButton.Y:
+                case GHGamepadButton.X:
+                    /* Y answers yes and X no when the prompt offers that answer */
+                    if (isPress)
+                    {
+                        LabeledImageButton answer = FindYnGamepadAnswerButton(button == GHGamepadButton.Y ? 'y' : 'n');
+                        if (answer != null)
+                        {
+                            MarkGamepadDialogAnswered(token);
+                            YnButton_Pressed(null, null, answer.GHCommand);
+                        }
+                    }
+                    return;
                 default:
                     return;
             }
             if (dir != 0 && isStep)
                 _ynGamepadFocus.Move(dir, isDPad && isPress);
+        }
+
+        /* The visible and enabled y/n button whose response is the letter, or null */
+        private LabeledImageButton FindYnGamepadAnswerButton(char letter)
+        {
+            LabeledImageButton[] buttons = { ZeroButton, FirstButton, SecondButton, ThirdButton, FourthButton };
+            int i;
+            for (i = 0; i < buttons.Length; i++)
+            {
+                if (buttons[i].IsVisible && buttons[i].IsEnabled && buttons[i].BtnLetter == letter)
+                    return buttons[i];
+            }
+            return null;
         }
 
         private void HandleGetLineGamepadButton(GHGamepadButton button, bool isPress, bool isTap)
@@ -1041,13 +1068,20 @@ namespace GnollHackX.Pages.Game
         private void HandleMenuGamepadButton(GHGamepadButton button, int token, bool isPress, bool isStep, bool isTap,
             bool isLong)
         {
-            /* The equipment side has no gamepad navigation: any press turns to the list side */
+            /* The equipment side has no gamepad navigation: Menu turns to the list side, B cancels the menu and the
+               other buttons are swallowed */
             if (MenuEquipmentSideShown)
             {
-                if (isPress && MenuFlipButton.IsEnabled)
+                if (button == GHGamepadButton.Menu && isPress && IsMenuGamepadFlipAvailable())
                 {
                     FlipMenuCanvas();
+                    /* The focus resolves, or scrolls into view, once the list side has been painted */
                     Interlocked.Exchange(ref _menuGamepadFocusPending, 1);
+                }
+                else if (button == GHGamepadButton.B && isPress && MenuCancelButton.IsEnabled)
+                {
+                    MarkGamepadDialogAnswered(token);
+                    PressMenuCancelButton();
                 }
                 return;
             }
@@ -1164,9 +1198,20 @@ namespace GnollHackX.Pages.Game
                         PressMenuCancelButton();
                     }
                     break;
+                case GHGamepadButton.Menu:
+                    /* Menu turns to the equipment side, as the flip button does */
+                    if (isPress && IsMenuGamepadFlipAvailable())
+                        FlipMenuCanvas();
+                    break;
                 default:
                     break;
             }
+        }
+
+        /* The menu's flip button is shown and not in the middle of a flip */
+        private bool IsMenuGamepadFlipAvailable()
+        {
+            return MenuFlipButton.IsVisible && MenuFlipButton.IsEnabled;
         }
 
         /* Hints */
@@ -1180,7 +1225,11 @@ namespace GnollHackX.Pages.Game
                 case GHGamepadDialogContext.Menu:
                     signature = signature * 31 + MenuGamepadFocusIndex;
                     signature = signature * 31 + (MenuOKButton.IsEnabled ? 1 : 0) + (_unselectOnTap ? 2 : 0)
-                        + (MenuEquipmentSideShown ? 4 : 0);
+                        + (MenuEquipmentSideShown ? 4 : 0) + (MenuFlipButton.IsVisible ? 8 : 0);
+                    break;
+                case GHGamepadDialogContext.Yn:
+                    signature = signature * 31 + (FindYnGamepadAnswerButton('y') != null ? 1 : 0)
+                        + (FindYnGamepadAnswerButton('n') != null ? 2 : 0);
                     break;
                 case GHGamepadDialogContext.GetLine:
                     signature = signature * 31 + (GetLineQuestionMarkButton.IsVisible ? 1 : 0)
@@ -1217,6 +1266,10 @@ namespace GnollHackX.Pages.Game
                 case GHGamepadDialogContext.Yn:
                     hints.Add(new GHGamepadHint(GHGamepadButton.A, "Select", false));
                     hints.Add(new GHGamepadHint(GHGamepadButton.B, "Cancel", false));
+                    if (FindYnGamepadAnswerButton('y') != null)
+                        hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Yes", false));
+                    if (FindYnGamepadAnswerButton('n') != null)
+                        hints.Add(new GHGamepadHint(GHGamepadButton.X, "No", false));
                     break;
                 case GHGamepadDialogContext.GetLine:
                     hints.Add(new GHGamepadHint(GHGamepadButton.A, "OK", false));
@@ -1244,9 +1297,13 @@ namespace GnollHackX.Pages.Game
 
         private void AddMenuGamepadHints(List<GHGamepadHint> hints)
         {
+            /* The flip button's visibility, not its state, so that the hints do not change during a flip */
+            bool canFlip = MenuFlipButton.IsVisible;
             if (MenuEquipmentSideShown)
             {
-                hints.Add(new GHGamepadHint(GHGamepadButton.A, "Item list", false));
+                if (canFlip)
+                    hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Inventory", false));
+                hints.Add(new GHGamepadHint(GHGamepadButton.B, "Cancel", false));
                 return;
             }
             var items = MenuCanvas.MenuItems;
@@ -1258,6 +1315,8 @@ namespace GnollHackX.Pages.Game
                 if (MenuOKButton.IsEnabled)
                     hints.Add(new GHGamepadHint(GHGamepadButton.A, "OK", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.B, "Close", false));
+                if (canFlip)
+                    hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Equipment", false));
                 return;
             }
 
@@ -1287,6 +1346,8 @@ namespace GnollHackX.Pages.Game
                 if (MenuHasSectionHeaders(items))
                     hints.Add(new GHGamepadHint(GHGamepadButton.RB, "Section", false));
             }
+            if (canFlip)
+                hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Equipment", false));
         }
     }
 }

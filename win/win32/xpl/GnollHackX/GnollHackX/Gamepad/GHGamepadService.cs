@@ -14,9 +14,10 @@ namespace GnollHackX
     /* The gamepad hub, on the UI thread. Poll pumps every backend, gates input on the window being active,
        the app not being suspended, the keyboard hook being enabled and the Use Controller setting, resyncs
        after a stall, tracks presses, derives LT/RT and the virtual stick directions from the active
-       controller, and routes button events and then the stick snapshot to the top page. Routing: no game
-       page drops everything; an open message popup gets the event (IGHGamepadPopupPage, else B Pressed as
-       Escape and A ShortPressed as Enter); else an IGHGamepadHandlingPage; else the keyboard adapter.
+       controller, and routes button events and then the stick snapshot to the top page: the top modal page,
+       else the game page, else the main page, in or out of a game. Routing: an open message popup gets the
+       event (IGHGamepadPopupPage, else B Pressed as Escape and A ShortPressed as Enter); else an
+       IGHGamepadHandlingPage; else the keyboard adapter.
        Presses are captured per (top page, popup open). Every Poll ends with the game page's frame tick. */
     public static class GHGamepadService
     {
@@ -481,16 +482,18 @@ namespace GnollHackX
                 RaiseStateChanged();
         }
 
-        /* The top page and whether its message popup is open; null outside a game */
+        /* The top modal page, else the game page, else the main page, and whether its message popup is open;
+           null before the main page exists */
         private static object GetTarget(out bool popupOpen)
         {
             popupOpen = false;
-            GamePage gamePage = GHApp.CurrentGamePage;
-            if (gamePage == null)
-                return null;
             Page top = GHApp.PageFromTopOfModalNavigationStack();
             if (top == null)
-                top = gamePage;
+                top = GHApp.CurrentGamePage;
+            if (top == null)
+                top = GHApp.CurrentMainPage;
+            if (top == null)
+                return null;
             IMessagePopupPage popupPage = top as IMessagePopupPage;
             popupOpen = popupPage != null && popupPage.IsPopupOpen;
             return top;

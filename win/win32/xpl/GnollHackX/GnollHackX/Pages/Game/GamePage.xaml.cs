@@ -5039,9 +5039,6 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            /* The equipment side has no gamepad navigation, so the gamepad starts on the list side */
-            if (GHGamepadService.IsActive && MenuEquipmentSideShown && MenuFlipButton.IsEnabled)
-                MenuEquipmentSideShown = false;
             InitMenuGamepadFocus();
 
             //if (PlayingReplay)

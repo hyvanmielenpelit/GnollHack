@@ -111,6 +111,7 @@ namespace GnollHackX
         private SKTypeface _layoutDescriptionTypeface;
         private float[] _pageTitleSizes = new float[0];
         private float[] _hubIdleTitleSizes = new float[0];
+        private float[] _hubCounterSizes = new float[0];
         private float[] _emptyTextSizes = new float[0];
         private string[] _chipTitles = new string[0];
         private bool _chipsVisible;
@@ -529,23 +530,39 @@ namespace GnollHackX
             }
             bool showSecondary = empty && def.SwitchSetPageIndex > 0 && !def.IsSwitchedSetPage(pageIndex) && !string.IsNullOrEmpty(def.SecondaryHint);
 
+            /* The counter ("3/7") on its own line above the page name, when the page has one */
+            bool showCounter = page.HasCounter;
             float titleSize = pageIndex < _hubIdleTitleSizes.Length ? _hubIdleTitleSizes[pageIndex] : g.HubTitleFontSize;
+            float counterSize = pageIndex < _hubCounterSizes.Length ? _hubCounterSizes[pageIndex] : (float)(GHRadialTuning.HubCounterOfTitleFont * g.HubTitleFontSize);
             float titleAscent;
+            float counterAscent = 0f;
             float lineAscent = 0f;
+            float counterH = 0f;
             float lineH = 0f;
             float hintH = 0f;
             float titleH = LineHeight(TitleTypeface, titleSize, out titleAscent);
+            if (showCounter)
+                counterH = LineHeight(TitleTypeface, counterSize, out counterAscent);
             if (!string.IsNullOrEmpty(line2))
                 lineH = LineHeight(LabelTypeface, size2, out lineAscent);
             if (showSecondary)
                 hintH = LineHeight(LabelTypeface, g.HintFontSize, out _) * 1.3f;
-            float y = g.CenterY - (titleH + lineH + hintH) / 2;
+            float y = g.CenterY - (counterH + titleH + lineH + hintH) / 2;
             float cx = g.CenterX;
+
+            if (showCounter)
+            {
+                _textPaint.Typeface = TitleTypeface;
+                _textPaint.TextSize = counterSize;
+                _textPaint.Color = LighterGray;
+                DrawCentered(canvas, page.Counter, cx, y + counterAscent, snap);
+                y += counterH;
+            }
 
             _textPaint.Typeface = TitleTypeface;
             _textPaint.TextSize = titleSize;
             _textPaint.Color = SKColors.White;
-            DrawCentered(canvas, page.Title, cx, y + titleAscent, snap);
+            DrawCentered(canvas, page.DisplayName, cx, y + titleAscent, snap);
             y += titleH;
 
             if (lineH > 0f)
@@ -592,7 +609,10 @@ namespace GnollHackX
                 DrawCentered(canvas, page.Title, g.CenterX, g.PageTitleBaselineY, snap);
             }
 
-            int count = def.PageCount;
+            /* One dot per page of the current page's set, so that a set's first page lights the
+               first dot */
+            int first, count;
+            def.GetSetRange(pageIndex, out first, out count);
             if (count <= 1)
                 return;
             int i;
@@ -600,7 +620,7 @@ namespace GnollHackX
             {
                 float x, y;
                 g.GetDotCenter(i, count, out x, out y);
-                bool current = i == pageIndex;
+                bool current = first + i == pageIndex;
                 _plainFill.Color = (current ? SKColors.LightGreen : SKColors.White).WithAlpha(a);
                 canvas.DrawCircle(x, y, current ? g.DotRadius * 2 : g.DotRadius, _plainFill);
             }
@@ -739,10 +759,20 @@ namespace GnollHackX
             layout.HubTitleSize = FitSize(item.Label, TitleTypeface, g.HubTitleFontSize, titleMin, hubWidth);
             layout.HubTitle = Ellipsize(item.Label, TitleTypeface, layout.HubTitleSize, hubWidth);
 
+            /* A description that only repeats the label gets no lines; DrawHubItem centers the lines that remain */
             float descWidth = (float)(GHRadialTuning.HubDescriptionWidthOfHubDiameter * 2 * g.HubRadius);
-            layout.DescriptionLineCount = WrapText(item.Description, DescriptionTypeface, g.HubDescriptionFontSize, descWidth, layout.DescriptionLines);
+            layout.DescriptionLineCount = IsDescriptionRedundant(item.Description, item.Label) ? 0
+                : WrapText(item.Description, DescriptionTypeface, g.HubDescriptionFontSize, descWidth, layout.DescriptionLines);
             _itemLayouts[item] = layout;
             return layout;
+        }
+
+        /* Empty, or the label again once both are trimmed */
+        private static bool IsDescriptionRedundant(string description, string label)
+        {
+            if (string.IsNullOrWhiteSpace(description))
+                return true;
+            return label != null && string.Equals(description.Trim(), label.Trim(), StringComparison.Ordinal);
         }
 
         private void EnsureLayouts(GHRadialMenuDefinition def, GHRadialGeometry g)
@@ -774,16 +804,20 @@ namespace GnollHackX
             int count = def.PageCount;
             _pageTitleSizes = new float[count];
             _hubIdleTitleSizes = new float[count];
+            _hubCounterSizes = new float[count];
             _emptyTextSizes = new float[count];
             _chipTitles = new string[count];
             _idleTextBaseSize = g.HubDescriptionFontSize;
+            float counterBase = (float)(GHRadialTuning.HubCounterOfTitleFont * g.HubTitleFontSize);
             int i;
             for (i = 0; i < count; i++)
             {
                 GHRadialPage page = def.Pages[i];
                 string title = page == null ? null : page.Title;
                 _pageTitleSizes[i] = FitSize(title, TitleTypeface, g.PageTitleFontSize, g.PageTitleFontSize * 0.6f, pageTitleMax);
-                _hubIdleTitleSizes[i] = FitSize(title, TitleTypeface, g.HubTitleFontSize, titleMin, hubWidth);
+                /* The hub shows the name, with the counter on a line of its own above it */
+                _hubIdleTitleSizes[i] = FitSize(page == null ? null : page.DisplayName, TitleTypeface, g.HubTitleFontSize, titleMin, hubWidth);
+                _hubCounterSizes[i] = FitSize(page == null ? null : page.Counter, TitleTypeface, counterBase, counterBase * 0.6f, hubWidth);
                 _emptyTextSizes[i] = FitSize(page == null ? null : page.EmptyText, LabelTypeface, _idleTextBaseSize, _idleTextBaseSize * 0.7f, hubWidth);
                 _chipTitles[i] = _chipsVisible ? Ellipsize(title, LabelTypeface, g.HintFontSize, chipMax) : null;
             }

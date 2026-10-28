@@ -36,7 +36,8 @@ namespace GnollHackX
         public static readonly int ContextSlotCount = 8;
         public static readonly int CrowdedSlotCount = 8;            /* context pages stay at 8 slots and overflow onto further pages */
         public static readonly int MaxSlotCount = 12;
-        public static readonly int[] FixedPageSlotCounts = { 6, 8, 12 };
+        public static readonly int[] FixedPageSlotCounts = { 6, 8, 12 };    /* the slot counts radial pages may have */
+        public static readonly int FixedPageMinSlotCount = 8;       /* fixed-direction pages keep E and W even when six items would fit in 6 */
         public static readonly int MorePageSlotCount = 12;
         public static readonly int CommandPageSlotCount = 8;        /* packed commands pages: one item per stick direction */
         public static readonly int MoreColumns = 4;
@@ -59,7 +60,8 @@ namespace GnollHackX
         public static readonly double PolearmAngle = 315.0;
         public static readonly double WieldLastAngle = 225.0;
 
-        /* L3 toggles and the Center on Hero action */
+        /* Toggles radial directions; at 8 slots they take N, NE, SE, S, SW and NW, and an action
+           item such as Center on Hero takes E */
         public static readonly double ExtendedStatusBarAngle = 0.0;
         public static readonly double AutoCenterAngle = 60.0;
         public static readonly double CenterOnHeroAngle = 90.0;
@@ -87,6 +89,7 @@ namespace GnollHackX
         public static readonly double LabelLineHeight = 1.25;           /* of the label font size */
         public static readonly double HubTitleFont = 0.085;
         public static readonly double HubTitleMinOfFont = 0.6;
+        public static readonly double HubCounterOfTitleFont = 0.7;     /* the page counter above the page name in the hub */
         public static readonly double HubTitleWidthOfHubDiameter = 0.86;
         public static readonly double HubDescriptionFont = 0.052;
         public static readonly double HubDescriptionWidthOfHubDiameter = 0.8;

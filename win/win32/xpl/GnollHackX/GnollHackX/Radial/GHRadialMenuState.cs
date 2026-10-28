@@ -380,9 +380,12 @@ namespace GnollHackX
                 if (target >= 0 && target < PageCount)
                     return GoToPage(target, nowTicks);
             }
-            int dot = _geometry.HitTestDot(x, y, PageCount);
+            /* The dots show the current page's set only */
+            int setFirst, setCount;
+            _def.GetSetRange(_pageIndex, out setFirst, out setCount);
+            int dot = _geometry.HitTestDot(x, y, setCount);
             if (dot >= 0)
-                return GoToPage(dot, nowTicks);
+                return GoToPage(setFirst + dot, nowTicks);
 
             float r;
             double a;

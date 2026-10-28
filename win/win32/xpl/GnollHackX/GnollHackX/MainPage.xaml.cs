@@ -52,7 +52,7 @@ using GnollHackX.Controls;
 namespace GnollHackX
 #endif
 {
-    public partial class MainPage : CustomContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
+    public partial class MainPage : CustomContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage, IGHGamepadHandlingPage
     {
         //private readonly object _generalTimerLock = new object();
         private int _generaTimerIsOn = 0;
@@ -75,6 +75,7 @@ namespace GnollHackX
         {
             GHApp.MaybeWriteGHLog("MainPage constructor: " + GHApp.MainPageConstructorRunNumber, true, GHConstants.SentryGnollHackGeneralCategoryName);
             InitializeComponent();
+            InitializeGamepadNavigation();
             GHApp.CurrentMainPage = this;
             GamePage gamePage = GHApp.CurrentGamePage;
             if (gamePage != null) /* Might be non-null and stale after a restart */
@@ -883,6 +884,7 @@ namespace GnollHackX
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+            _gamepadNavigator.Attach();
             UpdateLayout();
             GHGame curGame = GHApp.CurrentGHGame;
             if (_firsttime && (curGame != null || GHApp.MainPageConstructorRunNumber > 1)) // Restart
@@ -2090,6 +2092,7 @@ namespace GnollHackX
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _gamepadNavigator.Detach();
             carouselView.Stop();
         }
 
@@ -2651,6 +2654,79 @@ namespace GnollHackX
                 Debug.WriteLine(ex);
             }
             return handled;
+        }
+
+        /* Gamepad focus: the upper buttons and Play Game, and each in-page popup's buttons while it is shown, in
+           the order the special-key handler checks them; B on a popup acts as Escape, on the main buttons nothing */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            _gamepadNavigator.IsBusy = () => WaitLayout.IsVisible;
+
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddButton(ResetButton);
+            main.AddButton(VaultButton);
+            main.AddButton(OptionsButton);
+            main.AddButton(SettingsButton);
+            main.AddButton(AboutButton);
+            main.AddButton(ExitButton);
+            main.AddButton(StartLocalGameButton);
+            main.SetInitialFocus(StartLocalGameButton);
+
+            GHGamepadPageNavigator.Layer layer = _gamepadNavigator.AddOverlay(() => PendingTasksGrid.IsVisible);
+            layer.AddButton(PendingTasksOkButton);
+            layer.AddButton(PendingTasksCancelButton);
+            layer.HorizontalMoves = true;
+            layer.Back = GamepadPopupBack;
+
+            layer = _gamepadNavigator.AddOverlay(() => AchievementGrid.IsVisible);
+            layer.AddButton(AchievementOkButton);
+            layer.ScrollView = AchievementScrollView;
+            layer.ScrollsContent = true;
+            layer.Back = GamepadPopupBack;
+
+            layer = _gamepadNavigator.AddOverlay(() => TierGrid.IsVisible);
+            layer.AddButton(TierOkButton);
+            layer.Back = GamepadPopupBack;
+
+            layer = _gamepadNavigator.AddOverlay(() => EventGrid.IsVisible);
+            layer.AddButton(EventOkButton);
+            layer.AddButton(EventCancelButton);
+            layer.HorizontalMoves = true;
+            layer.Back = GamepadPopupBack;
+
+            layer = _gamepadNavigator.AddOverlay(() => AlertGrid.IsVisible);
+            layer.AddButton(AlertOkButton);
+            layer.AddButton(AlertOkButton2);
+            layer.AddButton(AlertExitButton);
+            layer.HorizontalMoves = true;
+            layer.Back = GamepadPopupBack;
+
+            layer = _gamepadNavigator.AddOverlay(() => PopupGrid.IsVisible);
+            layer.AddButton(PopupOkButton);
+            layer.AddButton(PopupViewButton);
+            layer.AddButton(PopupOkButton2);
+            layer.SetInitialFocus(PopupOkButton, PopupOkButton2);
+            layer.HorizontalMoves = true;
+            layer.Back = GamepadPopupBack;
+
+            main.FocusInitial();
+        }
+
+        /* Escape through the special-key handler, which posts the asynchronous closes */
+        private bool GamepadPopupBack()
+        {
+            return HandleSpecialKeyPress(GHSpecialKey.Escape, false, false, false);
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
         }
 
         private async void EventOkButton_Clicked(object sender, EventArgs e)

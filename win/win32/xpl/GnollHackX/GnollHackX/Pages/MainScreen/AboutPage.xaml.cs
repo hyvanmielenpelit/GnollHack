@@ -22,11 +22,12 @@ using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
 using GnollHackX.Pages.Game;
+using GnollHackX.Controls;
 
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public partial class AboutPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage
+    public partial class AboutPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage, IGHGamepadHandlingPage, IGHGamepadPopupPage
     {
         MainPage _mainPage = null;
         public AboutPage(MainPage mainPage)
@@ -43,6 +44,7 @@ namespace GnollHackX.Pages.MainScreen
                 btnSponsor.IsVisible = false;
             }
             btnPerformanceSuite.IsVisible = GHApp.IsFrameTimeProfilerOn;
+            InitializeGamepadNavigation();
         }
 
         private async void btnCreditsX_Clicked(object sender, EventArgs e)
@@ -317,10 +319,12 @@ namespace GnollHackX.Pages.MainScreen
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             AboutGrid.IsEnabled = !_creatingCrashReport;
+            _gamepadNavigator.Attach();
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _gamepadNavigator.Detach();
         }
         //protected override bool OnBackButtonPressed()
         //{
@@ -575,6 +579,34 @@ namespace GnollHackX.Pages.MainScreen
             }
             return handled;
         }
+
+        /* Gamepad focus: the buttons in layout order, Close last; B closes the page as Escape does */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddButtons(AboutGrid);
+            main.ScrollView = AboutScrollView;
+            main.SetInitialFocus(btnVersion);
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+            main.FocusInitial();
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+        }
+
+        public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e) => MessagePopup.HandleGamepadButton(e);
 
         public bool IsPopupOpen => MessagePopup.IsPopupOpen;
         public void ClosePopup() => MessagePopup.ClosePopup();

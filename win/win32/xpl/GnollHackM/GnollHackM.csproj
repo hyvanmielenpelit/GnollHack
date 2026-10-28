@@ -273,6 +273,7 @@
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadKeyBridge.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadService.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadFocusList.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadPageNavigator.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialTuning.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialGeometry.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialSelector.cs" />
@@ -570,6 +571,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadKeyBridge.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadService.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadFocusList.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadPageNavigator.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialTuning.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialGeometry.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialSelector.cs" />

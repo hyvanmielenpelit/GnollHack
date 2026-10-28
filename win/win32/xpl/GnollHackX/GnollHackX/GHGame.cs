@@ -55,6 +55,10 @@ namespace GnollHackX
         private int _answeredSerial = 0;        /* game thread: the wait that took a tagged response */
         private int _droppedSerial = 0;         /* game thread: the last tagged response dropped */
         private int _cursorTypeNow = 0;         /* mirror of _cursorType */
+        /* Gamepad input held back while the game is busy: the busy period's key wait serial + 1, 0 for none. Set by
+           the UI thread, cleared by BeginKeyWait, and counted by ClientCallback_UIHasInput only while no wait has
+           begun since. */
+        private int _gamepadInputSignal = 0;
 
         public int KeyWaitState { get { return Interlocked.CompareExchange(ref _keyWaitState, 0, 0); } }
         public GHKeyWaitKind KeyWaitKind { get { return GetKeyWaitKind(KeyWaitState); } }
@@ -80,8 +84,26 @@ namespace GnollHackX
             if (serial == 0)
                 serial = 1;
             _keyWaitSerialCounter = serial;
+            Interlocked.Exchange(ref _gamepadInputSignal, 0);
             Interlocked.Exchange(ref _keyWaitState, (serial << 4) | (int)kind);
             return previous;
+        }
+
+        /* UI thread: the gamepad has input for the game while it is busy, so animations and output delays end early
+           and running and traveling stop, as they do for queued touch input. Lasts until the next wait begins. */
+        public void SignalGamepadInput()
+        {
+            int state = Interlocked.CompareExchange(ref _keyWaitState, 0, 0);
+            if (GetKeyWaitKind(state) != GHKeyWaitKind.None)
+                return;
+            Interlocked.Exchange(ref _gamepadInputSignal, GetKeyWaitSerial(state) + 1);
+        }
+
+        /* Game thread: a signal counts only in the busy period it was set in, not after a later wait has begun */
+        private bool HasGamepadInputSignal()
+        {
+            int signal = Interlocked.CompareExchange(ref _gamepadInputSignal, 0, 0);
+            return signal != 0 && signal - 1 == _keyWaitSerialCounter;
         }
 
         /* Game thread: leaves the wait, back to the enclosing wait if there is one, else to None keeping the serial */
@@ -4294,11 +4316,13 @@ namespace GnollHackX
             if (PlayingReplay)
                 return 0;
 
+            /* Queued responses, plus one for gamepad input that the gamepad's command gate holds back */
+            int count = ResponseQueue.Count + (HasGamepadInputSignal() ? 1 : 0);
             if (IsRecording)
             {
-                RecordFunctionCall(RecordedFunctionID.UIHasInput, ResponseQueue.Count);
+                RecordFunctionCall(RecordedFunctionID.UIHasInput, count);
             }
-            return ResponseQueue.Count;
+            return count;
         }
 
         public byte ClientCallback_AdjustGeneralVolumes(double value1, double value2, double value3, double value4, double value5, double value6)

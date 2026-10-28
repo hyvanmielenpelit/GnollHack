@@ -42,8 +42,8 @@ namespace GnollHackX
     }
 
     /* Places items into fixed radial slots.
-       - Fixed pages (L3): every item has a compass direction and takes the slot nearest it; the
-         slot count is the smallest of 6, 8 and 12 that gives every item its own slot.
+       - Fixed pages (the Toggles radial): every item has a compass direction and takes the slot
+         nearest it; the slot count is the smaller of 8 and 12 that gives every item its own slot.
        - Context pages (the Actions radial's first pages): ContextSlotCount slots, or
          CrowdedSlotCount when more items are present, overflow onto further context pages. Fixed items (the left-side buttons) take the slot nearest their
          direction; context items keep their remembered slot when it is free, else take E, NE,
@@ -113,8 +113,9 @@ namespace GnollHackX
             return order;
         }
 
-        /* The smallest of 6, 8 and 12 slots that holds every item and gives each item with a
-           direction its own nearest slot; 12 when none does */
+        /* The smallest slot count of FixedPageSlotCounts, from FixedPageMinSlotCount up, that
+           holds every item and gives each item with a direction its own nearest slot; 12 when
+           none does */
         public static int ChooseFixedSlotCount(IList<GHRadialItem> items)
         {
             int itemCount = CountNonNull(items);
@@ -122,7 +123,7 @@ namespace GnollHackX
             for (c = 0; c < GHRadialTuning.FixedPageSlotCounts.Length; c++)
             {
                 int n = GHRadialTuning.FixedPageSlotCounts[c];
-                if (itemCount > n)
+                if (n < GHRadialTuning.FixedPageMinSlotCount || itemCount > n)
                     continue;
                 bool[] taken = new bool[n];
                 bool fits = true;
@@ -144,8 +145,8 @@ namespace GnollHackX
             return GHRadialTuning.MaxSlotCount;
         }
 
-        /* A page of items with fixed directions, such as the L3 toggles and Center on Hero.
-           Items without a direction fill the remaining slots clockwise from north. */
+        /* A page of items with fixed directions, such as the toggles. Items without a direction
+           fill the remaining slots clockwise from north. */
         public static GHRadialPage BuildFixedPage(string title, int groupIndex, IList<GHRadialItem> items)
         {
             int n = ChooseFixedSlotCount(items);
@@ -302,9 +303,10 @@ namespace GnollHackX
 
         /* The items in order, slotsPerPage to a page: item k of a page takes slot k, so reading
            clockwise from north follows the list. Every page has slotsPerPage slots, the last one
-           with its remaining slots empty. Titles are "<titlePrefix> 1/N" .. "<titlePrefix> N/N",
-           or titlePrefix alone for a single page. Every page gets groupIndex. Null items are
-           skipped; no items give no pages. slotsPerPage is 6, 8 or 12. */
+           with its remaining slots empty. Every page has the Name titlePrefix and the Counter
+           "1/N" .. "N/N", counted within these pages, and the Title "<titlePrefix> <Counter>"; a
+           single page has no counter and the Title titlePrefix. Every page gets groupIndex. Null
+           items are skipped; no items give no pages. slotsPerPage is 6, 8 or 12. */
         public static List<GHRadialPage> BuildPackedPages(IList<GHRadialSourceItem> items, string titlePrefix, int slotsPerPage,
             int groupIndex)
         {
@@ -327,8 +329,11 @@ namespace GnollHackX
             int p;
             for (p = 0; p < pageCount; p++)
             {
-                string title = pageCount == 1 ? prefix : prefix + " " + (p + 1).ToString() + "/" + pageCount.ToString();
+                string counter = pageCount == 1 ? null : (p + 1).ToString() + "/" + pageCount.ToString();
+                string title = counter == null ? prefix : prefix + " " + counter;
                 GHRadialPage page = new GHRadialPage(title, slotsPerPage);
+                page.Name = prefix;
+                page.Counter = counter;
                 page.Group = prefix;
                 page.GroupIndex = groupIndex;
                 int k;

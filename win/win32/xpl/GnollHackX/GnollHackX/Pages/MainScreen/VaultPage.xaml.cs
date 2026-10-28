@@ -24,7 +24,7 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public partial class VaultPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage
+    public partial class VaultPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage, IGHGamepadHandlingPage, IGHGamepadPopupPage
     {
         private MainPage _mainPage;
         List<LabeledImageButton> _buttons = new List<LabeledImageButton>();
@@ -67,8 +67,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.Margin = margin;
             rib.HorizontalOptions = LayoutOptions.Center;
             rib.VerticalOptions = LayoutOptions.Center;
-            rib.BtnClicked += btnTopScores_Clicked;
-            _buttons.Add(rib);
+            AddVaultButton(rib, btnTopScores_Clicked);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.achievement-page.png";
@@ -87,8 +86,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.Margin = margin;
             rib.HorizontalOptions = LayoutOptions.Center;
             rib.VerticalOptions = LayoutOptions.Center;
-            rib.BtnClicked += btnAchievements_Clicked;
-            _buttons.Add(rib);
+            AddVaultButton(rib, btnAchievements_Clicked);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.manual.png";
@@ -107,8 +105,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.Margin = margin;
             rib.HorizontalOptions = LayoutOptions.Center;
             rib.VerticalOptions = LayoutOptions.Center;
-            rib.BtnClicked += btnLibrary_Clicked;
-            _buttons.Add(rib);
+            AddVaultButton(rib, btnLibrary_Clicked);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.delphi.png";
@@ -127,8 +124,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.Margin = margin;
             rib.HorizontalOptions = LayoutOptions.Center;
             rib.VerticalOptions = LayoutOptions.Center;
-            rib.BtnClicked += btnOracle_Clicked;
-            _buttons.Add(rib);
+            AddVaultButton(rib, btnOracle_Clicked);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.chronicle.png";
@@ -147,8 +143,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.Margin = margin;
             rib.HorizontalOptions = LayoutOptions.Center;
             rib.VerticalOptions = LayoutOptions.Center;
-            rib.BtnClicked += btnReplays_Clicked;
-            _buttons.Add(rib);
+            AddVaultButton(rib, btnReplays_Clicked);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.music.png";
@@ -167,8 +162,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.Margin = margin;
             rib.HorizontalOptions = LayoutOptions.Center;
             rib.VerticalOptions = LayoutOptions.Center;
-            rib.BtnClicked += btnSoundTracks_Clicked;
-            _buttons.Add(rib);
+            AddVaultButton(rib, btnSoundTracks_Clicked);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.you.png";
@@ -187,8 +181,7 @@ namespace GnollHackX.Pages.MainScreen
             rib.Margin = margin;
             rib.HorizontalOptions = LayoutOptions.Center;
             rib.VerticalOptions = LayoutOptions.Center;
-            rib.BtnClicked += btnSnapshots_Clicked;
-            _buttons.Add(rib);
+            AddVaultButton(rib, btnSnapshots_Clicked);
 
             rib = new LabeledImageButton();
             rib.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.load.png";
@@ -207,8 +200,15 @@ namespace GnollHackX.Pages.MainScreen
             rib.Margin = margin;
             rib.HorizontalOptions = LayoutOptions.Center;
             rib.VerticalOptions = LayoutOptions.Center;
-            rib.BtnClicked += btnSaveTransfer_Clicked;
-            _buttons.Add(rib);
+            AddVaultButton(rib, btnSaveTransfer_Clicked);
+            InitializeGamepadNavigation();
+        }
+
+        private void AddVaultButton(LabeledImageButton button, EventHandler<EventArgs> clicked)
+        {
+            button.BtnClicked += clicked;
+            _buttons.Add(button);
+            _gamepadNavigator.Main.Add(button, () => clicked(button, EventArgs.Empty), null);
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -265,11 +265,45 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.BackButtonPressed += BackButtonPressed;
             //VaultGrid.IsEnabled = true;
             VaultGrid.IsEnabled = true;
+            _gamepadNavigator.Attach();
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _gamepadNavigator.Detach();
         }
+
+        /* Gamepad focus: the vault buttons as the grid they are laid out in, then Close; Up/Down move by row,
+           Left/Right by one; B closes the page as Escape does */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.GridCount = main.Count;
+            main.GridColumns = () => VaultGrid.ColumnDefinitions.Count;
+            main.AddButton(CloseButton);
+            main.ScrollView = VaultScrollView;
+            main.HorizontalMoves = true;
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+            main.FocusInitial();
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+        }
+
+        public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e) => MessagePopup.HandleGamepadButton(e);
+
         //protected override bool OnBackButtonPressed()
         //{
         //    return true;

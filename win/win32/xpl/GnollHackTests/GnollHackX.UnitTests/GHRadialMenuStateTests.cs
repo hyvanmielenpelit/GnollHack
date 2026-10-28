@@ -7,7 +7,8 @@ namespace GnollHackX.UnitTests
     /* Covers GHRadialMenuState: the initial page, paging clamps, SwitchSet between Context and More Commands, R53's
        group paging, the highlight re-evaluated or restored on page change, ClosesOnActivate,
        logical close before the visual close, callback order, refused confirms, NeedsFrame at
-       rest, toggle state changes, pointer input, the highlight sound throttle, R74's Center on
+       rest, toggle state changes, pointer input, page dots counted within the current set, the
+       highlight sound throttle, R74's Center on
        Hero in the L3 page, R1's push-up-is-north, and durations that do not depend on the frame
        rate (60 Hz against 90 Hz ticks). */
     public class GHRadialMenuStateTests
@@ -565,6 +566,55 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void SetRange_SplitsAtTheSwitchSetPage()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("Context", 8, 0), FullPage("Commands 1/3", 8, 1),
+                FullPage("Commands 2/3", 8, 1), FullPage("Commands 3/3", 8, 1));
+            int first, count;
+            def.GetSetRange(2, out first, out count);
+            Assert.Equal(0, first);
+            Assert.Equal(4, count);
+
+            def.SwitchSetPageIndex = 1;
+            def.GetSetRange(0, out first, out count);
+            Assert.Equal(0, first);
+            Assert.Equal(1, count);
+            def.GetSetRange(1, out first, out count);
+            Assert.Equal(1, first);
+            Assert.Equal(3, count);
+            def.GetSetRange(3, out first, out count);
+            Assert.Equal(1, first);
+            Assert.Equal(3, count);
+
+            /* A switch page past the end is unused */
+            def.SwitchSetPageIndex = 4;
+            def.GetSetRange(3, out first, out count);
+            Assert.Equal(0, first);
+            Assert.Equal(4, count);
+        }
+
+        [Fact]
+        public void PointerDots_PageWithinTheCurrentSet()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("Context", 8, 0), FullPage("Commands 1/3", 8, 1),
+                FullPage("Commands 2/3", 8, 1), FullPage("Commands 3/3", 8, 1));
+            def.SwitchSetPageIndex = 1;
+            def.InitialPageIndex = 1;
+            GHRadialMenuState s = Opened(def, 0);
+            GHRadialGeometry g = s.Geometry;
+            g.Update(1280, 800, 1);
+
+            /* Three dots for the three commands pages; the last one is page 3 */
+            float x, y;
+            g.GetDotCenter(2, 3, out x, out y);
+            Assert.True(s.PointerPress(x, y, Ms(1)).Has(GHRadialEffects.PageChanged));
+            Assert.Equal(3, s.PageIndex);
+            g.GetDotCenter(0, 3, out x, out y);
+            s.PointerPress(x, y, Ms(2));
+            Assert.Equal(1, s.PageIndex);
+        }
+
+        [Fact]
         public void Stick_LeavesPointerMode()
         {
             GHRadialMenuState s = Opened(Def(FullPage("Ctx", 8, 0)), 0);
@@ -594,7 +644,7 @@ namespace GnollHackX.UnitTests
             {
                 new GHRadialItem { Id = "l3:statusbar", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PlaysOwnSound = true, PreferredAngle = GHRadialTuning.ExtendedStatusBarAngle },
                 new GHRadialItem { Id = "l3:autocenter", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PlaysOwnSound = true, PreferredAngle = GHRadialTuning.AutoCenterAngle },
-                new GHRadialItem { Id = "l3:look", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = true, PlaysOwnSound = true, PreferredAngle = GHRadialTuning.LookModeAngle },
+                new GHRadialItem { Id = "l3:look", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PlaysOwnSound = true, PreferredAngle = GHRadialTuning.LookModeAngle },
                 new GHRadialItem { Id = "l3:messages", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PlaysOwnSound = true, PreferredAngle = GHRadialTuning.MoreMessagesAngle },
                 new GHRadialItem { Id = "l3:ignore", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PlaysOwnSound = true, PreferredAngle = GHRadialTuning.IgnoreStoppingAngle },
                 new GHRadialItem { Id = "l3:autodig", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PlaysOwnSound = true, PreferredAngle = GHRadialTuning.AutoDigAngle },

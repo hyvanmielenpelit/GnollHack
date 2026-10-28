@@ -7,9 +7,10 @@ namespace GnollHackX.UnitTests
     /* Covers GHRadialSlotAssigner: the left-side buttons' fixed directions under 8 and 12 slots,
        the context preference order, the stability properties of Design C section 3 (the same set
        gives the same slots, adding or removing an item moves no other), the switch to 12 slots
-       and the overflow page, the L3 page with R74's Center on Hero at the E slot, and the More
-       Commands cell-to-slot mapping, dropped cells, page order, wizard pages last and the simple
-       layout's page count (R16), and the packed commands pages. */
+       and the overflow page, the Toggles page's eight slots with E and W free (an action item
+       such as R74's Center on Hero takes E), and the More Commands cell-to-slot mapping, dropped
+       cells, page order, wizard pages last and the simple layout's page count (R16), and the
+       packed commands pages with their names and counters. */
     public class GHRadialSlotAssignerTests
     {
         private static GHRadialItem Item(string id)
@@ -47,7 +48,7 @@ namespace GnollHackX.UnitTests
             {
                 new GHRadialItem { Id = "l3:statusbar", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PreferredAngle = GHRadialTuning.ExtendedStatusBarAngle },
                 new GHRadialItem { Id = "l3:autocenter", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PreferredAngle = GHRadialTuning.AutoCenterAngle },
-                new GHRadialItem { Id = "l3:look", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = true, PreferredAngle = GHRadialTuning.LookModeAngle },
+                new GHRadialItem { Id = "l3:look", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PreferredAngle = GHRadialTuning.LookModeAngle },
                 new GHRadialItem { Id = "l3:messages", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PreferredAngle = GHRadialTuning.MoreMessagesAngle },
                 new GHRadialItem { Id = "l3:ignore", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PreferredAngle = GHRadialTuning.IgnoreStoppingAngle },
                 new GHRadialItem { Id = "l3:autodig", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PreferredAngle = GHRadialTuning.AutoDigAngle }
@@ -216,16 +217,20 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
-        public void Toggles_TakeSixSlotsAtTheirDirections()
+        public void Toggles_TakeEightSlotsWithEastAndWestEmpty()
         {
             GHRadialPage page = GHRadialSlotAssigner.BuildFixedPage("Toggles", 0, Toggles());
-            Assert.Equal(6, page.SlotCount);
+            /* N, NE, SE, S, SW, NW */
+            Assert.Equal(8, page.SlotCount);
+            Assert.Equal(6, page.FilledCount);
             Assert.Equal("l3:statusbar", page.Slots[0].Id);
             Assert.Equal("l3:autocenter", page.Slots[1].Id);
-            Assert.Equal("l3:look", page.Slots[2].Id);
-            Assert.Equal("l3:messages", page.Slots[3].Id);
-            Assert.Equal("l3:ignore", page.Slots[4].Id);
-            Assert.Equal("l3:autodig", page.Slots[5].Id);
+            Assert.Null(page.Slots[2]);
+            Assert.Equal("l3:look", page.Slots[3].Id);
+            Assert.Equal("l3:messages", page.Slots[4].Id);
+            Assert.Equal("l3:ignore", page.Slots[5].Id);
+            Assert.Null(page.Slots[6]);
+            Assert.Equal("l3:autodig", page.Slots[7].Id);
         }
 
         [Fact]
@@ -257,9 +262,12 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
-        public void ChooseFixedSlotCount_GrowsOnCollision()
+        public void ChooseFixedSlotCount_StartsAtEightAndGrowsOnCollision()
         {
-            Assert.Equal(6, GHRadialSlotAssigner.ChooseFixedSlotCount(Toggles()));
+            Assert.Equal(8, GHRadialSlotAssigner.ChooseFixedSlotCount(Toggles()));
+            Assert.Equal(8, GHRadialSlotAssigner.ChooseFixedSlotCount(Context("a", "b", "c")));
+            Assert.Equal(8, GHRadialSlotAssigner.ChooseFixedSlotCount(null));
+            Assert.Equal(12, GHRadialSlotAssigner.ChooseFixedSlotCount(Context("a", "b", "c", "d", "e", "f", "g", "h", "i")));
             List<GHRadialItem> crowded = new List<GHRadialItem>();
             int i;
             for (i = 0; i < 9; i++)
@@ -428,6 +436,67 @@ namespace GnollHackX.UnitTests
             Assert.Equal("Commands 3/3", pages[2].Title);
             List<GHRadialPage> single = GHRadialSlotAssigner.BuildPackedPages(CommandList(5), "Commands", 12, 0);
             Assert.Equal("Commands", single[0].Title);
+        }
+
+        [Fact]
+        public void PackedPages_CarryTheNameAndACounterWithinTheirOwnRun()
+        {
+            List<GHRadialPage> pages = GHRadialSlotAssigner.BuildPackedPages(CommandList(52), "Commands", 8, 1);
+            Assert.Equal(7, pages.Count);
+            int p;
+            for (p = 0; p < pages.Count; p++)
+            {
+                Assert.Equal("Commands", pages[p].Name);
+                Assert.Equal((p + 1).ToString() + "/7", pages[p].Counter);
+                Assert.True(pages[p].HasCounter);
+                Assert.Equal("Commands", pages[p].DisplayName);
+                Assert.Equal("Commands " + pages[p].Counter, pages[p].Title);
+            }
+
+            /* The counter does not depend on the context pages placed before the run */
+            GHRadialMenuDefinition def = new GHRadialMenuDefinition();
+            def.Pages.AddRange(GHRadialSlotAssigner.AssignContextPages("Context", 0, null, Context("a"), null));
+            def.SwitchSetPageIndex = def.Pages.Count;
+            def.Pages.AddRange(pages);
+            Assert.Equal("1/7", def.Pages[def.SwitchSetPageIndex].Counter);
+        }
+
+        [Fact]
+        public void SinglePackedPage_HasNoCounter()
+        {
+            GHRadialPage page = GHRadialSlotAssigner.BuildPackedPages(CommandList(5), "Commands", 8, 0)[0];
+            Assert.Null(page.Counter);
+            Assert.False(page.HasCounter);
+            Assert.Equal("Commands", page.Name);
+            Assert.Equal("Commands", page.DisplayName);
+        }
+
+        [Fact]
+        public void ContextPages_HaveNoCounter()
+        {
+            string[] ids = new string[12];
+            int i;
+            for (i = 0; i < ids.Length; i++)
+                ids[i] = "c" + i;
+            List<GHRadialPage> pages = GHRadialSlotAssigner.AssignContextPages("Context", 0, LeftButtons(), Context(ids), null);
+            Assert.Equal(2, pages.Count);
+            Assert.False(pages[0].HasCounter);
+            Assert.False(pages[1].HasCounter);
+            Assert.Equal("Context", pages[0].DisplayName);
+            Assert.Equal("Context 2", pages[1].DisplayName);
+        }
+
+        [Fact]
+        public void PageDisplayName_IsTheTitleWithoutACounter()
+        {
+            GHRadialPage page = new GHRadialPage("Toggles", 8);
+            Assert.Equal("Toggles", page.Name);
+            Assert.Null(page.Counter);
+            Assert.Equal("Toggles", page.DisplayName);
+            page.Name = "Spells";
+            page.Counter = "2/4";
+            Assert.Equal("Spells", page.DisplayName);
+            Assert.Equal("Toggles", page.Title);
         }
 
         [Fact]
