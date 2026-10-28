@@ -529,7 +529,11 @@ namespace GnollHackX.Pages.Game
         {
             float height = _gamepadHintCanvasHeight;
             if (height > 0f && !CanvasViewsShutDown && Math.Abs(height - GamepadHintCanvas.HeightRequest) > 1f)
+            {
                 GamepadHintCanvas.HeightRequest = height;
+                /* Centered in the command bar, the strip's margin depends on its height */
+                UpdateGamepadHintStripPosition();
+            }
         }
 
         private void RadialCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)

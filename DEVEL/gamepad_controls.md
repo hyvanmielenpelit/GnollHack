@@ -124,6 +124,13 @@ squares, and the D-pad and sticks as a plus and a ring. An outlined up arrow aft
 **hold** the button. A long hint strip wraps onto two centered lines; with no modifier held,
 the map strip starts its second line at L1.
 
+**Command bar.** While the controller is the active input (outside replays), the bottom command
+bar's buttons and its dimmed background are hidden but keep their space, so the map, the messages
+and the context buttons stay where they are, and the hint strip (with its own backing) is
+centered vertically in the bar's area. Menus likewise hide their OK and Cancel buttons, keeping
+the space; the hints show X OK and B Cancel. Touch, the mouse or a keyboard key brings the
+buttons back; the first touch on the bar only does that.
+
 **Replays:** A pauses, L1/R1 change the speed, B quits.
 
 ### Radials
@@ -158,8 +165,8 @@ menu follow the same rules:
 | Right stick | Scroll |
 | A | Confirm, OK, or select the focused item; hold A on a menu row for its count or actions |
 | B | Cancel, close, back |
-| X | Menus: count and actions, or select all. getline: the list |
-| Y | Menus: OK (accept the selection). getline: reopen the Steam keyboard |
+| X | Menus and the count dialog: OK (accept the selection). getline: the list |
+| Y | Menus: All / None (select or unselect every item, in menus that select several). Count dialog: All. getline: reopen the Steam keyboard |
 | L1 / R1 | Menus: jump between sections |
 | L2 / R2 | Menus: first or last row |
 

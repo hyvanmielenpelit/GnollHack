@@ -348,6 +348,16 @@ namespace GnollHackX
                 Preferences.Set("SteamDeckShortcutsDefaultApplied", true);
             }
             ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsShowKeyboardShortcutsDefault);
+            /* Once per Steam Deck: the Layout section's stone buttons start off, since the controller covers them;
+               the Settings page saves whatever the player chooses afterwards */
+            if (IsSteamDeck && !Preferences.Get("SteamDeckStoneButtonsDefaultApplied", false))
+            {
+                Preferences.Set("ShowAltZoomButton", false);
+                Preferences.Set("ShowTravelModeButton", false);
+                Preferences.Set("ShowAutoDigButton", false);
+                Preferences.Set("ShowIgnoreStoppingButton", false);
+                Preferences.Set("SteamDeckStoneButtonsDefaultApplied", true);
+            }
             GamepadEnabled = Preferences.Get("GamepadEnabled", true);
             foreach (GHGamepadButton grip in GamepadGrips)
                 SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));

@@ -5,9 +5,12 @@ using System.Threading;
 using GnollHackX;
 
 #if GNH_MAUI
+using Microsoft.Maui.Controls;
+
 namespace GnollHackM
 #else
 using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace GnollHackX.Pages.Game
 #endif
@@ -123,6 +126,9 @@ namespace GnollHackX.Pages.Game
         private GHGamepadHintRenderer _gamepadHintRenderer;
         private float _gamepadHintCanvasHeight = 0f;        /* the HeightRequest the strip's paint last asked for, in DIP */
         private Action _applyGamepadHintCanvasHeight = null;
+        private bool _gamepadCommandBarHidden = false;      /* the command bar's buttons are transparent, ignore input */
+        private bool _gamepadHintDefaultMarginSaved = false;
+        private Thickness _gamepadHintDefaultMargin;        /* the strip's margin from the XAML, used outside the bar */
 
         /* Read by SetTargetClip on the game thread and by the paint thread */
         private int _gamepadPanHold = 0;
@@ -420,7 +426,8 @@ namespace GnollHackX.Pages.Game
         public void GamepadFrameTick(long nowTicks)
         {
             TickRadialMenu();
-            if (!GHGamepadService.IsAvailable && _gamepadPending == null && !_gamepadHintShown)
+            if (!GHGamepadService.IsAvailable && _gamepadPending == null && !_gamepadHintShown
+                && !_gamepadCommandBarHidden)
                 return;
 
             if (!_gamepadStateSubscribed)
@@ -1902,9 +1909,10 @@ namespace GnollHackX.Pages.Game
         /* Shown while the gamepad is the active input, outside radials and the loading screen; the hints change only
            with the context, the L1 and R1 layers, the controller style, the dialog kind, the triggers' assigned
            actions or, on the map, whether there are none, one or several context buttons. The canvas repaints only
-           when the hints differ from the shown ones. */
+           when the hints differ from the shown ones. The command bar and the strip's position follow on every call. */
         private void UpdateGamepadHintStrip(GHGamepadMapContext ctx)
         {
+            UpdateGamepadCommandBar();
             bool show = GHGamepadService.IsActive && ctx != GHGamepadMapContext.Inactive && ctx != GHGamepadMapContext.Radial
                 && !IsRadialMenuOpen && !LoadingGrid.IsVisible;
             if (!show)
@@ -1980,6 +1988,85 @@ namespace GnollHackX.Pages.Game
                 return;
             _gamepadHintShown = visible;
             GamepadHintGrid.IsVisible = visible;
+        }
+
+        /* While the gamepad is the active input outside replays, the bottom command bar's buttons and the menus' OK and
+           Cancel buttons are transparent and ignore input but keep their space, so the bar's height, and the messages
+           and context buttons the map paint places above it, do not change between touch and controller; the hint
+           strip draws its own backing, so the bar's dimmed background becomes transparent. A touch there lands on the
+           bar's background, which swallows it, and ends controller mode, which brings everything back. */
+        private void UpdateGamepadCommandBar()
+        {
+            bool hide = GHGamepadService.IsActive && !PlayingReplay;
+            if (hide != _gamepadCommandBarHidden)
+            {
+                _gamepadCommandBarHidden = hide;
+                SetGamepadCommandBarViewHidden(ButtonRowStack, hide);
+                SetGamepadCommandBarViewHidden(SimpleButtonRowStack, hide);
+                SetGamepadCommandBarViewHidden(lRowAbilitiesButton, hide);
+                SetGamepadCommandBarViewHidden(lRowWornItemsButton, hide);
+                SetGamepadCommandBarViewHidden(MenuCloseGrid, hide);
+                ButtonRowGrid.BackgroundColor = hide ? GHColors.Transparent : GHColors.ButtonGridBackgroundColor;
+            }
+            UpdateGamepadHintStripPosition();
+        }
+
+        private static void SetGamepadCommandBarViewHidden(VisualElement view, bool hide)
+        {
+            view.Opacity = hide ? 0.0 : 1.0;
+            view.InputTransparent = hide;
+        }
+
+        /* With the command bar hidden, the strip's visible row is centered vertically in the bar's area, spilling
+           evenly above and below it when taller, but never below the page; otherwise the strip keeps its XAML margin.
+           The margin is set only when it changes by a whole DIP, and it does not affect the bar's bounds. */
+        private void UpdateGamepadHintStripPosition()
+        {
+            if (!_gamepadHintDefaultMarginSaved)
+            {
+                _gamepadHintDefaultMargin = GamepadHintGrid.Margin;
+                _gamepadHintDefaultMarginSaved = true;
+            }
+            Thickness margin = _gamepadHintDefaultMargin;
+            double barBottomGap, barHeight;
+            if (_gamepadCommandBarHidden && TryGetGamepadCommandBarArea(out barBottomGap, out barHeight))
+            {
+                double hintHeight = GamepadHintCanvas.HeightRequest > 0 ? GamepadHintCanvas.HeightRequest
+                    : GamepadHintCanvas.Height;
+                double rowHeight = Math.Max(0.0, hintHeight - GamepadHintExtraHeightDips);
+                margin.Bottom = Math.Max(0.0, Math.Round(barBottomGap + (barHeight - rowHeight) * 0.5));
+            }
+            Thickness current = GamepadHintGrid.Margin;
+            if (Math.Abs(current.Bottom - margin.Bottom) >= 1.0 || Math.Abs(current.Top - margin.Top) >= 1.0
+                || Math.Abs(current.Left - margin.Left) >= 1.0 || Math.Abs(current.Right - margin.Right) >= 1.0)
+                GamepadHintGrid.Margin = margin;
+        }
+
+        /* The command bar's height and the distance from its bottom to the bottom of RootGrid, which holds the strip;
+           false when the bar is not shown or not laid out */
+        private bool TryGetGamepadCommandBarArea(out double bottomGap, out double height)
+        {
+            bottomGap = 0;
+            height = 0;
+            if (!MainGrid.IsVisible || !UIGrid.IsVisible || !ButtonRowGrid.IsVisible)
+                return false;
+            height = ButtonRowGrid.Height;
+            double rootHeight = RootGrid.Height;
+            if (height <= 0 || rootHeight <= 0)
+                return false;
+            double top = 0;
+            Element element = ButtonRowGrid;
+            while (element != null && element != RootGrid)
+            {
+                VisualElement visual = element as VisualElement;
+                if (visual != null)
+                    top += visual.Y + visual.TranslationY;
+                element = element.Parent;
+            }
+            if (element == null)
+                return false;
+            bottomGap = rootHeight - (top + height);
+            return true;
         }
 
         /* The strip's hints for a context; dialog hints come from the dialog navigation */

@@ -562,12 +562,15 @@ namespace GnollHackX.Pages.Game
                     if (isStep)
                         AdjustGamepadMenuCount(100);
                     break;
-                case GHGamepadButton.X:
+                case GHGamepadButton.Y:
+                    /* As in the menu, Y is All and X is OK */
                     if (isPress)
                         SetGamepadMenuCountAll();
                     break;
                 case GHGamepadButton.A:
-                    if (isTap && MenuCountOkButton.IsEnabled)
+                case GHGamepadButton.X:
+                    if (((button == GHGamepadButton.A && isTap) || (button == GHGamepadButton.X && isPress))
+                        && MenuCountOkButton.IsEnabled)
                         MenuCountOkButton_Clicked(null, null);
                     break;
                 case GHGamepadButton.B:
@@ -1054,7 +1057,7 @@ namespace GnollHackX.Pages.Game
                 SetMenuGamepadFocus(target);
         }
 
-        /* Hold A or X on a row: the count dialog or the menu's special action; false if neither applies */
+        /* Hold A on a row: the count dialog or the menu's special action; false if neither applies */
         private bool OpenGamepadMenuItemCountOrSpecial(int focus)
         {
             if (focus < 0 || !MenuCanvas.AllowLongTap)
@@ -1180,20 +1183,16 @@ namespace GnollHackX.Pages.Game
                     }
                     break;
                 case GHGamepadButton.X:
-                    if (isPress)
-                    {
-                        if (how == SelectionMode.Multiple)
-                            MenuTapGestureRecognizer_Tapped(null, null); /* Select all or unselect all, as the '.' key */
-                        else if (!scrollMode)
-                            OpenGamepadMenuItemCountOrSpecial(focus);
-                    }
-                    break;
-                case GHGamepadButton.Y:
                     if (isPress && MenuOKButton.IsEnabled)
                     {
                         MarkGamepadDialogAnswered(token);
                         PressMenuOKButton();
                     }
+                    break;
+                case GHGamepadButton.Y:
+                    /* Select all or unselect all, as the '.' key; a row's count and actions are on hold A */
+                    if (isPress && how == SelectionMode.Multiple)
+                        MenuTapGestureRecognizer_Tapped(null, null);
                     break;
                 case GHGamepadButton.View:
                     /* View closes an inventory menu */
@@ -1291,7 +1290,7 @@ namespace GnollHackX.Pages.Game
                     break;
                 case GHGamepadDialogContext.MenuCount:
                     hints.Add(new GHGamepadHint(GHGamepadButton.A, "OK", false));
-                    hints.Add(new GHGamepadHint(GHGamepadButton.X, "All", false));
+                    hints.Add(new GHGamepadHint(GHGamepadButton.Y, "All", false));
                     hints.Add(new GHGamepadHint(GHGamepadButton.B, "Cancel", false));
                     break;
                 case GHGamepadDialogContext.Menu:
@@ -1334,22 +1333,24 @@ namespace GnollHackX.Pages.Game
             if (how == SelectionMode.Multiple)
             {
                 hints.Add(new GHGamepadHint(GHGamepadButton.A, "Toggle", false));
-                hints.Add(new GHGamepadHint(GHGamepadButton.Y, "OK", false));
-                hints.Add(new GHGamepadHint(GHGamepadButton.X, _unselectOnTap ? "None" : "All", false));
+                hints.Add(new GHGamepadHint(GHGamepadButton.X, "OK", false));
+                hints.Add(new GHGamepadHint(GHGamepadButton.Y, _unselectOnTap ? "None" : "All", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.B, "Cancel", false));
                 if (canCount)
                     hints.Add(new GHGamepadHint(GHGamepadButton.A, "Count", true));
+                else if (canSpecial)
+                    hints.Add(new GHGamepadHint(GHGamepadButton.A, "Actions", true));
             }
             else
             {
                 hints.Add(new GHGamepadHint(GHGamepadButton.A, "Select", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.B, "Cancel", false));
                 if (canCount)
-                    hints.Add(new GHGamepadHint(GHGamepadButton.X, "Count", false));
+                    hints.Add(new GHGamepadHint(GHGamepadButton.A, "Count", true));
                 else if (canSpecial)
-                    hints.Add(new GHGamepadHint(GHGamepadButton.X, "Actions", false));
+                    hints.Add(new GHGamepadHint(GHGamepadButton.A, "Actions", true));
                 if (MenuOKButton.IsEnabled)
-                    hints.Add(new GHGamepadHint(GHGamepadButton.Y, "OK", false));
+                    hints.Add(new GHGamepadHint(GHGamepadButton.X, "OK", false));
                 if (MenuHasSectionHeaders(items))
                     hints.Add(new GHGamepadHint(GHGamepadButton.RB, "Section", false));
             }
