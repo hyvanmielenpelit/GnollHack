@@ -27,7 +27,9 @@ every 0.09 s) where they navigate.
 pages work like the game menu: the D-pad or left stick moves a focus ring over the buttons, A
 presses the focused button and B goes back (on the main menu B does nothing; its in-page popups
 take A and B as well). The main menu starts on Play Game, and the Reset page starts on Close.
-Pages with switches, pickers, text entry or list rows (Settings, the name page, Library and
+On the main menu the focus also reaches the Classic, Casual and Wizard Mode switches, between
+Exit and Play Game, and a popup's "do not show again" check box: their row is tinted while
+focused, and A flips them as a tap does. Other pages with switches, pickers, text entry or list rows (Settings, the name page, Library and
 similar) get a keyboard adapter instead: A is Enter, B is Escape (closes the page), directions
 are arrow keys, L1/R1 are Page Up and Page Down.
 
@@ -58,8 +60,8 @@ The grips are set in **Settings, Controller**. Their pickers appear only when th
 has grips, and they work only with the GnollHack Steam Input layout (see below); with any other
 layout they do nothing, which the game cannot detect.
 
-**Map overlays.** While More Messages or the Extended Status Bar is open (both from the
-Toggles radial), the right stick and D-pad Up/Down scroll it, B closes it, and the left stick
+**Map overlays.** While More Messages or the Status Screen (the extended status bar) is open
+(both from the Toggles radial), the right stick and D-pad Up/Down scroll it, B closes it, and the left stick
 still walks.
 
 **Choosing a position** (getpos): the left stick moves the cursor, with 8-square jumps at full
@@ -79,8 +81,10 @@ The radials stay open until an item is chosen or they are closed.
   Up/Down jump to the top and bottom slots. The center hub describes the highlighted item.
 - **A** activates it, **B** closes the radial (R3 also closes the Toggles radial), **L1/R1** change page.
   **Menu** closes the radial and opens the game menu.
-- **Toggles radial (R3):** More Messages, Extended Status Bar, Auto-Center, Look Mode,
-  Auto-Dig and Ignore Stopping. Toggling an option leaves the radial open.
+- **Toggles radial (R3):** More Messages, Status Screen, Auto-Center, Look Mode, Auto-Dig,
+  Ignore Stopping, Max Hit Points and Max Mana (the maximum in the health and mana orbs, as
+  tapping an orb does; unavailable while the orbs are hidden). The two orb toggles show the orbs
+  themselves, with the current and maximum values. Toggling an option leaves the radial open.
 - **Actions radial** (A with several context commands, or L1 + A for the commands pages):
   the context buttons plus Skills, Polearm and Wield Last/Unwield (eight slots per page, overflowing onto further pages), then the **commands pages**:
   Rest, Search 20 and Extended first, then every other command of the single commands page in

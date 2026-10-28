@@ -14,7 +14,7 @@ namespace GnollHackM
 namespace GnollHackX.Controls
 #endif
 {
-    /* Gamepad focus over an ordered set of buttons; UI thread only */
+    /* Gamepad focus over an ordered set of buttons and other views; UI thread only */
     public sealed class GHGamepadFocusList
     {
         private sealed class Entry
@@ -22,6 +22,12 @@ namespace GnollHackX.Controls
             public View View;
             public Action Activate;
             public Func<bool> IsAvailable;
+
+            /* Tinted while a view that is not an image button has the focus */
+            public View Highlight;
+            public bool HighlightApplied;
+            public bool OriginalBackgroundSet;
+            public object OriginalBackground;
         }
 
         private readonly List<Entry> _entries = new List<Entry>();
@@ -36,9 +42,21 @@ namespace GnollHackX.Controls
 
         public void Add(View view, Action activate, Func<bool> isAvailable)
         {
+            Add(view, activate, isAvailable, null);
+        }
+
+        /* highlight: tinted while focused unless view is an image button; null tints view itself */
+        public void Add(View view, Action activate, Func<bool> isAvailable, View highlight)
+        {
             if (view == null)
                 return;
-            _entries.Add(new Entry { View = view, Activate = activate, IsAvailable = isAvailable });
+            _entries.Add(new Entry
+            {
+                View = view,
+                Activate = activate,
+                IsAvailable = isAvailable,
+                Highlight = highlight ?? view
+            });
         }
 
         public bool IsAvailableAt(int index)
@@ -153,7 +171,7 @@ namespace GnollHackX.Controls
             bool active = GHGamepadService.IsActive;
             int i;
             for (i = 0; i < _entries.Count; i++)
-                SetViewFocused(_entries[i].View, active && i == _index);
+                SetEntryFocused(_entries[i], active && i == _index);
 
             if (active && ScrollView != null)
             {
@@ -176,20 +194,55 @@ namespace GnollHackX.Controls
         {
             int i;
             for (i = 0; i < _entries.Count; i++)
-                SetViewFocused(_entries[i].View, false);
+                SetEntryFocused(_entries[i], false);
         }
 
-        private static void SetViewFocused(View view, bool focused)
+        private static void SetEntryFocused(Entry entry, bool focused)
         {
-            CustomImageButton cib = view as CustomImageButton;
+            CustomImageButton cib = entry.View as CustomImageButton;
             if (cib != null)
             {
                 cib.GamepadFocused = focused;
                 return;
             }
-            LabeledImageButton lib = view as LabeledImageButton;
+            LabeledImageButton lib = entry.View as LabeledImageButton;
             if (lib != null)
+            {
                 lib.GamepadFocused = focused;
+                return;
+            }
+            SetHighlight(entry, focused);
+        }
+
+        /* Tints the highlight view's background, restoring the original value or its unset state afterwards */
+        private static void SetHighlight(Entry entry, bool focused)
+        {
+            View highlight = entry.Highlight;
+            if (highlight == null || entry.HighlightApplied == focused)
+                return;
+            try
+            {
+                if (focused)
+                {
+                    entry.OriginalBackgroundSet = highlight.IsSet(VisualElement.BackgroundColorProperty);
+                    entry.OriginalBackground = entry.OriginalBackgroundSet
+                        ? highlight.GetValue(VisualElement.BackgroundColorProperty) : null;
+                    highlight.BackgroundColor = UIUtils.GamepadFocusBackgroundColor;
+                }
+                else if (entry.OriginalBackgroundSet)
+                {
+                    highlight.SetValue(VisualElement.BackgroundColorProperty, entry.OriginalBackground);
+                }
+                else
+                {
+                    highlight.ClearValue(VisualElement.BackgroundColorProperty);
+                }
+                entry.HighlightApplied = focused;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
     }
 }

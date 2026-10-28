@@ -2656,8 +2656,9 @@ namespace GnollHackX
             return handled;
         }
 
-        /* Gamepad focus: the upper buttons and Play Game, and each in-page popup's buttons while it is shown, in
-           the order the special-key handler checks them; B on a popup acts as Escape, on the main buttons nothing */
+        /* Gamepad focus: the upper buttons, the mode switches and Play Game, and each in-page popup's buttons while
+           it is shown, in the order the special-key handler checks them; B on a popup acts as Escape, on the main
+           layer nothing. A switch or check box shows its focus as a tint on the row holding it and its label. */
         private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
 
         private void InitializeGamepadNavigation()
@@ -2671,6 +2672,9 @@ namespace GnollHackX
             main.AddButton(SettingsButton);
             main.AddButton(AboutButton);
             main.AddButton(ExitButton);
+            main.AddSwitch(classicModeSwitch, classicModeGrid);
+            main.AddSwitch(casualModeSwitch, casualModeGrid);
+            main.AddSwitch(wizardModeSwitch, wizardModeGrid);
             main.AddButton(StartLocalGameButton);
             main.SetInitialFocus(StartLocalGameButton);
 
@@ -2704,6 +2708,7 @@ namespace GnollHackX
             layer.Back = GamepadPopupBack;
 
             layer = _gamepadNavigator.AddOverlay(() => PopupGrid.IsVisible);
+            layer.AddCheckBox(PopupNoAgainCheckBox, PopupCheckBoxLayout);
             layer.AddButton(PopupOkButton);
             layer.AddButton(PopupViewButton);
             layer.AddButton(PopupOkButton2);

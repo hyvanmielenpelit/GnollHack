@@ -34,6 +34,11 @@ namespace GnollHackX.Pages.Game
         private int _radialWheelAccumulator;
         private long _radialLastWheelTicks;
 
+        /* The orb toggle icons; separate from the map's paints, which may paint on another thread */
+        private readonly SKPaint _radialOrbPaint = new SKPaint();
+        private readonly SKPaint _radialOrbLayerPaint = new SKPaint();
+        private readonly GHSkiaFontPaint _radialOrbTextPaint = new GHSkiaFontPaint();
+
         /* False from the moment of confirm or cancel, while the closing fade may still show */
         public bool IsRadialMenuOpen { get { return _radialState.IsOpen; } }
 
@@ -266,6 +271,7 @@ namespace GnollHackX.Pages.Game
             {
                 GHRadialMenuRenderer renderer = new GHRadialMenuRenderer();
                 renderer.IconLookup = p => GHApp.GetCachedImageSourceBitmap(p, true);
+                renderer.CustomIconDrawer = DrawRadialOrbIcon;
                 renderer.TitleTypeface = GHApp.ImmortalTypeface;
                 renderer.LabelTypeface = GHApp.LatoRegular;
                 renderer.BoldTypeface = GHApp.LatoBold;
@@ -275,6 +281,40 @@ namespace GnollHackX.Pages.Game
                 _radialRenderer = renderer;
             }
             return _radialRenderer;
+        }
+
+        /* The Max Hit Points and Max Mana toggles show their orb as the map draws it, with the maximum always shown */
+        private bool DrawRadialOrbIcon(SKCanvas canvas, GHRadialItem item, SKRect dest, bool enabled, bool highlighted)
+        {
+            bool mana;
+            if (item.Id == GamepadMaxHitPointsToggleId)
+                mana = false;
+            else if (item.Id == GamepadMaxManaToggleId)
+                mana = true;
+            else
+                return false;
+
+            string val = "", maxval = "";
+            float fill = 0.0f;
+            GHGame curGame = GHApp.CurrentGHGame;
+            if (curGame != null)
+            {
+                lock (curGame.StatusFieldLock)
+                {
+                    GetOrbValues(curGame.StatusFields, mana, out val, out maxval, out fill);
+                }
+            }
+
+            int saveCount = -1;
+            if (!enabled)
+            {
+                _radialOrbLayerPaint.ColorFilter = UIUtils.GrayedColorFilter;
+                saveCount = canvas.SaveLayer(_radialOrbLayerPaint);
+            }
+            DrawOrb(canvas, _radialOrbPaint, _radialOrbTextPaint, dest, mana ? SKColors.Blue : SKColors.Red, val, maxval, fill, true, highlighted);
+            if (saveCount >= 0)
+                canvas.RestoreToCount(saveCount);
+            return true;
         }
 
         private void ResetRadialPointerState()

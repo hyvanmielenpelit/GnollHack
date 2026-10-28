@@ -12488,47 +12488,16 @@ namespace GnollHackX.Pages.Game
                         /* HP and MP */
                         if ((ShowOrbs || !ClassicStatusBar) && orbsok)
                         {
-                            float orbfillpercentage = 0.0f;
-                            string valtext = "";
-                            string maxtext = "";
-                            bool pctset = false;
-                            if (_localStatusFields[(int)NhStatusFields.BL_HP].Text != null && _localStatusFields[(int)NhStatusFields.BL_HP].Text != "" && _localStatusFields[(int)NhStatusFields.BL_HPMAX].Text != null && _localStatusFields[(int)NhStatusFields.BL_HPMAX].Text != "")
-                            {
-                                valtext = _localStatusFields[(int)NhStatusFields.BL_HP].Text;
-                                maxtext = _localStatusFields[(int)NhStatusFields.BL_HPMAX].Text;
-                                int hp = 0, hpmax = 1;
-                                if (int.TryParse(_localStatusFields[(int)NhStatusFields.BL_HP].Text, out hp) && int.TryParse(_localStatusFields[(int)NhStatusFields.BL_HPMAX].Text, out hpmax))
-                                {
-                                    if (hpmax > 0)
-                                    {
-                                        orbfillpercentage = (float)hp / (float)hpmax;
-                                        pctset = true;
-                                    }
-                                }
-                                if (!pctset)
-                                    orbfillpercentage = ((float)_localStatusFields[(int)NhStatusFields.BL_HP].Percent) / 100.0f;
-                            }
+                            float orbfillpercentage;
+                            string valtext;
+                            string maxtext;
+                            GetOrbValues(_localStatusFields, false, out valtext, out maxtext, out orbfillpercentage);
                             SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
                             healthRect = orbBorderDest;
                             //healthRectDrawn = true;
                             DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb, false /* isPointerHovering && orbBorderDest.Contains(pointerHoverLocation) */);
 
-                            orbfillpercentage = 0.0f;
-                            valtext = "";
-                            maxtext = "";
-                            if (_localStatusFields[(int)NhStatusFields.BL_ENE].Text != null && _localStatusFields[(int)NhStatusFields.BL_ENE].Text != "" && _localStatusFields[(int)NhStatusFields.BL_ENEMAX].Text != null && _localStatusFields[(int)NhStatusFields.BL_ENEMAX].Text != "")
-                            {
-                                valtext = _localStatusFields[(int)NhStatusFields.BL_ENE].Text;
-                                maxtext = _localStatusFields[(int)NhStatusFields.BL_ENEMAX].Text;
-                                int en = 0, enmax = 1;
-                                if (int.TryParse(_localStatusFields[(int)NhStatusFields.BL_ENE].Text, out en) && int.TryParse(_localStatusFields[(int)NhStatusFields.BL_ENEMAX].Text, out enmax))
-                                {
-                                    if (enmax > 0)
-                                    {
-                                        orbfillpercentage = (float)en / (float)enmax;
-                                    }
-                                }
-                            }
+                            GetOrbValues(_localStatusFields, true, out valtext, out maxtext, out orbfillpercentage);
                             orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
                             manaRect = orbBorderDest;
                             //manaRectDrawn = true;
@@ -24029,7 +23998,32 @@ namespace GnollHackX.Pages.Game
             textPaint.DrawTextOnCanvas(canvas, str, rect.Left + padding, ty + usedoffsety + (textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent) / 2 - textPaint.FontMetrics.Ascent);
         }
 
+        /* The text and fill of the health orb, or of the mana orb when mana is true */
+        private static void GetOrbValues(GHStatusField[] fields, bool mana, out string val, out string maxval, out float orbfillpercentage)
+        {
+            int valIndex = mana ? (int)NhStatusFields.BL_ENE : (int)NhStatusFields.BL_HP;
+            int maxIndex = mana ? (int)NhStatusFields.BL_ENEMAX : (int)NhStatusFields.BL_HPMAX;
+            orbfillpercentage = 0.0f;
+            val = "";
+            maxval = "";
+            if (!string.IsNullOrEmpty(fields[valIndex].Text) && !string.IsNullOrEmpty(fields[maxIndex].Text))
+            {
+                val = fields[valIndex].Text;
+                maxval = fields[maxIndex].Text;
+                int cur = 0, curmax = 1;
+                if (int.TryParse(val, out cur) && int.TryParse(maxval, out curmax) && curmax > 0)
+                    orbfillpercentage = (float)cur / (float)curmax;
+                else if (!mana)
+                    orbfillpercentage = ((float)fields[valIndex].Percent) / 100.0f;
+            }
+        }
+
         private void DrawOrb(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage, bool showmax, bool isHighlighted)
+        {
+            DrawOrb(canvas, _mapOrbPaint, textPaint, orbBorderDest, fillcolor, val, maxval, orbfillpercentage, showmax, isHighlighted);
+        }
+
+        private void DrawOrb(SKCanvas canvas, SKPaint paint, GHSkiaFontPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage, bool showmax, bool isHighlighted)
         {
             float orbwidth = Math.Max(0.01f, orbBorderDest.Width / 230.0f * 210.0f);
             float orbheight = Math.Max(0.01f, orbBorderDest.Width / 230.0f * 210.0f);
@@ -24041,7 +24035,6 @@ namespace GnollHackX.Pages.Game
             //textPaint.TextAlign = SKTextAlign.Center;
             StartProfiling(GHProfilingStyle.Bitmap);
             {
-                SKPaint paint = _mapOrbPaint;
                 ResetPaint(paint);
 #if !GNH_MAUI
                 paint.FilterQuality = SKFilterQuality.High;

@@ -60,14 +60,16 @@ namespace GnollHackX
         public static readonly double PolearmAngle = 315.0;
         public static readonly double WieldLastAngle = 225.0;
 
-        /* Toggles radial directions; at 8 slots they take N, NE, SE, S, SW and NW, and an action
-           item such as Center on Hero takes E */
+        /* Toggles radial directions; at 8 slots they fill N, NE, E, SE, S, SW, W and NW.
+           CenterOnHeroAngle is used only by the unit tests' Center on Hero action item. */
         public static readonly double ExtendedStatusBarAngle = 0.0;
         public static readonly double AutoCenterAngle = 60.0;
         public static readonly double CenterOnHeroAngle = 90.0;
+        public static readonly double MaxHitPointsAngle = 90.0;
         public static readonly double LookModeAngle = 120.0;
         public static readonly double MoreMessagesAngle = 180.0;
         public static readonly double IgnoreStoppingAngle = 240.0;
+        public static readonly double MaxManaAngle = 270.0;
         public static readonly double AutoDigAngle = 300.0;
 
         /* Context items fill these directions first, in this order, then the free slot nearest east */

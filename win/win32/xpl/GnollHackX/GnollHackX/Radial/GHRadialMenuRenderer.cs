@@ -22,6 +22,7 @@ namespace GnollHackX
     {
         /* Host-supplied */
         public Func<string, SKImage> IconLookup;    /* cached images; the renderer never disposes them */
+        public Func<SKCanvas, GHRadialItem, SKRect, bool, bool, bool> CustomIconDrawer; /* (canvas, item, dest, enabled, highlighted): true when it drew the icon; tried before IconLookup */
         public SKTypeface TitleTypeface;            /* Immortal */
         public SKTypeface LabelTypeface;            /* Lato Regular */
         public SKTypeface BoldTypeface;             /* Lato Bold */
@@ -317,13 +318,18 @@ namespace GnollHackX
             float labelAscent = -_textPaint.FontMetrics.Ascent;
             float labelHeight = layout.LabelSize * (float)GHRadialTuning.LabelLineHeight;
 
+            float top = py - (iconSize + labelHeight) / 2;
+            SKRect dest = new SKRect(px - iconSize / 2, top, px + iconSize / 2, top + iconSize);
+            Func<SKCanvas, GHRadialItem, SKRect, bool, bool, bool> drawer = CustomIconDrawer;
             Func<string, SKImage> lookup = IconLookup;
-            SKImage image = lookup == null ? null : lookup(item.GetIconPath(isOn));
-            float top;
-            if (image != null)
+            bool drawn = drawer != null && drawer(canvas, item, dest, enabled, e > 0.5f);
+            SKImage image = drawn || lookup == null ? null : lookup(item.GetIconPath(isOn));
+            if (drawn)
             {
-                top = py - (iconSize + labelHeight) / 2;
-                SKRect dest = new SKRect(px - iconSize / 2, top, px + iconSize / 2, top + iconSize);
+                top += iconSize;
+            }
+            else if (image != null)
+            {
                 _iconPaint.ColorFilter = !enabled ? UIUtils.GrayedColorFilter : (e > 0.5f ? UIUtils.HighlightColorFilter : null);
                 _iconPaint.Color = SKColors.White;
                 canvas.DrawImage(image, dest

@@ -4,8 +4,10 @@ using System.Diagnostics;
 #if GNH_MAUI
 using Microsoft.Maui.Controls;
 using GnollHackX;
+using Switch = Microsoft.Maui.Controls.Switch;
 #else
 using Xamarin.Forms;
+using Switch = Xamarin.Forms.Switch;
 #endif
 
 #if GNH_MAUI
@@ -14,10 +16,11 @@ namespace GnollHackM
 namespace GnollHackX.Controls
 #endif
 {
-    /* Gamepad navigation for a page of buttons: a main layer and overlay layers (in-page popups and panels) that
-       take over while shown, the first shown overlay in AddOverlay order winning. Up/Down (D-pad and left stick)
-       move with wrap on a fresh press only, Left/Right too where a layer allows it, A activates on a short press
-       that started here, B runs the layer's back action, and the press that reveals the UI only shows the focus.
+    /* Gamepad navigation for a page of buttons and toggles: a main layer and overlay layers (in-page popups and
+       panels) that take over while shown, the first shown overlay in AddOverlay order winning. Up/Down (D-pad and
+       left stick) move with wrap on a fresh press only, Left/Right too where a layer allows it, A activates on a
+       short press that started here, B runs the layer's back action, and the press that reveals the UI only shows
+       the focus.
        An overlay gets its initial focus each time it becomes active; the main layer keeps its focus.
        UI thread only. */
     public sealed class GHGamepadPageNavigator
@@ -58,18 +61,38 @@ namespace GnollHackX.Controls
             /* isAvailable null: the view and its ancestors are visible, enabled and not transparent */
             public void Add(View view, Action activate, Func<bool> isAvailable)
             {
+                Add(view, activate, isAvailable, null);
+            }
+
+            /* highlight: tinted while focused unless view is an image button; null tints view itself */
+            public void Add(View view, Action activate, Func<bool> isAvailable, View highlight)
+            {
                 if (view == null)
                     return;
                 if (isAvailable == null)
                     isAvailable = () => IsViewAvailable(view);
                 _views.Add(view);
-                _focus.Add(view, activate, isAvailable);
+                _focus.Add(view, activate, isAvailable, highlight);
             }
 
             public void AddButton(CustomImageButton button)
             {
                 if (button != null)
                     Add(button, button.PerformClick, null);
+            }
+
+            /* A flips the switch, which raises Toggled as a tap does; highlight is typically the row with its label */
+            public void AddSwitch(Switch toggle, View highlight)
+            {
+                if (toggle != null)
+                    Add(toggle, () => toggle.IsToggled = !toggle.IsToggled, null, highlight);
+            }
+
+            /* A flips the check box, which raises CheckedChanged as a tap does */
+            public void AddCheckBox(CheckBox checkBox, View highlight)
+            {
+                if (checkBox != null)
+                    Add(checkBox, () => checkBox.IsChecked = !checkBox.IsChecked, null, highlight);
             }
 
             /* Every CustomImageButton under root in visual-tree order; visibility is checked when focusing */

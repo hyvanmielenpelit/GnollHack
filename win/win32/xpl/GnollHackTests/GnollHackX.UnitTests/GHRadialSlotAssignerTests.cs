@@ -234,6 +234,26 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void Toggles_WithOrbTogglesFillAllEightSlots()
+        {
+            List<GHRadialItem> items = Toggles();
+            items.Add(new GHRadialItem { Id = "l3:maxhp", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PreferredAngle = GHRadialTuning.MaxHitPointsAngle });
+            items.Add(new GHRadialItem { Id = "l3:maxmana", Kind = GHRadialItemKind.Toggle, ClosesOnActivate = false, PreferredAngle = GHRadialTuning.MaxManaAngle });
+            GHRadialPage page = GHRadialSlotAssigner.BuildFixedPage("Toggles", 0, items);
+            /* N, NE, E, SE, S, SW, W, NW */
+            Assert.Equal(8, page.SlotCount);
+            Assert.Equal(8, page.FilledCount);
+            Assert.Equal("l3:statusbar", page.Slots[0].Id);
+            Assert.Equal("l3:autocenter", page.Slots[1].Id);
+            Assert.Equal("l3:maxhp", page.Slots[2].Id);
+            Assert.Equal("l3:look", page.Slots[3].Id);
+            Assert.Equal("l3:messages", page.Slots[4].Id);
+            Assert.Equal("l3:ignore", page.Slots[5].Id);
+            Assert.Equal("l3:maxmana", page.Slots[6].Id);
+            Assert.Equal("l3:autodig", page.Slots[7].Id);
+        }
+
+        [Fact]
         public void CenterOnHero_TakesTheEmptyEastSlot()
         {
             List<GHRadialItem> items = Toggles();

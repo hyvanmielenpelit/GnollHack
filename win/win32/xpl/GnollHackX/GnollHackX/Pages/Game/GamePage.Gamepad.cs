@@ -1491,12 +1491,18 @@ namespace GnollHackX.Pages.Game
             return item;
         }
 
-        /* R3: the six toggles at fixed directions; L3 centers on the hero */
+        private const string GamepadMaxHitPointsToggleId = "l3:maxhp";
+        private const string GamepadMaxManaToggleId = "l3:maxmana";
+
+        /* R3: the eight toggles at fixed directions; L3 centers on the hero. The orb toggles are
+           disabled when the orbs are not shown, and like an orb tap they are not saved; their icons are
+           drawn orbs (DrawRadialOrbIcon), with the image as a fallback. */
         private GHRadialMenuDefinition BuildGamepadTogglesRadial()
         {
-            List<GHRadialItem> items = new List<GHRadialItem>(6);
-            items.Add(CreateGamepadToggleItem("l3:statusbar", "Extended Status Bar", "Shows the full status of your character",
-                "status-xp-level.png", null, GHRadialTuning.ExtendedStatusBarAngle,
+            bool orbsShown = ShowOrbs || !ClassicStatusBar;
+            List<GHRadialItem> items = new List<GHRadialItem>(8);
+            items.Add(CreateGamepadToggleItem("l3:statusbar", "Status Screen", "Shows the full status of your character",
+                "you.png", null, GHRadialTuning.ExtendedStatusBarAngle,
                 () => ShowExtendedStatusBar, ToggleExtendedStatusBar, false, false, true));
             items.Add(CreateGamepadToggleItem("l3:autocenter", "Auto-Center", "Keeps the map centered on your character",
                 "stone-autocenter-off.png", "stone-autocenter-on.png", GHRadialTuning.AutoCenterAngle,
@@ -1513,6 +1519,12 @@ namespace GnollHackX.Pages.Game
             items.Add(CreateGamepadToggleItem("l3:autodig", "Auto-Dig", "Moving digs when you wield a digging tool",
                 "stone-autodig-off.png", "stone-autodig-on.png", GHRadialTuning.AutoDigAngle,
                 () => MapAutoDig, () => ToggleAutoDigButton_BtnClicked(null, EventArgs.Empty), true, false, !PlayingReplay));
+            items.Add(CreateGamepadToggleItem(GamepadMaxHitPointsToggleId, "Max Hit Points", "Shows your maximum hit points in the health orb",
+                "symbol-spell-healing.png", null, GHRadialTuning.MaxHitPointsAngle,
+                () => ShowMaxHealthInOrb, () => ShowMaxHealthInOrb = !ShowMaxHealthInOrb, false, false, orbsShown));
+            items.Add(CreateGamepadToggleItem(GamepadMaxManaToggleId, "Max Mana", "Shows your maximum mana in the mana orb",
+                "symbol-mana.png", null, GHRadialTuning.MaxManaAngle,
+                () => ShowMaxManaInOrb, () => ShowMaxManaInOrb = !ShowMaxManaInOrb, false, false, orbsShown));
 
             GHRadialMenuDefinition def = new GHRadialMenuDefinition();
             def.MenuId = "R3";
