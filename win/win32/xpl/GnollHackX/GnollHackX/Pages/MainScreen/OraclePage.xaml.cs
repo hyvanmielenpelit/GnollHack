@@ -24,7 +24,7 @@ using Xamarin.Essentials;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-	public partial class OraclePage : CustomModalPage, ICloseablePage
+	public partial class OraclePage : CustomModalPage, ICloseablePage, IGHGamepadHandlingPage
     {
 		public OraclePage ()
 		{
@@ -43,6 +43,7 @@ namespace GnollHackX.Pages.MainScreen
                 lblSubtitle.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
             }
+            InitializeGamepadNavigation();
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -124,6 +125,8 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
                 EmptyLabel.IsVisible = true;
+
+            RefillGamepadNavigation();
         }
 
         private string GetShortName(StoredManual sm)
@@ -228,6 +231,54 @@ namespace GnollHackX.Pages.MainScreen
         //    return true;
         //}
 
+        /* The XAML does not hook ContentPage_Appearing and ContentPage_Disappearing */
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            _gamepadNavigator.Attach();
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _gamepadNavigator.Detach();
+        }
+
+        /* Gamepad focus: the consultation rows, then Close; the rows are added once the consultations are read, the
+           first row taking the focus. B closes the page as Escape does. */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddButton(CloseButton);
+            main.ScrollView = GHGamepadPageNavigator.FindScrollViewAncestor(OracleLayout);
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+        }
+
+        private void RefillGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.Clear();
+            main.AddRowButtons(OracleLayout);
+            main.AddButton(CloseButton);
+            if (main.Focus.FocusIndex < 0)
+                main.FocusInitial();
+            _gamepadNavigator.RefreshVisuals();
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+        }
     }
 
 }

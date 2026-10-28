@@ -73,6 +73,7 @@ namespace GnollHackM
             sb.Append(" rpt=").Append(repeat ? "1" : "0");
             sb.Append(" dt=").Append(dt);
             sb.Append(" bridge=").Append(bridge ?? "");
+            sb.Append(" src=").Append(SourceName(e.Source));
             Write(sb.ToString());
         }
 
@@ -82,7 +83,18 @@ namespace GnollHackM
             if (!_enabled || e == null)
                 return;
             Write("KEYLOG t=" + Milliseconds(Stopwatch.GetTimestamp()) + " TextInput text=" + Quote(e.Text)
-                + " handled=" + (e.Handled ? "True" : "False") + " routed=" + (routed ? "True" : "False"));
+                + " handled=" + (e.Handled ? "True" : "False") + " routed=" + (routed ? "True" : "False")
+                + " src=" + SourceName(e.Source));
+        }
+
+        /* The element the key event is raised on, i.e. the focused element */
+        private static string SourceName(object source)
+        {
+            if (source == null)
+                return "-";
+            Avalonia.StyledElement styled = source as Avalonia.StyledElement;
+            string name = styled != null ? styled.Name : null;
+            return string.IsNullOrEmpty(name) ? source.GetType().Name : source.GetType().Name + "#" + name;
         }
 
         private static void OnActivated(object sender, EventArgs e)

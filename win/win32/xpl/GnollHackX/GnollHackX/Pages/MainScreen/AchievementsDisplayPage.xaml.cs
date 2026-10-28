@@ -21,7 +21,7 @@ using Xamarin.Essentials;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public partial class AchievementsDisplayPage : CustomModalPage, ICloseablePage
+    public partial class AchievementsDisplayPage : CustomModalPage, ICloseablePage, IGHGamepadHandlingPage
     {
         public AchievementsDisplayPage()
         {
@@ -40,6 +40,7 @@ namespace GnollHackX.Pages.MainScreen
                 lblSubtitle.TextColor = GHColors.White;
                 EmptyLabel.TextColor = GHColors.White;
             }
+            InitializeGamepadNavigation();
         }
 
         private async void Button_Clicked(object sender, EventArgs e)
@@ -185,6 +186,63 @@ namespace GnollHackX.Pages.MainScreen
             }
             else
                 EmptyLabel.IsVisible = true;
+
+            RefillGamepadNavigation();
+        }
+
+        /* The XAML does not hook ContentPage_Appearing and ContentPage_Disappearing */
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            _gamepadNavigator.Attach();
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _gamepadNavigator.Detach();
+        }
+
+        /* Gamepad focus: the achievement rows, focused only to scroll the list as A does nothing on them, then Close;
+           the rows are added once the category is read, the first row taking the focus. B closes the page as Escape
+           does. */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddButton(CloseButton);
+            main.ScrollView = GHGamepadPageNavigator.FindScrollViewAncestor(AchievementLayout);
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+        }
+
+        private void RefillGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.Clear();
+            foreach (var child in AchievementLayout.Children)
+            {
+                RowImageButton rib = child as RowImageButton;
+                if (rib != null)
+                    main.Add(rib, null, null);
+            }
+            main.AddButton(CloseButton);
+            if (main.Focus.FocusIndex < 0)
+                main.FocusInitial();
+            _gamepadNavigator.RefreshVisuals();
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
         }
     }
 }

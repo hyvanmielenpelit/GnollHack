@@ -15,6 +15,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackM
 #else
+using GnollHackX.Controls;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
@@ -24,7 +25,7 @@ using Xamarin.Essentials;
 namespace GnollHackX.Pages.Game
 #endif
 {
-    public partial class NamePage : CustomModalPage, ICloseablePage, ISpecialKeyPressHandlingPage
+    public partial class NamePage : CustomModalPage, ICloseablePage, ISpecialKeyPressHandlingPage, IGHGamepadHandlingPage
     {
         public Regex ValidationExpression { get; set; }
         private GHGame _currentGame;
@@ -86,6 +87,7 @@ namespace GnollHackX.Pages.Game
                 btnOK.IsEnabled = false;
                 btnCancel.IsEnabled = false;                
             }
+            InitializeGamepadNavigation();
         }
 
         private async void btnOK_Clicked(object sender, EventArgs e)
@@ -148,6 +150,7 @@ namespace GnollHackX.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+            _gamepadNavigator.Attach();
         }
 
         private void ContentPage_Loaded(object sender, EventArgs e)
@@ -188,6 +191,9 @@ namespace GnollHackX.Pages.Game
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _gamepadNavigator.Detach();
+            /* Before unfocusing, which only marks the keyboard closed */
+            GHScreenKeyboard.Hide();
             eName.Unfocus();
             eName.IsEnabled = false;
         }
@@ -310,6 +316,35 @@ namespace GnollHackX.Pages.Game
         protected override bool OnBackButtonPressed()
         {
             return true;
+        }
+
+        /* Gamepad focus: the name field, OK and Cancel, starting on the field. A on the field opens the on-screen
+           keyboard, whose Enter submits through Completed as OK does; B while the field is being edited ends the
+           edit, otherwise it cancels as Escape does. */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddEntry(eName, null, GHScreenKeyboardMode.SingleLine);
+            main.AddButton(btnOK);
+            main.AddButton(btnCancel);
+            main.HorizontalMoves = true;
+            main.SetInitialFocus(eName);
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
         }
     }
 }

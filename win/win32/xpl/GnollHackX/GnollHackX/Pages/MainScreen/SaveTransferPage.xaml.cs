@@ -110,7 +110,7 @@ namespace GnollHackX.Pages.MainScreen
         public long CreatedUtcUnix { get; set; }  // Unix timestamp (seconds since UTC epoch)
     }
 
-    public partial class SaveTransferPage : CustomModalPage, ICloseablePage, IMessagePopupPage
+    public partial class SaveTransferPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IGHGamepadHandlingPage, IGHGamepadPopupPage
     {
         private List<GHSaveTransferFile> _saves = new List<GHSaveTransferFile>();
         private GHSaveTransferFile _selectedSave = null;
@@ -142,12 +142,14 @@ namespace GnollHackX.Pages.MainScreen
             TransferModePicker.SelectedIndexChanged -= TransferModePicker_SelectedIndexChanged;
             TransferModePicker.SelectedIndex = 0; // Default to Upload
             TransferModePicker.SelectedIndexChanged += TransferModePicker_SelectedIndexChanged;
+            InitializeGamepadNavigation();
         }
 
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             _appeared = true;
+            _gamepadNavigator.Attach();
         }
 
         public async Task RefreshAsync()
@@ -159,6 +161,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
             CancelCurrentProcess();
+            _gamepadNavigator.Detach();
         }
 
         private async void TransferModePicker_SelectedIndexChanged(object sender, EventArgs e)
@@ -356,6 +359,7 @@ namespace GnollHackX.Pages.MainScreen
                     if (!GHApp.HasInternetAccess)
                     {
                         StatusLabel.Text = "No internet access";
+                        RefillGamepadNavigation();
                         Interlocked.Exchange(ref _isScanning, 0);
                         return;
                     }
@@ -496,6 +500,7 @@ namespace GnollHackX.Pages.MainScreen
                 EmptyLabel.IsVisible = _saves.Count == 0;
                 SavesLayout.IsEnabled = true;
                 UpdateButtons();
+                RefillGamepadNavigation();
                 Interlocked.Exchange(ref _isScanning, 0);
                 return;
             }
@@ -505,6 +510,7 @@ namespace GnollHackX.Pages.MainScreen
             PopulateSavesList();
             SavesLayout.IsEnabled = true;
             UpdateButtons();
+            RefillGamepadNavigation();
             Interlocked.Exchange(ref _isScanning, 0);
         }
 
@@ -1934,6 +1940,61 @@ namespace GnollHackX.Pages.MainScreen
 
             return parts.Count > 0 ? "(" + string.Join(", ", parts) + ")" : "";
         }
+
+        /* Gamepad focus: the save rows, the transfer mode picker, Transfer and Close; the rows are added after each
+           scan, the first row taking the focus after the first one, and the focus otherwise kept. The progress popup
+           has its Cancel button. B cancels the transfer in the popup or closes the page as Escape does. */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+        private bool _gamepadListFilled = false;
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddPicker(TransferModePicker, null);
+            main.AddButton(ActionButton);
+            main.AddButton(CloseButton);
+            main.ScrollView = GHGamepadPageNavigator.FindScrollViewAncestor(SavesLayout);
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+
+            GHGamepadPageNavigator.Layer layer = _gamepadNavigator.AddOverlay(() => PopupGrid.IsVisible);
+            layer.AddButton(PopupCancelButton);
+            layer.Back = () =>
+            {
+                if (PopupCancelButton.IsEnabled)
+                    PopupCancelButton_Clicked(PopupCancelButton, EventArgs.Empty);
+                return true;
+            };
+        }
+
+        /* Called once SavesLayout is enabled, so that the first row is available for the initial focus */
+        private void RefillGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.Clear();
+            main.AddRowButtons(SavesLayout);
+            main.AddPicker(TransferModePicker, null);
+            main.AddButton(ActionButton);
+            main.AddButton(CloseButton);
+            if (!_gamepadListFilled || main.Focus.FocusIndex < 0)
+                main.FocusInitial();
+            _gamepadListFilled = true;
+            _gamepadNavigator.RefreshVisuals();
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+        }
+
+        public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e) => MessagePopup.HandleGamepadButton(e);
 
         public bool IsPopupOpen => MessagePopup.IsPopupOpen;
         public void ClosePopup() => MessagePopup.ClosePopup();

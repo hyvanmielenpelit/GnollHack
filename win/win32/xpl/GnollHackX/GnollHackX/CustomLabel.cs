@@ -1319,6 +1319,47 @@ namespace GnollHackX
             }
         }
 
+        /* Scrolls a scrollable label by dips, positive toward the end of the text, clamped to the text as the
+           mouse wheel clamps it; stops a fling or spring-back in progress. Returns true if the text moved. */
+        public bool ScrollBy(float dips)
+        {
+            if (!IsScrollable || dips == 0f)
+                return false;
+            float canvasheight = InterlockedCanvasHeight;
+            if (canvasheight <= 0f)
+                return false;
+            float pixelsPerDip = Height > 0 ? canvasheight / (float)Height : GHApp.DisplayDensity;
+            bool moved;
+            lock (_textScrollLock)
+            {
+                float bottomScrollLimit = Math.Min(0, canvasheight - TextHeight);
+                float oldoffset = _textScrollOffset;
+                _textScrollOffset -= dips * pixelsPerDip;
+                if (_textScrollOffset > 0)
+                    _textScrollOffset = 0;
+                else if (_textScrollOffset < bottomScrollLimit)
+                    _textScrollOffset = bottomScrollLimit;
+                _textScrollSpeed = 0;
+                if (TextScrollSpeedOn)
+                    TextScrollSpeedOn = false;
+                InterlockedTextScrollOffset = _textScrollOffset;
+                moved = _textScrollOffset != oldoffset;
+            }
+            if (moved)
+                InvalidateSurface();
+            return moved;
+        }
+
+        /* Scrolls by most of the label's height; direction -1 toward the start, +1 toward the end */
+        public bool ScrollPage(int direction)
+        {
+            if (direction == 0 || Height <= 0)
+                return false;
+            return ScrollBy((direction > 0 ? 1f : -1f) * (float)Height * PageScrollFraction);
+        }
+
+        private const float PageScrollFraction = 0.9f;
+
         //private void Base_SizeChanged(object sender, EventArgs e)
         //{
         //    if(_currentWidth > 0 && _currentHeight > 0)

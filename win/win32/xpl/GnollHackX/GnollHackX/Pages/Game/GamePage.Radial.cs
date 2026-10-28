@@ -309,9 +309,9 @@ namespace GnollHackX.Pages.Game
             if (!enabled)
             {
                 _radialOrbLayerPaint.ColorFilter = UIUtils.GrayedColorFilter;
-                saveCount = canvas.SaveLayer(_radialOrbLayerPaint);
+                saveCount = canvas.SaveLayer(dest, _radialOrbLayerPaint);
             }
-            DrawOrb(canvas, _radialOrbPaint, _radialOrbTextPaint, dest, mana ? SKColors.Blue : SKColors.Red, val, maxval, fill, true, highlighted);
+            DrawOrb(canvas, _radialOrbPaint, _radialOrbTextPaint, dest, mana ? SKColors.Blue : SKColors.Red, val, maxval, fill, true, highlighted && enabled);
             if (saveCount >= 0)
                 canvas.RestoreToCount(saveCount);
             return true;

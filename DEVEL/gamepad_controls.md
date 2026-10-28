@@ -29,9 +29,38 @@ presses the focused button and B goes back (on the main menu B does nothing; its
 take A and B as well). The main menu starts on Play Game, and the Reset page starts on Close.
 On the main menu the focus also reaches the Classic, Casual and Wizard Mode switches, between
 Exit and Play Game, and a popup's "do not show again" check box: their row is tinted while
-focused, and A flips them as a tap does. Other pages with switches, pickers, text entry or list rows (Settings, the name page, Library and
-similar) get a keyboard adapter instead: A is Enter, B is Escape (closes the page), directions
-are arrow keys, L1/R1 are Page Up and Page Down.
+focused, and A flips them as a tap does. Right on Play Game goes to Exit. The main menu's
+shortcuts are X Play Game, Y About, Menu Settings and View Vault, each when its button is
+available. On every page, L2/R2 go to the first and last entry of the scrolling list (or of the
+page when it has none).
+
+The other pages work the same way, with these additions:
+
+- **Settings:** the focus walks the rows in order, and the focused row is tinted. A flips a
+  switch, steps a picker to its next value (wrapping), or edits a text field. Left/Right step a
+  picker or a volume slider (5 %, held to repeat), or move between two buttons in one row. L1/R1
+  jump to the previous/next section. X shows the row's explanation, as tapping its label does.
+  B saves and closes, as Escape does; if a field is invalid, the focus goes to its row.
+- **Library, Oracle, Music, Snapshots, Achievements, Save Transfer:** the focus moves over the
+  rows and the buttons below them; A opens a row.
+- **Top Scores and Replays:** Up/Down move the list's selection, and A opens the dumplog or plays
+  the replay; past the list's ends the focus moves on to the buttons. Replays in multiple
+  selection mode leave the list to touch.
+- **Text viewer:** the sticks and D-pad Up/Down scroll the text, L1/R1 page.
+- **Wiki:** Close and the back/forward arrows; the page itself stays touch.
+- **Name page:** the focus starts on the name field.
+
+**Text fields and the Steam keyboard.** On a Steam Deck in Game Mode, A on a text field focuses
+it and opens Steam's on-screen keyboard, placed away from the field; the keyboard's Enter closes
+it and confirms, and B ends the edit. A getline prompt (wish, engrave, name) opens the keyboard
+as soon as it appears, and Y reopens it. In Desktop Mode, or with `GNOLLHACK_STEAM_KEYBOARD=off`,
+A only focuses the field; Steam + X opens the keyboard by hand. `GNOLLHACK_STEAM_KEYBOARD=on`
+allows it on any Linux session, and `GNOLLHACK_STEAM_KEYBOARD_LAUNCH` (`xdg-open`, the default,
+`steam` or `launcher`) picks how the `steam://open/keyboard` link is opened.
+
+Pages that keep the keyboard adapter (the Overseer, and the developer-only editor and performance
+suite): A is Enter, B is Escape (closes the page), directions are arrow keys, L1/R1 are Page Up
+and Page Down.
 
 ### On the Map
 
@@ -106,7 +135,7 @@ menu follow the same rules:
 | A | Confirm, OK, or select the focused item; hold A on a menu row for its count or actions |
 | B | Cancel, close, back |
 | X | Menus: count and actions, or select all. getline: the list |
-| Y | Menus: OK (accept the selection) |
+| Y | Menus: OK (accept the selection). getline: reopen the Steam keyboard |
 | L1 / R1 | Menus: jump between sections |
 | L2 / R2 | Menus: first or last row |
 

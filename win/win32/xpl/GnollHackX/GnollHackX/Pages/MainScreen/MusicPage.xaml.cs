@@ -22,7 +22,7 @@ using Xamarin.Essentials;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public partial class MusicPage : CustomModalPage, ICloseablePage
+    public partial class MusicPage : CustomModalPage, ICloseablePage, IGHGamepadHandlingPage
     {
         public MusicPage()
         {
@@ -34,6 +34,7 @@ namespace GnollHackX.Pages.MainScreen
                 EmptyLabel.TextColor = GHColors.White;
             }
             AddDiscoveredSoundTracks();
+            InitializeGamepadNavigation();
             GHApp.FmodService.StopAllUISounds();
             GHApp.FmodService.LoadBanks(sound_bank_loading_type.Music);
             GHApp.FmodService.PlayUIMusic(GHConstants.MusicGHSound, GHConstants.MusicEventPath, 0, 0.3f, 1.0f);
@@ -256,6 +257,46 @@ namespace GnollHackX.Pages.MainScreen
             lblHeader.IsEnabled = false;
             GHApp.FmodService.StopAllUISounds();
             lblHeader.IsEnabled = true;
+        }
+
+        /* The XAML does not hook ContentPage_Appearing and ContentPage_Disappearing */
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            _gamepadNavigator.Attach();
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            _gamepadNavigator.Detach();
+        }
+
+        /* Gamepad focus: the sound track rows, built in the constructor, then Close; the first row starts with the
+           focus. B closes the page as Escape does. */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddRowButtons(SoundTrackLayout);
+            main.AddButton(CloseButton);
+            main.ScrollView = GHGamepadPageNavigator.FindScrollViewAncestor(SoundTrackLayout);
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+            main.FocusInitial();
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
         }
     }
 }

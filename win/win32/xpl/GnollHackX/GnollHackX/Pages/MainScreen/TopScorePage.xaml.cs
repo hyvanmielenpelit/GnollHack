@@ -13,6 +13,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackM
 #else
+using GnollHackX.Controls;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
@@ -22,7 +23,7 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public partial class TopScorePage : CustomModalPage, ICloseablePage
+    public partial class TopScorePage : CustomModalPage, ICloseablePage, IGHGamepadHandlingPage
     {
         private string _fileName;
         private ObservableCollection<GHTopScoreItem> _topScores = null;
@@ -60,6 +61,7 @@ namespace GnollHackX.Pages.MainScreen
                 CloseButton.IsVisible = false;
                 CloseGrid.IsVisible = true;
             }
+            InitializeGamepadNavigation();
         }
 
         public TopScorePage()
@@ -78,6 +80,7 @@ namespace GnollHackX.Pages.MainScreen
             NoScoresLabel.IsVisible = true;
             ScoresView.IsVisible = false;
             ScoresView.BindingContext = this;
+            InitializeGamepadNavigation();
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
@@ -331,13 +334,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            GHApp.PlayButtonClickedSound();
-            ScoresView.IsEnabled = false;
-
             Label btn = sender as Label;
             GHTopScoreItem tsi = null;
             if (btn != null)
                 tsi = btn.BindingContext as GHTopScoreItem;
+
+            await OpenDumplogAsync(tsi);
+        }
+
+        /* Shows the dumplog of tsi, the HTML one if preferred and present */
+        private async Task OpenDumplogAsync(GHTopScoreItem tsi)
+        {
+            GHApp.PlayButtonClickedSound();
+            ScoresView.IsEnabled = false;
 
             if (tsi != null)
             {
@@ -432,10 +441,92 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+            if (GHGamepadService.IsActive)
+                EnsureGamepadListSelectionMode();
+            _gamepadNavigator.Attach();
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _gamepadNavigator.Detach();
+        }
+
+        /* Gamepad focus: the score list, whose Up/Down move the selected row and A opens its dumplog, then Close
+           or Server and Close; B closes the page. The first focus is set when the page first appears, after
+           ReadFile has filled the list. */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddCollectionView(ScoresView, () => _topScores, GamepadOpenDumplog);
+            main.AddButton(CloseButton);
+            main.AddButton(ServerButton);
+            main.AddButton(CloseButton2);
+            main.HorizontalMoves = true;
+            main.SetInitialFocus(ScoresView, CloseButton, CloseButton2);
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+        }
+
+        /* A on the list: rows without a dumplog have no tap target either */
+        private async void GamepadOpenDumplog(object item)
+        {
+            try
+            {
+                GHTopScoreItem tsi = item as GHTopScoreItem;
+                if (tsi != null && tsi.IsDumplogButtonEnabled && ScoresView.IsEnabled)
+                    await OpenDumplogAsync(tsi);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        /* The list shows the gamepad focus only as its selection, which needs SelectionMode Single; it is set on the
+           first gamepad input, so touch keeps the list without selection */
+        private void EnsureGamepadListSelectionMode()
+        {
+            if (ScoresView.IsVisible && ScoresView.SelectionMode != SelectionMode.Single)
+                ScoresView.SelectionMode = SelectionMode.Single;
+        }
+
+        /* Selects the first row when the list has the gamepad focus without a selected row */
+        private void EnsureGamepadListSelection()
+        {
+            if (!GHGamepadService.IsActive || _topScores == null || _topScores.Count == 0)
+                return;
+            if (!ReferenceEquals(_gamepadNavigator.Main.Focus.FocusedView, ScoresView)
+                || !GHGamepadPageNavigator.IsViewAvailable(ScoresView))
+                return;
+            object selected = ScoresView.SelectedItem;
+            if (selected != null && _topScores.Contains(selected as GHTopScoreItem))
+                return;
+            ScoresView.SelectedItem = _topScores[0];
+            try
+            {
+                ScoresView.ScrollTo(0, -1, ScrollToPosition.MakeVisible, false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            EnsureGamepadListSelectionMode();
+            bool handled = _gamepadNavigator.HandleButton(e);
+            EnsureGamepadListSelection();
+            return handled;
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
         }
     }
 }

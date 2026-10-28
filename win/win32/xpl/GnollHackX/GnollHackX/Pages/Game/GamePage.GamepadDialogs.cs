@@ -480,6 +480,11 @@ namespace GnollHackX.Pages.Game
                     if (isPress && GetLineQuestionMarkButton.IsVisible && GetLineQuestionMarkButton.IsEnabled)
                         GetLineQuestionMarkButton_Clicked(null, null);
                     break;
+                case GHGamepadButton.Y:
+                    /* Focuses the entry and reopens the on-screen keyboard */
+                    if (isPress)
+                        ShowGetLineScreenKeyboard();
+                    break;
                 default:
                     break;
             }
@@ -1233,7 +1238,7 @@ namespace GnollHackX.Pages.Game
                     break;
                 case GHGamepadDialogContext.GetLine:
                     signature = signature * 31 + (GetLineQuestionMarkButton.IsVisible ? 1 : 0)
-                        + (GetLineCancelButton.Text == "Random" ? 2 : 0);
+                        + (GetLineCancelButton.Text == "Random" ? 2 : 0) + (GHScreenKeyboard.IsAvailable ? 4 : 0);
                     break;
                 default:
                     break;
@@ -1277,6 +1282,8 @@ namespace GnollHackX.Pages.Game
                     hints.Add(new GHGamepadHint(GHGamepadButton.B, cancelLabel, false));
                     if (GetLineQuestionMarkButton.IsVisible)
                         hints.Add(new GHGamepadHint(GHGamepadButton.X, "List", false));
+                    if (GHScreenKeyboard.IsAvailable)
+                        hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Keyboard", false));
                     break;
                 case GHGamepadDialogContext.Text:
                     hints.Add(new GHGamepadHint(GHGamepadButton.A, "Close", false));

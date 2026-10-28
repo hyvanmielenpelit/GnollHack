@@ -27,6 +27,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackM
 #else
+using GnollHackX.Controls;
 using GnollHackX.Pages.Game;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -37,7 +38,7 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public partial class ReplayPage : CustomModalPage, ICloseablePage
+    public partial class ReplayPage : CustomModalPage, ICloseablePage, IGHGamepadHandlingPage
     {
         MainPage _mainPage = null;
         string _subDirectoryLocal = null;
@@ -81,6 +82,7 @@ namespace GnollHackX.Pages.MainScreen
             FolderPicker.SelectedIndex = 0;
 
             Appearing += ReplayPage_Appearing;
+            InitializeGamepadNavigation();
         }
 
         private async void ReplayPage_Appearing(object sender, EventArgs e)
@@ -103,6 +105,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 await UpdateLocalRecordings();
             }
+            UpdateGamepadFocusAfterLoad();
         }
 
         private async Task UpdateLocalRecordings()
@@ -915,10 +918,132 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+            _gamepadNavigator.Attach();
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _gamepadNavigator.Detach();
+        }
+
+        /* Gamepad focus: the replay list, whose Up/Down move the selected row and A runs Play (or Open or
+           Download), the folder picker, More, Play, Multiple and Close; B closes the page. In multiple selection
+           the list is skipped, as the list cannot show a cursor apart from the selection. Overlays: the
+           upload/download progress (Cancel), the action popup (B is Cancel); the archive wait swallows input. */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+        private bool _gamepadListLoaded = false;
+
+        private void InitializeGamepadNavigation()
+        {
+            _gamepadNavigator.IsBusy = () => CloudLoadingGrid.IsVisible;
+
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddCollectionView(ReplayCollectionView, GetGamepadListItems, (item) =>
+            {
+                if (!IsMultiSelect && SelectButton.IsEnabled)
+                    SelectButton.PerformClick();
+            });
+            main.AddPicker(FolderPicker, null);
+            main.AddButton(MoreButton);
+            main.AddButton(SelectButton);
+            main.AddButton(MultiButton);
+            main.AddButton(CloseButton);
+            main.HorizontalMoves = true;
+            main.SetInitialFocus(ReplayCollectionView, CloseButton);
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+
+            GHGamepadPageNavigator.Layer layer = _gamepadNavigator.AddOverlay(() => UploadDownloadGrid.IsVisible);
+            layer.AddButton(UploadDownloadCancelButton);
+            layer.Back = () =>
+            {
+                if (UploadDownloadCancelButton.IsEnabled)
+                    UploadDownloadCancelButton_Clicked(UploadDownloadCancelButton, EventArgs.Empty);
+                return true;
+            };
+
+            layer = _gamepadNavigator.AddOverlay(() => PopupGrid.IsVisible);
+            layer.AddButton(UploadButton);
+            layer.AddButton(ShareButton);
+            layer.AddButton(DeleteButton);
+            layer.AddButton(PopupCancelButton);
+            layer.Back = () =>
+            {
+                if (PopupCancelButton.IsEnabled)
+                    PopupCancelButton_Clicked(PopupCancelButton, EventArgs.Empty);
+                return true;
+            };
+        }
+
+        /* The list's items in single selection; none in multiple selection, which makes the list unavailable */
+        private System.Collections.IList GetGamepadListItems()
+        {
+            if (IsMultiSelect)
+                return null;
+            return ReplayCollectionView.ItemsSource as System.Collections.IList;
+        }
+
+        /* After the list is filled: the first time, the gamepad focus goes to the list; later, the list gets a
+           selected row again if it has the focus */
+        private void UpdateGamepadFocusAfterLoad()
+        {
+            try
+            {
+                if (!_gamepadListLoaded)
+                {
+                    _gamepadListLoaded = true;
+                    _gamepadNavigator.Main.FocusInitial();
+                }
+                else
+                {
+                    EnsureGamepadListSelection();
+                }
+                _gamepadNavigator.RefreshVisuals();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
+        /* The list shows the gamepad focus only as its selection: selects the first row when the list has the
+           focus without a selected row */
+        private void EnsureGamepadListSelection()
+        {
+            if (!GHGamepadService.IsActive)
+                return;
+            if (!ReferenceEquals(_gamepadNavigator.Main.Focus.FocusedView, ReplayCollectionView)
+                || !GHGamepadPageNavigator.IsViewAvailable(ReplayCollectionView))
+                return;
+            System.Collections.IList items = GetGamepadListItems();
+            if (items == null || items.Count == 0)
+                return;
+            object selected = ReplayCollectionView.SelectedItem;
+            if (selected != null && items.Contains(selected))
+                return;
+            ReplayCollectionView.SelectedItem = items[0];
+            try
+            {
+                ReplayCollectionView.ScrollTo(0, -1, ScrollToPosition.MakeVisible, false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            bool handled = _gamepadNavigator.HandleButton(e);
+            EnsureGamepadListSelection();
+            return handled;
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
         }
         private double _currentPageWidth = 0;
         private double _currentPageHeight = 0;

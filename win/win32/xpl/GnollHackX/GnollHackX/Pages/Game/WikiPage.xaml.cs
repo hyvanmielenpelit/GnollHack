@@ -16,13 +16,14 @@ using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using GnollHackX.Controls;
 using GnollHackX.Pages.MainScreen;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace GnollHackX.Pages.Game
 #endif
 {
-    public partial class WikiPage : CustomModalPage, ICloseablePage
+    public partial class WikiPage : CustomModalPage, ICloseablePage, IGHGamepadHandlingPage
     {
 #if GNH_MAUI
         IDispatcherTimer _timer = null;
@@ -44,6 +45,7 @@ namespace GnollHackX.Pages.Game
             };
             DisplayWebView.Source = Source;
             UpdateNavigationButtons(true);
+            InitializeGamepadNavigation();
 #if GNH_MAUI && WINDOWS
             if (!string.IsNullOrWhiteSpace(title))
             {
@@ -198,10 +200,40 @@ namespace GnollHackX.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+            _gamepadNavigator.Attach();
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _gamepadNavigator.Detach();
+        }
+
+        /* Gamepad focus: Close, back and forward in the button row; B closes the page. The web page itself
+           takes touch, mouse and keyboard only. */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddButton(CloseButton);
+            main.AddButton(BackButton);
+            main.AddButton(ForwardButton);
+            main.HorizontalMoves = true;
+            main.SetInitialFocus(CloseButton);
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
         }
         //protected override bool OnBackButtonPressed()
         //{

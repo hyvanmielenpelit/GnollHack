@@ -3804,6 +3804,8 @@ namespace GnollHackX.Pages.Game
             MenuWindowGlyphImage.StopAnimation();
             MenuCountGrid.IsVisible = false;
             MenuCountEntry.IsEnabled = false;
+            if (GetLineGrid.IsVisible)
+                GHScreenKeyboard.Hide();
             GetLineGrid.IsVisible = false;
             PopupGrid.IsVisible = false;
             TextWindowGlyphImage.StopAnimation();
@@ -4446,31 +4448,56 @@ namespace GnollHackX.Pages.Game
 
             BumpGamepadDialogSerial();
             GetLineGrid.IsVisible = true;
+            _getLinePromptSerial++;
 
             if(!PlayingReplay)
             {
-                if(GHApp.AutoFocusOnEntry)
+                /* With the controller in use, the on-screen keyboard opens once the entry has been focused */
+                bool openScreenKeyboard = GHScreenKeyboard.IsAvailable;
+                if(GHApp.AutoFocusOnEntry || openScreenKeyboard)
                 {
 #if GNH_MAUI
+                    int promptSerial = _getLinePromptSerial;
                     var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
                     timer.Interval = TimeSpan.FromSeconds(GHConstants.KeyboardFocusDelay);
                     timer.IsRepeating = false;
-                    timer.Tick += (s, e) => { FocusToGetLineEntry(); };
+                    timer.Tick += (s, e) => { FocusToGetLineEntry(promptSerial, openScreenKeyboard); };
                     timer.Start();
 #else
                     GetLineEntryText.Focus();
+                    if (openScreenKeyboard)
+                        ShowGetLineScreenKeyboard();
 #endif
                 }
             }
         }
-        private void FocusToGetLineEntry()
+
+        /* Counts getline prompts, so that a focus timer acts only on the prompt that started it */
+        private int _getLinePromptSerial = 0;
+
+        private void FocusToGetLineEntry(int promptSerial, bool openScreenKeyboard)
         {
             /* Only caller is a dispatcher timer tick, which runs on the UI thread */
-            GetLineEntryText.Focus();
+            bool isCurrentPrompt = promptSerial == _getLinePromptSerial && GetLineGrid.IsVisible;
+            if (GHApp.AutoFocusOnEntry || isCurrentPrompt)
+                GetLineEntryText.Focus();
+            if (openScreenKeyboard && isCurrentPrompt)
+                ShowGetLineScreenKeyboard();
+        }
+
+        /* Focuses the entry and opens the on-screen keyboard for it; false when the keyboard is not available */
+        private bool ShowGetLineScreenKeyboard()
+        {
+            if (PlayingReplay || !GetLineGrid.IsVisible || !GetLineEntryText.IsEnabled || !GHScreenKeyboard.IsAvailable)
+                return false;
+            if (!GetLineEntryText.IsFocused)
+                GetLineEntryText.Focus();
+            return GHScreenKeyboard.Show(GetLineEntryText, GHScreenKeyboardMode.SingleLine);
         }
 
         private void HideGetLine()
         {
+            GHScreenKeyboard.Hide();
             GetLineGrid.IsVisible = false;
             GetLineEntryText.Text = "";
             GetLineCaption.Text = "";
@@ -24205,6 +24232,8 @@ namespace GnollHackX.Pages.Game
 
         private void GetLineEntryText_Completed(object sender, EventArgs e)
         {
+            /* The on-screen keyboard's Enter closes the keyboard itself */
+            GHScreenKeyboard.MarkClosed();
             if (PlayingReplay)
                 return;
             if (GetLineGrid.IsVisible && GetLineOkButton.IsEnabled && GHApp.PressOkOnEntryCompleted)

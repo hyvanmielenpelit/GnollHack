@@ -64,6 +64,8 @@ public static class MauiProgram
         GHAvaloniaControlTheming.Register();
         GHAvaloniaAlignment.Register();
         GHAvaloniaWebView.Register();
+        GHAvaloniaSteamKeyboard.Register();
+        GHAvaloniaGamepadScroll.Register();
 #endif
         GHApp.TryReadSecrets();
 #if GNH_AVALONIA && LINUX && SENTRY
