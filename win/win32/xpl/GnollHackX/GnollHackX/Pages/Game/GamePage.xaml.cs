@@ -1330,6 +1330,9 @@ namespace GnollHackX.Pages.Game
                 _mapPaint?.Dispose();
                 _mapUiPaint?.Dispose();
                 _mapOrbPaint?.Dispose();
+                _radialOrbPaint?.Dispose();
+                _radialOrbLayerPaint?.Dispose();
+                _radialOrbTextPaint?.Dispose();
                 _cmdPaint?.Dispose();
                 _mapTextPaint?.Dispose();
                 _menuTextPaint?.Dispose();
