@@ -153,6 +153,7 @@ namespace GnollHackX
         public List<GHRadialPage> Pages = new List<GHRadialPage>();
         public int OwningStick;                         /* 0 = left, 1 = right */
         public int SwitchSetPageIndex = -1;             /* SwitchSet jumps here, and back to page 0 from here on; -1 = unused */
+        public int InitialPageIndex;                    /* the page Open shows first, clamped to the pages */
         public Action<GHRadialItem> OnActivate;
         public Action<GHRadialCloseReason> OnClosed;
 

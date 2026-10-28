@@ -172,11 +172,6 @@ typedef struct mi {
 #define CLICK_POLE          9 /* Use a polearm */
 #define MAX_CLICK_TYPES     10
 
-/* UI-only nh_poskey() modifier: a click on the hero's own square performs the self-click action
-   whatever flags.self_click_action is. Never stored as an option value, so it lies outside the
-   option range above on purpose. */
-#define CLICK_SELF_ACTION   100
-
 
 /* invalid winid */
 #define WIN_ERR ((winid) -1)

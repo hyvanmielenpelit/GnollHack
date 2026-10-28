@@ -34,10 +34,11 @@ namespace GnollHackX
 
         /* Slot counts */
         public static readonly int ContextSlotCount = 8;
-        public static readonly int CrowdedSlotCount = 12;
+        public static readonly int CrowdedSlotCount = 8;            /* context pages stay at 8 slots and overflow onto further pages */
         public static readonly int MaxSlotCount = 12;
         public static readonly int[] FixedPageSlotCounts = { 6, 8, 12 };
         public static readonly int MorePageSlotCount = 12;
+        public static readonly int CommandPageSlotCount = 8;        /* packed commands pages: one item per stick direction */
         public static readonly int MoreColumns = 4;
         public static readonly int MoreRows = 6;
         public static readonly int MoreRowsPerRadialPage = 3;

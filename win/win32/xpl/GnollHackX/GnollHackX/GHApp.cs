@@ -341,6 +341,12 @@ namespace GnollHackX
             UseTextBlobCaching = Preferences.Get("UseTextBlobCaching", GHConstants.DefaultTextBlobCaching);
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
+            /* Once per Steam Deck: earlier builds defaulted to showing shortcuts, and the Settings page saved that value */
+            if (IsSteamDeck && !Preferences.Get("SteamDeckShortcutsDefaultApplied", false))
+            {
+                Preferences.Set("ShowKeyboardShortcuts", IsShowKeyboardShortcutsDefault);
+                Preferences.Set("SteamDeckShortcutsDefaultApplied", true);
+            }
             ShowKeyboardShortcuts = Preferences.Get("ShowKeyboardShortcuts", IsShowKeyboardShortcutsDefault);
             GamepadEnabled = Preferences.Get("GamepadEnabled", true);
             foreach (GHGamepadButton grip in GamepadGrips)

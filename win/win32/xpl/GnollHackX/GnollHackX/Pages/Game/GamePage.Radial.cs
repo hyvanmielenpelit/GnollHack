@@ -91,7 +91,7 @@ namespace GnollHackX.Pages.Game
 
             GHRadialMenuDefinition def = _radialState.Definition;
             GHGamepadButton opener = GetRadialOpenerButton(def);
-            bool isActionsMenu = opener == GHGamepadButton.R3;
+            bool isActionsMenu = opener == GHGamepadButton.L3;
             bool hasInput = false;
             GHRadialInput input = GHRadialInput.Confirm;
             switch (e.Button)
@@ -115,14 +115,6 @@ namespace GnollHackX.Pages.Game
             case GHGamepadButton.RB:
                 hasInput = pressed;
                 input = GHRadialInput.NextPage;
-                break;
-            case GHGamepadButton.LT:
-                hasInput = pressed && isActionsMenu;
-                input = GHRadialInput.PrevGroup;
-                break;
-            case GHGamepadButton.RT:
-                hasInput = pressed && isActionsMenu;
-                input = GHRadialInput.NextGroup;
                 break;
             case GHGamepadButton.L3:
             case GHGamepadButton.R3:
@@ -153,7 +145,7 @@ namespace GnollHackX.Pages.Game
                 }
                 break;
             default:
-                /* Y is reserved; View and the back grips are swallowed */
+                /* Y is reserved; LT, RT, View and the back grips are swallowed */
                 break;
             }
             if (hasInput)

@@ -9,7 +9,7 @@ namespace GnollHackX.UnitTests
        gives the same slots, adding or removing an item moves no other), the switch to 12 slots
        and the overflow page, the L3 page with R74's Center on Hero at the E slot, and the More
        Commands cell-to-slot mapping, dropped cells, page order, wizard pages last and the simple
-       layout's page count (R16). */
+       layout's page count (R16), and the packed commands pages. */
     public class GHRadialSlotAssignerTests
     {
         private static GHRadialItem Item(string id)
@@ -169,16 +169,21 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
-        public void NineItems_UseTwelveSlots()
+        public void NineItems_OverflowOntoASecondEightSlotPage()
         {
             List<GHRadialPage> eight = GHRadialSlotAssigner.AssignContextPages("Context", 0, LeftButtons(), Context("a", "b", "c", "d", "e"), null);
+            Assert.Single(eight);
             Assert.Equal(8, eight[0].SlotCount);
             List<GHRadialPage> nine = GHRadialSlotAssigner.AssignContextPages("Context", 0, LeftButtons(), Context("a", "b", "c", "d", "e", "f"), null);
-            Assert.Single(nine);
-            Assert.Equal(12, nine[0].SlotCount);
-            Assert.Equal(9, nine[0].FilledCount);
-            Assert.Equal(9, nine[0].IndexOf("left:skills"));
-            Assert.Equal(3, nine[0].IndexOf("a"));
+            Assert.Equal(2, nine.Count);
+            Assert.Equal(8, nine[0].SlotCount);
+            Assert.Equal(8, nine[0].FilledCount);
+            Assert.Equal(6, nine[0].IndexOf("left:skills"));
+            Assert.Equal(2, nine[0].IndexOf("a"));
+            Assert.Equal(-1, nine[0].IndexOf("f"));
+            Assert.Equal(8, nine[1].SlotCount);
+            Assert.Equal(1, nine[1].FilledCount);
+            Assert.True(nine[1].IndexOf("f") >= 0);
         }
 
         [Fact]
@@ -190,11 +195,11 @@ namespace GnollHackX.UnitTests
                 ids[i] = "c" + i;
             List<GHRadialPage> pages = GHRadialSlotAssigner.AssignContextPages("Context", 3, LeftButtons(), Context(ids), new GHRadialSlotMemory());
             Assert.Equal(2, pages.Count);
-            Assert.Equal(12, pages[0].SlotCount);
-            Assert.Equal(12, pages[0].FilledCount);
+            Assert.Equal(8, pages[0].SlotCount);
+            Assert.Equal(8, pages[0].FilledCount);
             Assert.Equal("Context 2", pages[1].Title);
             Assert.Equal(8, pages[1].SlotCount);
-            Assert.Equal(3, pages[1].FilledCount);
+            Assert.Equal(7, pages[1].FilledCount);
             Assert.Equal(3, pages[0].GroupIndex);
             Assert.Equal(3, pages[1].GroupIndex);
             Assert.True(pages[1].IndexOf("c9") >= 0);
@@ -360,6 +365,94 @@ namespace GnollHackX.UnitTests
             Assert.Equal("M-p", item.ShortcutText);
             src.Id = "custom";
             Assert.Equal("custom", GHRadialSlotAssigner.CreateCommandItem(src).Id);
+        }
+
+        private static List<GHRadialSourceItem> CommandList(int count)
+        {
+            List<GHRadialSourceItem> items = new List<GHRadialSourceItem>();
+            int i;
+            for (i = 0; i < count; i++)
+                items.Add(new GHRadialSourceItem { Id = "cmd:" + i, Label = "Command " + i, Command = 200 + i });
+            return items;
+        }
+
+        [Fact]
+        public void PackedPages_KeepTheListOrderWithoutGaps()
+        {
+            List<GHRadialSourceItem> items = CommandList(30);
+            List<GHRadialPage> pages = GHRadialSlotAssigner.BuildPackedPages(items, "Commands", 12, 5);
+            Assert.Equal(3, pages.Count);
+            int k;
+            for (k = 0; k < items.Count; k++)
+            {
+                GHRadialItem item = pages[k / 12].Slots[k % 12];
+                Assert.NotNull(item);
+                Assert.Same(items[k], item.Tag);
+                Assert.Equal("cmd:" + k, item.Id);
+                Assert.Equal(GHRadialItemKind.Command, item.Kind);
+            }
+            Assert.Equal(12, pages[0].FilledCount);
+            Assert.Equal(12, pages[1].FilledCount);
+        }
+
+        [Fact]
+        public void PackedPages_LastPageKeepsTheSlotCountWithEmptyTrailingSlots()
+        {
+            List<GHRadialPage> pages = GHRadialSlotAssigner.BuildPackedPages(CommandList(30), "Commands", 12, 0);
+            GHRadialPage last = pages[2];
+            Assert.Equal(12, last.SlotCount);
+            Assert.Equal(6, last.FilledCount);
+            int k;
+            for (k = 0; k < 6; k++)
+                Assert.NotNull(last.Slots[k]);
+            for (k = 6; k < 12; k++)
+                Assert.Null(last.Slots[k]);
+        }
+
+        [Fact]
+        public void PackedPages_CountPagesExactly()
+        {
+            Assert.Single(GHRadialSlotAssigner.BuildPackedPages(CommandList(1), "Commands", 12, 0));
+            Assert.Single(GHRadialSlotAssigner.BuildPackedPages(CommandList(12), "Commands", 12, 0));
+            Assert.Equal(2, GHRadialSlotAssigner.BuildPackedPages(CommandList(13), "Commands", 12, 0).Count);
+            Assert.Equal(3, GHRadialSlotAssigner.BuildPackedPages(CommandList(17), "Commands", 8, 0).Count);
+            Assert.Equal(3, GHRadialSlotAssigner.BuildPackedPages(CommandList(13), "Commands", 6, 0).Count);
+        }
+
+        [Fact]
+        public void PackedPages_AreTitledByPage()
+        {
+            List<GHRadialPage> pages = GHRadialSlotAssigner.BuildPackedPages(CommandList(25), "Commands", 12, 0);
+            Assert.Equal("Commands 1/3", pages[0].Title);
+            Assert.Equal("Commands 2/3", pages[1].Title);
+            Assert.Equal("Commands 3/3", pages[2].Title);
+            List<GHRadialPage> single = GHRadialSlotAssigner.BuildPackedPages(CommandList(5), "Commands", 12, 0);
+            Assert.Equal("Commands", single[0].Title);
+        }
+
+        [Fact]
+        public void PackedPages_SetTheGroupIndex()
+        {
+            List<GHRadialPage> pages = GHRadialSlotAssigner.BuildPackedPages(CommandList(30), "Commands", 12, 4);
+            foreach (GHRadialPage page in pages)
+                Assert.Equal(4, page.GroupIndex);
+        }
+
+        [Fact]
+        public void PackedPages_EmptyInputGivesNoPages()
+        {
+            Assert.Empty(GHRadialSlotAssigner.BuildPackedPages(new List<GHRadialSourceItem>(), "Commands", 12, 0));
+            Assert.Empty(GHRadialSlotAssigner.BuildPackedPages(null, "Commands", 12, 0));
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(5)]
+        [InlineData(10)]
+        [InlineData(16)]
+        public void PackedPages_RejectUnsupportedSlotCounts(int slotsPerPage)
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => GHRadialSlotAssigner.BuildPackedPages(CommandList(3), "Commands", slotsPerPage, 0));
         }
 
         [Fact]

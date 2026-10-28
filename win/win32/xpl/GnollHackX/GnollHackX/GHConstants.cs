@@ -588,8 +588,6 @@ namespace GnollHackX
         public const int GamepadPendingCommandMs = 350;             /* a refused discrete button waits this long for the game */
         public const int GamepadInterruptMinBusyMs = 150;           /* B interrupts only a busy period at least this long */
         public const float RadialMenuHighlightVolume = 0.06f;       /* the radial menu's highlight tick, a quiet Button Down */
-        /* UI-only nh_poskey modifier for the self-click action on the hero's square; mirrors CLICK_SELF_ACTION in include/wintype.h */
-        public const int ClickSelfAction = 100;
     }
 
 }

@@ -44,13 +44,15 @@ namespace GnollHackX
     /* Places items into fixed radial slots.
        - Fixed pages (L3): every item has a compass direction and takes the slot nearest it; the
          slot count is the smallest of 6, 8 and 12 that gives every item its own slot.
-       - Context pages (R3 first page): 8 slots, 12 when more than 8 items, overflow onto further
-         context pages. Fixed items (the left-side buttons) take the slot nearest their
+       - Context pages (the Actions radial's first pages): ContextSlotCount slots, or
+         CrowdedSlotCount when more items are present, overflow onto further context pages. Fixed items (the left-side buttons) take the slot nearest their
          direction; context items keep their remembered slot when it is free, else take E, NE,
          SE, N, S, then the free slot nearest east.
        - More Commands pages: each 4x6 matrix page becomes two 12-slot pages, rows 0-2 and rows
          3-5; cell (column i, row j) takes slot (j mod 3) * 4 + i. Cells the caller dropped stay
          empty, so positions never shift.
+       - Packed pages (the commands list): items in the given order, slotsPerPage to a page,
+         clockwise from north with no gaps; only the last page has empty slots.
        Free of UI types, so that the unit tests compile it. */
     public static class GHRadialSlotAssigner
     {
@@ -164,11 +166,11 @@ namespace GnollHackX
             return page;
         }
 
-        /* The R3 context pages. Fixed items (left-side buttons, with directions) and context items
-           (in the core's rank order) share the first page: 8 slots for up to 8 items, else 12;
-           at most 12 fixed items are kept.
-           Context items that do not fit go on further pages titled "<title> 2", "<title> 3", ...,
-           each of 8 or 12 slots. Every page gets groupIndex. Memory may be null. */
+        /* The Actions radial's context pages. Fixed items (left-side buttons, with directions) and
+           context items (in the core's rank order) share the first page: ContextSlotCount slots
+           for up to that many items, else CrowdedSlotCount; at most CrowdedSlotCount fixed items
+           are kept. Context items that do not fit go on further pages titled "<title> 2",
+           "<title> 3", ..., sized the same way. Every page gets groupIndex. Memory may be null. */
         public static List<GHRadialPage> AssignContextPages(string title, int groupIndex, IList<GHRadialItem> fixedItems,
             IList<GHRadialItem> contextItems, GHRadialSlotMemory memory)
         {
@@ -294,6 +296,45 @@ namespace GnollHackX
                         continue;
                     page.Slots[slot] = CreateCommandItem(cell);
                 }
+            }
+            return pages;
+        }
+
+        /* The items in order, slotsPerPage to a page: item k of a page takes slot k, so reading
+           clockwise from north follows the list. Every page has slotsPerPage slots, the last one
+           with its remaining slots empty. Titles are "<titlePrefix> 1/N" .. "<titlePrefix> N/N",
+           or titlePrefix alone for a single page. Every page gets groupIndex. Null items are
+           skipped; no items give no pages. slotsPerPage is 6, 8 or 12. */
+        public static List<GHRadialPage> BuildPackedPages(IList<GHRadialSourceItem> items, string titlePrefix, int slotsPerPage,
+            int groupIndex)
+        {
+            if (Array.IndexOf(GHRadialTuning.FixedPageSlotCounts, slotsPerPage) < 0)
+                throw new ArgumentOutOfRangeException("slotsPerPage", slotsPerPage, "Unsupported radial slot count");
+
+            List<GHRadialPage> pages = new List<GHRadialPage>();
+            List<GHRadialSourceItem> list = new List<GHRadialSourceItem>();
+            int i;
+            for (i = 0; items != null && i < items.Count; i++)
+            {
+                if (items[i] != null)
+                    list.Add(items[i]);
+            }
+            if (list.Count == 0)
+                return pages;
+
+            string prefix = titlePrefix ?? "";
+            int pageCount = (list.Count + slotsPerPage - 1) / slotsPerPage;
+            int p;
+            for (p = 0; p < pageCount; p++)
+            {
+                string title = pageCount == 1 ? prefix : prefix + " " + (p + 1).ToString() + "/" + pageCount.ToString();
+                GHRadialPage page = new GHRadialPage(title, slotsPerPage);
+                page.Group = prefix;
+                page.GroupIndex = groupIndex;
+                int k;
+                for (k = 0; k < slotsPerPage && p * slotsPerPage + k < list.Count; k++)
+                    page.Slots[k] = CreateCommandItem(list[p * slotsPerPage + k]);
+                pages.Add(page);
             }
             return pages;
         }

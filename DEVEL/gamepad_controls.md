@@ -30,30 +30,27 @@ Page Down. Starting a game and changing the grip bindings on the Deck use the to
 
 ### On the Map
 
-L1 is a **hold modifier** on the map: it has no action of its own, and a button pressed while
-L1 is held does its L1 action. The layer is sampled when the other button is pressed. While L1
-is held, the hint strip shows the L1 layer.
+Both shoulder buttons are **hold modifiers** on the map, each for the controls the other hand
+uses: **L1** changes the right-side controls (A, B, X, Y, R2, Menu) and **R1** the left-side
+controls (D-pad, left stick, View). Neither does anything on its own. A layer is sampled when
+the other button is pressed, and the hint strip shows the layer while a modifier is held.
 
-| Control | Without L1 | With L1 held |
-|---------|------------|--------------|
-| Left stick | Walk (8-way) | Run in that direction |
-| Right stick | Pan the map | Pan the map |
-| A | **Act here**: what clicking the hero's own square does with the self-click action (drink from a fountain or sink, sit on a throne, go up or down stairs or a ladder, loot or pick up, else rest). With Look Mode on, farlook | Search |
-| B | Cancel: close an overlay, else Escape; interrupts running and other occupations | Wait |
-| X | Pick up | Pick and Stash |
-| Y | Repeat | Search 20 |
-| R1 | Inventory | Equipment (all equipment in use) |
-| R2 | Fire | Swap weapons |
-| L2 | Kick | Kick |
-| View | Abilities | Abilities |
-| Menu | Open the game menu (Menu again closes it) | Reserved; does nothing |
-| L3 | Open the Toggles radial | Same |
-| R3 | Open the Actions radial | Same |
-| D-pad Up / Down | Zoom in / out | Same |
-| D-pad Left | Toggle the minimap | Same |
-| D-pad Right | Back to normal zoom | Same |
-| L4, L5, R4, R5 (back grips) | Configurable; defaults Apply, Cast, Quick Cast, Quick Zap | Same |
-
+| Control | Alone | L1 held | R1 held | L1 + R1 held |
+|---------|-------|---------|---------|--------------|
+| A | **Context command**: nothing when there is none, runs it when there is exactly one, opens the Actions radial when there are several | Open the **commands radial** | -- | **Repeat** |
+| B | Cancel: close an overlay, else Escape; interrupts running and other occupations | Wait | -- | -- |
+| X | Pick up | Pick and Stash | -- | -- |
+| Y | Search | Search 20 times | -- | -- |
+| R2 | Fire | Swap weapons | -- | -- |
+| L2 | Kick | Kick | Kick | Kick |
+| Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
+| View | Inventory | -- | Equipment (all equipment in use) | -- |
+| D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, Left toggles the minimap, Right returns to normal zoom | -- |
+| Left stick | Walk (8-way) | -- | Run in that direction | -- |
+| Right stick | Pan the map | | | |
+| L3 | Center the map on the hero | | | |
+| R3 | Open the Toggles radial | | | |
+| L4, L5, R4, R5 (back grips) | Configurable; defaults Apply, Cast, Quick Cast, Quick Zap | | | |
 The grips are set in **Settings, Controller**. Their pickers appear only when the controller
 has grips, and they work only with the GnollHack Steam Input layout (see below); with any other
 layout they do nothing, which the game cannot detect.
@@ -73,18 +70,19 @@ with B. L1 is up (`<`) and R1 is down (`>`).
 
 ### Radials
 
-Both radials open with a stick click and stay open until an item is chosen or they are closed.
+The radials stay open until an item is chosen or they are closed.
 
 - **Select** with whichever stick is pushed further, or step with D-pad Left/Right; D-pad
   Up/Down jump to the top and bottom slots. The center hub describes the highlighted item.
-- **A** activates it, **B** or the same stick click closes the radial, **L1/R1** change page.
+- **A** activates it, **B** closes the radial (R3 also closes the Toggles radial), **L1/R1** change page.
   **Menu** closes the radial and opens the game menu.
-- **Toggles radial (L3):** More Messages, Extended Status Bar, Auto-Center, Look Mode,
+- **Toggles radial (R3):** More Messages, Extended Status Bar, Auto-Center, Look Mode,
   Auto-Dig, Ignore Stopping, and the action **Center on Hero**, which recenters the map and
   closes the radial. Toggling an option leaves the radial open.
-- **Actions radial (R3):** the context buttons plus Skills, Polearm and Wield Last/Unwield.
-  **X** switches to the **More Commands** pages, paged with L1/R1; **L2/R2** jump between
-  command groups.
+- **Actions radial** (A with several context commands, or L1 + A for the commands pages):
+  the context buttons plus Skills, Polearm and Wield Last/Unwield (eight slots per page, overflowing onto further pages), then the **commands pages**:
+  every command of the single commands page in alphabetical order, eight per page with no gaps.
+  **X** switches between the context page and the first commands page; L1/R1 page.
 
 After a radial closes, both sticks stay disarmed until they return to center.
 

@@ -4,7 +4,7 @@ using Xunit;
 
 namespace GnollHackX.UnitTests
 {
-    /* Covers GHRadialMenuState: paging clamps, SwitchSet between Context and More Commands, R53's
+    /* Covers GHRadialMenuState: the initial page, paging clamps, SwitchSet between Context and More Commands, R53's
        group paging, the highlight re-evaluated or restored on page change, ClosesOnActivate,
        logical close before the visual close, callback order, refused confirms, NeedsFrame at
        rest, toggle state changes, pointer input, the highlight sound throttle, R74's Center on
@@ -74,6 +74,62 @@ namespace GnollHackX.UnitTests
             Assert.Equal(0, s.PageIndex);
             Assert.Equal(-1, s.HighlightedSlot);
             Assert.False(new GHRadialMenuState(Tps).Open(new GHRadialMenuDefinition(), 0));
+        }
+
+        [Fact]
+        public void Open_StartsOnTheInitialPageWithoutHighlight()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("Context", 8, 0), FullPage("Commands 1/3", 12, 1),
+                FullPage("Commands 2/3", 12, 1), FullPage("Commands 3/3", 12, 1));
+            def.InitialPageIndex = 2;
+            GHRadialMenuState s = Opened(def, 0);
+            Assert.Equal(2, s.PageIndex);
+            Assert.Same(def.Pages[2], s.CurrentPage);
+            Assert.Equal(-1, s.HighlightedSlot);
+            Assert.Equal(-1, s.PreviousPageIndex);
+            Assert.Equal(1f, s.PageTransition);
+
+            /* Paging continues from the initial page */
+            s.Apply(GHRadialInput.PrevPage, Ms(1));
+            Assert.Equal(1, s.PageIndex);
+        }
+
+        [Fact]
+        public void Open_ClampsTheInitialPage()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("Context", 8, 0), FullPage("Commands", 12, 1));
+            def.InitialPageIndex = 5;
+            Assert.Equal(1, Opened(def, 0).PageIndex);
+            def.InitialPageIndex = -3;
+            Assert.Equal(0, Opened(def, 0).PageIndex);
+        }
+
+        [Fact]
+        public void SwitchSet_FromTheInitialPageWorksAsBefore()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("Context", 8, 0), FullPage("Commands 1/3", 12, 1),
+                FullPage("Commands 2/3", 12, 1), FullPage("Commands 3/3", 12, 1));
+            def.SwitchSetPageIndex = 1;
+            def.InitialPageIndex = 1;
+            GHRadialMenuState s = Opened(def, 0);
+            Assert.Equal(1, s.PageIndex);
+            s.Apply(GHRadialInput.SwitchSet, Ms(1));
+            Assert.Equal(0, s.PageIndex);
+            s.Apply(GHRadialInput.SwitchSet, Ms(2));
+            Assert.Equal(1, s.PageIndex);
+
+            /* From a later commands page it also goes back to the context page */
+            def.InitialPageIndex = 3;
+            s = Opened(def, Ms(10));
+            Assert.Equal(3, s.PageIndex);
+            s.Apply(GHRadialInput.SwitchSet, Ms(11));
+            Assert.Equal(0, s.PageIndex);
+
+            /* From the context page it goes to SwitchSetPageIndex */
+            def.InitialPageIndex = 0;
+            s = Opened(def, Ms(20));
+            s.Apply(GHRadialInput.SwitchSet, Ms(21));
+            Assert.Equal(1, s.PageIndex);
         }
 
         [Fact]

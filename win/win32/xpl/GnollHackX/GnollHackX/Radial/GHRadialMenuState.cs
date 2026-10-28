@@ -181,8 +181,8 @@ namespace GnollHackX
             _dirty = true;
         }
 
-        /* Opens the menu on its first page with no highlight. Reopening during the closing
-           animation continues from the current visibility. Replacing a menu that is still open
+        /* Opens the menu on def.InitialPageIndex, clamped to the pages, with no highlight.
+           Reopening during the closing animation continues from the current visibility. Replacing a menu that is still open
            calls no OnClosed: the host closes it first. */
         public bool Open(GHRadialMenuDefinition def, long nowTicks)
         {
@@ -205,7 +205,7 @@ namespace GnollHackX
             }
 
             _def = def;
-            _pageIndex = 0;
+            _pageIndex = Math.Max(0, Math.Min(def.PageCount - 1, def.InitialPageIndex));
             _pageHighlights = new int[def.PageCount];
             for (i = 0; i < _pageHighlights.Length; i++)
                 _pageHighlights[i] = -1;
