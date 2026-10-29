@@ -44,6 +44,20 @@
     var OTHER_ROLES = { banner: true, contentinfo: true, navigation: true };
     var FOOTER_ID = /footer/i;
     var MAIN_ROOTS = "main,[role=main]";
+    /* Layers: a modal dialog, a menu popover, or a listbox. */
+    var LAYER_ROOTS = "dialog,[popover],[role=listbox]";
+    var LISTBOX = "[role=listbox]";
+    var OPTION = "[role=option]";
+    var MENU_POPOVERS = { "": true, auto: true };
+    /* Page hint attributes */
+    var AREA_ATTR = "data-gnh-pad-area";
+    var SCROLL_MARK = "[data-gnh-pad-scroll]";
+    var INITIAL_MARK = "[data-gnh-pad-initial]";
+    var SECTION_ATTR = "data-gnh-pad-section";
+    var KEY_ATTR = "data-gnh-pad-key";
+    var NOCLOSE_ATTR = "data-gnh-pad-noclose";
+    var LAYER_MARK = "[data-gnh-pad-layer]";
+    var VALID_AREAS = { m: true, s: true, o: true };
 
     /* Snapshot sequence number and the element of each snapshot entry; only the latest is kept. */
     var seq = 0;
@@ -55,9 +69,12 @@
     var hidden = true;
     var ring = [];
     var lastPointer = null;
-    /* Target of the latest smooth scroll started here: { x, y, t }, or null. */
+    /* Target of the latest smooth scroll started here: { el, x, y, t }, el null for the document, or null. */
     var smooth = null;
-    var vel = { x: 0, y: 0, until: 0, accX: 0, accY: 0, last: -1, raf: 0 };
+    /* Velocity scrolling; inner caches the inner scroller of each axis for the session and its focus. */
+    var vel = { x: 0, y: 0, until: 0, accX: 0, accY: 0, last: -1, raf: 0, inner: {}, focus: null };
+    /* While a frame runs, inner scrollers come from vel.inner. */
+    var inFrame = false;
     var resizeObserver = null;
     var observedBody = null;
     /* The last focus in each area, and the area of the last focus */
@@ -66,6 +83,15 @@
     /* The initial focus is below the viewport; showing the ring scrolls it into view. Pointer, wheel and key use
        clear it. */
     var initialPending = false;
+    /* The focus left outside each open layer when it was first seen: { layer, el }; closing the layer restores it. */
+    var origins = [];
+    var MAX_ORIGINS = 8;
+    /* The active layer, cached within one public call or velocity frame while layerCaching is non-zero;
+       undefined when not yet computed. */
+    var layerCache;
+    var layerCaching = 0;
+    /* A listbox sent Escape by closeLayer() that was still shown afterward */
+    var pendingClose = null;
 
     /* ---------------------------------------------------------------- helpers */
 
@@ -224,8 +250,41 @@
         return isTextField(deepActive());
     }
 
+    /* The focus while connected and inside the active layer, if any; a focus outside it is recorded as the
+       layer's origin. Once no layer is open, a focus that is missing, disconnected or inside a recorded layer
+       returns to the first such layer's origin while that is still a candidate, and origins are forgotten. */
     function liveFocus() {
-        return (focusEl && focusEl.isConnected) ? focusEl : null;
+        var layer;
+        var o;
+        var i;
+        if (!origins.length && (!focusEl || !focusEl.isConnected)) {
+            return null;
+        }
+        layer = activeLayer();
+        if (!layer && origins.length) {
+            for (i = 0; i < origins.length; i++) {
+                o = origins[i];
+                if ((!focusEl || !focusEl.isConnected || o.layer.contains(focusEl)) && o.el.isConnected &&
+                    matchesKind(o.el) && candidateFragments(o.el)) {
+                    focusEl = o.el;
+                    break;
+                }
+            }
+            origins = [];
+        }
+        if (!focusEl || !focusEl.isConnected) {
+            return null;
+        }
+        if (layer && !layer.contains(focusEl)) {
+            if (originIndex(layer) < 0) {
+                origins.push({ layer: layer, el: focusEl });
+                if (origins.length > MAX_ORIGINS) {
+                    origins.shift();
+                }
+            }
+            return null;
+        }
+        return focusEl;
     }
 
     function firstRole(el) {
@@ -264,9 +323,11 @@
         return "b";
     }
 
-    /* Whether the element is of a candidate kind, before the visibility filters. */
+    /* Whether the element is of a candidate kind, before the visibility filters. Options of a listbox are
+       candidates in place of the listbox itself. */
     function matchesKind(el) {
         var n = el.localName;
+        var role;
         var t;
         if (n === "a" && el.hasAttribute("href")) {
             return true;
@@ -280,8 +341,15 @@
         if (el.hasAttribute("contenteditable") && el.isContentEditable === true) {
             return true;
         }
-        if (ROLES[firstRole(el)] === true) {
+        role = firstRole(el);
+        if (ROLES[role] === true) {
             return true;
+        }
+        if (role === "option" && el.closest(LISTBOX)) {
+            return true;
+        }
+        if (role === "listbox" && el.querySelector(OPTION)) {
+            return false;
         }
         if (el.hasAttribute("tabindex")) {
             t = parseInt(el.getAttribute("tabindex"), 10);
@@ -413,9 +481,11 @@
         return frags;
     }
 
-    /* All candidates in DOM order as { el, frags }; a match nested in a kept candidate is dropped. */
+    /* All candidates in DOM order as { el, frags }; a match nested in a kept candidate is dropped. While a layer
+       is open, only the candidates inside it. */
     function collectAll() {
-        var nodes = document.querySelectorAll(SELECTOR);
+        var layer = activeLayer();
+        var nodes = (layer || document).querySelectorAll(SELECTOR);
         var out = [];
         var outer = null;
         var i;
@@ -437,6 +507,180 @@
             out.push({ el: el, frags: frags });
         }
         return out;
+    }
+
+    /* Whether a container holds a candidate */
+    function hasCandidate(root) {
+        var nodes = root.querySelectorAll(SELECTOR);
+        var i;
+        for (i = 0; i < nodes.length; i++) {
+            if (matchesKind(nodes[i]) && candidateFragments(nodes[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function matchesSafe(el, sel, fallback) {
+        try {
+            return el.matches(sel);
+        } catch (e) {
+            return fallback;
+        }
+    }
+
+    function popoverOpen(el) {
+        return matchesSafe(el, ":popover-open", false);
+    }
+
+    /* An open dialog shown modally; where :modal is unsupported, any open dialog. */
+    function isModal(d) {
+        return d.open === true && matchesSafe(d, ":modal", true);
+    }
+
+    function isShown(el) {
+        var cs;
+        if (!el.isConnected || !el.getClientRects().length) {
+            return false;
+        }
+        cs = window.getComputedStyle(el);
+        return cs.visibility !== "hidden" && cs.visibility !== "collapse";
+    }
+
+    /* The last element of list containing the active element, else the last one, else null. */
+    function topmost(list) {
+        var a = deepActive();
+        var i;
+        for (i = list.length - 1; i >= 0; i--) {
+            if (a && list[i].contains(a)) {
+                return list[i];
+            }
+        }
+        return list.length ? list[list.length - 1] : null;
+    }
+
+    /* Elements whose aria-controls or aria-owns names el by id; only those with aria-expanded="true" when
+       expanded is set. */
+    function controllersOf(el, expanded) {
+        var id = el.id;
+        var nodes;
+        var out = [];
+        var i;
+        var refs;
+        if (!id) {
+            return out;
+        }
+        nodes = document.querySelectorAll("[aria-controls],[aria-owns]");
+        for (i = 0; i < nodes.length; i++) {
+            if (expanded && nodes[i].getAttribute("aria-expanded") !== "true") {
+                continue;
+            }
+            refs = ((nodes[i].getAttribute("aria-controls") || "") + " " +
+                (nodes[i].getAttribute("aria-owns") || "")).split(/\s+/);
+            if (refs.indexOf(id) >= 0) {
+                out.push(nodes[i]);
+            }
+        }
+        return out;
+    }
+
+    /* Whether a listbox shows as a popup: an expanded owner names it, it or an ancestor up to the dialog or
+       body is absolutely or fixed positioned, or it or an ancestor carries data-gnh-pad-layer. */
+    function isPopupListbox(b, dialog) {
+        var e = b;
+        var pos;
+        if (b.closest(LAYER_MARK) || controllersOf(b, true).length) {
+            return true;
+        }
+        while (e && e.nodeType === 1 && e !== dialog && e !== document.body && e !== document.documentElement) {
+            pos = window.getComputedStyle(e).position;
+            if (pos === "absolute" || pos === "fixed") {
+                return true;
+            }
+            e = parentOf(e);
+        }
+        return false;
+    }
+
+    /*
+     * Open layers, each null when absent: the innermost open menu popover (popover auto or empty) holding a
+     * candidate; the last shown popup listbox holding a candidate outside any popover, and inside the topmost
+     * modal dialog while one is open; and the topmost modal dialog. Hint and manual popovers are never layers,
+     * and listboxes shown as ordinary content are not either.
+     */
+    function layers() {
+        var nodes = document.querySelectorAll(LAYER_ROOTS);
+        var out = { popover: null, listbox: null, dialog: null };
+        var pops = [];
+        var boxes = [];
+        var dialogs = [];
+        var i;
+        var el;
+        if (!nodes.length) {
+            return out;
+        }
+        for (i = 0; i < nodes.length; i++) {
+            el = nodes[i];
+            if (el.localName === "dialog" && isModal(el)) {
+                dialogs.push(el);
+            }
+            if (el.hasAttribute("popover") &&
+                MENU_POPOVERS[el.getAttribute("popover").trim().toLowerCase()] === true && popoverOpen(el)) {
+                pops.push(el);
+            }
+            if (firstRole(el) === "listbox" && !el.closest("[popover]")) {
+                boxes.push(el);
+            }
+        }
+        out.dialog = topmost(dialogs);
+        out.popover = topmost(pops.filter(hasCandidate));
+        boxes = boxes.filter(function (b) {
+            return (!out.dialog || out.dialog.contains(b)) && isShown(b) && hasCandidate(b) &&
+                isPopupListbox(b, out.dialog);
+        });
+        out.listbox = boxes.length ? boxes[boxes.length - 1] : null;
+        return out;
+    }
+
+    /* The innermost open layer, or null; cached while layerCaching is non-zero. */
+    function activeLayer() {
+        var l;
+        if (layerCaching && layerCache !== undefined) {
+            return layerCache;
+        }
+        l = layers();
+        l = l.popover || l.listbox || l.dialog;
+        if (layerCaching) {
+            layerCache = l;
+        }
+        return l;
+    }
+
+    function invalidateLayer() {
+        layerCache = undefined;
+    }
+
+    /* Runs fn with the active layer cached */
+    function withLayerCache(fn, args) {
+        layerCaching++;
+        try {
+            return fn.apply(null, args);
+        } finally {
+            layerCaching--;
+            if (!layerCaching) {
+                invalidateLayer();
+            }
+        }
+    }
+
+    function originIndex(layer) {
+        var i;
+        for (i = 0; i < origins.length; i++) {
+            if (origins[i].layer === layer) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /* The outermost candidate at or around a node. */
@@ -501,12 +745,29 @@
         return document.querySelector(MAIN_ROOTS) || contentRoot();
     }
 
-    /* The area of an element: inside a sidebar root s; else inside a header, footer or navigation root o; else
-       inside the article root m; else o. */
+    /* The value of the nearest data-gnh-pad-area naming an area, else null. */
+    function markedArea(el) {
+        var v;
+        while (el && el.nodeType === 1) {
+            v = el.getAttribute(AREA_ATTR);
+            if (v !== null && VALID_AREAS[v.trim()] === true) {
+                return v.trim();
+            }
+            el = parentOf(el);
+        }
+        return null;
+    }
+
+    /* The area of an element: the area marked by data-gnh-pad-area; else inside a sidebar root s; else inside a
+       header, footer or navigation root o; else inside the article root m; else o. */
     function areaOf(el, main) {
         var e = el;
         var other = false;
         var role;
+        var marked = markedArea(el);
+        if (marked) {
+            return marked;
+        }
         while (e && e.nodeType === 1) {
             role = firstRole(e);
             if (e.tagName === "ASIDE" || SIDE_ROLES[role] || hasSideToken(e)) {
@@ -602,25 +863,184 @@
         return d > 0 ? pos < max - 1 : pos > 0;
     }
 
+    /* Whether the document scrolls along axis: its content overflows the viewport that way and the overflow
+       applied to the viewport is not hidden. */
+    function docScrolls(axis) {
+        var cs = window.getComputedStyle(document.documentElement);
+        var ov = axis === "x" ? cs.overflowX : cs.overflowY;
+        if (document.body && cs.overflowX === "visible" && cs.overflowY === "visible") {
+            cs = window.getComputedStyle(document.body);
+            ov = axis === "x" ? cs.overflowX : cs.overflowY;
+        }
+        if (ov === "hidden" || ov === "clip") {
+            return false;
+        }
+        return maxScroll(viewport())[axis] > 0;
+    }
+
+    /* Root and the elements inside it matching sel, in document order. */
+    function within(root, sel) {
+        var list = toArray(root.querySelectorAll(sel));
+        if (root !== document && root.matches(sel)) {
+            list.unshift(root);
+        }
+        return list;
+    }
+
+    /* The first [data-gnh-pad-scroll] container within the layer, or the document, that scrolls along axis
+       and is in area a; else null. */
+    function markedScroller(layer, axis, a) {
+        var list = within(layer || document, SCROLL_MARK);
+        var s;
+        var i;
+        for (i = 0; i < list.length; i++) {
+            s = scrollAxes(list[i]);
+            if (s && s[axis] && areaOf(list[i]) === a) {
+                return list[i];
+            }
+        }
+        return null;
+    }
+
+    /*
+     * Scroll container for axis when the document is not used, within the layer if any: the nearest
+     * ancestor of the focus marked [data-gnh-pad-scroll] that scrolls that way, else the nearest scrollable
+     * ancestor, text fields excluded; else the [data-gnh-pad-scroll] container in the focus's area; else, for
+     * the vertical axis, the largest visible scrollable element; null when there is none.
+     */
+    function innerScroller(axis, layer) {
+        var root = layer || document;
+        var f = liveFocus();
+        var el = f ? parentOf(f) : null;
+        var vp = viewport();
+        var area = f ? areaOf(f) : lastArea;
+        var nearest = null;
+        var best = null;
+        var bestSize = 0;
+        var list;
+        var a;
+        var r;
+        var size;
+        var i;
+        while (el && el.nodeType === 1) {
+            a = isTextField(el) ? null : scrollAxes(el);
+            if (a && a[axis]) {
+                if (el.matches(SCROLL_MARK)) {
+                    return el;
+                }
+                if (!nearest) {
+                    nearest = el;
+                }
+            }
+            if (el === layer) {
+                break;
+            }
+            el = parentOf(el);
+        }
+        if (nearest) {
+            return nearest;
+        }
+        el = markedScroller(layer, axis, area);
+        if (el || axis !== "y") {
+            return el;
+        }
+        list = within(root, "*");
+        for (i = 0; i < list.length; i++) {
+            el = list[i];
+            if (el.scrollHeight <= el.clientHeight) {
+                continue;
+            }
+            a = scrollAxes(el);
+            if (!a || !a.y || !isShown(el)) {
+                continue;
+            }
+            r = el.getBoundingClientRect();
+            size = el.clientWidth * el.clientHeight;
+            if (size > bestSize && r.bottom > 0 && r.top < vp.h && r.right > 0 && r.left < vp.w) {
+                best = el;
+                bestSize = size;
+            }
+        }
+        return best;
+    }
+
+    /* Vertical scroller of page, top, bottom and section: with area a ("m", "s" or "o"), the
+       [data-gnh-pad-scroll] container of that area; else null for the document, which is used when it scrolls
+       and no layer is open; else an inner scroll container; else the document without a layer, false with one. */
+    function pageScroller(a) {
+        var layer = activeLayer();
+        var sc;
+        a = String(a);
+        if (VALID_AREAS[a] === true) {
+            sc = markedScroller(layer, "y", a);
+            if (sc) {
+                return sc;
+            }
+        }
+        if (!layer && docScrolls("y")) {
+            return null;
+        }
+        return innerScroller("y", layer) || (layer ? false : null);
+    }
+
+    /* innerScroller() for velocity frames, cached for the session and its focus */
+    function innerFor(axis, layer) {
+        if (!inFrame) {
+            return innerScroller(axis, layer);
+        }
+        if (vel.focus !== focusEl) {
+            vel.focus = focusEl;
+            vel.inner = {};
+        }
+        if (vel.inner[axis] === undefined || (vel.inner[axis] && !vel.inner[axis].isConnected)) {
+            vel.inner[axis] = innerScroller(axis, layer);
+        }
+        return vel.inner[axis];
+    }
+
+    /* Signals scrolling done here: gnhpadscroll on the scrolled element, on the document for the window. */
+    function signalScroll(el) {
+        try {
+            (el || document).dispatchEvent(new CustomEvent("gnhpadscroll", { bubbles: true }));
+        } catch (e) {
+            /* the signal is advisory */
+        }
+    }
+
     /*
      * Scroll target for one axis: the nearest scroll container at or above the focus that can move
      * that way, else null for the document. Without a focus, the search starts from the element at
-     * the viewport center.
+     * the viewport center. While a layer is open, or when the document does not scroll, an inner
+     * scroll container that can move that way; else null without a layer, false for none with one.
      */
     function scrollTargetFor(axis, d) {
+        var layer = activeLayer();
         var el = liveFocus();
         var vp;
         if (!el) {
             vp = viewport();
             el = document.elementFromPoint(vp.w / 2, vp.h / 2);
+            if (layer && el && !layer.contains(el)) {
+                el = null;
+            }
         }
         while (el && el.nodeType === 1) {
             if (canScroll(el, axis, d)) {
                 return el;
             }
+            if (el === layer) {
+                break;
+            }
             el = parentOf(el);
         }
-        return null;
+        if (!layer && docScrolls(axis)) {
+            return null;
+        }
+        el = innerFor(axis, layer);
+        if (el && canScroll(el, axis, d)) {
+            return el;
+        }
+        return layer ? false : null;
     }
 
     function windowBy(dx, dy) {
@@ -640,30 +1060,51 @@
         }
     }
 
-    function smoothTo(x, y) {
-        smooth = { x: x, y: y, t: now() };
+    /* Smooth scroll of a scroller, null for the document, to x, y; signals scrolling when it moves. */
+    function smoothScroll(sc, x, y) {
+        var moves = sc ? (Math.abs(sc.scrollLeft - x) >= 1 || Math.abs(sc.scrollTop - y) >= 1) :
+            (Math.abs(scrollX() - x) >= 1 || Math.abs(scrollY() - y) >= 1);
+        smooth = { el: sc, x: x, y: y, t: now() };
         try {
-            window.scrollTo({ left: x, top: y, behavior: "smooth" });
+            (sc || window).scrollTo({ left: x, top: y, behavior: "smooth" });
         } catch (e) {
-            window.scrollTo(x, y);
+            if (sc) {
+                sc.scrollLeft = x;
+                sc.scrollTop = y;
+            } else {
+                window.scrollTo(x, y);
+            }
+        }
+        if (moves) {
+            signalScroll(sc);
         }
     }
 
-    /* Vertical scroll position a smooth scroll started here is moving to, else the current one. */
-    function targetY() {
-        var y = scrollY();
-        if (smooth && now() - smooth.t < SMOOTH_MS && Math.abs(smooth.y - y) > 1) {
+    function smoothTo(x, y) {
+        smoothScroll(null, x, y);
+    }
+
+    /* Vertical scroll position a smooth scroll started here is moving to, else the current one; of the
+       scroller sc, the document when omitted. */
+    function targetY(sc) {
+        var y;
+        sc = sc || null;
+        y = sc ? sc.scrollTop : scrollY();
+        if (smooth && smooth.el === sc && now() - smooth.t < SMOOTH_MS && Math.abs(smooth.y - y) > 1) {
             return smooth.y;
         }
         smooth = null;
         return y;
     }
 
-    /* Scrolls one axis of its scroll target by d CSS px; true if it moved. */
-    function scrollAxis(axis, d) {
+    /* Scrolls one axis of its scroll target by d CSS px; true if it moved. A moved target is added to moved. */
+    function scrollAxis(axis, d, moved) {
         var t = scrollTargetFor(axis, d);
         var before;
         var after;
+        if (t === false) {
+            return false;
+        }
         if (t) {
             before = axis === "x" ? t.scrollLeft : t.scrollTop;
             elementBy(t, axis === "x" ? d : 0, axis === "y" ? d : 0);
@@ -673,18 +1114,28 @@
             windowBy(axis === "x" ? d : 0, axis === "y" ? d : 0);
             after = axis === "x" ? scrollX() : scrollY();
         }
-        return after !== before;
+        if (after === before) {
+            return false;
+        }
+        if (moved.indexOf(t) < 0) {
+            moved.push(t);
+        }
+        return true;
     }
 
+    /* Scrolls by dx, dy and signals each moved target once; true if anything moved. */
     function moveBy(dx, dy) {
-        var moved = false;
+        var moved = [];
         if (dx) {
-            moved = scrollAxis("x", dx) || moved;
+            scrollAxis("x", dx, moved);
         }
         if (dy) {
-            moved = scrollAxis("y", dy) || moved;
+            scrollAxis("y", dy, moved);
         }
-        return moved;
+        moved.forEach(function (t) {
+            signalScroll(t);
+        });
+        return moved.length > 0;
     }
 
     /* Distance to scroll so a span is inside [lo, lo + len], with 10 % margin at the edge it comes
@@ -705,9 +1156,12 @@
         return unionRects(fragments(el)) || toRect(el.getBoundingClientRect());
     }
 
-    /* Instantly scrolls an element into its scroll containers and then into the viewport. */
+    /* Instantly scrolls an element into its scroll containers and then into the viewport; a moved container
+       gets the scroll signal. */
     function reveal(el) {
         var p = parentOf(el);
+        var bx;
+        var by;
         var a;
         var r;
         var b;
@@ -722,7 +1176,12 @@
                 dx = a.x ? edgeDelta(r.x, r.w, b.left + p.clientLeft, p.clientWidth) : 0;
                 dy = a.y ? edgeDelta(r.y, r.h, b.top + p.clientTop, p.clientHeight) : 0;
                 if (dx || dy) {
+                    bx = p.scrollLeft;
+                    by = p.scrollTop;
                     elementBy(p, dx, dy);
+                    if (p.scrollLeft !== bx || p.scrollTop !== by) {
+                        signalScroll(p);
+                    }
                 }
             }
             p = parentOf(p);
@@ -770,11 +1229,14 @@
             vel.accX -= mx;
             vel.accY -= my;
             if (mx || my) {
-                moveBy(mx, my);
+                inFrame = true;
+                withLayerCache(moveBy, [mx, my]);
             }
             placeRing();
         } catch (e) {
             /* keep scrolling until ttl expires */
+        } finally {
+            inFrame = false;
         }
         vel.raf = window.requestAnimationFrame(velocityFrame);
     }
@@ -1229,12 +1691,133 @@
         return "D~1";
     }
 
-    /* closeLayer(): closes the nearest open details containing the focus, its own summary
-       included, and focuses that summary. */
+    /* After a layer closed, a focus inside it, or none, returns to the focus left outside it when it opened,
+       if that is still a candidate. */
+    function restoreOrigin(layer) {
+        var i = originIndex(layer);
+        var o = i >= 0 ? origins[i].el : null;
+        invalidateLayer();
+        if (i >= 0) {
+            origins.splice(i, 1);
+        }
+        if (o && o.isConnected && (!focusEl || layer.contains(focusEl)) && matchesKind(o) &&
+            candidateFragments(o)) {
+            focusEl = o;
+            if (liveFocus()) {
+                reveal(o);
+            }
+        }
+        return "D~1";
+    }
+
+    /* Whether a modal dialog may be closed from here: not closedby="none" or data-gnh-pad-noclose. */
+    function dialogClosable(d) {
+        return (d.getAttribute("closedby") || "").trim().toLowerCase() !== "none" && !d.hasAttribute(NOCLOSE_ATTR);
+    }
+
+    /* Asks a dialog to close: requestClose() where available, else a cancelable cancel event and close()
+       unless it was canceled. */
+    function requestDialogClose(d) {
+        if (typeof d.requestClose === "function") {
+            d.requestClose();
+        } else if (d.dispatchEvent(new Event("cancel", { cancelable: true }))) {
+            d.close();
+        }
+    }
+
+    /* Dispatches an Escape keydown on el; true if a handler canceled it. */
+    function sendEscape(el) {
+        var ev = new KeyboardEvent("keydown", {
+            key: "Escape", code: "Escape", keyCode: 27, which: 27, bubbles: true, cancelable: true
+        });
+        el.dispatchEvent(ev);
+        return ev.defaultPrevented;
+    }
+
+    /* The element controlling a listbox: one whose aria-controls or aria-owns names it, else the active element
+       when it is outside the listbox and is not the body or root; else null. */
+    function listboxController(b) {
+        var c = controllersOf(b, false);
+        var a;
+        if (c.length) {
+            return c[0];
+        }
+        a = deepActive();
+        if (a && a !== document.body && a !== document.documentElement && !b.contains(a)) {
+            return a;
+        }
+        return null;
+    }
+
+    /* Sends Escape to a listbox and, unless that was canceled and while the listbox still shows, to its
+       controller; true if it no longer shows. */
+    function escapeListbox(b) {
+        var handled = false;
+        var c;
+        try {
+            handled = sendEscape(b);
+        } catch (e) {
+            /* verified below */
+        }
+        if (!handled && isShown(b)) {
+            c = listboxController(b);
+            if (c) {
+                try {
+                    sendEscape(c);
+                } catch (e) {
+                    /* verified below */
+                }
+            }
+        }
+        return !isShown(b);
+    }
+
+    /*
+     * closeLayer(): closes the innermost layer, each attempt verified before the next is tried: an open menu
+     * popover; a listbox outside popovers, by an Escape keydown on it and on its controller; the topmost modal
+     * dialog, unless it opts out; else the nearest open details containing the focus, its own summary included,
+     * and focuses that summary. A listbox still shown right after Escape counts as closing, for pages that
+     * re-render later; the next call that finds it still shown goes on to the following steps.
+     */
     function closeLayer() {
-        var f = liveFocus();
+        var ls = layers();
+        var f;
         var d;
         var s;
+        if (pendingClose && pendingClose !== ls.listbox) {
+            pendingClose = null;
+        }
+        if (ls.popover) {
+            try {
+                ls.popover.hidePopover();
+            } catch (e) {
+                /* verified below */
+            }
+            if (!popoverOpen(ls.popover)) {
+                return restoreOrigin(ls.popover);
+            }
+        }
+        if (ls.listbox && pendingClose === ls.listbox) {
+            pendingClose = null;
+        } else if (ls.listbox) {
+            if (escapeListbox(ls.listbox)) {
+                return restoreOrigin(ls.listbox);
+            }
+            pendingClose = ls.listbox;
+            invalidateLayer();
+            return "D~1";
+        }
+        if (ls.dialog && dialogClosable(ls.dialog)) {
+            try {
+                requestDialogClose(ls.dialog);
+            } catch (e) {
+                /* verified below */
+            }
+            if (!ls.dialog.open) {
+                return restoreOrigin(ls.dialog);
+            }
+        }
+        f = liveFocus();
         if (!f) {
             return "D~0";
         }
@@ -1270,6 +1853,8 @@
         vel.y = vy;
         vel.until = now() + Math.max(0, num(ttl));
         if (!vel.raf) {
+            vel.inner = {};
+            vel.focus = focusEl;
             vel.last = -1;
             vel.raf = window.requestAnimationFrame(velocityFrame);
         }
@@ -1282,63 +1867,155 @@
         return moveBy(Math.round(num(dx)), Math.round(num(dy))) ? "D~1" : "D~0";
     }
 
-    /* page(dir): smooth page scroll, counted from the target of a smooth scroll still under way. */
-    function page(dir) {
-        var vp = viewport();
-        var mx = maxScroll(vp);
-        var y = clamp(targetY() + (num(dir) < 0 ? -1 : 1) * 0.85 * vp.h, 0, mx.y);
-        smoothTo(scrollX(), y);
+    /* page(dir, area): smooth page scroll of the page scroller, of area when given, counted from the target of
+       a smooth scroll still under way. */
+    function page(dir, area) {
+        var sc = pageScroller(area);
+        var d = num(dir) < 0 ? -1 : 1;
+        var vp;
+        var mx;
+        var y;
+        if (sc === null) {
+            vp = viewport();
+            mx = maxScroll(vp);
+            y = clamp(targetY() + d * 0.85 * vp.h, 0, mx.y);
+            smoothTo(scrollX(), y);
+        } else if (sc) {
+            y = clamp(targetY(sc) + d * 0.85 * sc.clientHeight, 0, sc.scrollHeight - sc.clientHeight);
+            smoothScroll(sc, sc.scrollLeft, y);
+        }
         return "D~1";
     }
 
-    /* top(): smooth scroll to the top; fixed-position candidates are measured where they stand. */
-    function top() {
+    /*
+     * Scrolls the page scroller, of area when given, to its top (dir < 0) or bottom and focuses the first or
+     * last candidate shown there. Fixed-position candidates are measured where they stand; with an inner
+     * scroller, candidates inside it are preferred, else those shown where they stand.
+     */
+    function scrollToEnd(dir, area) {
+        var sc = pageScroller(area);
         var vp = viewport();
-        var sx = scrollX();
-        var sy = scrollY();
         var all = collectAll();
         var pick = null;
-        var i;
+        var sx = 0;
+        var sy = 0;
+        var box = null;
+        var ty;
+        var b;
+        var k;
+        var c;
+        var el;
         var r;
-        smoothTo(0, 0);
-        for (i = 0; i < all.length && !pick; i++) {
-            r = all[i].frags[0];
-            if (r.y + sy < vp.h && r.y + r.h + sy > 0 && r.x + sx < vp.w && r.x + r.w + sx > 0) {
-                pick = all[i].el;
-            } else if (r.y < vp.h && r.y + r.h > 0 && isFixed(all[i].el)) {
-                pick = all[i].el;
+        if (sc === null) {
+            if (dir < 0) {
+                sx = scrollX();
+                sy = scrollY();
+                smoothTo(0, 0);
+            } else {
+                ty = maxScroll(vp).y;
+                sy = scrollY() - ty;
+                smoothTo(scrollX(), ty);
+            }
+        } else if (sc) {
+            ty = dir < 0 ? 0 : Math.max(0, sc.scrollHeight - sc.clientHeight);
+            sy = sc.scrollTop - ty;
+            b = sc.getBoundingClientRect();
+            box = { y: b.top + sc.clientTop, h: sc.clientHeight };
+            smoothScroll(sc, sc.scrollLeft, ty);
+        }
+        for (k = 0; k < all.length && !pick; k++) {
+            c = all[dir < 0 ? k : all.length - 1 - k];
+            el = c.el;
+            r = c.frags[0];
+            if (box) {
+                if (sc.contains(el) && r.y + sy < Math.min(vp.h, box.y + box.h) &&
+                    r.y + r.h + sy > Math.max(0, box.y) && r.x < vp.w && r.x + r.w > 0) {
+                    pick = el;
+                }
+            } else if (r.y + sy < vp.h && r.y + r.h + sy > 0 && r.x + sx < vp.w && r.x + r.w + sx > 0) {
+                pick = el;
+            } else if (r.y < vp.h && r.y + r.h > 0 && isFixed(el)) {
+                pick = el;
+            }
+        }
+        if (!pick && box) {
+            for (k = 0; k < all.length && !pick; k++) {
+                c = all[dir < 0 ? k : all.length - 1 - k];
+                if (!sc.contains(c.el) && intersects(c.frags, vp, 0)) {
+                    pick = c.el;
+                }
             }
         }
         focusEl = pick;
         return pick ? "F~" + kindOf(pick) : "F~n";
     }
 
+    /* top(area): smooth scroll to the top, of the [data-gnh-pad-scroll] scroller of area when given;
+       fixed-position candidates are measured where they stand. */
+    function top(area) {
+        return scrollToEnd(-1, area);
+    }
+
+    /* bottom(area): smooth scroll to the bottom; the counterpart of top(). */
+    function bottom(area) {
+        return scrollToEnd(1, area);
+    }
+
+    /* Section starts in document order: the [data-gnh-pad-section] elements in the scroller sc, or in the
+       document for the document, when there are any; else h1-h3 in root. */
+    function sectionStarts(root, sc) {
+        var marked = (sc || document).querySelectorAll("[" + SECTION_ATTR + "]");
+        return marked.length ? marked : root.querySelectorAll("h1,h2,h3");
+    }
+
     /*
      * section(dir): smooth-scrolls the next or previous content heading to the top, measured from
      * the target of a smooth scroll still under way. Without such a heading nothing changes and the
-     * current focus is reported.
+     * current focus is reported. Section starts are h1-h3 and [data-gnh-pad-section]; with an inner
+     * page scroller, those inside it, measured in its coordinates.
      */
     function section(dir) {
-        var root = contentRoot() || document;
-        var hs = root.querySelectorAll("h1,h2,h3");
+        var sc = pageScroller();
+        var root = sc || contentRoot() || document;
+        var hs;
         var vp = viewport();
-        var mx = maxScroll(vp);
-        var sy = scrollY();
-        var ref = targetY();
+        var boxTop = 0;
+        var boxH = vp.h;
+        var max;
+        var sy;
+        var ref;
         var heading = null;
         var headTop = 0;
         var all;
         var pick = null;
+        var b;
         var i;
         var r;
         var t;
         var f;
+        if (sc === false) {
+            f = liveFocus();
+            return f ? "F~" + kindOf(f) : "F~n";
+        }
+        if (sc) {
+            b = sc.getBoundingClientRect();
+            boxTop = b.top + sc.clientTop;
+            boxH = sc.clientHeight;
+            max = Math.max(0, sc.scrollHeight - sc.clientHeight);
+            sy = sc.scrollTop;
+            ref = targetY(sc);
+        } else {
+            max = maxScroll(vp).y;
+            sy = scrollY();
+            ref = targetY();
+        }
+        hs = sectionStarts(root, sc);
         for (i = 0; i < hs.length; i++) {
             r = hs[i].getBoundingClientRect();
             if (!(r.width > 0 || r.height > 0) || inClosedDetails(hs[i])) {
                 continue;
             }
-            t = r.top + sy;
+            t = r.top - boxTop + sy;
             if (num(dir) < 0) {
                 if (t < ref - 1) {
                     heading = hs[i];
@@ -1355,11 +2032,16 @@
             return f ? "F~" + kindOf(f) : "F~n";
         }
         all = collectAll();
-        smoothTo(scrollX(), clamp(headTop, 0, mx.y));
+        smoothScroll(sc, sc ? sc.scrollLeft : scrollX(), clamp(headTop, 0, max));
         for (i = 0; i < all.length; i++) {
+            if (heading.hasAttribute(SECTION_ATTR) &&
+                (all[i].el === heading || all[i].el.contains(heading))) {
+                pick = all[i].el;
+                break;
+            }
             if (heading.compareDocumentPosition(all[i].el) & 4) {
-                t = all[i].frags[0].y + sy;
-                if (t >= headTop - 1 && t < headTop + vp.h) {
+                t = all[i].frags[0].y - boxTop + sy;
+                if (t >= headTop - 1 && t < headTop + boxH && (!sc || sc.contains(all[i].el))) {
                     pick = all[i].el;
                 }
                 break;
@@ -1402,17 +2084,37 @@
         return topVisible(inArea(all, a), vp) || topVisible(all, vp);
     }
 
-    /* initial(): the first article candidate in the viewport; else the first one starting within the next
-       viewport height below it, pending until the ring shows; else the top visible preferring the article. */
+    /* The first candidate that is, is inside, or holds an element marked data-gnh-pad-initial, else null. */
+    function markedInitial(all) {
+        var marks = toArray(document.querySelectorAll(INITIAL_MARK));
+        var i;
+        var j;
+        for (i = 0; i < all.length && marks.length; i++) {
+            for (j = 0; j < marks.length; j++) {
+                if (marks[j].contains(all[i].el) || all[i].el.contains(marks[j])) {
+                    return all[i];
+                }
+            }
+        }
+        return null;
+    }
+
+    /* initial(): the first candidate marked data-gnh-pad-initial, pending until the ring shows when it is
+       outside the viewport; else the first article candidate in the viewport; else the first one starting
+       within the next viewport height below it, pending until the ring shows; else the top visible preferring
+       the article. */
     function initial() {
         var vp = viewport();
         var all = collectAll();
         var article = inArea(all, "m");
-        var pick = null;
+        var pick = markedInitial(all);
         var i;
         var t;
         initialPending = false;
-        for (i = 0; i < article.length; i++) {
+        if (pick && !intersects(pick.frags, vp, 0)) {
+            initialPending = true;
+        }
+        for (i = 0; i < article.length && !pick; i++) {
             if (intersects(article[i].frags, vp, 0)) {
                 pick = article[i];
                 break;
@@ -1435,12 +2137,32 @@
         return pick ? "F~" + kindOf(pick.el) : "F~n";
     }
 
+    /* Controller mode on the root element: data-gnh-pad="active" while visible, and a gnhpadmode event on the
+       document when that changes. */
+    function signalMode(active) {
+        var de = document.documentElement;
+        try {
+            if (active) {
+                de.dataset.gnhPad = "active";
+            } else {
+                delete de.dataset.gnhPad;
+            }
+            if (active !== visible) {
+                document.dispatchEvent(new CustomEvent("gnhpadmode", { detail: { active: active } }));
+            }
+        } catch (e) {
+            /* the signal is advisory */
+        }
+    }
+
     /* setVisible(b): showing clears h, and moves a missing focus, or one with no fragment in the
        viewport, to the top visible candidate of the last focus's area; hiding sets h. */
     function setVisible(b) {
         var vp;
         var f;
         var tv;
+        signalMode(!!(b && b !== "0" && b !== "false"));
+        invalidateLayer();
         if (b && b !== "0" && b !== "false") {
             visible = true;
             hidden = false;
@@ -1508,13 +2230,54 @@
         return inArea(collectAll(), String(a)).length ? "D~1" : "D~0";
     }
 
-    /* Wraps a call: exceptions become E~<message>; afterward the focus's area is remembered and the ring
-       re-placed. */
+    /* focusMarked(name): focuses and reveals the first candidate that carries data-gnh-pad-key="name", is inside
+       an element that does, or contains one. */
+    function focusMarked(name) {
+        var all = collectAll();
+        var marks = toArray(document.querySelectorAll("[" + KEY_ATTR + "]"));
+        var i;
+        var j;
+        name = String(name);
+        marks = marks.filter(function (m) {
+            return m.getAttribute(KEY_ATTR) === name;
+        });
+        for (i = 0; i < all.length && marks.length; i++) {
+            for (j = 0; j < marks.length; j++) {
+                if (marks[j].contains(all[i].el) || all[i].el.contains(marks[j])) {
+                    focusEl = all[i].el;
+                    reveal(focusEl);
+                    return "F~" + kindOf(focusEl);
+                }
+            }
+        }
+        return "F~n";
+    }
+
+    /* refresh(): drops a focus that has left the document, re-applies initial() when the focus is lost, and
+       re-places the ring; while the ring shows, a pending initial focus is revealed at once. */
+    function refresh() {
+        var f;
+        if (focusEl && !focusEl.isConnected) {
+            focusEl = null;
+        }
+        f = liveFocus();
+        if (!f || !hasFragmentIn(f, viewport())) {
+            initial();
+            if (visible && !hidden && initialPending && focusEl) {
+                initialPending = false;
+                reveal(focusEl);
+            }
+        }
+        return "D~1";
+    }
+
+    /* Wraps a call: exceptions become E~<message>; the active layer is computed once for the call; afterward
+       the focus's area is remembered and the ring re-placed. */
     function guard(fn) {
         return function () {
             try {
                 observeLayout();
-                return fn.apply(null, arguments);
+                return withLayerCache(fn, arguments);
             } catch (e) {
                 return err(e);
             } finally {
@@ -1558,12 +2321,15 @@
         step: guard(step),
         page: guard(page),
         top: guard(top),
+        bottom: guard(bottom),
         section: guard(section),
         search: guard(search),
         initial: guard(initial),
         setVisible: guard(setVisible),
         hasSearch: guard(hasSearch),
         area: guard(area),
-        hasArea: guard(hasArea)
+        hasArea: guard(hasArea),
+        focusMarked: guard(focusMarked),
+        refresh: guard(refresh)
     };
 })();

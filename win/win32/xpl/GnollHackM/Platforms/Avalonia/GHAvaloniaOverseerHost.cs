@@ -142,13 +142,14 @@ namespace GnollHackM
         private const string HostKeyMessageType = "gnollhack_host_key";
         private const string AcmMessageTypePrefix = "__AvaloniaControlsMaui";
 
-        /* Esc forwarding for a focused page. With the WebKitGTK adapter, also the SPA's GnollHackBridge transport, which
-           posts through the adapter's invokeCSharpAction. Host-injected and free of eval, so the page's CSP allows it. */
+        /* Esc forwarding for a focused page, trusted key presses only; synthetic Escapes are left to the page. With the
+           WebKitGTK adapter, also the SPA's GnollHackBridge transport, which posts through the adapter's
+           invokeCSharpAction. Host-injected and free of eval, so the page's CSP allows it. */
         private const string HostKeyScript =
             "if (!window.__gnollhackHostKeys) {" +
             " window.__gnollhackHostKeys = true;" +
             " document.addEventListener('keydown', function (e) {" +
-            "  if (e.key === 'Escape' && window.invokeCSharpAction) {" +
+            "  if (e.isTrusted && e.key === 'Escape' && window.invokeCSharpAction) {" +
             "   window.invokeCSharpAction(JSON.stringify({ type: 'gnollhack_host_key', key: 'Escape' }));" +
             "  }" +
             " }, true);" +

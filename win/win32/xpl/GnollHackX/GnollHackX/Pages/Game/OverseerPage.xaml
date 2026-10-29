@@ -12,6 +12,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="36" x:Name="HandleRowDefinition" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="0" x:Name="HintRowDefinition" />
             </Grid.RowDefinitions>
 
             <!-- Title bar -->
@@ -41,8 +42,13 @@
             <WebView Grid.Row="1" x:Name="DisplayWebView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent"
                       Navigating="DisplayWebView_Navigating" Navigated="DisplayWebView_Navigated"/>
 
+            <!-- Gamepad hint strip below the web view, which may be a native window drawn above other content -->
+            <gnh:GamepadHintCanvasView x:Name="GamepadHintCanvas" Grid.Row="2" IsVisible="False" InputTransparent="True"
+                                       HorizontalOptions="Fill" VerticalOptions="Fill"
+                                       PaintSurface="GamepadHintCanvas_PaintSurface" />
+
             <!-- Progress overlay -->
-            <Grid x:Name="ProgressOverlay" Grid.Row="0" Grid.RowSpan="2" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#EE000000" IsVisible="True">
+            <Grid x:Name="ProgressOverlay" Grid.Row="0" Grid.RowSpan="3" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="#EE000000" IsVisible="True">
                 <Grid WidthRequest  ="440" Margin="5" HorizontalOptions="Fill" VerticalOptions="Center">
                     <Frame x:Name="ProgressOverlayFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxDarkModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="9" Padding="6">
@@ -63,7 +69,7 @@
                 </Grid.GestureRecognizers>
             </Grid>
 
-            <controls:MessagePopupView x:Name="MessagePopup" Grid.RowSpan="2" />
+            <controls:MessagePopupView x:Name="MessagePopup" Grid.RowSpan="3" />
         </Grid>
     </gnh:CustomModalPage.Content>
 </gnh:CustomModalPage>

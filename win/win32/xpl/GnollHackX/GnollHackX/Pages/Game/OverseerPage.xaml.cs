@@ -12,14 +12,17 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using GnollHackX.Performance;
+using SkiaSharp;
 
 #if GNH_MAUI
 using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
+using SkiaSharp.Views.Maui;
 
 namespace GnollHackM
 #else
+using SkiaSharp.Views.Forms;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
@@ -102,6 +105,17 @@ namespace GnollHackX.Pages.Game
             CloseArea.GestureRecognizers.Add(pointerGesture);
 #endif
             InitializeGamepadNavigation();
+            _webNavigator = new GHWebGamepadNavigator(_toolbarNavigator, DisplayWebView);
+            _webNavigator.Profile = CreateGamepadProfile();
+            _webNavigator.CanGoBack = () => _navigatedAwayFromSpa;
+            _webNavigator.GoBack = () => TitleArea_Tapped(TitleArea, EventArgs.Empty);
+            _webNavigator.CanGoForward = () => false;
+            _webNavigator.ClosePage = LeaveFromGamepad;
+#if GNH_AVALONIA
+            _webScriptHost = new GHAvaloniaWebScriptHost(DisplayWebView);
+            _webNavigator.Host = _webScriptHost;
+#endif
+            ProgressOverlay.PropertyChanged += ProgressOverlay_PropertyChanged;
             GHGame curGame = GHApp.CurrentGHGame;
             if (curGame != null)
             {
@@ -144,6 +158,18 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed += BackButtonPressed;
             GHApp.SetPlatformResizeAdjustment(true);
             _overlayNavigator.Attach();
+#if GNH_AVALONIA
+            if (_webScriptHost == null)
+            {
+                _webScriptHost = new GHAvaloniaWebScriptHost(DisplayWebView);
+                _webNavigator.Host = _webScriptHost;
+            }
+#endif
+            _gamepadHintsShown = true;
+            _webNavigator.HintsChanged -= WebNavigator_HintsChanged;
+            _webNavigator.HintsChanged += WebNavigator_HintsChanged;
+            _webNavigator.Attach();
+            WebNavigator_HintsChanged();
             try
             {
                 await UploadAndConnect();
@@ -160,6 +186,23 @@ namespace GnollHackX.Pages.Game
             GHApp.SetPlatformResizeAdjustment(false);
             GHApp.BackButtonPressed -= BackButtonPressed;
             _overlayNavigator.Detach();
+            _webNavigator.HintsChanged -= WebNavigator_HintsChanged;
+            _webNavigator.Detach();
+#if GNH_AVALONIA
+            _webNavigator.Host = null;
+            if (_webScriptHost != null)
+            {
+                _webScriptHost.Dispose();
+                _webScriptHost = null;
+            }
+#endif
+            _gamepadHintsShown = false;
+            GamepadHintCanvas.IsVisible = false;
+            if (_gamepadHintRenderer != null)
+            {
+                _gamepadHintRenderer.Dispose();
+                _gamepadHintRenderer = null;
+            }
             CleanupJsBridge();
 #if GNH_MAUI && WINDOWS
             UnhookNewWindowRequested();
@@ -605,6 +648,8 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
+            _webNavigator.OnNavigating();
+
             if (_lastFailedNavigatedUrl != null && (DateTime.UtcNow - _lastFailedNavigatedTime).TotalSeconds < 1.0 && _lastFailedNavigatedUrl == e.Url)
             {
                 LoadingIndicator.IsRunning = false;
@@ -734,6 +779,7 @@ namespace GnollHackX.Pages.Game
             if (e.Result == WebNavigationResult.Success)
                 _avaloniaHost.OnPageLoaded();
 #endif
+            _webNavigator.OnNavigated();
         }
 
 #if GNH_MAUI && WINDOWS
@@ -977,17 +1023,47 @@ namespace GnollHackX.Pages.Game
         }
 
         /* Gamepad: Menu leaves at once in every state, even on a press that only reveals the focus. The connection
-           overlay's buttons have their own navigator; elsewhere B asks to leave, as Escape does. */
+           overlay's buttons have their own navigator. Elsewhere _webNavigator moves a focus ring over the web page, with
+           the title bar's return and close areas as its toolbar mode; B backs out of the page's layers, returns from
+           pages away from the Overseer app, and finally asks to leave, as Escape does. */
+        private const float GamepadHintFontSizeDips = 13f;     /* the hint strip's label size */
+        private const int GamepadHintMinimumCount = 3;         /* hints kept when dropping ones that do not fit */
+        private const double GamepadHintRowHeight = 34.0;      /* while a controller is in use or available */
+
         private readonly GHGamepadPageNavigator _overlayNavigator = new GHGamepadPageNavigator();
+        private readonly GHGamepadPageNavigator _toolbarNavigator = new GHGamepadPageNavigator();
+        private readonly GHWebGamepadNavigator _webNavigator;
+#if GNH_AVALONIA
+        private GHAvaloniaWebScriptHost _webScriptHost;
+#endif
+        private GHGamepadHintRenderer _gamepadHintRenderer;
+        private readonly List<GHGamepadHint> _gamepadPaintHints = new List<GHGamepadHint>();
+        /* Between Appearing and Disappearing; the hint strip draws nothing otherwise */
+        private bool _gamepadHintsShown = false;
 
         private void InitializeGamepadNavigation()
         {
-            GHGamepadPageNavigator.Layer main = _overlayNavigator.Main;
-            main.AddButton(CancelButton);
-            main.AddButtons(RetryButtonsPanel);
-            main.HorizontalMoves = true;
-            main.SetInitialFocus(CancelButton);
-            main.Back = OverlayBack;
+            GHGamepadPageNavigator.Layer overlay = _overlayNavigator.Main;
+            overlay.AddButton(CancelButton);
+            overlay.AddButtons(RetryButtonsPanel);
+            overlay.HorizontalMoves = true;
+            overlay.SetInitialFocus(CancelButton);
+            overlay.Back = OverlayBack;
+
+            GHGamepadPageNavigator.Layer toolbar = _toolbarNavigator.Main;
+            toolbar.Add(TitleArea, () => TitleArea_Tapped(TitleArea, EventArgs.Empty),
+                () => _navigatedAwayFromSpa && GHGamepadPageNavigator.IsViewAvailable(TitleArea));
+            toolbar.Add(CloseArea, () => CloseArea_Tapped(CloseArea, EventArgs.Empty), null);
+            toolbar.HorizontalMoves = true;
+            toolbar.SetInitialFocus(CloseArea);
+            toolbar.Back = null;
+        }
+
+        private GHWebGamepadProfile CreateGamepadProfile()
+        {
+            GHWebGamepadProfile profile = GHWebGamepadProfile.CreateOverseer();
+            profile.BackFallback = () => HandleSpecialKeyPress(GHSpecialKey.Escape, false, false, false);
+            return profile;
         }
 
         /* B on the connection overlay: cancels while Cancel is enabled, else closes the page */
@@ -1028,8 +1104,7 @@ namespace GnollHackX.Pages.Game
                 }
                 if (ProgressOverlay.IsVisible)
                     return _overlayNavigator.HandleButton(e);
-                if (e.Button == GHGamepadButton.B && e.Kind == GHGamepadButtonEventKind.Pressed && !e.IsCancelled)
-                    HandleSpecialKeyPress(GHSpecialKey.Escape, false, false, false);
+                return _webNavigator.HandleButton(e);
             }
             catch (Exception ex)
             {
@@ -1040,6 +1115,88 @@ namespace GnollHackX.Pages.Game
 
         public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
         {
+            if (!ProgressOverlay.IsVisible)
+                _webNavigator.UpdateSticks(sticks, dtSeconds);
+        }
+
+        private void ProgressOverlay_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == IsVisibleProperty.PropertyName)
+                WebNavigator_HintsChanged();
+        }
+
+        /* The hint row is kept while a controller can be used, so that switching between the mouse and the controller
+           does not resize the web view; the strip itself shows only while the controller is the active input */
+        private void WebNavigator_HintsChanged()
+        {
+            double rowHeight = _gamepadHintsShown && GHGamepadService.IsAvailable && GHGamepadService.IsEnabled
+                ? GamepadHintRowHeight : 0.0;
+            if (HintRowDefinition.Height.Value != rowHeight)
+                HintRowDefinition.Height = rowHeight;
+
+            IList<GHGamepadHint> hints = _webNavigator.CurrentHints;
+            bool show = rowHeight > 0.0 && GHGamepadService.IsActive && !ProgressOverlay.IsVisible
+                && hints != null && hints.Count > 0;
+            if (GamepadHintCanvas.IsVisible != show)
+                GamepadHintCanvas.IsVisible = show;
+            GamepadHintCanvas.InvalidateSurface();
+        }
+
+        private GHGamepadHintRenderer EnsureGamepadHintRenderer()
+        {
+            if (!_gamepadHintsShown)
+                return null;
+            if (_gamepadHintRenderer == null)
+            {
+                GHGamepadHintRenderer renderer = new GHGamepadHintRenderer();
+                renderer.LabelTypeface = GHApp.LatoRegular;
+                renderer.BoldTypeface = GHApp.LatoBold;
+                renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
+                _gamepadHintRenderer = renderer;
+            }
+            return _gamepadHintRenderer;
+        }
+
+        /* The gamepad hint strip, painted on the UI thread: one line centered in the canvas, dropping the last hints,
+           down to GamepadHintMinimumCount, while the row needs two lines */
+        private void GamepadHintCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        {
+            SKCanvas canvas = e.Surface.Canvas;
+            canvas.Clear(SKColors.Transparent);
+            IList<GHGamepadHint> hints = _webNavigator != null ? _webNavigator.CurrentHints : null;
+            if (hints == null || hints.Count == 0 || !_gamepadHintsShown)
+                return;
+            GHGamepadHintRenderer renderer = EnsureGamepadHintRenderer();
+            if (renderer == null)
+                return;
+
+            int pixelWidth = e.Info.Width;
+            int pixelHeight = e.Info.Height;
+            double dipWidth = GamepadHintCanvas.Width;
+            float scale;
+            if (dipWidth > 0 && pixelWidth > 0)
+                scale = (float)(pixelWidth / dipWidth);
+            else
+                scale = GHApp.DisplayDensity > 0 ? GHApp.DisplayDensity : 1.0f;
+
+            renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
+            float fontSize = GamepadHintFontSizeDips * scale;
+            float maxWidth = pixelWidth - 2f * fontSize * GHGamepadHintRenderer.BackingPadOfFont;
+            GHGamepadStyle style = GHGamepadService.Style;
+            List<GHGamepadHint> paintHints = _gamepadPaintHints;
+            paintHints.Clear();
+            paintHints.AddRange(hints);
+            renderer.LayoutRow(paintHints, style, fontSize, maxWidth);
+            while (renderer.LineCount > 1 && paintHints.Count > GamepadHintMinimumCount)
+            {
+                paintHints.RemoveAt(paintHints.Count - 1);
+                renderer.LayoutRow(paintHints, style, fontSize, maxWidth);
+            }
+            if (renderer.LineCount == 0)
+                return;
+
+            float bottomY = pixelHeight * 0.5f + renderer.RowHeight * 0.5f;
+            renderer.DrawRow(canvas, paintHints, style, pixelWidth * 0.5f, bottomY, 1.0f, true);
         }
 
         /* IGHGamepadPopupPage implementation: Menu leaves at once; every other button goes to the popup */
@@ -1514,6 +1671,7 @@ namespace GnollHackX.Pages.Game
                         }
                         catch { }
                     }
+                    _webNavigator.OnDocumentChanged();
                     return;
                 }
 

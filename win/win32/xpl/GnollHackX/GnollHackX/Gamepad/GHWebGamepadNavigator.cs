@@ -83,6 +83,7 @@ namespace GnollHackX.Controls
         private readonly GHGamepadPageNavigator _toolbar;
         private readonly WebView _webView;
         private IGHWebScriptHost _host;
+        private GHWebGamepadProfile _profile = GHWebGamepadProfile.CreateDefault();
         private GHWebNavigatorMode _mode = GHWebNavigatorMode.Page;
         private bool _attached = false;
         private bool _toolbarAttached = false;
@@ -167,6 +168,17 @@ namespace GnollHackX.Controls
         public Func<bool> CanGoForward { get; set; }
         public Action GoForward { get; set; }
 
+        /* The page's labels and actions; never null, null sets the default profile */
+        public GHWebGamepadProfile Profile
+        {
+            get { return _profile; }
+            set
+            {
+                _profile = value ?? GHWebGamepadProfile.CreateDefault();
+                RefreshHints();
+            }
+        }
+
         /* Raised when CurrentHints changes and when the gamepad state changes */
         public event Action HintsChanged;
 
@@ -248,6 +260,14 @@ namespace GnollHackX.Controls
             if (HasPage && GHGamepadService.IsAvailable && GHGamepadService.IsEnabled)
                 Enqueue(PreparePageAsync, -1);
             RefreshHints();
+        }
+
+        /* From an in-page route change, which raises neither Navigating nor Navigated: re-places the ring and asks
+           for a search field and sidebar again, in the same document */
+        public void OnDocumentChanged()
+        {
+            if (HasPage && (_scriptPresent || (GHGamepadService.IsAvailable && GHGamepadService.IsEnabled)))
+                Enqueue(DocumentChangedAsync, -1);
         }
 
         public void RefreshHints()
@@ -366,7 +386,13 @@ namespace GnollHackX.Controls
                 return;
             case GHGamepadButton.X:
                 if (pressed)
-                    Enqueue(ForwardAsync, -1);
+                {
+                    string composeKey = _profile.ComposeKey;
+                    if (composeKey != null)
+                        Enqueue(gen => ComposeAsync(gen, composeKey), -1);
+                    else
+                        Enqueue(ForwardAsync, -1);
+                }
                 return;
             default:
                 break;
@@ -413,7 +439,11 @@ namespace GnollHackX.Controls
                 break;
             case GHGamepadButton.L3:
                 if (pressed)
-                    Enqueue(gen => SimpleCallAsync(gen, "top()"), -1);
+                {
+                    string l3Call = _profile.L3Call;
+                    if (!string.IsNullOrEmpty(l3Call))
+                        Enqueue(gen => SimpleCallAsync(gen, l3Call), -1);
+                }
                 break;
             default:
                 break;
@@ -477,7 +507,18 @@ namespace GnollHackX.Controls
                 return;
             case GHGamepadButton.X:
                 if (pressed)
-                    Enqueue(ForwardAsync, -1);
+                {
+                    string composeKey = _profile.ComposeKey;
+                    if (composeKey == null)
+                    {
+                        Enqueue(ForwardAsync, -1);
+                    }
+                    else if (HasPage)
+                    {
+                        SetMode(GHWebNavigatorMode.Page, e.PressId);
+                        Enqueue(gen => ComposeAsync(gen, composeKey), -1);
+                    }
+                }
                 return;
             case GHGamepadButton.Menu:
                 if (pressed)
@@ -899,10 +940,11 @@ namespace GnollHackX.Controls
                 await CallAsync(generation, "step(0," + Num(step) + ")");
                 break;
             case GHWebDirection.Up:
-                if (s.ScrollY <= 0.0)
+                /* Pages may scroll an inner container while the window stays at the top: the toolbar only when
+                   nothing scrolled */
+                string scrolled = await CallAsync(generation, "step(0," + Num(-step) + ")");
+                if (scrolled == "D~0" && generation == _generation)
                     SetMode(GHWebNavigatorMode.Toolbar, pressId);
-                else
-                    await CallAsync(generation, "step(0," + Num(-step) + ")");
                 break;
             case GHWebDirection.Left:
                 await CallAsync(generation, "step(" + Num(-step) + ",0)");
@@ -984,6 +1026,29 @@ namespace GnollHackX.Controls
                 HandleActivation(result);
         }
 
+        /* X with a compose key: focuses the element marked with the key and activates it, which starts editing a text
+           field */
+        private async Task ComposeAsync(int generation, string key)
+        {
+            if (await BeginAsync(generation) == null)
+                return;
+            string focused = await CallAsync(generation, "focusMarked(" + Str(key) + ")");
+            if (focused == null || focused == "F~n" || generation != _generation)
+                return;
+            string result = await CallAsync(generation, "activate()");
+            if (result != null)
+                HandleActivation(result);
+        }
+
+        /* Re-places the ring after an in-page route change and asks for a search field and sidebar again */
+        private async Task DocumentChangedAsync(int generation)
+        {
+            await CallAsync(generation, "refresh()");
+            if (generation != _generation)
+                return;
+            await QuerySearchAsync(generation);
+        }
+
         /* X: forward in history, as the toolbar's forward button; nothing when there is no page to go forward to */
         private Task ForwardAsync(int generation)
         {
@@ -1002,9 +1067,9 @@ namespace GnollHackX.Controls
             return Task.CompletedTask;
         }
 
-        /* B: ends an edit, else closes the details around the focus, else goes back in history, else closes the
-           page. The page is asked only in Page or Edit mode and once a call has found its script, so a failing or
-           script-less page does not hold up going back or closing. */
+        /* B: ends an edit, else closes the details around the focus, else goes back in history, else runs the
+           profile's BackFallback or closes the page. The page is asked only in Page or Edit mode and once a call has
+           found its script, so a failing or script-less page does not hold up going back or closing. */
         private async Task BackAsync(int generation)
         {
             if (HasPage && _scriptPresent && EffectiveMode != GHWebNavigatorMode.Toolbar)
@@ -1043,7 +1108,11 @@ namespace GnollHackX.Controls
             }
             else
             {
-                RunClosePage();
+                Action fallback = _profile.BackFallback;
+                if (fallback != null)
+                    RunBackFallback(fallback);
+                else
+                    RunClosePage();
             }
         }
 
@@ -1282,24 +1351,35 @@ namespace GnollHackX.Controls
             {
                 Debug.WriteLine(ex);
             }
-            string backLabel = canGoBack ? "Back" : "Close";
+            GHWebGamepadProfile profile = _profile;
+            string backLabel = canGoBack ? "Back" : profile.BackFallbackLabel;
+            bool compose = profile.ComposeKey != null;
 
             switch (EffectiveMode)
             {
             case GHWebNavigatorMode.Page:
                 hints.Add(new GHGamepadHint(GHGamepadButton.A, "Open", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.B, backLabel, false));
-                if (canGoForward)
+                if (compose)
+                {
+                    if (profile.ComposeLabel != null)
+                        hints.Add(new GHGamepadHint(GHGamepadButton.X, profile.ComposeLabel, false));
+                }
+                else if (canGoForward)
+                {
                     hints.Add(new GHGamepadHint(GHGamepadButton.X, "Forward", false));
+                }
                 hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.DPad, "Move"));
                 hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.RightStick, "Scroll"));
                 hints.Add(new GHGamepadHint(GHGamepadButton.View,
                     _hasSide && _lastArea != GHWebCandidate.SideArea ? "Sidebar" : "Toolbar", false));
                 if (_hasSearch)
-                    hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Search", false));
-                hints.Add(GHGamepadHint.Pair(GHGamepadButton.LB, GHGamepadButton.RB, "Section"));
+                    hints.Add(new GHGamepadHint(GHGamepadButton.Y, profile.SearchLabel, false));
+                hints.Add(GHGamepadHint.Pair(GHGamepadButton.LB, GHGamepadButton.RB, profile.SectionLabel));
                 hints.Add(GHGamepadHint.Pair(GHGamepadButton.LT, GHGamepadButton.RT, "Page"));
-                hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Close", false));
+                if (profile.L3Label != null && !string.IsNullOrEmpty(profile.L3Call))
+                    hints.Add(new GHGamepadHint(GHGamepadButton.L3, profile.L3Label, false));
+                hints.Add(new GHGamepadHint(GHGamepadButton.Menu, profile.CloseLabel, false));
                 break;
             case GHWebNavigatorMode.Edit:
                 hints.Add(new GHGamepadHint(GHGamepadButton.B, "Done", false));
@@ -1310,12 +1390,19 @@ namespace GnollHackX.Controls
             default:
                 hints.Add(new GHGamepadHint(GHGamepadButton.A, "Press", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.B, backLabel, false));
-                if (canGoForward)
+                if (compose)
+                {
+                    if (HasPage && profile.ComposeLabel != null)
+                        hints.Add(new GHGamepadHint(GHGamepadButton.X, profile.ComposeLabel, false));
+                }
+                else if (canGoForward)
+                {
                     hints.Add(new GHGamepadHint(GHGamepadButton.X, "Forward", false));
+                }
                 hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.DPad, "Move"));
                 if (HasPage)
                     hints.Add(new GHGamepadHint(GHGamepadButton.View, "Page", false));
-                hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Close", false));
+                hints.Add(new GHGamepadHint(GHGamepadButton.Menu, profile.CloseLabel, false));
                 break;
             }
             return hints;
@@ -1370,6 +1457,18 @@ namespace GnollHackX.Controls
             }
         }
 
+        private static void RunBackFallback(Action fallback)
+        {
+            try
+            {
+                fallback();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
         /* Script arguments in invariant culture */
 
         private static string Num(double value)
@@ -1380,6 +1479,12 @@ namespace GnollHackX.Controls
         private static string Int(int value)
         {
             return value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        /* A single-quoted JavaScript string literal */
+        private static string Str(string value)
+        {
+            return "'" + (value ?? "").Replace("\\", "\\\\").Replace("'", "\\'") + "'";
         }
     }
 }
