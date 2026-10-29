@@ -35,6 +35,9 @@ button is available. On every page, L2/R2 go to the first and last entry of the 
 (or of the page when it has none).
 
 On every page with a scrolling list, the right stick scrolls it, faster the further it is pushed.
+When the list has been scrolled so that the focus is out of view (by the right stick, touch or the
+mouse), Up/Down and the press that brings the focus back put it on the topmost visible entry
+instead of scrolling back to it; with no focus, Up/Down do the same.
 The other pages work the same way, with these additions:
 
 - **Settings:** the focus walks the rows in order, and the focused row is tinted. A flips a

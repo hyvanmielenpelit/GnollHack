@@ -20,7 +20,8 @@ namespace GnollHackX.Controls
        panels) that take over while shown, the first shown overlay in AddOverlay order winning. Up/Down (D-pad and
        left stick) move with wrap on a fresh press only, Left/Right too where a layer allows it, A activates on a
        short press that started here, B runs the layer's back action, and the press that reveals the UI only shows
-       the focus.
+       the focus. A focus scrolled wholly out of the layer's ScrollView moves to the top visible entry on Up/Down
+       and when the UI is revealed, as an unset focus does on Up/Down, instead of scrolling back to it.
        Entries besides buttons, switches and check boxes: pickers and sliders, which Left/Right adjust; text
        entries, which A focuses with the on-screen keyboard and B leaves; row image buttons; and a CollectionView
        as one entry whose Up/Down move its selection. X runs an entry's secondary action, armed like A. Section
@@ -43,6 +44,8 @@ namespace GnollHackX.Controls
 
             private readonly GHGamepadFocusList _focus = new GHGamepadFocusList();
             private readonly List<View> _views = new List<View>();
+            /* Per entry, its highlight, else the view; its bounds decide whether the entry is scrolled into view */
+            private readonly List<View> _highlights = new List<View>();
             private readonly List<View> _initialViews = new List<View>();
             private readonly List<Entry> _textEntries = new List<Entry>();
             private readonly List<SectionStop> _stops = new List<SectionStop>();
@@ -97,6 +100,7 @@ namespace GnollHackX.Controls
                 if (isAvailable == null)
                     isAvailable = () => IsViewAvailable(view);
                 _views.Add(view);
+                _highlights.Add(highlight ?? view);
                 _focus.Add(view, activate, isAvailable, highlight, options);
                 if (_pendingStop)
                 {
@@ -264,6 +268,7 @@ namespace GnollHackX.Controls
             {
                 _focus.Clear();
                 _views.Clear();
+                _highlights.Clear();
                 foreach (Entry entry in _textEntries)
                 {
                     entry.Completed -= TextEntry_Completed;
@@ -429,6 +434,87 @@ namespace GnollHackX.Controls
                 return fallback;
             }
 
+            /* The focus is unset or unavailable, or its row is inside ScrollView but wholly outside the viewport */
+            internal bool IsFocusLost()
+            {
+                int index = _focus.FocusIndex;
+                if (!_focus.IsAvailableAt(index))
+                    return true;
+                double top, bottom, y, height;
+                if (!TryGetViewport(out top, out bottom) || !TryGetContentBounds(index, out y, out height))
+                    return false;
+                return y + height <= top || y >= bottom;
+            }
+
+            /* The available entry inside ScrollView whose row starts highest within the viewport, else the first
+               one overlapping it; -1 if none */
+            internal int FindTopVisibleIndex()
+            {
+                double top, bottom;
+                if (!TryGetViewport(out top, out bottom))
+                    return -1;
+                int best = -1;
+                double bestY = 0.0;
+                int overlapping = -1;
+                int i;
+                for (i = 0; i < _views.Count; i++)
+                {
+                    double y, height;
+                    if (!_focus.IsAvailableAt(i) || !TryGetContentBounds(i, out y, out height))
+                        continue;
+                    if (y >= top - ViewportTolerance && y < bottom)
+                    {
+                        if (best < 0 || y < bestY)
+                        {
+                            best = i;
+                            bestY = y;
+                        }
+                    }
+                    else if (overlapping < 0 && y < bottom && y + height > top)
+                    {
+                        overlapping = i;
+                    }
+                }
+                return best >= 0 ? best : overlapping;
+            }
+
+            /* ScrollView's visible range in its content coordinates; false without a laid-out ScrollView */
+            private bool TryGetViewport(out double top, out double bottom)
+            {
+                top = 0.0;
+                bottom = 0.0;
+                ScrollView scrollView = ScrollView;
+                if (scrollView == null || scrollView.Height <= 0.0)
+                    return false;
+                top = scrollView.ScrollY;
+                bottom = top + scrollView.Height;
+                return true;
+            }
+
+            /* The entry's row top and height in ScrollView's content coordinates; false when the row is not inside
+               ScrollView or not laid out */
+            private bool TryGetContentBounds(int index, out double y, out double height)
+            {
+                y = 0.0;
+                height = 0.0;
+                ScrollView scrollView = ScrollView;
+                if (scrollView == null || index < 0 || index >= _highlights.Count)
+                    return false;
+                View row = _highlights[index];
+                height = row.Height;
+                if (height <= 0.0)
+                    return false;
+                Element element = row;
+                while (element != null && !ReferenceEquals(element, scrollView))
+                {
+                    VisualElement visual = element as VisualElement;
+                    if (visual != null)
+                        y += visual.Y;
+                    element = element.Parent;
+                }
+                return element != null;
+            }
+
             internal bool IsShown()
             {
                 if (_isShown == null)
@@ -589,6 +675,8 @@ namespace GnollHackX.Controls
         }
 
         private const double LineScrollStep = 48.0;
+        /* A row starting this many DIP above the viewport still counts as starting within it */
+        private const double ViewportTolerance = 1.0;
         private const double PageScrollFraction = 0.85;
         /* DIP per second at full right-stick push; the push is raised to RightStickScrollExponent first */
         private const double RightStickScrollSpeed = 1200.0;
@@ -654,6 +742,9 @@ namespace GnollHackX.Controls
             try
             {
                 Layer layer = UpdateActiveLayer();
+                /* Becoming the active input does not scroll back to a focus scrolled out of view */
+                if (GHGamepadService.IsActive && layer.Focus.FocusIndex >= 0 && FocusTopVisibleIfLost(layer))
+                    return;
                 if (layer.Focus.FocusIndex < 0)
                     layer.FocusInitial();
                 layer.Focus.RefreshVisuals();
@@ -692,6 +783,8 @@ namespace GnollHackX.Controls
                         _aArmed = false;
                     else if (e.Button == GHGamepadButton.X)
                         _xArmed = false;
+                    if (layer.Focus.FocusIndex >= 0 && FocusTopVisibleIfLost(layer))
+                        return true;
                     EnsureFocus(layer);
                     layer.Focus.RefreshVisuals();
                     ScrollFocusIntoView(layer);
@@ -856,6 +949,8 @@ namespace GnollHackX.Controls
             if (kind != GHGamepadButtonEventKind.Pressed && kind != GHGamepadButtonEventKind.Repeat)
                 return;
             bool fresh = kind == GHGamepadButtonEventKind.Pressed;
+            if (vertical && FocusTopVisibleIfLost(layer))
+                return;
             if (!EnsureFocus(layer))
             {
                 layer.Focus.RefreshVisuals();
@@ -921,6 +1016,20 @@ namespace GnollHackX.Controls
             {
                 ScrollFocusIntoView(layer);
             }
+        }
+
+        /* With the focus unset, unavailable or scrolled out of view (Layer.IsFocusLost), focuses the top visible
+           entry of the layer's ScrollView; true if it did */
+        private static bool FocusTopVisibleIfLost(Layer layer)
+        {
+            if (!layer.IsFocusLost())
+                return false;
+            int index = layer.FindTopVisibleIndex();
+            if (index < 0 || !layer.Focus.SetFocus(index, 1))
+                return false;
+            layer.Focus.RefreshVisuals();
+            ScrollFocusIntoView(layer);
+            return true;
         }
 
         /* Returns true if the layer already had an available focus; otherwise tries its initial focus */
