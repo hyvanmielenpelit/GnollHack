@@ -199,20 +199,21 @@ right trackpad stays a mouse.
 
 | Control | Action |
 |---------|--------|
-| D-pad, left stick | Move the focus to the nearest link or control in that direction. With nothing that way, Up/Down scroll a step; Up at the top of the page goes to the toolbar; Left/Right go to the next or previous link in reading order. On a drop-down list, Left/Right change the option |
+| D-pad, left stick | Move the focus to the nearest link or control in that direction: Up/Down to the next row of links, the one nearest horizontally in it, so no row is skipped. Up/Down stay in the article or in the sidebar; with nothing that way, they scroll a step, and Up at the top of the page goes to the toolbar. Left/Right also reach a link on the same line in the other column; with none, they go to the next or previous link in reading order. On a drop-down list, Left/Right change the option |
 | Right stick | Scroll, both ways |
 | A | Follow the link, press the button, or edit the text field |
 | B | End a text edit; else close an open menu around the focus; else go back; else close the browser |
-| X | Go to the start page (the page the browser was opened on) |
+| X | Go forward, as the toolbar's forward button does |
 | Y | Edit the page's search field, if it has one |
 | L1 / R1 | Previous / next section heading |
 | L2 / R2 | Page up / down |
 | L3 | Top of the page |
-| View | Move the focus to the toolbar (Close, back, forward); Down or View returns to the page |
+| View | Cycle the page's areas: the article, the sidebar (when the page has one), then the toolbar (Close, back, forward), then the article again. Each area keeps its last focus. Down in the toolbar returns to the page |
 | Menu | Close the browser |
 
-Touch, the mouse or a key inside the page hides the ring; the next controller press only shows it
-again. **Text fields:** A or Y focuses the field and, on a Steam Deck in Game Mode, opens Steam's
+The focus starts on the article's first link; when that is just below the window, the first press
+scrolls it into view. Touch, the mouse or a key inside the page hides the ring; the next controller
+press only shows it again. **Text fields:** A or Y focuses the field and, on a Steam Deck in Game Mode, opens Steam's
 keyboard placed away from it; its Enter submits, B ends the edit, and a direction leaves the field.
 A hint strip in the toolbar row shows the controls for the current mode.
 

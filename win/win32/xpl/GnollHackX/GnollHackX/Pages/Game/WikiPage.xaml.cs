@@ -34,7 +34,6 @@ namespace GnollHackX.Pages.Game
         private const float GamepadHintFontSizeDips = 13f;     /* the hint strip's label size */
         private const int GamepadHintMinimumCount = 3;         /* hints kept when dropping ones that do not fit */
 
-        private readonly string _startUrl;
         private readonly GHWebGamepadNavigator _webNavigator;
 #if GNH_AVALONIA
         private GHAvaloniaWebScriptHost _webScriptHost;
@@ -47,7 +46,6 @@ namespace GnollHackX.Pages.Game
         public WikiPage(string title, string wikiUrl)
         {
             InitializeComponent();
-            _startUrl = wikiUrl;
 //#if GNH_MAUI
 //            SafeAreaEdges = SafeAreaEdges.All;
 //#else
@@ -67,7 +65,8 @@ namespace GnollHackX.Pages.Game
             _webNavigator.CanGoBack = () => DisplayWebView.CanGoBack;
             _webNavigator.GoBack = GoBackInHistory;
             _webNavigator.ClosePage = ClosePage;
-            _webNavigator.GoHome = GoToStartPage;
+            _webNavigator.CanGoForward = () => DisplayWebView.CanGoForward;
+            _webNavigator.GoForward = GoForwardInHistory;
 #if GNH_AVALONIA
             _webScriptHost = new GHAvaloniaWebScriptHost(DisplayWebView);
             _webNavigator.Host = _webScriptHost;
@@ -215,21 +214,22 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        private void GoToStartPage()
+        private void ForwardButton_Clicked(object sender, EventArgs e)
         {
-            DisplayWebView.Source = new UrlWebViewSource
+            if (DisplayWebView.CanGoForward)
             {
-                Url = _startUrl,
-            };
+                GHApp.PlayButtonClickedSound();
+                GoForwardInHistory();
+            }
         }
 
-        private void ForwardButton_Clicked(object sender, EventArgs e)
+        /* Without the click sound */
+        private void GoForwardInHistory()
         {
             if (DisplayWebView.CanGoForward)
             {
                 BackButton.IsEnabled = false;
                 ForwardButton.IsEnabled = false;
-                GHApp.PlayButtonClickedSound();
                 DisplayWebView.GoForward();
                 UpdateNavigationButtons();
             }

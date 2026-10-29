@@ -113,3 +113,40 @@ applications.
 
 Checks:
 - 2026-10-23 | cef.runtime.linux-x64 154.0.34 | unverified | No upstream issue found.
+
+## WA-CEF-0004: CefBrowser.GoBack does nothing after links followed without a user gesture
+
+- Status: active
+- Added: 2026-10-29
+- GnollHack version: 3.32 (432)
+- Component: Chromium
+- Package: cef.runtime.linux-x64
+- Defective version: cef.runtime.linux-x64 154.0.34
+- Platforms: Linux
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-29
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.GoBack`)
+- Remove when: `CefBrowser.GoBack` goes back in GnollHack's windowless browser after links followed with the controller, in a CEF release GnollHack uses, and Verify removal passes.
+
+**Symptom.** In the in-app browser on the Steam Deck, the toolbar's back button and the
+controller's B do nothing, although the browser reports that it can go back.
+
+**Cause.** A trace on the Deck showed `CefBrowser.GoBack()` called with `CanGoBack` true and
+no navigation following: no `OnBeforeBrowse`, no loading-state change. The links had been
+followed by the controller through a script `click()`, so their navigations carried no user
+gesture. The likely mechanism, not proven, is Chromium's history manipulation intervention,
+which makes browser-initiated back skip entries left by navigations without user activation.
+
+**Workaround.** `GoBack` and `GoForward` run `history.back()` and `history.forward()` in the
+main frame, a page-initiated history navigation; `CefBrowser.GoBack` and `GoForward` remain
+the fallback when there is no main frame.
+
+**Verify removal.** In `GHCefWebViewControl.NavigateHistory`, call `_browser.GoBack()` and
+`_browser.GoForward()` directly. Build the Avalonia flavor for Linux with CEF, open the wiki
+on a Steam Deck, follow a link with the controller's A, and press the toolbar's back button
+and B; both must go back.
+
+Checks:
+- 2026-10-29 | cef.runtime.linux-x64 154.0.34 | still-needed | Reproduced on a Steam Deck with a trace; no upstream issue searched yet.

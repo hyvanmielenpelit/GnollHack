@@ -17,7 +17,7 @@
 (function () {
     "use strict";
 
-    if (window.__gnhPad && window.__gnhPad.v === 1) {
+    if (window.__gnhPad && window.__gnhPad.v === 2) {
         return;
     }
 
@@ -36,6 +36,14 @@
     var MAX_FRAME_MS = 100;
     var POINTER_SLOP = 2;
     var OPTS = { capture: true, passive: true };
+    /* Areas: m the article, s a sidebar, o anything else. A sidebar root is an aside, a complementary role, or an
+       element with an id or class token naming a sidebar (wiki-sidebar, sidebar-content; not has-sidebar). */
+    var SIDE_ROLES = { complementary: true };
+    var SIDE_TOKEN = /^(?!has-)(?:.*[-_])?sidebar(?:[-_].*)?$/i;
+    var OTHER_TAGS = { HEADER: true, FOOTER: true, NAV: true };
+    var OTHER_ROLES = { banner: true, contentinfo: true, navigation: true };
+    var FOOTER_ID = /footer/i;
+    var MAIN_ROOTS = "main,[role=main]";
 
     /* Snapshot sequence number and the element of each snapshot entry; only the latest is kept. */
     var seq = 0;
@@ -52,6 +60,12 @@
     var vel = { x: 0, y: 0, until: 0, accX: 0, accY: 0, last: -1, raf: 0 };
     var resizeObserver = null;
     var observedBody = null;
+    /* The last focus in each area, and the area of the last focus */
+    var lastByArea = { m: null, s: null, o: null };
+    var lastArea = "m";
+    /* The initial focus is below the viewport; showing the ring scrolls it into view. Pointer, wheel and key use
+       clear it. */
+    var initialPending = false;
 
     /* ---------------------------------------------------------------- helpers */
 
@@ -467,6 +481,68 @@
             document.querySelector("article") || document.querySelector("[role=main]");
     }
 
+    function hasSideToken(el) {
+        var cls = typeof el.className === "string" ? el.className : "";
+        var tokens = cls.split(/\s+/);
+        var i;
+        if (el.id && SIDE_TOKEN.test(el.id)) {
+            return true;
+        }
+        for (i = 0; i < tokens.length; i++) {
+            if (tokens[i] && SIDE_TOKEN.test(tokens[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /* The article root: main or [role=main], else the content root. */
+    function mainRoot() {
+        return document.querySelector(MAIN_ROOTS) || contentRoot();
+    }
+
+    /* The area of an element: inside a sidebar root s; else inside a header, footer or navigation root o; else
+       inside the article root m; else o. */
+    function areaOf(el, main) {
+        var e = el;
+        var other = false;
+        var role;
+        while (e && e.nodeType === 1) {
+            role = firstRole(e);
+            if (e.tagName === "ASIDE" || SIDE_ROLES[role] || hasSideToken(e)) {
+                return "s";
+            }
+            if (OTHER_TAGS[e.tagName] || OTHER_ROLES[role] || (e.id && FOOTER_ID.test(e.id))) {
+                other = true;
+            }
+            e = parentOf(e);
+        }
+        if (other) {
+            return "o";
+        }
+        if (main === undefined) {
+            main = mainRoot();
+        }
+        return main && main.contains(el) ? "m" : "o";
+    }
+
+    /* Candidates of area a */
+    function inArea(all, a) {
+        var main = mainRoot();
+        return all.filter(function (c) {
+            return areaOf(c.el, main) === a;
+        });
+    }
+
+    function rememberFocus() {
+        var a;
+        if (focusEl && focusEl.isConnected) {
+            a = areaOf(focusEl);
+            lastByArea[a] = focusEl;
+            lastArea = a;
+        }
+    }
+
     function isFixed(el) {
         while (el && el.nodeType === 1) {
             if (window.getComputedStyle(el).position === "fixed") {
@@ -790,6 +866,7 @@
     function hideByInput() {
         hidden = true;
         smooth = null;
+        initialPending = false;
         placeRing();
     }
 
@@ -1049,13 +1126,14 @@
 
     /* ---------------------------------------------------------------- calls */
 
-    /* snapshot(reach): S~seq~vw~vh~dpr~sx~sy~maxX~maxY~focus~flags~items. A focus that is
-       disconnected or has no fragment in the viewport is reported as lost (l). */
+    /* snapshot(reach): S~seq~vw~vh~dpr~sx~sy~maxX~maxY~focus~flags~items, items index,kind,area,x,y,w,h....
+       A focus that is disconnected or has no fragment in the viewport is reported as lost (l). */
     function snapshot(reach) {
         var vp = viewport();
         var mx = maxScroll(vp);
         var all = collectAll();
         var f = liveFocus();
+        var main = mainRoot();
         var parts = [];
         var focusPos = -1;
         var flags = "";
@@ -1073,7 +1151,7 @@
                 focusPos = items.length;
             }
             items.push(c.el);
-            parts.push(i + "," + kindOf(c.el) + "," + c.frags.map(rectStr).join(","));
+            parts.push(i + "," + kindOf(c.el) + "," + areaOf(c.el, main) + "," + c.frags.map(rectStr).join(","));
         }
         if (hidden) {
             flags += "h";
@@ -1083,6 +1161,9 @@
         }
         if (isEditing()) {
             flags += "e";
+        }
+        if (initialPending) {
+            flags += "p";
         }
         return "S~" + seq + "~" + rnd(vp.w) + "~" + rnd(vp.h) + "~" + (window.devicePixelRatio || 1).toFixed(2) +
             "~" + rnd(scrollX()) + "~" + rnd(scrollY()) + "~" + rnd(mx.x) + "~" + rnd(mx.y) +
@@ -1316,30 +1397,46 @@
         return "A~n";
     }
 
-    /* initial(): the first candidate of the content root in the viewport, else the top visible. */
+    /* The top visible candidate of area a, else of any area */
+    function topVisibleIn(all, vp, a) {
+        return topVisible(inArea(all, a), vp) || topVisible(all, vp);
+    }
+
+    /* initial(): the first article candidate in the viewport; else the first one starting within the next
+       viewport height below it, pending until the ring shows; else the top visible preferring the article. */
     function initial() {
         var vp = viewport();
         var all = collectAll();
-        var root = contentRoot();
+        var article = inArea(all, "m");
         var pick = null;
         var i;
-        if (root) {
-            for (i = 0; i < all.length; i++) {
-                if (root.contains(all[i].el) && intersects(all[i].frags, vp, 0)) {
-                    pick = all[i];
+        var t;
+        initialPending = false;
+        for (i = 0; i < article.length; i++) {
+            if (intersects(article[i].frags, vp, 0)) {
+                pick = article[i];
+                break;
+            }
+        }
+        if (!pick) {
+            for (i = 0; i < article.length; i++) {
+                t = article[i].frags[0].y;
+                if (t >= vp.h && t < 2 * vp.h) {
+                    pick = article[i];
+                    initialPending = true;
                     break;
                 }
             }
         }
         if (!pick) {
-            pick = topVisible(all, vp);
+            pick = topVisibleIn(all, vp, "m");
         }
         focusEl = pick ? pick.el : null;
         return pick ? "F~" + kindOf(pick.el) : "F~n";
     }
 
     /* setVisible(b): showing clears h, and moves a missing focus, or one with no fragment in the
-       viewport, to the top visible candidate; hiding sets h. */
+       viewport, to the top visible candidate of the last focus's area; hiding sets h. */
     function setVisible(b) {
         var vp;
         var f;
@@ -1349,8 +1446,11 @@
             hidden = false;
             vp = viewport();
             f = liveFocus();
-            if (!f || !hasFragmentIn(f, vp)) {
-                tv = topVisible(collectAll(), vp);
+            if (initialPending && f) {
+                initialPending = false;
+                reveal(f);
+            } else if (!f || !hasFragmentIn(f, vp)) {
+                tv = topVisibleIn(collectAll(), vp, f ? areaOf(f) : lastArea);
                 if (tv) {
                     focusEl = tv.el;
                 }
@@ -1374,7 +1474,42 @@
         return "D~0";
     }
 
-    /* Wraps a call: exceptions become E~<message>, and the ring is re-placed afterward. */
+    /* area(a): focuses area a: its last focus if still a candidate in the viewport, else its top visible
+       candidate, else its first candidate, scrolled into view. */
+    function area(a) {
+        var vp = viewport();
+        var all = collectAll();
+        var cands;
+        var last;
+        var pick;
+        var i;
+        a = String(a);
+        last = lastByArea[a];
+        if (last && last.isConnected && areaOf(last) === a) {
+            for (i = 0; i < all.length; i++) {
+                if (all[i].el === last && intersects(all[i].frags, vp, 0)) {
+                    focusEl = last;
+                    return "F~" + kindOf(last);
+                }
+            }
+        }
+        cands = inArea(all, a);
+        if (!cands.length) {
+            return "F~n";
+        }
+        pick = topVisible(cands, vp) || cands[0];
+        focusEl = pick.el;
+        reveal(pick.el);
+        return "F~" + kindOf(pick.el);
+    }
+
+    /* hasArea(a): whether area a has a candidate. */
+    function hasArea(a) {
+        return inArea(collectAll(), String(a)).length ? "D~1" : "D~0";
+    }
+
+    /* Wraps a call: exceptions become E~<message>; afterward the focus's area is remembered and the ring
+       re-placed. */
     function guard(fn) {
         return function () {
             try {
@@ -1383,6 +1518,11 @@
             } catch (e) {
                 return err(e);
             } finally {
+                try {
+                    rememberFocus();
+                } catch (e2) {
+                    /* the area memory is a convenience */
+                }
                 placeRing();
             }
         };
@@ -1407,7 +1547,7 @@
     }
 
     window.__gnhPad = {
-        v: 1,
+        v: 2,
         snapshot: guard(snapshot),
         focus: guard(focusAt),
         activate: guard(activate),
@@ -1422,6 +1562,8 @@
         search: guard(search),
         initial: guard(initial),
         setVisible: guard(setVisible),
-        hasSearch: guard(hasSearch)
+        hasSearch: guard(hasSearch),
+        area: guard(area),
+        hasArea: guard(hasArea)
     };
 })();
