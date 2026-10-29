@@ -2316,8 +2316,8 @@ namespace GnollHackX.Pages.MainScreen
             bool available = GHApp.IsGamepadAvailable;
             GamepadSettingsLayout.IsVisible = available;
             GamepadGripLayout.IsVisible = available && GHGamepadService.Capabilities.HasGrips;
-            GamepadTriggerLayout.IsVisible = available;
             GamepadEnabledSwitch.IsToggled = GHApp.GamepadEnabled;
+            UpdateCommandSectionVisibility();
 
             Picker[] pickers = GamepadGripPickers;
             int i;
@@ -2339,6 +2339,19 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 RefreshGamepadTriggerAssignedPicker(t, GHApp.GetGamepadTriggerAssignedSlot(trigger));
             }
+        }
+
+        /* Trigger Quick Actions while the Controller section is shown and Use Controller is on, else Bar Commands */
+        private void UpdateCommandSectionVisibility()
+        {
+            bool triggers = GamepadSettingsLayout.IsVisible && GamepadEnabledSwitch.IsToggled;
+            GamepadTriggerLayout.IsVisible = triggers;
+            BarCommandsLayout.IsVisible = !triggers;
+        }
+
+        private void GamepadEnabledSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            UpdateCommandSectionVisibility();
         }
 
         /* Rebuilds trigger t's assigned picker from its slot pickers ("1. Fire" ...) and selects selectedSlot */

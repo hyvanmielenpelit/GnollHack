@@ -2659,7 +2659,7 @@ namespace GnollHackX
         /* Gamepad focus: the upper buttons, the mode switches and Play Game, and each in-page popup's buttons while
            it is shown, in the order the special-key handler checks them; B on a popup acts as Escape, on the main
            layer nothing. A switch or check box shows its focus as a tint on the row holding it and its label. Right on
-           Play Game goes to Exit, and X, Y, Menu and View are shortcuts (HandleGamepadButton). */
+           a mode switch or Play Game goes to Exit, and X, Y, Menu and View are shortcuts (HandleGamepadButton). */
         private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
 
         private void InitializeGamepadNavigation()
@@ -2673,17 +2673,17 @@ namespace GnollHackX
             main.AddButton(SettingsButton);
             main.AddButton(AboutButton);
             main.AddButton(ExitButton);
-            main.AddSwitch(classicModeSwitch, classicModeGrid);
-            main.AddSwitch(casualModeSwitch, casualModeGrid);
-            main.AddSwitch(wizardModeSwitch, wizardModeGrid);
-            /* Right on Play Game goes to Exit */
-            GHGamepadFocusList.EntryOptions playOptions = new GHGamepadFocusList.EntryOptions();
-            playOptions.Adjust = dir =>
+            /* Right on a mode switch or Play Game goes to Exit */
+            GHGamepadFocusList.EntryOptions rightToExitOptions = new GHGamepadFocusList.EntryOptions();
+            rightToExitOptions.Adjust = dir =>
             {
                 if (dir > 0)
                     main.Focus.SetFocus(ExitButton);
             };
-            main.Add(StartLocalGameButton, StartLocalGameButton.PerformClick, null, null, playOptions);
+            main.Add(classicModeSwitch, () => classicModeSwitch.IsToggled = !classicModeSwitch.IsToggled, null, classicModeGrid, rightToExitOptions);
+            main.Add(casualModeSwitch, () => casualModeSwitch.IsToggled = !casualModeSwitch.IsToggled, null, casualModeGrid, rightToExitOptions);
+            main.Add(wizardModeSwitch, () => wizardModeSwitch.IsToggled = !wizardModeSwitch.IsToggled, null, wizardModeGrid, rightToExitOptions);
+            main.Add(StartLocalGameButton, StartLocalGameButton.PerformClick, null, null, rightToExitOptions);
             main.SetInitialFocus(StartLocalGameButton);
 
             GHGamepadPageNavigator.Layer layer = _gamepadNavigator.AddOverlay(() => PendingTasksGrid.IsVisible);

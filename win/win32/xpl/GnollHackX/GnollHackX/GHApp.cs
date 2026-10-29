@@ -3998,10 +3998,10 @@ namespace GnollHackX
         public const int GamepadTriggerSlotCount = 8;
         public static readonly GHGamepadButton[] GamepadTriggers = { GHGamepadButton.LT, GHGamepadButton.RT };
 
-        /* L2 Apply, Cast, Quick Cast, Zap, Quick Zap, Eat, Pick-axe, Polearm */
-        private static readonly int[] _defaultGamepadLTSlots = { 'a', 'Z', GHUtils.Meta(26), 'z', GHUtils.Meta(27), 'e', GHUtils.Meta('X'), GHUtils.Meta('P') };
-        /* R2 Fire, Swap, Kick, Cast, Throw, Search, Search 20, Wait */
-        private static readonly int[] _defaultGamepadRTSlots = { 'f', 'x', GHUtils.Ctrl('d'), 'Z', 't', 's', -102, '.' };
+        /* L2 Search 20, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm */
+        private static readonly int[] _defaultGamepadLTSlots = { -102, '%', GHUtils.Meta('p'), GHUtils.Meta('y'), 'E', GHUtils.Ctrl('x'), GHUtils.Meta('X'), GHUtils.Meta('P') };
+        /* R2 Fire, Swap, Kick, Throw, Cast, Quick Cast, Zap, Quick Zap */
+        private static readonly int[] _defaultGamepadRTSlots = { 'f', 'x', GHUtils.Ctrl('d'), 't', 'Z', GHUtils.Meta(26), 'z', GHUtils.Meta(27) };
         private static readonly int[] _gamepadTriggerSlotCommands = new int[2 * GamepadTriggerSlotCount];
         private static readonly int[] _gamepadTriggerAssignedSlots = new int[2];
 
@@ -4034,10 +4034,10 @@ namespace GnollHackX
             return trigger == GHGamepadButton.LT ? _defaultGamepadLTSlots[slot] : _defaultGamepadRTSlots[slot];
         }
 
-        /* R2 Fire (slot 1), L2 Cast (slot 2) */
+        /* R2 Fire, L2 Search 20 (both slot 1) */
         public static int DefaultGamepadTriggerAssignedSlot(GHGamepadButton trigger)
         {
-            return trigger == GHGamepadButton.LT ? 1 : 0;
+            return 0;
         }
 
         /* The GHCommand in a trigger slot; 0 is None */
@@ -5966,6 +5966,7 @@ namespace GnollHackX
             new SelectableShortcutButton("Loot", "Loot", 'l', false, true, 0, AppResourceName + ".Assets.UI.loot.png"),
             new SelectableShortcutButton("Pick-axe", "Pick-axe", 'X', false, true, 0, AppResourceName + ".Assets.UI.pickaxe.png"),
             new SelectableShortcutButton("Polearm", "Polearm", 'P', false, true, 0, AppResourceName + ".Assets.UI.polearm.png"),
+            new SelectableShortcutButton("Pray", "Pray", 'p', false, true, 0, AppResourceName + ".Assets.UI.pray.png"),
             new SelectableShortcutButton("Read", "Read", 'r', false, false, 0, AppResourceName + ".Assets.UI.read.png"),
             new SelectableShortcutButton("Repeat", "Repeat", 'a', true, false, 0, AppResourceName + ".Assets.UI.repeat.png"),
             new SelectableShortcutButton("Rest", "Rest", '\0', false, false, -103, AppResourceName + ".Assets.UI.rest.png"),

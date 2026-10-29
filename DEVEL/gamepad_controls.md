@@ -29,10 +29,10 @@ presses the focused button and B goes back (on the main menu B does nothing; its
 take A and B as well). The main menu starts on Play Game, and the Reset page starts on Close.
 On the main menu the focus also reaches the Classic, Casual and Wizard Mode switches, between
 Exit and Play Game, and a popup's "do not show again" check box: their row is tinted while
-focused, and A flips them as a tap does. Right on Play Game goes to Exit. The main menu's
-shortcuts are X Play Game, Y About, Menu Settings and View Vault, each when its button is
-available. On every page, L2/R2 go to the first and last entry of the scrolling list (or of the
-page when it has none).
+focused, and A flips them as a tap does. Right on a mode switch or Play Game goes to Exit. The
+main menu's shortcuts are X Play Game, Y About, Menu Settings and View Vault, each when its
+button is available. On every page, L2/R2 go to the first and last entry of the scrolling list
+(or of the page when it has none).
 
 On every page with a scrolling list, the right stick scrolls it, faster the further it is pushed.
 The other pages work the same way, with these additions:
@@ -78,7 +78,7 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | X | Pick up | Pick and Stash | -- | -- |
 | Y | **Repeat** | Search | -- | Search 20 times |
 | R2 | R2's **assigned action** (default Fire) | **Right Quick** radial (R2's quick actions) | **Set R2** radial | R2's assigned action |
-| L2 | L2's **assigned action** (default Cast) | **Set L2** radial | **Left Quick** radial (L2's quick actions) | L2's assigned action |
+| L2 | L2's **assigned action** (default Search 20) | **Set L2** radial | **Left Quick** radial (L2's quick actions) | L2's assigned action |
 | Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
 | View | Inventory | -- | Equipment (all equipment in use) | -- |
 | D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, Left toggles the minimap, Right returns to normal zoom | -- |
@@ -92,12 +92,14 @@ has grips, and they work only with the GnollHack Steam Input layout (see below);
 layout they do nothing, which the game cannot detect.
 
 **Trigger quick actions.** L2 and R2 each have eight quick actions, set in **Settings, Trigger
-Quick Actions** (any command the bar buttons can hold, or None):
+Quick Actions** (any command the bar buttons can hold, or None). The section sits just before
+Bar Commands and takes its place while Use Controller is on; with it off, or without a
+controller backend, the page shows Bar Commands instead.
 
 | Trigger | Defaults, slots 1-8 | Assigned by default |
 |---|---|---|
-| R2 | Fire, Swap, Kick, Cast, Throw, Search, Search 20, Wait | Fire |
-| L2 | Apply, Cast, Quick Cast, Zap, Quick Zap, Eat, Pick-axe, Polearm | Cast |
+| R2 | Fire, Swap, Kick, Throw, Cast, Quick Cast, Zap, Quick Zap | Fire |
+| L2 | Search 20, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm | Search 20 |
 
 The modifier on the trigger's own side (R1 + R2, L1 + L2) opens the teal **Set** radial: choosing
 a slot makes it the trigger's action when pressed alone (the current one is marked NOW). The
