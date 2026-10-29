@@ -9,7 +9,7 @@ namespace GnollHackX.Controls
 #endif
 {
     /* Gamepad focus visuals: a color filter for a focused button bitmap, a glow following an image's alpha
-       (cached per image and size), and a glow with a border for a rounded list row. Sizes are in DIP, scaled by
+       (cached per image and size), and a glow around a rounded list row. Sizes are in DIP, scaled by
        the caller's DIP-to-pixel factor. */
     public static class GHGamepadFocusGlow
     {
@@ -18,8 +18,7 @@ namespace GnollHackX.Controls
         private const float ImageGlowInnerSigma = 1.5f;
         private const float ImageGlowOuterSigma = 4.0f;
         private const int ImageGlowCacheSize = 8;
-        private const float RowGlowSigma = 3.0f;
-        private const float RowBorderWidth = 1.5f;
+        private const float RowGlowSigma = 5.0f;
 
         private static readonly SKColor ImageGlowInnerColor = new SKColor(0xFF, 0xE0, 0x70, 0xF0);
         private static readonly SKColor ImageGlowOuterColor = new SKColor(0xFF, 0xA8, 0x00, 0xFF);
@@ -130,37 +129,27 @@ namespace GnollHackX.Controls
             }
         }
 
-        /* A soft glow outside rect and a crisp border just inside it; paint is a scratch paint whose MaskFilter is
-           cleared afterwards */
+        /* A soft glow outside rect, which it leaves untouched; paint is a scratch paint whose MaskFilter is cleared
+           afterwards */
         public static void DrawRowGlow(SKCanvas canvas, SKRect rect, float radius, float dpScale, SKColor glowColor,
-            SKColor borderColor, SKPaint paint)
+            SKPaint paint)
         {
-            if (canvas == null || paint == null)
+            if (canvas == null || paint == null || glowColor.Alpha == 0)
                 return;
             paint.IsAntialias = true;
             paint.Shader = null;
-            if (glowColor.Alpha > 0)
+            using (SKRoundRect rrect = new SKRoundRect(rect, radius, radius))
             {
-                using (SKRoundRect rrect = new SKRoundRect(rect, radius, radius))
-                {
-                    paint.Style = SKPaintStyle.Fill;
-                    paint.Color = glowColor;
-                    paint.MaskFilter = GetRowGlowMask(RowGlowSigma * dpScale);
-                    canvas.Save();
-                    // WORKAROUND(WA-SKIASHARP-0011): SKBlurStyle.Outer paints inside a rounded rectangle
-                    canvas.ClipRoundRect(rrect, SKClipOperation.Difference, true);
-                    canvas.DrawRoundRect(rrect, paint);
-                    canvas.Restore();
-                    paint.MaskFilter = null;
-                }
+                paint.Style = SKPaintStyle.Fill;
+                paint.Color = glowColor;
+                paint.MaskFilter = GetRowGlowMask(RowGlowSigma * dpScale);
+                canvas.Save();
+                // WORKAROUND(WA-SKIASHARP-0011): SKBlurStyle.Outer paints inside a rounded rectangle
+                canvas.ClipRoundRect(rrect, SKClipOperation.Difference, true);
+                canvas.DrawRoundRect(rrect, paint);
+                canvas.Restore();
+                paint.MaskFilter = null;
             }
-            float stroke = RowBorderWidth * dpScale;
-            SKRect borderRect = rect;
-            borderRect.Inflate(-stroke / 2, -stroke / 2);
-            paint.Style = SKPaintStyle.Stroke;
-            paint.StrokeWidth = stroke;
-            paint.Color = borderColor;
-            canvas.DrawRoundRect(borderRect, radius, radius, paint);
         }
 
         /* A normal blur, recreated when sigma changes; the previous one is unused once paints release it */

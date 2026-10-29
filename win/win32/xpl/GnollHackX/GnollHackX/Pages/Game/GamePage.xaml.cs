@@ -18696,16 +18696,14 @@ namespace GnollHackX.Pages.Game
         private readonly SKColor _menuHighlightSelectedDarkColor = new SKColor(0x88, 0x88, 0xAA, 0x77);
         private readonly SKColor _menuHighlightHoverOverSelectedDarkColor = new SKColor(0xBB, 0xBB, 0xEE, 0x88);
 
-        /* Gamepad focus selector: a row gets a rounded gradient fill, a glow and a border, a button a brightened bitmap
-           and a glow; the glow and border use their own scratch paint so the text paint keeps its style */
-        private readonly SKColor _menuGamepadFocusFillStartColor = new SKColor(0xFF, 0xBB, 0x00, 0x70);
-        private readonly SKColor _menuGamepadFocusFillEndColor = new SKColor(0xFF, 0xBB, 0x00, 0x30);
+        /* Gamepad focus selector: a row gets a rounded gradient fill and a glow around it, a button a brightened bitmap
+           and a glow; the row glow uses its own scratch paint so the text paint keeps its style */
+        private readonly SKColor _menuGamepadFocusFillStartColor = new SKColor(0xFF, 0xC0, 0x30, 0xA0);
+        private readonly SKColor _menuGamepadFocusFillEndColor = new SKColor(0xFF, 0xA0, 0x00, 0x50);
         private readonly SKColor _menuGamepadFocusOverSelectedColor = new SKColor(0xFF, 0x88, 0x00, 0xAA);
-        private readonly SKColor _menuGamepadFocusGlowDarkColor = new SKColor(0xFF, 0xA8, 0x00, 0xB0);
-        private readonly SKColor _menuGamepadFocusGlowLightColor = new SKColor(0xB3, 0x6B, 0x00, 0x80);
-        private readonly SKColor _menuGamepadFocusBorderDarkColor = new SKColor(0xFF, 0xD2, 0x4D, 0xE6);
-        private readonly SKColor _menuGamepadFocusBorderLightColor = new SKColor(0xB3, 0x6B, 0x00, 0xE6);
-        private readonly SKPaint _menuGamepadFocusBorderPaint = new SKPaint { Style = SKPaintStyle.Stroke, IsAntialias = true };
+        private readonly SKColor _menuGamepadFocusGlowDarkColor = new SKColor(0xFF, 0xB0, 0x20, 0xFF);
+        private readonly SKColor _menuGamepadFocusGlowLightColor = new SKColor(0xB3, 0x6B, 0x00, 0xC0);
+        private readonly SKPaint _menuGamepadFocusGlowPaint = new SKPaint { Style = SKPaintStyle.Fill, IsAntialias = true };
         private readonly SKPaint _menuGamepadFocusFillPaint = new SKPaint { Style = SKPaintStyle.Fill, IsAntialias = true, Color = SKColors.White };
         private readonly SKPaint _menuGamepadFocusImagePaint = new SKPaint { ColorFilter = GHGamepadFocusGlow.FocusedImageColorFilter };
 
@@ -19555,11 +19553,10 @@ namespace GnollHackX.Pages.Game
 
                                     if (isFocused && !IsMiButton)
                                     {
-                                        /* The glow and rounded border mark the focus over any selection or highlight fill */
+                                        /* The glow around the row marks the focus over any selection or highlight fill */
                                         GHGamepadFocusGlow.DrawRowGlow(canvas, focusRect, focusRadius, focusScale,
                                             revertBW ? _menuGamepadFocusGlowLightColor : _menuGamepadFocusGlowDarkColor,
-                                            revertBW ? _menuGamepadFocusBorderLightColor : _menuGamepadFocusBorderDarkColor,
-                                            _menuGamepadFocusBorderPaint);
+                                            _menuGamepadFocusGlowPaint);
                                     }
 
                                     float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontSpacing)) / 2);
