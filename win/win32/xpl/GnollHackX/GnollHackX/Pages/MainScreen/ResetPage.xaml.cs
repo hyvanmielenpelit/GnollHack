@@ -183,6 +183,10 @@ namespace GnollHackX.Pages.MainScreen
 #endif
                 GHApp.SetXlogUserNameVerified(false, null, null);
 
+                /* The controller settings are read from the preferences only at startup, and the Settings page
+                   saves what it shows, so they are reloaded here, now at their defaults */
+                GHApp.LoadGamepadSettings();
+
                 Preferences.Set("FullVersion", GHApp.FullVersionMode);
                 if (has_resetatstart)
                     Preferences.Set("ResetAtStart", resetatstart);

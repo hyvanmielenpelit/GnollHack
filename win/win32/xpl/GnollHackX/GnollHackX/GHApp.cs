@@ -358,16 +358,7 @@ namespace GnollHackX
                 Preferences.Set("ShowIgnoreStoppingButton", false);
                 Preferences.Set("SteamDeckStoneButtonsDefaultApplied", true);
             }
-            GamepadEnabled = Preferences.Get("GamepadEnabled", true);
-            foreach (GHGamepadButton grip in GamepadGrips)
-                SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));
-            foreach (GHGamepadButton trigger in GamepadTriggers)
-            {
-                int slot;
-                for (slot = 0; slot < GamepadTriggerSlotCount; slot++)
-                    SetGamepadTriggerSlotCommand(trigger, slot, Preferences.Get(GamepadTriggerSlotPreferenceKey(trigger, slot), DefaultGamepadTriggerSlotCommand(trigger, slot)));
-                SetGamepadTriggerAssignedSlot(trigger, Preferences.Get(GamepadTriggerAssignedPreferenceKey(trigger), DefaultGamepadTriggerAssignedSlot(trigger)));
-            }
+            LoadGamepadSettings();
             UseSingleMoreCommandsPage = Preferences.Get("UseSingleMoreCommandsPage", IsDesktop);
             ShowSkillContextButton = Preferences.Get("ShowSkillContextButton", true);
             ShowPolearmContextButton = Preferences.Get("ShowPolearmContextButton", GHConstants.DefaultShowPolearmContextButton);
@@ -3927,6 +3918,21 @@ namespace GnollHackX
         public static bool IsGamepadAvailable { get { return GHGamepadService.IsAvailable; } }
 
         public static readonly GHGamepadButton[] GamepadGrips = { GHGamepadButton.L4, GHGamepadButton.L5, GHGamepadButton.R4, GHGamepadButton.R5 };
+
+        /* Use Controller, the grips and the trigger quick actions from the preferences, each missing one at its default */
+        public static void LoadGamepadSettings()
+        {
+            GamepadEnabled = Preferences.Get("GamepadEnabled", true);
+            foreach (GHGamepadButton grip in GamepadGrips)
+                SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));
+            foreach (GHGamepadButton trigger in GamepadTriggers)
+            {
+                int slot;
+                for (slot = 0; slot < GamepadTriggerSlotCount; slot++)
+                    SetGamepadTriggerSlotCommand(trigger, slot, Preferences.Get(GamepadTriggerSlotPreferenceKey(trigger, slot), DefaultGamepadTriggerSlotCommand(trigger, slot)));
+                SetGamepadTriggerAssignedSlot(trigger, Preferences.Get(GamepadTriggerAssignedPreferenceKey(trigger), DefaultGamepadTriggerAssignedSlot(trigger)));
+            }
+        }
 
         public static string GamepadGripPreferenceKey(GHGamepadButton grip)
         {
