@@ -26,6 +26,10 @@ namespace GnollHackX
         /* Opens the keyboard placed away from field; false when it could not be opened */
         bool Show(View field, GHScreenKeyboardMode mode);
 
+        /* Opens the keyboard placed away from that area of host, given in DIPs from host's top-left; false when it
+           could not be opened */
+        bool ShowForArea(View host, double x, double y, double width, double height, GHScreenKeyboardMode mode);
+
         void Hide();
     }
 
@@ -56,6 +60,24 @@ namespace GnollHackX
             try
             {
                 _isShown = Provider.Show(field, mode);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+                _isShown = false;
+            }
+            return _isShown;
+        }
+
+        /* As Show, for a text field drawn inside host at x, y, width, height, in DIPs from host's top-left */
+        public static bool ShowForArea(View host, double x, double y, double width, double height,
+            GHScreenKeyboardMode mode)
+        {
+            if (host == null || !IsAvailable)
+                return false;
+            try
+            {
+                _isShown = Provider.ShowForArea(host, x, y, width, height, mode);
             }
             catch (Exception ex)
             {

@@ -1016,7 +1016,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaOverseerHost.cs` (`NativeWebViewHost.InvokeScriptAsync`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/OverseerPage.xaml.cs` (`OverseerPage.SendToolResponse`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/OverseerPage.xaml.cs` (`OverseerPage.SendPickedFilesToJs`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaOverseerHost.cs` (`NativeWebViewHost.InvokeScriptAsync`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/OverseerPage.xaml.cs` (`OverseerPage.SendToolResponse`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/OverseerPage.xaml.cs` (`OverseerPage.SendPickedFilesToJs`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaWebScriptHost.cs` (`GHAvaloniaWebScriptHost.EvaluateAsync`)
 - Remove when: `WebView.EvaluateJavaScriptAsync` runs scripts without `eval` in a Microsoft.Maui.Controls release GnollHack's Avalonia flavor uses, and Verify removal passes.
 
 **Symptom.** On the Avalonia flavor, tool responses and picked files sent to the Overseer
@@ -1037,6 +1037,10 @@ directly, without MAUI's wrapper. The MAUI flavors still use `EvaluateJavaScript
 - Build the Avalonia flavor and run it on Linux.
 - Open the Overseer, let it call a tool and attach a file, and confirm the page receives
   both.
+- In `GHAvaloniaWebScriptHost.EvaluateAsync`, use `DisplayWebView.EvaluateJavaScriptAsync`
+  too, and confirm the in-app browser's controller focus works on Linux with CEF and with
+  `GNOLLHACK_WEBVIEW=native`, including on github.com, which has a strict Content Security
+  Policy.
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 11.0.0-rc.2.26505.5 | still-needed | No upstream issue found; WebView.cs on main still wraps scripts in eval.

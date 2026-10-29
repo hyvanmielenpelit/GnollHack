@@ -59,6 +59,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadPressRouter.cs" Link="Shared\GHGamepadPressRouter.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadKeyMap.cs" Link="Shared\GHGamepadKeyMap.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadKeyBridge.cs" Link="Shared\GHGamepadKeyBridge.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHWebSpatialNavigation.cs" Link="Shared\GHWebSpatialNavigation.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialTuning.cs" Link="Shared\GHRadialTuning.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialGeometry.cs" Link="Shared\GHRadialGeometry.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialSelector.cs" Link="Shared\GHRadialSelector.cs" />

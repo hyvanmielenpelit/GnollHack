@@ -51,7 +51,8 @@ The other pages work the same way, with these additions:
   the replay; past the list's ends the focus moves on to the buttons. Replays in multiple
   selection mode leave the list to touch.
 - **Text viewer:** the sticks and D-pad Up/Down scroll the text, L1/R1 page.
-- **Wiki:** Close and the back/forward arrows; the page itself stays touch.
+- **Wiki and other web pages:** the controller moves between the page's links; see
+  [In-App Browser (Wiki)](#in-app-browser-wiki).
 - **Name page:** the focus starts on the name field.
 
 **Text fields and the Steam keyboard.** On a Steam Deck in Game Mode, A on a text field focuses
@@ -187,6 +188,33 @@ has none; Y answers Yes and X answers No when the prompt offers them. In an inve
 equipment menu, Menu flips between the item list and the equipment view, like the flip button;
 on the equipment view B closes the menu. Touch, moving the mouse or pressing a keyboard key leaves controller mode until the
 controller is used again; tapping a menu row moves the focus there.
+
+### In-App Browser (Wiki)
+
+On desktop, every web link GnollHack opens (the wiki, About's links, the GnollHack Account page,
+Top Scores, popup links) opens in its in-app browser. The controller moves a gold focus ring
+between the links and controls of the page itself; the ring is drawn by a script the browser
+injects into each page. These controls exist only in the Avalonia flavor, and the Steam Deck's
+right trackpad stays a mouse.
+
+| Control | Action |
+|---------|--------|
+| D-pad, left stick | Move the focus to the nearest link or control in that direction. With nothing that way, Up/Down scroll a step; Up at the top of the page goes to the toolbar; Left/Right go to the next or previous link in reading order. On a drop-down list, Left/Right change the option |
+| Right stick | Scroll, both ways |
+| A | Follow the link, press the button, or edit the text field |
+| B | End a text edit; else close an open menu around the focus; else go back; else close the browser |
+| X | Go to the start page (the page the browser was opened on) |
+| Y | Edit the page's search field, if it has one |
+| L1 / R1 | Previous / next section heading |
+| L2 / R2 | Page up / down |
+| L3 | Top of the page |
+| View | Move the focus to the toolbar (Close, back, forward); Down or View returns to the page |
+| Menu | Close the browser |
+
+Touch, the mouse or a key inside the page hides the ring; the next controller press only shows it
+again. **Text fields:** A or Y focuses the field and, on a Steam Deck in Game Mode, opens Steam's
+keyboard placed away from it; its Enter submits, B ends the edit, and a direction leaves the field.
+A hint strip in the toolbar row shows the controls for the current mode.
 
 ## Steam Input
 

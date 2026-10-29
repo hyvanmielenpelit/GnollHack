@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -277,6 +277,8 @@
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHScreenKeyboard.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadHintRenderer.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadFocusGlow.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHWebSpatialNavigation.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHWebGamepadNavigator.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialTuning.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialGeometry.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialSelector.cs" />
@@ -578,6 +580,8 @@
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHScreenKeyboard.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadHintRenderer.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadFocusGlow.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHWebSpatialNavigation.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHWebGamepadNavigator.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialTuning.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialGeometry.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialSelector.cs" />
@@ -1147,6 +1151,7 @@
   <ItemGroup Condition="'$(GnhAvalonia)' == 'true'">
     <Content Include="..\..\bank\Desktop\*.bank" Link="banks\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="..\..\tileset\gnollhack_64x96_transparent_32bits*.png" Link="tileset\%(Filename).ghpng" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="Platforms\Avalonia\Web\gamepad_web.js" LogicalName="GnollHackM.GamepadWeb.js" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsMonoRuntime)' == 'true'">

@@ -44,8 +44,31 @@ namespace GnollHackM
         public bool Show(MauiView field, GHScreenKeyboardMode mode)
         {
             int x, y, width, height;
+            bool hasRect = TryGetFieldPixelRect(field, out x, out y, out width, out height);
+            return LaunchOpen(hasRect, x, y, width, height, mode);
+        }
+
+        /* As Show; the host's whole rectangle is used when the area lies outside the host */
+        public bool ShowForArea(MauiView host, double x, double y, double width, double height,
+            GHScreenKeyboardMode mode)
+        {
+            int pixelX, pixelY, pixelWidth, pixelHeight;
+            bool hasRect = TryGetFieldPixelRect(host, x, y, width, height,
+                    out pixelX, out pixelY, out pixelWidth, out pixelHeight)
+                || TryGetFieldPixelRect(host, out pixelX, out pixelY, out pixelWidth, out pixelHeight);
+            return LaunchOpen(hasRect, pixelX, pixelY, pixelWidth, pixelHeight, mode);
+        }
+
+        public void Hide()
+        {
+            Launch(CloseUrl);
+        }
+
+        /* The open link, with the position only when hasRect */
+        private static bool LaunchOpen(bool hasRect, int x, int y, int width, int height, GHScreenKeyboardMode mode)
+        {
             string url;
-            if (TryGetFieldPixelRect(field, out x, out y, out width, out height))
+            if (hasRect)
             {
                 url = string.Format(CultureInfo.InvariantCulture, "{0}?XPosition={1}&YPosition={2}&Width={3}&Height={4}&Mode={5}",
                     OpenUrl, x, y, width, height, (int)mode);
@@ -57,13 +80,17 @@ namespace GnollHackM
             return Launch(url);
         }
 
-        public void Hide()
-        {
-            Launch(CloseUrl);
-        }
-
         /* The field's bounds in the top-level window, in physical pixels */
         private static bool TryGetFieldPixelRect(MauiView field, out int x, out int y, out int width, out int height)
+        {
+            return TryGetFieldPixelRect(field, 0, 0, double.PositiveInfinity, double.PositiveInfinity,
+                out x, out y, out width, out height);
+        }
+
+        /* The area areaX, areaY, areaWidth, areaHeight of the field, in DIPs from its top-left and clamped to its
+           bounds, in the top-level window, in physical pixels; false when the clamped area is empty */
+        private static bool TryGetFieldPixelRect(MauiView field, double areaX, double areaY, double areaWidth,
+            double areaHeight, out int x, out int y, out int width, out int height)
         {
             x = 0;
             y = 0;
@@ -95,13 +122,24 @@ namespace GnollHackM
             if (size.Width <= 0 || size.Height <= 0)
                 return false;
 
+            double right = areaX + areaWidth;
+            double bottom = areaY + areaHeight;
+            if (double.IsNaN(areaX) || double.IsNaN(areaY) || double.IsNaN(right) || double.IsNaN(bottom))
+                return false;
+            double left = Math.Clamp(areaX, 0, size.Width);
+            double top = Math.Clamp(areaY, 0, size.Height);
+            right = Math.Clamp(right, 0, size.Width);
+            bottom = Math.Clamp(bottom, 0, size.Height);
+            if (right <= left || bottom <= top)
+                return false;
+
             double scale = topLevel.RenderScaling;
             if (double.IsNaN(scale) || scale <= 0)
                 scale = 1.0;
-            x = (int)Math.Round(origin.Value.X * scale);
-            y = (int)Math.Round(origin.Value.Y * scale);
-            width = (int)Math.Round(size.Width * scale);
-            height = (int)Math.Round(size.Height * scale);
+            x = (int)Math.Round((origin.Value.X + left) * scale);
+            y = (int)Math.Round((origin.Value.Y + top) * scale);
+            width = (int)Math.Round((right - left) * scale);
+            height = (int)Math.Round((bottom - top) * scale);
             return width > 0 && height > 0;
         }
 
