@@ -360,8 +360,8 @@ namespace GnollHackX.Controls
         {
             e.Handled = true;
             /* WinUI raises pointer events on the UI thread */
-            ViewImage.IsHighlighted = true;
             _isHovering = true;
+            UpdateHighlight();
             LblTextColor = LblTextColor;
             SubLblTextColor = SubLblTextColor;
             SubLbl2TextColor = SubLbl2TextColor;
@@ -373,8 +373,8 @@ namespace GnollHackX.Controls
         {
             e.Handled = true;
             /* WinUI raises pointer events on the UI thread */
-            ViewImage.IsHighlighted = false;
             _isHovering = false;
+            UpdateHighlight();
             LblTextColor = LblTextColor;
             SubLblTextColor = SubLblTextColor;
             SubLbl2TextColor = SubLbl2TextColor;
@@ -387,8 +387,8 @@ namespace GnollHackX.Controls
         {
             e.Handled = true;
             /* Avalonia raises pointer events on the UI thread */
-            ViewImage.IsHighlighted = true;
             _isHovering = true;
+            UpdateHighlight();
             LblTextColor = LblTextColor;
             SubLblTextColor = SubLblTextColor;
             SubLbl2TextColor = SubLbl2TextColor;
@@ -400,8 +400,8 @@ namespace GnollHackX.Controls
         {
             e.Handled = true;
             /* Avalonia raises pointer events on the UI thread */
-            ViewImage.IsHighlighted = false;
             _isHovering = false;
+            UpdateHighlight();
             LblTextColor = LblTextColor;
             SubLblTextColor = SubLblTextColor;
             SubLbl2TextColor = SubLbl2TextColor;
@@ -413,6 +413,33 @@ namespace GnollHackX.Controls
         private bool _isHoveringEnabled = false;
         private bool _isHovering = false;
 #endif
+
+        /* Pointer hover and gamepad focus share the highlight; the gamepad focus also tints the background */
+        private bool _gamepadFocused = false;
+
+        public bool GamepadFocused
+        {
+            get { return _gamepadFocused; }
+            set
+            {
+                if (_gamepadFocused == value)
+                    return;
+                _gamepadFocused = value;
+                UpdateHighlight();
+            }
+        }
+
+        private void UpdateHighlight()
+        {
+            ViewImage.IsHighlighted = _isHovering || _gamepadFocused;
+            ViewGrid.BackgroundColor = _gamepadFocused ? UIUtils.GamepadFocusBackgroundColor : GHColors.Transparent;
+        }
+
+        public void PerformClick()
+        {
+            if (IsEnabled)
+                ViewButton_Clicked(this, EventArgs.Empty);
+        }
 
         private void ViewButton_Clicked(object sender, EventArgs e)
         {

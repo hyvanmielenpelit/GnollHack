@@ -1,0 +1,28 @@
+"Action Manifest"
+{
+    "configurations"
+    {
+        "controller_neptune"
+        {
+            "0"
+            {
+                "path" "controller_neptune.vdf"
+            }
+        }
+    }
+    "actions"
+    {
+        "Default"
+        {
+            "title" "#Set_Default"
+            "legacy_set" "1"
+        }
+    }
+    "localization"
+    {
+        "english"
+        {
+            "Set_Default" "Default"
+        }
+    }
+}

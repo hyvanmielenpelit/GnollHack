@@ -13,6 +13,7 @@ using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 
 namespace GnollHackM
 #else
+using GnollHackX.Controls;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
@@ -22,7 +23,7 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public partial class DisplayFilePage : CustomModalPage, ICloseablePage
+    public partial class DisplayFilePage : CustomModalPage, ICloseablePage, IGHGamepadHandlingPage, IMessagePopupPage, IGHGamepadPopupPage
     {
         private string _fileName;
         private int _fixedWidth;
@@ -80,6 +81,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             if ((GHApp.IsiOS || GHApp.IsWindows) && _isHtml)
                 DisplayWebView.Opacity = 0.0;
+            InitializeGamepadNavigation();
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
@@ -104,7 +106,9 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     try
                     {
-                        if (CloseButton.IsEnabled)
+                        if (MessagePopup.IsPopupOpen)
+                            MessagePopup.ClosePopup();
+                        else if (CloseButton.IsEnabled)
                             await ClosePageAsync(true);
                     }
                     catch (Exception ex)
@@ -123,6 +127,11 @@ namespace GnollHackX.Pages.MainScreen
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
+            if (MessagePopup.IsPopupOpen)
+            {
+                MessagePopup.ClosePopup();
+                return false;
+            }
             if (!_backPressed)
             {
                 await ClosePageAsync(false);
@@ -133,6 +142,7 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _gamepadNavigator.Detach();
 #if GNH_MAUI && WINDOWS
             DisplayWebView.Navigated -= DisplayWebView_Navigated;
 #endif
@@ -351,6 +361,7 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+            _gamepadNavigator.Attach();
             if (GHApp.IsiOS && _isHtml)
             {
 #if GNH_MAUI
@@ -396,5 +407,114 @@ namespace GnollHackX.Pages.MainScreen
                 System.Diagnostics.Debug.WriteLine(ex);
             }
         }
+
+        /* Gamepad focus: Close, or Share and Close; B closes the page. While the text label shows, D-pad Up/Down
+           scroll it by a line, held to repeat, the left and right sticks scroll it continuously by their vertical
+           deflection, LB/RB by a page, and LT/RT jump to the start and end of the text. The HTML view leaves
+           only the buttons. */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        /* A text line in font sizes */
+        private const float GamepadLineHeightFactor = 1.2f;
+
+        /* Dips per second at full stick deflection */
+        private const float GamepadStickScrollSpeed = 1200f;
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddButton(CloseButton);
+            main.AddButton(ShareButton);
+            main.AddButton(CloseButton2);
+            main.HorizontalMoves = true;
+            main.SetInitialFocus(CloseButton, CloseButton2);
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+        }
+
+        private bool IsTextScrollable { get { return TextLabel.IsVisible && TextLabel.IsScrollable; } }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            if (GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen)
+                return true;
+            if (!e.RevealsUi && IsTextScrollable)
+            {
+                bool step = e.Kind == GHGamepadButtonEventKind.Pressed || e.Kind == GHGamepadButtonEventKind.Repeat;
+                try
+                {
+                    switch (e.Button)
+                    {
+                        case GHGamepadButton.DPadUp:
+                        case GHGamepadButton.DPadDown:
+                            if (step)
+                            {
+                                float line = (float)TextLabel.FontSize * GamepadLineHeightFactor;
+                                TextLabel.ScrollBy(e.Button == GHGamepadButton.DPadUp ? -line : line);
+                            }
+                            return true;
+                        case GHGamepadButton.LeftStickUp:
+                        case GHGamepadButton.LeftStickDown:
+                        case GHGamepadButton.RightStickUp:
+                        case GHGamepadButton.RightStickDown:
+                            /* The sticks scroll in UpdateGamepadSticks */
+                            return true;
+                        case GHGamepadButton.LB:
+                        case GHGamepadButton.RB:
+                            if (step)
+                                TextLabel.ScrollPage(e.Button == GHGamepadButton.LB ? -1 : 1);
+                            return true;
+                        case GHGamepadButton.LT:
+                        case GHGamepadButton.RT:
+                            if (e.Kind == GHGamepadButtonEventKind.Pressed)
+                                TextLabel.ScrollToEdge(e.Button == GHGamepadButton.LT ? -1 : 1);
+                            return true;
+                        default:
+                            break;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex);
+                    return true;
+                }
+            }
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+            if (sticks.IsNeutral || dtSeconds <= 0.0 || !IsTextScrollable
+                || GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen)
+                return;
+            float deflection = Math.Max(-1f, Math.Min(1f, sticks.LeftY + sticks.RightY));
+            if (deflection == 0f)
+                return;
+            try
+            {
+                TextLabel.ScrollBy(deflection * GamepadStickScrollSpeed * (float)dtSeconds);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+        }
+
+        public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e) => MessagePopup.HandleGamepadButton(e);
+
+        public bool IsPopupOpen => MessagePopup.IsPopupOpen;
+        public void ClosePopup() => MessagePopup.ClosePopup();
+        public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta) => MessagePopup.SendKeyToPopup(key, isCtrl, isMeta);
+        public bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift) => MessagePopup.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+#if GNH_MAUI
+            Microsoft.Maui.Graphics.Color titleColor = null, bool acceptEnterSpaceForOkCancel = false
+#else
+            Color? titleColor = null, bool acceptEnterSpaceForOkCancel = false
+#endif
+            ) => MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
     }
  }

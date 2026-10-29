@@ -26,7 +26,7 @@ using GnollHackX.Controls;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public partial class VersionPage : CustomModalPage, ICloseablePage
+    public partial class VersionPage : CustomModalPage, ICloseablePage, IGHGamepadHandlingPage
     {
         private GamePage _gamePage = null;
         public VersionPage(GamePage gamePage)
@@ -42,6 +42,7 @@ namespace GnollHackX.Pages.MainScreen
             //UIUtils.SetViewCursorOnHandler(RootGrid, GameCursorType.Normal);
 
             _gamePage = gamePage;
+            InitializeGamepadNavigation();
 
             if (GHApp.DarkMode)
             {
@@ -354,10 +355,39 @@ namespace GnollHackX.Pages.MainScreen
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+            _gamepadNavigator.Attach();
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _gamepadNavigator.Detach();
+        }
+
+        /* Gamepad: A on Close, B closes the page as Escape does, Up/Down scroll the text by a line and LB/RB by a page */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddButton(CloseButton);
+            main.ScrollView = TextScrollView;
+            main.ScrollsContent = true;
+            main.Back = () =>
+            {
+                ClosePage();
+                return true;
+            };
+            main.FocusInitial();
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+            _gamepadNavigator.UpdateSticks(sticks, dtSeconds);
         }
         //protected override bool OnBackButtonPressed()
         //{

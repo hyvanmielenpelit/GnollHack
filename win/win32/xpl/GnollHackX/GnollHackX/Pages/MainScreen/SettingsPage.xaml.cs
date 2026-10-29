@@ -20,6 +20,9 @@ using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using Picker = Microsoft.Maui.Controls.Picker;
+using Switch = Microsoft.Maui.Controls.Switch;
+using Slider = Microsoft.Maui.Controls.Slider;
+using Entry = Microsoft.Maui.Controls.Entry;
 
 namespace GnollHackM
 #else
@@ -29,13 +32,16 @@ using Xamarin.Essentials;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Picker = Xamarin.Forms.Picker;
+using Switch = Xamarin.Forms.Switch;
+using Slider = Xamarin.Forms.Slider;
+using Entry = Xamarin.Forms.Entry;
 using GnollHackX.Pages.Game;
 using GnollHackX.Controls;
 
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public partial class SettingsPage : CustomModalPage, ISpecialKeyPressHandlingPage, IMessagePopupPage
+    public partial class SettingsPage : CustomModalPage, ISpecialKeyPressHandlingPage, IMessagePopupPage, IGHGamepadHandlingPage, IGHGamepadPopupPage
     {
         private GamePage _gamePage;
         private GameMenuPage _gameMenuPage;
@@ -180,7 +186,33 @@ namespace GnollHackX.Pages.MainScreen
             { "Client Data Access", ("Let Gnoll Overseer request full message history.", "When enabled (default), the Gnoll Overseer can request additional data from your game client, such as full message history. This data is sent to your AI provider for processing.") },
             { "Game Actions", ("Let Gnoll Overseer suggest and perform in-game actions.", "When enabled, the Gnoll Overseer can suggest and perform in-game actions on your behalf. All actions require your confirmation. (Unavailable in this version.)") },
             { "Data Consent", ("Manage AI data processing consent.", "Shows whether you have accepted the AI data processing disclosure. Press Reset to revoke your consent; the disclosure will appear again the next time you open Overseer.") },
+            { "R2 Action", ("What R2 does when pressed alone.", "The action R2 performs when pressed alone, chosen from R2's eight quick actions. R1 + R2 also chooses it during a game.") },
+            { "L2 Action", ("What L2 does when pressed alone.", "The action L2 performs when pressed alone, chosen from L2's eight quick actions. L1 + L2 also chooses it during a game.") },
+            { "R2 Quick Action 1", GamepadTriggerSlotDescription("R2", 1, "L1", "R1") },
+            { "R2 Quick Action 2", GamepadTriggerSlotDescription("R2", 2, "L1", "R1") },
+            { "R2 Quick Action 3", GamepadTriggerSlotDescription("R2", 3, "L1", "R1") },
+            { "R2 Quick Action 4", GamepadTriggerSlotDescription("R2", 4, "L1", "R1") },
+            { "R2 Quick Action 5", GamepadTriggerSlotDescription("R2", 5, "L1", "R1") },
+            { "R2 Quick Action 6", GamepadTriggerSlotDescription("R2", 6, "L1", "R1") },
+            { "R2 Quick Action 7", GamepadTriggerSlotDescription("R2", 7, "L1", "R1") },
+            { "R2 Quick Action 8", GamepadTriggerSlotDescription("R2", 8, "L1", "R1") },
+            { "L2 Quick Action 1", GamepadTriggerSlotDescription("L2", 1, "R1", "L1") },
+            { "L2 Quick Action 2", GamepadTriggerSlotDescription("L2", 2, "R1", "L1") },
+            { "L2 Quick Action 3", GamepadTriggerSlotDescription("L2", 3, "R1", "L1") },
+            { "L2 Quick Action 4", GamepadTriggerSlotDescription("L2", 4, "R1", "L1") },
+            { "L2 Quick Action 5", GamepadTriggerSlotDescription("L2", 5, "R1", "L1") },
+            { "L2 Quick Action 6", GamepadTriggerSlotDescription("L2", 6, "R1", "L1") },
+            { "L2 Quick Action 7", GamepadTriggerSlotDescription("L2", 7, "R1", "L1") },
+            { "L2 Quick Action 8", GamepadTriggerSlotDescription("L2", 8, "R1", "L1") },
         };
+
+        /* quickModifier opens the trigger's quick actions, chooseModifier chooses its action */
+        private static (string Tooltip, string Description) GamepadTriggerSlotDescription(string trigger, int slot, string quickModifier, string chooseModifier)
+        {
+            return ("Quick action " + slot + " of " + trigger + ".",
+                "An action in " + trigger + "'s quick actions, which " + quickModifier + " + " + trigger + " opens during a game. "
+                + chooseModifier + " + " + trigger + " chooses among the same actions what " + trigger + " does when pressed alone (" + trigger + " Action).");
+        }
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
         {
@@ -314,6 +346,21 @@ namespace GnollHackX.Pages.MainScreen
             FullCommandBarButton12Picker.ItemDisplayBinding = new Binding("Name");
             FullCommandBarButton13Picker.ItemDisplayBinding = new Binding("Name");
 
+            foreach (Picker gripPicker in GamepadGripPickers)
+            {
+                gripPicker.ItemsSource = GHApp.GamepadGripCommandItems;
+                gripPicker.ItemDisplayBinding = new Binding("Name");
+            }
+            foreach (Picker[] slotPickers in GamepadTriggerSlotPickers)
+            {
+                foreach (Picker slotPicker in slotPickers)
+                {
+                    slotPicker.ItemsSource = GHApp.GamepadGripCommandItems;
+                    slotPicker.ItemDisplayBinding = new Binding("Name");
+                    slotPicker.SelectedIndexChanged += GamepadTriggerSlotPicker_SelectedIndexChanged;
+                }
+            }
+
             EngraveQuickTextValidationExpression = new Regex(@"^[\x20-\x7E]{0," + GHConstants.MaxEngraveQuickTextLength + "}$");
             XlogUserNameValidationExpression = new Regex(@"^[A-Za-z0-9_]{1," + GHConstants.MaxXlogUserNameLength + "}$");
             BonesAllowedUsersValidationExpression = new Regex(@"^([A-Za-z0-9_]*[ \,]+)*([A-Za-z0-9_]*)?$");
@@ -358,6 +405,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
             SetupSettingLabels(RootLayout);
             _isManualTogglingEnabled = true;
+            InitializeGamepadNavigation();
         }
 
         private void SetupSettingLabels(object container)
@@ -1155,6 +1203,8 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.ShowKeyboardShortcuts = ShowKeyboardShortcutsSwitch.IsToggled;
             Preferences.Set("ShowKeyboardShortcuts", ShowKeyboardShortcutsSwitch.IsToggled);
+
+            SaveGamepadSettings();
             
             GHApp.UseSingleMoreCommandsPage = UseSingleMoreCommandsPageSwitch.IsToggled;
             Preferences.Set("UseSingleMoreCommandsPage", UseSingleMoreCommandsPageSwitch.IsToggled);
@@ -2226,7 +2276,177 @@ namespace GnollHackX.Pages.MainScreen
             ShowPolearmContextButtonSwitch.IsToggled = polearmbutton;
             EquipmentFlipAnimationSwitch.IsToggled = equipmentflipanimation;
             ShowEquipmentIconsSwitch.IsToggled = showequipmenticons;
+            SetGamepadInitialValues();
             _doChangeVolume = true; // !GHApp.IsMuted;
+        }
+
+        /* In the order of GHApp.GamepadGrips */
+        private Picker[] GamepadGripPickers
+        {
+            get { return new Picker[] { GamepadGripL4Picker, GamepadGripL5Picker, GamepadGripR4Picker, GamepadGripR5Picker }; }
+        }
+
+        /* In the order of GHApp.GamepadTriggers (L2, R2); each has GHApp.GamepadTriggerSlotCount slot pickers */
+        private Picker[][] GamepadTriggerSlotPickers
+        {
+            get
+            {
+                return new Picker[][]
+                {
+                    new Picker[] { GamepadTriggerLTSlot1Picker, GamepadTriggerLTSlot2Picker, GamepadTriggerLTSlot3Picker, GamepadTriggerLTSlot4Picker,
+                        GamepadTriggerLTSlot5Picker, GamepadTriggerLTSlot6Picker, GamepadTriggerLTSlot7Picker, GamepadTriggerLTSlot8Picker },
+                    new Picker[] { GamepadTriggerRTSlot1Picker, GamepadTriggerRTSlot2Picker, GamepadTriggerRTSlot3Picker, GamepadTriggerRTSlot4Picker,
+                        GamepadTriggerRTSlot5Picker, GamepadTriggerRTSlot6Picker, GamepadTriggerRTSlot7Picker, GamepadTriggerRTSlot8Picker },
+                };
+            }
+        }
+
+        /* In the order of GHApp.GamepadTriggers; the items are the trigger's slots by their current picker names */
+        private Picker[] GamepadTriggerAssignedPickers
+        {
+            get { return new Picker[] { GamepadTriggerLTAssignedPicker, GamepadTriggerRTAssignedPicker }; }
+        }
+
+        private bool _refreshingGamepadTriggerAssignedPicker = false;
+
+        /* The Controller section is shown whenever a gamepad backend runs, whatever the Use Controller setting,
+           so that the setting can always be turned back on; the grip pickers only when grips exist */
+        private void SetGamepadInitialValues()
+        {
+            bool available = GHApp.IsGamepadAvailable;
+            GamepadSettingsLayout.IsVisible = available;
+            GamepadGripLayout.IsVisible = available && GHGamepadService.Capabilities.HasGrips;
+            GamepadEnabledSwitch.IsToggled = GHApp.GamepadEnabled;
+            UpdateCommandSectionVisibility();
+
+            Picker[] pickers = GamepadGripPickers;
+            int i;
+            for (i = 0; i < pickers.Length && i < GHApp.GamepadGrips.Length; i++)
+            {
+                GHGamepadButton grip = GHApp.GamepadGrips[i];
+                pickers[i].SelectedIndex = GHApp.GamepadGripCommandIndexInList(GHApp.GetGamepadGripCommand(grip), GHApp.DefaultGamepadGripCommand(grip));
+            }
+
+            Picker[][] slotPickers = GamepadTriggerSlotPickers;
+            int t, slot;
+            for (t = 0; t < slotPickers.Length && t < GHApp.GamepadTriggers.Length; t++)
+            {
+                GHGamepadButton trigger = GHApp.GamepadTriggers[t];
+                for (slot = 0; slot < slotPickers[t].Length && slot < GHApp.GamepadTriggerSlotCount; slot++)
+                {
+                    slotPickers[t][slot].SelectedIndex = GHApp.GamepadGripCommandIndexInList(
+                        GHApp.GetGamepadTriggerSlotCommand(trigger, slot), GHApp.DefaultGamepadTriggerSlotCommand(trigger, slot));
+                }
+                RefreshGamepadTriggerAssignedPicker(t, GHApp.GetGamepadTriggerAssignedSlot(trigger));
+            }
+        }
+
+        /* Trigger Quick Actions while the Controller section is shown and Use Controller is on, else Bar Commands */
+        private void UpdateCommandSectionVisibility()
+        {
+            bool triggers = GamepadSettingsLayout.IsVisible && GamepadEnabledSwitch.IsToggled;
+            GamepadTriggerLayout.IsVisible = triggers;
+            BarCommandsLayout.IsVisible = !triggers;
+        }
+
+        private void GamepadEnabledSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            UpdateCommandSectionVisibility();
+        }
+
+        /* Rebuilds trigger t's assigned picker from its slot pickers ("1. Fire" ...) and selects selectedSlot */
+        private void RefreshGamepadTriggerAssignedPicker(int t, int selectedSlot)
+        {
+            Picker[][] slotPickers = GamepadTriggerSlotPickers;
+            Picker[] assignedPickers = GamepadTriggerAssignedPickers;
+            if (t < 0 || t >= slotPickers.Length || t >= assignedPickers.Length)
+                return;
+
+            List<string> items = new List<string>();
+            int slot;
+            for (slot = 0; slot < slotPickers[t].Length; slot++)
+            {
+                int index = slotPickers[t][slot].SelectedIndex;
+                if (index < 0 || index >= GHApp.GamepadGripCommandItems.Count)
+                    index = 0;
+                items.Add((slot + 1).ToString() + ". " + GHApp.GamepadGripCommandItems[index].Name);
+            }
+
+            if (selectedSlot < 0 || selectedSlot >= items.Count)
+                selectedSlot = GHApp.DefaultGamepadTriggerAssignedSlot(GHApp.GamepadTriggers[t]);
+
+            _refreshingGamepadTriggerAssignedPicker = true;
+            try
+            {
+                assignedPickers[t].ItemsSource = items;
+                assignedPickers[t].SelectedIndex = selectedSlot;
+            }
+            finally
+            {
+                _refreshingGamepadTriggerAssignedPicker = false;
+            }
+        }
+
+        /* A changed slot renames its entry in the trigger's assigned picker; the selection is kept */
+        private void GamepadTriggerSlotPicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (!_isManualTogglingEnabled || _refreshingGamepadTriggerAssignedPicker)
+                return;
+
+            Picker[][] slotPickers = GamepadTriggerSlotPickers;
+            int t;
+            for (t = 0; t < slotPickers.Length; t++)
+            {
+                if (Array.IndexOf(slotPickers[t], sender) >= 0)
+                {
+                    RefreshGamepadTriggerAssignedPicker(t, GamepadTriggerAssignedPickers[t].SelectedIndex);
+                    return;
+                }
+            }
+        }
+
+        /* Applied at once: the switch through GHApp.GamepadEnabled, which also sets GHGamepadService */
+        private void SaveGamepadSettings()
+        {
+            GHApp.GamepadEnabled = GamepadEnabledSwitch.IsToggled;
+            Preferences.Set("GamepadEnabled", GamepadEnabledSwitch.IsToggled);
+
+            Picker[] pickers = GamepadGripPickers;
+            int i;
+            for (i = 0; i < pickers.Length && i < GHApp.GamepadGrips.Length; i++)
+            {
+                int index = pickers[i].SelectedIndex;
+                if (index < 0 || index >= GHApp.GamepadGripCommandItems.Count)
+                    continue;
+                GHGamepadButton grip = GHApp.GamepadGrips[i];
+                int command = GHApp.GamepadGripCommandItems[index].GHCommand;
+                GHApp.SetGamepadGripCommand(grip, command);
+                Preferences.Set(GHApp.GamepadGripPreferenceKey(grip), command);
+            }
+
+            Picker[][] slotPickers = GamepadTriggerSlotPickers;
+            Picker[] assignedPickers = GamepadTriggerAssignedPickers;
+            int t, slot;
+            for (t = 0; t < slotPickers.Length && t < GHApp.GamepadTriggers.Length; t++)
+            {
+                GHGamepadButton trigger = GHApp.GamepadTriggers[t];
+                for (slot = 0; slot < slotPickers[t].Length && slot < GHApp.GamepadTriggerSlotCount; slot++)
+                {
+                    int index = slotPickers[t][slot].SelectedIndex;
+                    if (index < 0 || index >= GHApp.GamepadGripCommandItems.Count)
+                        continue;
+                    int command = GHApp.GamepadGripCommandItems[index].GHCommand;
+                    GHApp.SetGamepadTriggerSlotCommand(trigger, slot, command);
+                    Preferences.Set(GHApp.GamepadTriggerSlotPreferenceKey(trigger, slot), command);
+                }
+
+                int assigned = assignedPickers[t].SelectedIndex;
+                if (assigned >= 0 && assigned < GHApp.GamepadTriggerSlotCount)
+                {
+                    GHApp.SetGamepadTriggerAssignedSlot(trigger, assigned);
+                    Preferences.Set(GHApp.GamepadTriggerAssignedPreferenceKey(trigger), assigned);
+                }
+            }
         }
 
 #if GNH_AVALONIA && LINUX
@@ -2528,6 +2748,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             CloseButton.IsEnabled = false;
             _backPressed = true;
+            _closeCheckFailedView = null;
             if (playClickedSound)
                 GHApp.PlayButtonClickedSound();
             SetTournamentModeLabelColors(TournamentSwitch.IsToggled);
@@ -2543,6 +2764,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (!EngraveQuickTextValidationExpression.IsMatch(EngraveQuickEntry.Text))
                 {
                     EngraveQuickLabel.TextColor = GHColors.Red;
+                    _closeCheckFailedView = EngraveQuickEntry;
                     await MainScrollView.ScrollToAsync(EngraveQuickGrid.X, EngraveQuickGrid.Y, true);
                     EngraveQuickEntry.Focus();
                     CloseButton.IsEnabled = true;
@@ -2555,6 +2777,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (!XlogUserNameValidationExpression.IsMatch(PostXlogUserNameEntry.Text))
                 {
                     PostXlogUserNameLabel.TextColor = GHColors.Red;
+                    _closeCheckFailedView = PostXlogUserNameEntry;
                     await MainScrollView.ScrollToAsync(PostXlogUserNameGrid.X, PostXlogUserNameGrid.Y, true);
                     PostXlogUserNameEntry.Focus();
                     CloseButton.IsEnabled = true;
@@ -2567,6 +2790,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (!BonesAllowedUsersValidationExpression.IsMatch(BonesAllowedUsersEntry.Text))
                 {
                     BonesAllowedUsersLabel.TextColor = GHColors.Red;
+                    _closeCheckFailedView = BonesAllowedUsersEntry;
                     await MainScrollView.ScrollToAsync(BonesAllowedUsersGrid.X, BonesAllowedUsersGrid.Y, true);
                     BonesAllowedUsersEntry.Focus();
                     CloseButton.IsEnabled = true;
@@ -2581,6 +2805,7 @@ namespace GnollHackX.Pages.MainScreen
                 if (!Uri.TryCreate(OverseerLocalAddressEntry.Text, UriKind.Absolute, out Uri uriResult) || (uriResult.Scheme != Uri.UriSchemeHttp && uriResult.Scheme != Uri.UriSchemeHttps))
                 {
                     OverseerLocalAddressEntryLabel.TextColor = GHColors.Red;
+                    _closeCheckFailedView = OverseerLocalAddressEntry;
                     await MainScrollView.ScrollToAsync(OverseerLocalAddressEntryGrid.X, OverseerLocalAddressEntryGrid.Y, true);
                     OverseerLocalAddressEntry.Focus();
                     CloseButton.IsEnabled = true;
@@ -2603,6 +2828,7 @@ namespace GnollHackX.Pages.MainScreen
                         PopupGrid.IsVisible = true;
                         CloseButton.IsEnabled = true;
                         _backPressed = false;
+                        _closeCheckFailedView = PostXlogUserNameEntry;
                         await MainScrollView.ScrollToAsync(0, PostXlogUserNameGrid.Y, true);
                         return;
                     }
@@ -2632,6 +2858,7 @@ namespace GnollHackX.Pages.MainScreen
                         PopupGrid.IsVisible = true;
                         CloseButton.IsEnabled = true;
                         _backPressed = false;
+                        _closeCheckFailedView = PostXlogUserNameEntry;
                         await MainScrollView.ScrollToAsync(0, PostXlogUserNameGrid.Y, true);
                         return;
                     }
@@ -2861,6 +3088,7 @@ namespace GnollHackX.Pages.MainScreen
             // WORKAROUND(WA-IOS-0001): Liquid Glass flex pan recognizers lose taps on switches
             GnollHackM.Platforms.iOS.FlexGestureSuppressor.SetActive(true);
 #endif
+            _gamepadNavigator.Attach();
         }
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
@@ -2869,6 +3097,8 @@ namespace GnollHackX.Pages.MainScreen
             // WORKAROUND(WA-IOS-0001): Liquid Glass flex pan recognizers lose taps on switches
             GnollHackM.Platforms.iOS.FlexGestureSuppressor.SetActive(false);
 #endif
+            _gamepadNavigator.Detach();
+            GHScreenKeyboard.Hide();
         }
 
         private void VolumeSlider_ValueChanged(object sender, ValueChangedEventArgs e)
@@ -3556,6 +3786,267 @@ namespace GnollHackX.Pages.MainScreen
                 _mainPage?.SetDarkMode(newValue);
             }
         }
+
+        /* Gamepad focus: the setting rows in layout order with the section headings as LB/RB stops, Close last. A
+           row's switch, picker, slider, text field or buttons take the focus, the row being tinted; X shows the
+           row's explanation as tapping its label does, and B saves and closes as Escape does. Overlays: the info
+           popup above the link editor; the wait overlay swallows input. */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        /* The text field whose check stopped the last close, or null */
+        private View _closeCheckFailedView = null;
+
+        private const double GamepadSectionHeadingMinFontSize = 20.0;
+        private const double GamepadSliderStep = 0.05;
+
+        private void InitializeGamepadNavigation()
+        {
+            _gamepadNavigator.IsBusy = () => WaitLayout.IsVisible;
+
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            AddGamepadSettingRows(RootLayout, main);
+            main.AddButton(CloseButton);
+            main.ScrollView = MainScrollView;
+            main.Back = GamepadClosePage;
+
+            /* PopupGrid lies above TextGrid, and the key handler checks it first */
+            GHGamepadPageNavigator.Layer layer = _gamepadNavigator.AddOverlay(() => PopupGrid.IsVisible);
+            layer.AddButton(PopupOkButton);
+            layer.Back = () =>
+            {
+                if (PopupOkButton.IsEnabled && PopupOkButton.IsVisible)
+                    PopupOkButton_Clicked(PopupOkButton, EventArgs.Empty);
+                return true;
+            };
+
+            layer = _gamepadNavigator.AddOverlay(() => TextGrid.IsVisible);
+            layer.AddEntry(TextEntry, null, GHScreenKeyboardMode.SingleLine);
+            layer.AddButton(TextOkButton);
+            layer.AddButton(TextCancelButton);
+            layer.SetInitialFocus(TextEntry);
+            layer.HorizontalMoves = true;
+            layer.Back = () =>
+            {
+                if (TextCancelButton.IsEnabled)
+                    TextCancelButton_Clicked(TextCancelButton, EventArgs.Empty);
+                return true;
+            };
+
+            /* The overlays open and close from many handlers; the focus follows at once */
+            PopupGrid.PropertyChanged += GamepadOverlay_PropertyChanged;
+            TextGrid.PropertyChanged += GamepadOverlay_PropertyChanged;
+            WaitLayout.PropertyChanged += GamepadOverlay_PropertyChanged;
+
+            main.FocusInitial();
+        }
+
+        private void GamepadOverlay_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PopupGrid.IsVisible))
+                _gamepadNavigator.RefreshVisuals();
+        }
+
+        /* The rows under container in layout order: a section heading becomes a section stop, a row Grid its
+           controls, and a StackLayout is walked in place; other labels are descriptions and are skipped */
+        private void AddGamepadSettingRows(View container, GHGamepadPageNavigator.Layer layer)
+        {
+            foreach (View child in GetGamepadLayoutChildren(container))
+            {
+                Label heading = child as Label;
+                if (heading != null)
+                {
+                    if (heading.FontSize >= GamepadSectionHeadingMinFontSize)
+                        layer.AddSectionStop(heading);
+                    continue;
+                }
+                Grid row = child as Grid;
+                if (row != null)
+                {
+                    AddGamepadSettingRow(row, layer);
+                    continue;
+                }
+                if (child is StackLayout)
+                    AddGamepadSettingRows(child, layer);
+            }
+        }
+
+        /* A row's label is its first Label; its controls are those directly in the row or inside its
+           StackLayouts. Buttons of one row are reached from each other with Left/Right. A row without a known
+           control adds nothing. */
+        private void AddGamepadSettingRow(Grid row, GHGamepadPageNavigator.Layer layer)
+        {
+            Label label = null;
+            List<View> controls = new List<View>();
+            CollectGamepadRowViews(row, ref label, controls);
+            Action info = GetGamepadRowInfoAction(label);
+
+            List<CustomImageButton> buttons = new List<CustomImageButton>();
+            foreach (View control in controls)
+            {
+                if (control is Switch)
+                    layer.AddSwitch((Switch)control, row, info);
+                else if (control is Picker)
+                    layer.AddPicker((Picker)control, row, info);
+                else if (control is Slider)
+                    layer.AddSlider((Slider)control, row, GamepadSliderStep, info);
+                else if (control is Entry)
+                    layer.AddEntry((Entry)control, row, GHScreenKeyboardMode.SingleLine, info);
+                else if (control is CustomImageButton)
+                    buttons.Add((CustomImageButton)control);
+            }
+
+            int i;
+            for (i = 0; i < buttons.Count; i++)
+            {
+                CustomImageButton button = buttons[i];
+                GHGamepadFocusList.EntryOptions options = new GHGamepadFocusList.EntryOptions();
+                options.Secondary = info;
+                if (buttons.Count > 1)
+                {
+                    int index = i;
+                    options.Adjust = (dir) => FocusGamepadRowButton(layer, buttons, index, dir);
+                }
+                layer.Add(button, button.PerformClick, null, null, options);
+            }
+        }
+
+        private static void CollectGamepadRowViews(View container, ref Label label, List<View> controls)
+        {
+            foreach (View child in GetGamepadLayoutChildren(container))
+            {
+                if (child is Label)
+                {
+                    if (label == null)
+                        label = (Label)child;
+                }
+                else if (child is Switch || child is Picker || child is Slider || child is Entry
+                    || child is CustomImageButton)
+                {
+                    controls.Add(child);
+                }
+                else if (child is StackLayout)
+                {
+                    CollectGamepadRowViews(child, ref label, controls);
+                }
+            }
+        }
+
+        /* Left/Right on a row's button: the nearest available button of the row in that direction, if any */
+        private static void FocusGamepadRowButton(GHGamepadPageNavigator.Layer layer, List<CustomImageButton> buttons,
+            int index, int dir)
+        {
+            int k;
+            for (k = index + dir; k >= 0 && k < buttons.Count; k += dir)
+            {
+                if (GHGamepadPageNavigator.IsViewAvailable(buttons[k]))
+                {
+                    layer.Focus.SetFocus(buttons[k]);
+                    return;
+                }
+            }
+        }
+
+        private static List<View> GetGamepadLayoutChildren(View container)
+        {
+            List<View> result = new List<View>();
+#if GNH_MAUI
+            Microsoft.Maui.Controls.Layout layout = container as Microsoft.Maui.Controls.Layout;
+#else
+            Xamarin.Forms.Layout<View> layout = container as Xamarin.Forms.Layout<View>;
+#endif
+            if (layout == null)
+                return result;
+            foreach (object child in layout.Children)
+            {
+                View view = child as View;
+                if (view != null)
+                    result.Add(view);
+            }
+            return result;
+        }
+
+        /* What tapping the label shows: the labels with their own tap handlers, else the setting's explanation for
+           the labels SetupSettingLabels sets up; null if none */
+        private Action GetGamepadRowInfoAction(Label label)
+        {
+            if (label == null)
+                return null;
+            if (ReferenceEquals(label, TournamentLabel))
+                return ShowTournamentInfoPopup;
+            if (ReferenceEquals(label, RecordLabel))
+                return () => RecordLabel_TapGestureRecognizer_Tapped(RecordLabel, null);
+            if (ReferenceEquals(label, GZipLabel))
+                return () => GZipLabel_TapGestureRecognizer_Tapped(GZipLabel, null);
+            if (GetSettingInfoKey(label) == null)
+                return null;
+            return () =>
+            {
+                string key = GetSettingInfoKey(label);
+                if (key != null)
+                    ShowSettingInfoPopup(key, _settingDescriptions[key].Description);
+            };
+        }
+
+        /* The label's current text if it has an explanation and the size SetupSettingLabels requires, else null */
+        private string GetSettingInfoKey(Label label)
+        {
+            string text = label.Text?.Trim();
+            if (string.IsNullOrEmpty(text) || !_settingDescriptions.ContainsKey(text))
+                return null;
+            if (label.FontSize < SaveStyleLabel.FontSize || label.FontSize > GPULabel.FontSize)
+                return null;
+            return text;
+        }
+
+        /* B on the main layer: Escape's save and close; a failed check moves the focus to its row */
+        private bool GamepadClosePage()
+        {
+            if (!CloseButton.IsEnabled)
+                return true;
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    if (!CloseButton.IsEnabled)
+                        return;
+                    await ClosePageAsync(true);
+                    if (!_backPressed)
+                        FocusGamepadOnFailedCheck();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+            });
+            return true;
+        }
+
+        /* The focus is shown when the overlay that a failed check may open has closed */
+        private void FocusGamepadOnFailedCheck()
+        {
+            View view = _closeCheckFailedView;
+            _closeCheckFailedView = null;
+            if (view == null || !GHGamepadPageNavigator.IsViewAvailable(view))
+                return;
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.Focus.SetFocus(view);
+            if (PopupGrid.IsVisible || TextGrid.IsVisible)
+                main.Focus.ClearVisuals();
+            else
+                _gamepadNavigator.RefreshVisuals();
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            return _gamepadNavigator.HandleButton(e);
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+            _gamepadNavigator.UpdateSticks(sticks, dtSeconds);
+        }
+
+        public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e) => MessagePopup.HandleGamepadButton(e);
 
         /* IMessagePopupPage implementation */
         public bool IsPopupOpen => MessagePopup.IsPopupOpen;

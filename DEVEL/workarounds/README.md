@@ -52,6 +52,7 @@ files. A file's `- ID prefix:` line gives both of its series: `WA-RUNTIME` also 
 | [avalonia.md](avalonia.md) | `WA-AVALONIA` | Avalonia, Avalonia.Controls.Maui, Avalonia's web view adapters |
 | [cef.md](cef.md) | `WA-CEF` | CEF, CefGlue, Chromium |
 | [linux.md](linux.md) | `WA-LINUX` | Linux distributions, glibc, FreeType, fontconfig, X11, AppImage, Steam runtime |
+| [steam.md](steam.md) | `WA-STEAM` | Steam client, Steam Input |
 | [fmod.md](fmod.md) | `WA-FMOD` | FMOD Core and FMOD Studio |
 | [sentry.md](sentry.md) | `WA-SENTRY` | sentry-dotnet, Sentry.Maui, sentry-java (Sentry's Android SDK), sentry-native, sentry-cocoa |
 | [build_tooling.md](build_tooling.md) | `WA-BUILD` | MSBuild, the .NET SDK, Visual Studio, NuGet, C compilers and linkers |

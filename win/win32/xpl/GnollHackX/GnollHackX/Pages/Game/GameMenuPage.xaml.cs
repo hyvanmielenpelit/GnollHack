@@ -22,11 +22,12 @@ using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
 using Xamarin.Essentials;
 using GnollHackX.Pages.MainScreen;
+using GnollHackX.Controls;
 
 namespace GnollHackX.Pages.Game
 #endif
 {
-    public partial class GameMenuPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
+    public partial class GameMenuPage : CustomModalPage, ICloseablePage, IMessagePopupPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage, IGHGamepadHandlingPage, IGHGamepadPopupPage
     {
         public GamePage _gamePage;
 
@@ -71,6 +72,7 @@ namespace GnollHackX.Pages.Game
 
             btnDeveloper.IsVisible = GHApp.DeveloperMode;
             UpdateDarknessMode();
+            InitializeGamepadFocus();
 
             FrameTimeProfiler.MarkPauseEvent();
             _openedAtFrameId = GHFrameTimeline.LastFrameId;
@@ -263,11 +265,15 @@ namespace GnollHackX.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+            GHGamepadService.StateChanged += GamepadService_StateChanged;
+            _gamepadAArmed = false;
+            RefreshGamepadVisuals();
         }
 
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            GHGamepadService.StateChanged -= GamepadService_StateChanged;
         }
 
         //protected override bool OnBackButtonPressed()
@@ -285,12 +291,14 @@ namespace GnollHackX.Pages.Game
             btnDevAiSnapshot.IsVisible = GHApp.DebugLogMessages;
             DeveloperPopupGrid.IsEnabled = true;
             DeveloperPopupGrid.IsVisible = true;
+            _gamepadDevFocus.SetFocus(0);
         }
 
         private void CloseDeveloperPopup()
         {
             GHApp.PlayButtonClickedSound();
             DeveloperPopupGrid.IsVisible = false;
+            _gamepadDevFocus.ClearVisuals();
         }
 
         private void btnDevClose_Clicked(object sender, EventArgs e)
@@ -937,6 +945,174 @@ namespace GnollHackX.Pages.Game
             }
             return handled;
         }
+
+        /* Gamepad focus: the main buttons in layout order, and the developer popup buttons while it is shown */
+        private readonly GHGamepadFocusList _gamepadMainFocus = new GHGamepadFocusList();
+        private readonly GHGamepadFocusList _gamepadDevFocus = new GHGamepadFocusList();
+        private bool _gamepadAArmed = false;
+        private int _gamepadAPressId = 0;
+
+        private void InitializeGamepadFocus()
+        {
+            AddMainGamepadButton(btnBackToGame);
+            AddMainGamepadButton(btnSave);
+            AddMainGamepadButton(btnSettings);
+            AddMainGamepadButton(btnDeveloper);
+            AddMainGamepadButton(btnSnapshot);
+            AddMainGamepadButton(btnVersion);
+            AddMainGamepadButton(btnQuit);
+            AddMainGamepadButton(btnTips);
+            AddMainGamepadButton(btnWiki);
+            AddMainGamepadButton(btnOverseer);
+            AddMainGamepadButton(btnLibrary);
+            AddMainGamepadButton(btnDelphi);
+
+            AddDevGamepadButton(btnDevOptions);
+            AddDevGamepadButton(btnDevMessages);
+            AddDevGamepadButton(btnDevTestPerformance);
+            AddDevGamepadButton(btnDevDumpFrameLog);
+            AddDevGamepadButton(btnDevAnalyzeHitches);
+            AddDevGamepadButton(btnDevAiSnapshot);
+            AddDevGamepadButton(btnDevGC);
+            AddDevGamepadButton(btnDevClose);
+
+            /* Return to Game is at the top, so the initial focus needs no scrolling */
+            _gamepadMainFocus.SetFocus(btnBackToGame);
+            _gamepadMainFocus.ScrollView = GameMenuScrollView;
+        }
+
+        private void AddMainGamepadButton(CustomImageButton button)
+        {
+            _gamepadMainFocus.Add(button, button.PerformClick, () => button.IsVisible && button.IsEnabled && MainLayout.IsEnabled);
+        }
+
+        private void AddDevGamepadButton(CustomImageButton button)
+        {
+            _gamepadDevFocus.Add(button, button.PerformClick, () => button.IsVisible && button.IsEnabled && DeveloperPopupGrid.IsEnabled);
+        }
+
+        private void RefreshGamepadVisuals()
+        {
+            _gamepadMainFocus.RefreshVisuals();
+            if (DeveloperPopupGrid.IsVisible)
+                _gamepadDevFocus.RefreshVisuals();
+        }
+
+        private void GamepadService_StateChanged()
+        {
+            RefreshGamepadVisuals();
+        }
+
+        /* Back to Game through the same posted path as the Escape key */
+        private void RequestGamepadBackToGame()
+        {
+            if (!btnBackToGame.IsEnabled || !btnBackToGame.IsVisible || !MainLayout.IsEnabled)
+                return;
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    if (MainLayout.IsEnabled)
+                        await BackToGame();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+            });
+        }
+
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            if (GHApp.PushingModalPage || GHApp.IsSystemBrowserOpen) /* Ignore input when opening a page or using a system browser */
+                return true;
+
+            try
+            {
+                bool devPopupOpen = DeveloperPopupGrid.IsVisible;
+                GHGamepadFocusList focusList = devPopupOpen ? _gamepadDevFocus : _gamepadMainFocus;
+
+                if (e.RevealsUi)
+                {
+                    if (e.Button == GHGamepadButton.A)
+                        _gamepadAArmed = false;
+                    focusList.RefreshVisuals();
+                    return true;
+                }
+
+                switch (e.Button)
+                {
+                    case GHGamepadButton.DPadUp:
+                    case GHGamepadButton.LeftStickUp:
+                        /* Wraps only on a fresh press, so a held direction stops at the end */
+                        if (e.Kind == GHGamepadButtonEventKind.Pressed)
+                            focusList.Move(-1, true);
+                        else if (e.Kind == GHGamepadButtonEventKind.Repeat)
+                            focusList.Move(-1, false);
+                        break;
+                    case GHGamepadButton.DPadDown:
+                    case GHGamepadButton.LeftStickDown:
+                        if (e.Kind == GHGamepadButtonEventKind.Pressed)
+                            focusList.Move(1, true);
+                        else if (e.Kind == GHGamepadButtonEventKind.Repeat)
+                            focusList.Move(1, false);
+                        break;
+                    case GHGamepadButton.A:
+                        if (e.Kind == GHGamepadButtonEventKind.Pressed)
+                        {
+                            _gamepadAArmed = true;
+                            _gamepadAPressId = e.PressId;
+                        }
+                        else if (e.Kind == GHGamepadButtonEventKind.Released)
+                        {
+                            if (e.IsCancelled && e.PressId == _gamepadAPressId)
+                                _gamepadAArmed = false;
+                        }
+                        else if (e.Kind == GHGamepadButtonEventKind.ShortPressed)
+                        {
+                            if (_gamepadAArmed && e.PressId == _gamepadAPressId)
+                            {
+                                _gamepadAArmed = false;
+                                focusList.Activate();
+                            }
+                        }
+                        break;
+                    case GHGamepadButton.B:
+                        if (e.Kind == GHGamepadButtonEventKind.Pressed)
+                        {
+                            if (devPopupOpen)
+                            {
+                                if (DeveloperPopupGrid.IsEnabled)
+                                    CloseDeveloperPopup();
+                            }
+                            else
+                            {
+                                RequestGamepadBackToGame();
+                            }
+                        }
+                        break;
+                    case GHGamepadButton.Menu:
+                        /* Menu toggles the game menu; not while a developer tool is running */
+                        if (e.Kind == GHGamepadButtonEventKind.Pressed && (!devPopupOpen || DeveloperPopupGrid.IsEnabled))
+                            RequestGamepadBackToGame();
+                        break;
+                    default:
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            return true;
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+            return;
+        }
+
+        public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e) => MessagePopup.HandleGamepadButton(e);
 
         /* IMessagePopupPage implementation */
         public bool IsPopupOpen => MessagePopup.IsPopupOpen;

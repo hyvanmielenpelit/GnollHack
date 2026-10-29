@@ -308,6 +308,28 @@ namespace GnollHackX.Controls
 #endif
         }
 
+        /* Pointer hover and gamepad focus share the highlight; the gamepad focus also tints the background */
+        private bool _pointerHover = false;
+        private bool _gamepadFocused = false;
+
+        public bool GamepadFocused
+        {
+            get { return _gamepadFocused; }
+            set
+            {
+                if (_gamepadFocused == value)
+                    return;
+                _gamepadFocused = value;
+                UpdateHighlight();
+            }
+        }
+
+        private void UpdateHighlight()
+        {
+            ViewImage.IsHighlighted = _pointerHover || _gamepadFocused;
+            ViewGrid.BackgroundColor = _gamepadFocused ? UIUtils.GamepadFocusBackgroundColor : GHColors.Transparent;
+        }
+
         public void InvalidateSurface()
         {
             ViewImage.InvalidateSurface();
@@ -353,28 +375,32 @@ namespace GnollHackX.Controls
         {
             e.Handled = true;
             /* WinUI raises pointer events on the UI thread */
-            ViewImage.IsHighlighted = true;
+            _pointerHover = true;
+            UpdateHighlight();
         }
 
         private void PlatformView_PointerExited(object sender, Microsoft.UI.Xaml.Input.PointerRoutedEventArgs e)
         {
             e.Handled = true;
             /* WinUI raises pointer events on the UI thread */
-            ViewImage.IsHighlighted = false;
+            _pointerHover = false;
+            UpdateHighlight();
         }
 #elif GNH_AVALONIA
         private void PlatformView_PointerEntered(object sender, Avalonia.Input.PointerEventArgs e)
         {
             e.Handled = true;
             /* Avalonia raises pointer events on the UI thread */
-            ViewImage.IsHighlighted = true;
+            _pointerHover = true;
+            UpdateHighlight();
         }
 
         private void PlatformView_PointerExited(object sender, Avalonia.Input.PointerEventArgs e)
         {
             e.Handled = true;
             /* Avalonia raises pointer events on the UI thread */
-            ViewImage.IsHighlighted = false;
+            _pointerHover = false;
+            UpdateHighlight();
         }
 #endif
 

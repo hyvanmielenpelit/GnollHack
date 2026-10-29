@@ -52,7 +52,7 @@ using GnollHackX.Controls;
 namespace GnollHackX
 #endif
 {
-    public partial class MainPage : CustomContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage
+    public partial class MainPage : CustomContentPage, IKeyPressHandlingPage, ISpecialKeyPressHandlingPage, IGHGamepadHandlingPage
     {
         //private readonly object _generalTimerLock = new object();
         private int _generaTimerIsOn = 0;
@@ -75,6 +75,7 @@ namespace GnollHackX
         {
             GHApp.MaybeWriteGHLog("MainPage constructor: " + GHApp.MainPageConstructorRunNumber, true, GHConstants.SentryGnollHackGeneralCategoryName);
             InitializeComponent();
+            InitializeGamepadNavigation();
             GHApp.CurrentMainPage = this;
             GamePage gamePage = GHApp.CurrentGamePage;
             if (gamePage != null) /* Might be non-null and stale after a restart */
@@ -883,6 +884,7 @@ namespace GnollHackX
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
+            _gamepadNavigator.Attach();
             UpdateLayout();
             GHGame curGame = GHApp.CurrentGHGame;
             if (_firsttime && (curGame != null || GHApp.MainPageConstructorRunNumber > 1)) // Restart
@@ -2090,6 +2092,7 @@ namespace GnollHackX
         private void ContentPage_Disappearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _gamepadNavigator.Detach();
             carouselView.Stop();
         }
 
@@ -2445,6 +2448,12 @@ namespace GnollHackX
             });
         }
 
+        /* One-button message box from GHApp.DisplayMessageBox; returns before it is dismissed */
+        public void DisplayMessageBoxAlert(string title, string message, string buttonText)
+        {
+            DisplayAlertGrid(title, message, buttonText, GHColors.Orange);
+        }
+
         private void DisplayNewAlert()
         {
             if (_alertQueue.Count > 0)
@@ -2651,6 +2660,146 @@ namespace GnollHackX
                 Debug.WriteLine(ex);
             }
             return handled;
+        }
+
+        /* Gamepad focus: the upper buttons, the mode switches and Play Game, and each in-page popup's buttons while
+           it is shown, in the order the special-key handler checks them; B on a popup acts as Escape, on the main
+           layer nothing. A switch or check box shows its focus as a tint on the row holding it and its label. Right on
+           a mode switch or Play Game goes to Exit, and X, Y, Menu and View are shortcuts (HandleGamepadButton). */
+        private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            _gamepadNavigator.IsBusy = () => WaitLayout.IsVisible;
+
+            GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            main.AddButton(ResetButton);
+            main.AddButton(VaultButton);
+            main.AddButton(OptionsButton);
+            main.AddButton(SettingsButton);
+            main.AddButton(AboutButton);
+            main.AddButton(ExitButton);
+            /* Right on a mode switch or Play Game goes to Exit */
+            GHGamepadFocusList.EntryOptions rightToExitOptions = new GHGamepadFocusList.EntryOptions();
+            rightToExitOptions.Adjust = dir =>
+            {
+                if (dir > 0)
+                    main.Focus.SetFocus(ExitButton);
+            };
+            main.Add(classicModeSwitch, () => classicModeSwitch.IsToggled = !classicModeSwitch.IsToggled, null, classicModeGrid, rightToExitOptions);
+            main.Add(casualModeSwitch, () => casualModeSwitch.IsToggled = !casualModeSwitch.IsToggled, null, casualModeGrid, rightToExitOptions);
+            main.Add(wizardModeSwitch, () => wizardModeSwitch.IsToggled = !wizardModeSwitch.IsToggled, null, wizardModeGrid, rightToExitOptions);
+            main.Add(StartLocalGameButton, StartLocalGameButton.PerformClick, null, null, rightToExitOptions);
+            main.SetInitialFocus(StartLocalGameButton);
+
+            GHGamepadPageNavigator.Layer layer = _gamepadNavigator.AddOverlay(() => PendingTasksGrid.IsVisible);
+            layer.AddButton(PendingTasksOkButton);
+            layer.AddButton(PendingTasksCancelButton);
+            layer.HorizontalMoves = true;
+            layer.Back = GamepadPopupBack;
+
+            layer = _gamepadNavigator.AddOverlay(() => AchievementGrid.IsVisible);
+            layer.AddButton(AchievementOkButton);
+            layer.ScrollView = AchievementScrollView;
+            layer.ScrollsContent = true;
+            layer.Back = GamepadPopupBack;
+
+            layer = _gamepadNavigator.AddOverlay(() => TierGrid.IsVisible);
+            layer.AddButton(TierOkButton);
+            layer.Back = GamepadPopupBack;
+
+            layer = _gamepadNavigator.AddOverlay(() => EventGrid.IsVisible);
+            layer.AddButton(EventOkButton);
+            layer.AddButton(EventCancelButton);
+            layer.HorizontalMoves = true;
+            layer.Back = GamepadPopupBack;
+
+            layer = _gamepadNavigator.AddOverlay(() => AlertGrid.IsVisible);
+            layer.AddButton(AlertOkButton);
+            layer.AddButton(AlertOkButton2);
+            layer.AddButton(AlertExitButton);
+            layer.HorizontalMoves = true;
+            layer.Back = GamepadPopupBack;
+
+            layer = _gamepadNavigator.AddOverlay(() => PopupGrid.IsVisible);
+            layer.AddCheckBox(PopupNoAgainCheckBox, PopupCheckBoxLayout);
+            layer.AddButton(PopupOkButton);
+            layer.AddButton(PopupViewButton);
+            layer.AddButton(PopupOkButton2);
+            layer.SetInitialFocus(PopupOkButton, PopupOkButton2);
+            layer.HorizontalMoves = true;
+            layer.Back = GamepadPopupBack;
+
+            main.FocusInitial();
+        }
+
+        /* Escape through the special-key handler, which posts the asynchronous closes */
+        private bool GamepadPopupBack()
+        {
+            return HandleSpecialKeyPress(GHSpecialKey.Escape, false, false, false);
+        }
+
+        private bool _gamepadShortcutArmed;
+        private int _gamepadShortcutPressId;
+
+        /* X Play Game, Y About, Menu Settings, View Vault: the keyboard shortcuts' keys */
+        private static int GetGamepadShortcutKey(GHGamepadButton button)
+        {
+            switch (button)
+            {
+            case GHGamepadButton.X:
+                return 'p';
+            case GHGamepadButton.Y:
+                return 'a';
+            case GHGamepadButton.Menu:
+                return 's';
+            case GHGamepadButton.View:
+                return 'v';
+            default:
+                return 0;
+            }
+        }
+
+        private bool IsGamepadOverlayShown()
+        {
+            return WaitLayout.IsVisible || PendingTasksGrid.IsVisible || AchievementGrid.IsVisible || TierGrid.IsVisible
+                || EventGrid.IsVisible || AlertGrid.IsVisible || PopupGrid.IsVisible;
+        }
+
+        /* The shortcut buttons act on the main layer through HandleKeyPress, which checks that the button is
+           available, on a short press that did not only reveal the focus; everything else goes to the navigator */
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            int key = GetGamepadShortcutKey(e.Button);
+            if (key == 0 || IsGamepadOverlayShown())
+                return _gamepadNavigator.HandleButton(e);
+
+            if (e.Kind == GHGamepadButtonEventKind.Pressed)
+            {
+                _gamepadShortcutArmed = !e.RevealsUi;
+                _gamepadShortcutPressId = e.PressId;
+                if (e.RevealsUi)
+                    return _gamepadNavigator.HandleButton(e);
+            }
+            else if (e.Kind == GHGamepadButtonEventKind.Released)
+            {
+                if (e.IsCancelled && e.PressId == _gamepadShortcutPressId)
+                    _gamepadShortcutArmed = false;
+            }
+            else if (e.Kind == GHGamepadButtonEventKind.ShortPressed)
+            {
+                if (_gamepadShortcutArmed && e.PressId == _gamepadShortcutPressId)
+                {
+                    _gamepadShortcutArmed = false;
+                    HandleKeyPress(key, false, false);
+                }
+            }
+            return true;
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+            _gamepadNavigator.UpdateSticks(sticks, dtSeconds);
         }
 
         private async void EventOkButton_Clicked(object sender, EventArgs e)

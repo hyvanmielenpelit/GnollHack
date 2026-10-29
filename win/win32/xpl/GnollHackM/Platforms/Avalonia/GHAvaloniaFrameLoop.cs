@@ -38,7 +38,7 @@ namespace GnollHackM
         private static bool _hasLastFrameTime = false;
         private static TimeSpan _lastFrameTime;
 
-        /* True while GHApp.OnPlatformFrame runs inside the frame callback; UI thread */
+        /* True while GHAvaloniaGamepad.OnFrame and GHApp.OnPlatformFrame run inside the frame callback; UI thread */
         private static bool _inFrameCallback = false;
         public static bool IsInFrameCallback { get { return _inFrameCallback; } }
 
@@ -75,6 +75,9 @@ namespace GnollHackM
         private static int _glPaintCount = 0;
         private static readonly double[] _frameCallbackMs = new double[ReportCapacity];
         private static int _frameCallbackCount = 0;
+        /* GHAvaloniaGamepad.OnFrame, part of the frame callback */
+        private static readonly double[] _gamepadPollMs = new double[ReportCapacity];
+        private static int _gamepadPollCount = 0;
 
         private static int _swapIntervalState = (int)GHSwapIntervalState.Unknown;
 
@@ -164,9 +167,20 @@ namespace GnollHackM
 
             MaybeAdjustRenderTimer();
             long callbackStart = Stopwatch.GetTimestamp();
+            double gamepadMs = 0.0;
             _inFrameCallback = true;
             try
             {
+                long gamepadStart = Stopwatch.GetTimestamp();
+                try
+                {
+                    GHAvaloniaGamepad.OnFrame(gamepadStart);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+                gamepadMs = (Stopwatch.GetTimestamp() - gamepadStart) * 1000.0 / Stopwatch.Frequency;
                 GHApp.OnPlatformFrame(EstimatedRefreshRate);
             }
             finally
@@ -178,6 +192,8 @@ namespace GnollHackM
             {
                 if (_frameCallbackCount < ReportCapacity)
                     _frameCallbackMs[_frameCallbackCount++] = callbackMs;
+                if (_gamepadPollCount < ReportCapacity)
+                    _gamepadPollMs[_gamepadPollCount++] = gamepadMs;
             }
         }
 
@@ -379,6 +395,7 @@ namespace GnollHackM
                 AppendStatistics(sb, "frame delta ms", _frameDeltasMs, _frameDeltaCount);
                 sb.Append("; frame deltas without a submitted frame: ").Append(_unsubmittedFrameDeltaCount.ToString(CultureInfo.InvariantCulture));
                 AppendStatistics(sb, "frame callback ms", _frameCallbackMs, _frameCallbackCount);
+                AppendStatistics(sb, "gamepad poll ms", _gamepadPollMs, _gamepadPollCount);
                 AppendStatistics(glSb, "draw interval ms", _glDrawIntervalsMs, _glDrawIntervalCount);
                 AppendStatistics(glSb, "paint ms", _glPaintMs, _glPaintCount);
                 if (swapIntervalState == GHSwapIntervalState.Applied)
@@ -399,6 +416,7 @@ namespace GnollHackM
                 _frameDeltaCount = 0;
                 _unsubmittedFrameDeltaCount = 0;
                 _frameCallbackCount = 0;
+                _gamepadPollCount = 0;
                 _glDrawIntervalCount = 0;
                 _glPaintCount = 0;
                 _presentSampleCount = 0;

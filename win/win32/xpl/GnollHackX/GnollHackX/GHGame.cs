@@ -30,12 +30,108 @@ using Sentry.Protocol;
 
 namespace GnollHackX
 {
+    /* What the game thread is waiting for. UiWait is a wait for a dialog or page rather than a key. */
+    public enum GHKeyWaitKind
+    {
+        None = 0,
+        PosKey,
+        GetChar,
+        Direction,
+        YnFunction,
+        UiWait
+    }
+
     public sealed class GHGame
     {
         public readonly RunGnollHackFlags StartFlags;
         public bool PlayingReplay { get { return (StartFlags & RunGnollHackFlags.PlayingReplay) != 0; } }
         private int[] _inputBuffer = new int[GHConstants.InputBufferLength];
         private int _inputBufferLocation = -1;
+
+        /* (serial << 4) | GHKeyWaitKind, written by the game thread and read with one Interlocked operation, so the
+           kind and the serial never tear. The serial is incremented on every entry into a wait and kept after it. */
+        private int _keyWaitState = 0;
+        private int _keyWaitSerialCounter = 0;  /* game thread */
+        private int _answeredSerial = 0;        /* game thread: the wait that took a tagged response */
+        private int _droppedSerial = 0;         /* game thread: the last tagged response dropped */
+        private int _cursorTypeNow = 0;         /* mirror of _cursorType */
+        /* Gamepad input held back while the game is busy: the busy period's key wait serial + 1, 0 for none. Set by
+           the UI thread, cleared by BeginKeyWait, and counted by ClientCallback_UIHasInput only while no wait has
+           begun since. */
+        private int _gamepadInputSignal = 0;
+
+        public int KeyWaitState { get { return Interlocked.CompareExchange(ref _keyWaitState, 0, 0); } }
+        public GHKeyWaitKind KeyWaitKind { get { return GetKeyWaitKind(KeyWaitState); } }
+        public int KeyWaitSerial { get { return GetKeyWaitSerial(KeyWaitState); } }
+        public game_cursor_types CursorTypeNow { get { return (game_cursor_types)Interlocked.CompareExchange(ref _cursorTypeNow, 0, 0); } }
+
+        public static GHKeyWaitKind GetKeyWaitKind(int keyWaitState)
+        {
+            return (GHKeyWaitKind)(keyWaitState & 0xF);
+        }
+
+        public static int GetKeyWaitSerial(int keyWaitState)
+        {
+            return (int)((uint)keyWaitState >> 4);
+        }
+
+        /* Game thread: enters a wait of this kind under a new serial; returns the state to pass to EndKeyWait, since
+           a wait can begin inside another one's PollResponseQueue (saving parks the game thread there) */
+        private int BeginKeyWait(GHKeyWaitKind kind)
+        {
+            int previous = Interlocked.CompareExchange(ref _keyWaitState, 0, 0);
+            int serial = (_keyWaitSerialCounter + 1) & 0x07FFFFFF;
+            if (serial == 0)
+                serial = 1;
+            _keyWaitSerialCounter = serial;
+            Interlocked.Exchange(ref _gamepadInputSignal, 0);
+            Interlocked.Exchange(ref _keyWaitState, (serial << 4) | (int)kind);
+            return previous;
+        }
+
+        /* UI thread: the gamepad has input for the game while it is busy, so animations and output delays end early
+           and running and traveling stop, as they do for queued touch input. Lasts until the next wait begins. */
+        public void SignalGamepadInput()
+        {
+            int state = Interlocked.CompareExchange(ref _keyWaitState, 0, 0);
+            if (GetKeyWaitKind(state) != GHKeyWaitKind.None)
+                return;
+            Interlocked.Exchange(ref _gamepadInputSignal, GetKeyWaitSerial(state) + 1);
+        }
+
+        /* Game thread: a signal counts only in the busy period it was set in, not after a later wait has begun */
+        private bool HasGamepadInputSignal()
+        {
+            int signal = Interlocked.CompareExchange(ref _gamepadInputSignal, 0, 0);
+            return signal != 0 && signal - 1 == _keyWaitSerialCounter;
+        }
+
+        /* Game thread: leaves the wait, back to the enclosing wait if there is one, else to None keeping the serial */
+        private void EndKeyWait(int previousState)
+        {
+            if (GetKeyWaitKind(previousState) != GHKeyWaitKind.None)
+                Interlocked.Exchange(ref _keyWaitState, previousState);
+            else
+                Interlocked.Exchange(ref _keyWaitState, _keyWaitSerialCounter << 4);
+        }
+
+        /* Game thread, inside PollResponseQueue: whether a tagged GetChar or Location response is taken */
+        private bool AcceptTaggedResponse(int waitSerial)
+        {
+            if (waitSerial < 0)
+                return -waitSerial != _droppedSerial;
+
+            int state = Interlocked.CompareExchange(ref _keyWaitState, 0, 0);
+            GHKeyWaitKind kind = GetKeyWaitKind(state);
+            bool accept = kind != GHKeyWaitKind.None && kind != GHKeyWaitKind.UiWait
+                && waitSerial == GetKeyWaitSerial(state) && waitSerial != _answeredSerial
+                && _inputBufferLocation < 0 && !(kind == GHKeyWaitKind.PosKey && _touchLocSet);
+            if (accept)
+                _answeredSerial = waitSerial;
+            else
+                _droppedSerial = waitSerial;
+            return accept;
+        }
         private string _getLineString = null;
         private bool _screenTextSet = false;
         private bool _crashReportFinished = false;
@@ -222,12 +318,16 @@ namespace GnollHackX
                         _characternameSet = true;
                         break;
                     case GHRequestType.GetChar:
+                        if (response.WaitSerial != 0 && !AcceptTaggedResponse(response.WaitSerial))
+                            break;
                         _inputBufferLocation++;
                         if (_inputBufferLocation >= GHConstants.InputBufferLength)
                             _inputBufferLocation = GHConstants.InputBufferLength - 1;
                         _inputBuffer[_inputBufferLocation] = response.ResponseIntValue;
                         break;
                     case GHRequestType.Location:
+                        if (response.WaitSerial != 0 && !AcceptTaggedResponse(response.WaitSerial))
+                            break;
                         _touchLocX = response.X;
                         _touchLocY = response.Y;
                         _touchLocMod = response.Mod;
@@ -370,6 +470,9 @@ namespace GnollHackX
                         break;
                     case GHRequestType.PlayMenuSelectSound:
                         GHApp.PlayMenuSelectSoundCore();
+                        break;
+                    case GHRequestType.PlayRadialTickSound:
+                        GHApp.PlayRadialHighlightSoundCore();
                         break;
                     case GHRequestType.PlayMusic:
                         GHApp.FmodService?.PlayMusic(response.ResponseIntValue, response.ResponseStringValue, response.X, response.GeneralVolume, response.MusicVolume);
@@ -827,7 +930,7 @@ namespace GnollHackX
                 }
                 else
                 {
-                    int res = ClientCallback_nhgetch();
+                    int res = GetCharCore(ismap ? GHKeyWaitKind.GetChar : GHKeyWaitKind.UiWait); /* A blocking map waits for any key; a menu or text window until it is dismissed */
                 }
             }
         }
@@ -1170,11 +1273,13 @@ namespace GnollHackX
             _characternameSet = false;
             CharacterName = "";
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.AskName, modeName, modeDescription));
+            int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
             while (!_characternameSet)
             {
                 Thread.Sleep(GHConstants.PollingInterval);
                 PollResponseQueue();
             }
+            EndKeyWait(savedKeyWait);
 
             if (out_string_ptr != IntPtr.Zero && CharacterName != "")
             {
@@ -1256,6 +1361,12 @@ namespace GnollHackX
 
         public int ClientCallback_nhgetch()
         {
+            return GetCharCore(GHKeyWaitKind.GetChar);
+        }
+
+        /* nhgetch, with the wait published as kind */
+        private int GetCharCore(GHKeyWaitKind kind)
+        {
             Debug.WriteLine("ClientCallback_nhgetch");
             WriteFunctionCallsAndCheckEnd();
 
@@ -1278,18 +1389,26 @@ namespace GnollHackX
             }
 
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.GetChar));
-            while (_inputBufferLocation < 0)
+            int savedKeyWait = BeginKeyWait(kind);
+            try
             {
-                Thread.Sleep(GHConstants.PollingInterval);
-                PollResponseQueue();
-                if (FastForwardGameOver)
+                while (_inputBufferLocation < 0)
                 {
-                    if (IsRecording)
+                    Thread.Sleep(GHConstants.PollingInterval);
+                    PollResponseQueue();
+                    if (FastForwardGameOver)
                     {
-                        RecordFunctionCall(RecordedFunctionID.GetChar, 0);
+                        if (IsRecording)
+                        {
+                            RecordFunctionCall(RecordedFunctionID.GetChar, 0);
+                        }
+                        return 0;
                     }
-                    return 0;
                 }
+            }
+            finally
+            {
+                EndKeyWait(savedKeyWait);
             }
             int res = 0;
             if (_inputBufferLocation >= 0)
@@ -1337,30 +1456,38 @@ namespace GnollHackX
             }
 
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.PosKey));
-            while (_inputBufferLocation < 0)
+            int savedKeyWait = BeginKeyWait(GHKeyWaitKind.PosKey);
+            try
             {
-                if (_touchLocSet)
+                while (_inputBufferLocation < 0)
                 {
-                    _touchLocSet = false;
-                    x = _touchLocX;
-                    y = _touchLocY;
-                    mod = _touchLocMod;
-                    if (IsRecording)
+                    if (_touchLocSet)
                     {
-                        RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                        _touchLocSet = false;
+                        x = _touchLocX;
+                        y = _touchLocY;
+                        mod = _touchLocMod;
+                        if (IsRecording)
+                        {
+                            RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                        }
+                        return 0;
                     }
-                    return 0;
-                }
-                Thread.Sleep(GHConstants.PollingInterval);
-                PollResponseQueue();
-                if (FastForwardGameOver)
-                {
-                    if (IsRecording)
+                    Thread.Sleep(GHConstants.PollingInterval);
+                    PollResponseQueue();
+                    if (FastForwardGameOver)
                     {
-                        RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                        if (IsRecording)
+                        {
+                            RecordFunctionCall(RecordedFunctionID.PosKey, x, y, mod, 0);
+                        }
+                        return 0;
                     }
-                    return 0;
                 }
+            }
+            finally
+            {
+                EndKeyWait(savedKeyWait);
             }
             int res = GHConstants.CancelChar;
             if (_inputBufferLocation >= 0)
@@ -1403,7 +1530,7 @@ namespace GnollHackX
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections)); //TODO: Show keyboard
                 else
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections));
-                int res = ClientCallback_nhgetch(); /* Get direction / letter */
+                int res = GetCharCore(GHKeyWaitKind.Direction); /* Get direction / letter */
                 if ((ynflags & 1UL) != 0)
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideDirections)); //TODO: Hide keyboard
                 else
@@ -1418,7 +1545,7 @@ namespace GnollHackX
             else
             {
                 GHApp.AddSentryBreadcrumb("YnFunction: " + (title != null ? title : "no title") + ", " + (question != null ? question : "no question") + ", " + (responses != null ? responses : "no responses") + ", " + (descriptions != null ? descriptions : "no descriptions"), GHConstants.SentryGnollHackCallbackCategoryName);
-                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, glyph, title, question, responses, descriptions, introline, ynflags));
+                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, glyph, title, question, responses, descriptions, introline, ynflags, string.IsNullOrEmpty(def) ? 0 : (int)def[0]));
 
                 if (PlayingReplay)
                 {
@@ -1429,7 +1556,7 @@ namespace GnollHackX
                     int cnt = 0;
                     while (cnt < 5)
                     {
-                        int val = ClientCallback_nhgetch();
+                        int val = GetCharCore(GHKeyWaitKind.YnFunction);
                         if (!string.IsNullOrEmpty(def) && (val == 0 || val == GHConstants.CancelChar))
                             val = (int)def[0];
                         string desc = "";
@@ -1461,7 +1588,7 @@ namespace GnollHackX
                             return val;
                         }
 
-                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, glyph, title, question, responses, descriptions, introline, ynflags));
+                        RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowYnResponses, style, attr, color, glyph, title, question, responses, descriptions, introline, ynflags, string.IsNullOrEmpty(def) ? 0 : (int)def[0]));
                         ClientCallback_RawPrint("'" + desc + "': Invalid input!");
                         cnt++;
                     }
@@ -2202,6 +2329,7 @@ namespace GnollHackX
             if (enqueued)
             {
                 bool continuepolling = true;
+                int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                 while (continuepolling)
                 {
                     //lock (_ghWindowsLock)
@@ -2217,6 +2345,7 @@ namespace GnollHackX
                     Thread.Sleep(GHConstants.PollingInterval);
                     PollResponseQueue();
                 }
+                EndKeyWait(savedKeyWait);
             }
 
             /* Handle result */
@@ -2784,7 +2913,7 @@ namespace GnollHackX
             }
 
             string sourcePath = "resource://" + icon_string;
-            ContextMenuButton cmb = new ContextMenuButton(data.cmd_text, sourcePath, GHApp.GetCachedImageSourceBitmap(sourcePath, true), cmdcurchar);
+            ContextMenuButton cmb = new ContextMenuButton(data.cmd_text, sourcePath, GHApp.GetCachedImageSourceBitmap(sourcePath, true), cmdcurchar, cmddefchar, data.target_text);
             //cmb.ImgSourcePath = "resource://" + icon_string;
             //cmb.Bitmap = GHApp.GetCachedImageSourceBitmap(cmb.ImgSourcePath, true);
             //cmb.LblText = data.cmd_text;
@@ -2829,11 +2958,13 @@ namespace GnollHackX
             }
             else
             {
+                int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                 while (_getLineString == null)
                 {
                     Thread.Sleep(GHConstants.PollingInterval);
                     PollResponseQueue();
                 }
+                EndKeyWait(savedKeyWait);
 
                 if (IsRecording)
                 {
@@ -3131,11 +3262,13 @@ namespace GnollHackX
             if ((tflags & 1UL) != 0)
             {
                 /* Blocking call */
+                int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                 while (!_screenTextSet)
                 {
                     Thread.Sleep(GHConstants.PollingInterval);
                     PollResponseQueue();
                 }
+                EndKeyWait(savedKeyWait);
 
                 int cnt = 0;
                 long countervalue;
@@ -3180,7 +3313,7 @@ namespace GnollHackX
             data.tflags = tflags;
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DisplayPopupText, data));
 
-            int val = ClientCallback_nhgetch();
+            int val = GetCharCore(GHKeyWaitKind.UiWait); /* Until the popup is dismissed */
             if(PlayingReplay)
                 WaitAndCheckPauseReplay(GHConstants.ReplayPopupDelay);
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HidePopupText));
@@ -3222,6 +3355,7 @@ namespace GnollHackX
                 _force_paint_at_cursor = (force_paint != 0);
                 _show_cursor_on_u = (show_on_u != 0);
             }
+            Interlocked.Exchange(ref _cursorTypeNow, style);
         }
 
         public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, uint play_flags)
@@ -3645,6 +3779,7 @@ namespace GnollHackX
                     GHApp.AddSentryBreadcrumb("GUI_CMD_WAIT_FOR_RESUME: Parking game thread",
                                               GHConstants.SentryGnollHackGeneralCategoryName);
                     long activeSinceTicks = 0;
+                    int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                     try
                     {
                         while (!_restoreRequested)
@@ -3681,6 +3816,7 @@ namespace GnollHackX
                     }
                     finally
                     {
+                        EndKeyWait(savedKeyWait);
                         IsWaitingForResume = false;
                         _restoreRequested = false;
                         Interlocked.Exchange(ref _resumeRequestSent, 0);
@@ -4180,11 +4316,13 @@ namespace GnollHackX
             if (PlayingReplay)
                 return 0;
 
+            /* Queued responses, plus one for gamepad input that the gamepad's command gate holds back */
+            int count = ResponseQueue.Count + (HasGamepadInputSignal() ? 1 : 0);
             if (IsRecording)
             {
-                RecordFunctionCall(RecordedFunctionID.UIHasInput, ResponseQueue.Count);
+                RecordFunctionCall(RecordedFunctionID.UIHasInput, count);
             }
-            return ResponseQueue.Count;
+            return count;
         }
 
         public byte ClientCallback_AdjustGeneralVolumes(double value1, double value2, double value3, double value4, double value5, double value6)
@@ -4219,11 +4357,13 @@ namespace GnollHackX
 
                         _guiTipsFinished = false;
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowGUITips));
+                        int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                         while (!_guiTipsFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
                             PollResponseQueue();
                         }
+                        EndKeyWait(savedKeyWait);
                         break;
                     }
                 case (int)special_view_types.SPECIAL_VIEW_CRASH_DETECTED:
@@ -4235,11 +4375,13 @@ namespace GnollHackX
                         }
                         _crashReportFinished = false;
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.CrashReport));
+                        int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                         while (!_crashReportFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
                             PollResponseQueue();
                         }
+                        EndKeyWait(savedKeyWait);
                         break;
                     }
                 case (int)special_view_types.SPECIAL_VIEW_PANIC:
@@ -4270,11 +4412,13 @@ namespace GnollHackX
 
                         _panicFinished = false;
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.Panic, text));
+                        int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                         while (!_panicFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
                             PollResponseQueue();
                         }
+                        EndKeyWait(savedKeyWait);
                         break;
                     }
                 case (int)special_view_types.SPECIAL_VIEW_DEBUGLOG:
@@ -4290,11 +4434,13 @@ namespace GnollHackX
                         }
                         _messageFinished = false;
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.Message, title, text, null, null));
+                        int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                         while (!_messageFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
                             PollResponseQueue();
                         }
+                        EndKeyWait(savedKeyWait);
                         break;
                     }
                 case (int)special_view_types.SPECIAL_VIEW_HELP_DIR:
@@ -4312,13 +4458,18 @@ namespace GnollHackX
                             return def;
                         _ynConfirmationFinished = false;
                         RequestQueue.Enqueue(new GHRequest(this, GHRequestType.YnConfirmation, title, text, "Yes", "No"));
+                        int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                         while (!_ynConfirmationFinished)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
                             PollResponseQueue();
                             if (FastForwardGameOver)
+                            {
+                                EndKeyWait(savedKeyWait);
                                 return def;
+                            }
                         }
+                        EndKeyWait(savedKeyWait);
                         return _ynConfirmationResult ? 'y' : 'n';
                     }
                 case (int)special_view_types.SPECIAL_VIEW_SAVE_FILE_TRACKING_LOAD:
@@ -4351,11 +4502,13 @@ namespace GnollHackX
                                         //Wait until contacting is done, or fails due to timeout etc.
                                         _saveFileTrackingFinished = -1;
                                         RequestQueue.Enqueue(new GHRequest(this, viewtype == (int)special_view_types.SPECIAL_VIEW_SAVE_FILE_TRACKING_LOAD ? GHRequestType.SaveFileTrackingLoad : GHRequestType.SaveFileTrackingSave, time_stamp, filename, length, shaHashBase64));
+                                        int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                                         while (_saveFileTrackingFinished < 0)
                                         {
                                             Thread.Sleep(GHConstants.PollingInterval);
                                             PollResponseQueue();
                                         }
+                                        EndKeyWait(savedKeyWait);
                                         return _saveFileTrackingFinished;
                                     }
                                     else
@@ -5262,15 +5415,19 @@ namespace GnollHackX
         public readonly string ImgSourcePath;
         public readonly SKImage Bitmap;
         public readonly int BtnCommand;
+        public readonly int DefCommand;     /* the core's default, unmapped command character */
+        public readonly string TargetText;  /* what the command acts on; may be null */
         public readonly string ShortcutText;
-        
+
         //public SKRect Rect;
-        public ContextMenuButton(string lblText, string imgSourcePath, SKImage bitmap, int btnCommand)
+        public ContextMenuButton(string lblText, string imgSourcePath, SKImage bitmap, int btnCommand, int defCommand, string targetText)
         {
             LblText = lblText;
             ImgSourcePath = imgSourcePath;
             Bitmap = bitmap;
             BtnCommand = btnCommand;
+            DefCommand = defCommand;
+            TargetText = targetText;
             ShortcutText = GHUtils.ConstructShortcutText(btnCommand);
         }
     }

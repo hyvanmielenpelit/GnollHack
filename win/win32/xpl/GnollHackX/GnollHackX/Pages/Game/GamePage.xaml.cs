@@ -1330,6 +1330,9 @@ namespace GnollHackX.Pages.Game
                 _mapPaint?.Dispose();
                 _mapUiPaint?.Dispose();
                 _mapOrbPaint?.Dispose();
+                _radialOrbPaint?.Dispose();
+                _radialOrbLayerPaint?.Dispose();
+                _radialOrbTextPaint?.Dispose();
                 _cmdPaint?.Dispose();
                 _mapTextPaint?.Dispose();
                 _menuTextPaint?.Dispose();
@@ -1340,6 +1343,9 @@ namespace GnollHackX.Pages.Game
                 _debugDashboard?.Dispose();
                 _menuDashboardTextPaint?.Dispose();
                 _menuDebugDashboard?.Dispose();
+                _menuGamepadFocusGlowPaint?.Dispose();
+                _menuGamepadFocusFillPaint?.Dispose();
+                _menuGamepadFocusImagePaint?.Dispose();
             }
             catch (Exception ex)
             {
@@ -1828,12 +1834,14 @@ namespace GnollHackX.Pages.Game
             MenuCanvas._gamePage = this;
             TextCanvas._gamePage = this;
             TipView._gamePage = this;
+            RadialCanvas._gamePage = this;
 
             MainCanvasView._parentGrid = MainGrid;
             CommandCanvas._parentGrid = MoreCommandsGrid;
             MenuCanvas._parentGrid = MenuGrid;
             TextCanvas._parentGrid = TextGrid;
             TipView._parentGrid = null;
+            RadialCanvas._parentGrid = null;
         }
 
         private async Task<bool> MaybeInitAuxCanvases()
@@ -2482,6 +2490,10 @@ namespace GnollHackX.Pages.Game
                         //        _menuUpdateGCCounter++;
                         //}
                     }
+
+                    /* Gamepad focus waits for painted row bounds before it scrolls into view */
+                    if (IsMenuGamepadFocusPending)
+                        ProcessPendingMenuGamepadFocus();
 
                     /* Callers run on the UI thread: the platform render loop and the animation counter */
                     MenuCanvas.InvalidateSurface();
@@ -3157,6 +3169,7 @@ namespace GnollHackX.Pages.Game
             {
                 PopupImage.IsVisible = false;
             }
+            BumpGamepadDialogSerial();
             PopupGrid.IsVisible = true;
         }
 
@@ -3334,6 +3347,8 @@ namespace GnollHackX.Pages.Game
                     }
                     try
                     {
+                        if (IsRadialMenuOpen && ClosesRadialMenu(req.RequestType))
+                            DismissRadialMenu(GHRadialCloseReason.Superseded);
                         switch (req.RequestType)
                         {
                             case GHRequestType.PrintHistory:
@@ -3346,7 +3361,7 @@ namespace GnollHackX.Pages.Game
                                 PrintTopLine(req.RequestString, req.RequestStringAttributes);
                                 break;
                             case GHRequestType.ShowYnResponses:
-                                ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.RequestGlyph, req.TitleString, req.RequestString, req.Responses, req.ResponseDescriptions, req.IntroLineString, req.RequestFlags);
+                                ShowYnResponses(req.RequestInt, req.RequestAttr, req.RequestNhColor, req.RequestGlyph, req.TitleString, req.RequestString, req.Responses, req.ResponseDescriptions, req.IntroLineString, req.RequestFlags, req.RequestDefaultResponse);
                                 break;
                             case GHRequestType.HideYnResponses:
                                 HideYnResponses();
@@ -3773,6 +3788,7 @@ namespace GnollHackX.Pages.Game
                 _savedMenuScrollOffset[menuStyle] = 0.0f;
                 _savedMenuEquipmentScrollOffset[menuStyle] = 0.0f;
                 _savedEquipmentSideOn[menuStyle] = false;
+                _savedMenuFocusIndex[menuStyle] = -1;
             }
         }
 
@@ -3791,6 +3807,8 @@ namespace GnollHackX.Pages.Game
             MenuWindowGlyphImage.StopAnimation();
             MenuCountGrid.IsVisible = false;
             MenuCountEntry.IsEnabled = false;
+            if (GetLineGrid.IsVisible)
+                GHScreenKeyboard.Hide();
             GetLineGrid.IsVisible = false;
             PopupGrid.IsVisible = false;
             TextWindowGlyphImage.StopAnimation();
@@ -3874,6 +3892,7 @@ namespace GnollHackX.Pages.Game
 
         private async Task ShowWindowCanvas(GHPublishedWindow window)
         {
+            BumpGamepadDialogSerial();
             List<GHPublishedWindowRow> strs = window.PutStrs;
             /* Cancel delayed text hide */
 #if GNH_MAUI
@@ -4065,8 +4084,10 @@ namespace GnollHackX.Pages.Game
 
         private GlyphImageSource _ynImageSource = new GlyphImageSource();
         private string _ynResponses = null;
-        private void ShowYnResponses(int style, int attr, int color, int glyph, string title, string question, string responses, string descriptions, string introline, ulong ynflags)
+        private int _ynDefaultResponse = 0; /* the default answer character of the shown y/n question, 0 = none */
+        private void ShowYnResponses(int style, int attr, int color, int glyph, string title, string question, string responses, string descriptions, string introline, ulong ynflags, int defaultResponse)
         {
+            _ynDefaultResponse = defaultResponse;
             string[] descr_list = null;
             if (descriptions != null)
             {
@@ -4182,6 +4203,7 @@ namespace GnollHackX.Pages.Game
                     YnFrame.BackgroundColor = GHColors.SemiTransparentBlack;
                     break;
             }
+            InitYnGamepadFocus();
             YnGrid.IsVisible = true;
         }
 
@@ -4258,6 +4280,8 @@ namespace GnollHackX.Pages.Game
         {
             _blockingTipView = is_game_start;
             ShownTip = is_game_start ? 0 : 1;
+            DismissRadialMenu(GHRadialCloseReason.Superseded);
+            BumpGamepadDialogSerial();
             TipView.IsVisible = true;
             TipView.InvalidateSurface();
         }
@@ -4425,32 +4449,58 @@ namespace GnollHackX.Pages.Game
             //    //GetLineEntryText.IsEnabled = false;
             //}
 
+            BumpGamepadDialogSerial();
             GetLineGrid.IsVisible = true;
+            _getLinePromptSerial++;
 
             if(!PlayingReplay)
             {
-                if(GHApp.AutoFocusOnEntry)
+                /* With the controller in use, the on-screen keyboard opens once the entry has been focused */
+                bool openScreenKeyboard = GHScreenKeyboard.IsAvailable;
+                if(GHApp.AutoFocusOnEntry || openScreenKeyboard)
                 {
 #if GNH_MAUI
+                    int promptSerial = _getLinePromptSerial;
                     var timer = Microsoft.Maui.Controls.Application.Current.Dispatcher.CreateTimer();
                     timer.Interval = TimeSpan.FromSeconds(GHConstants.KeyboardFocusDelay);
                     timer.IsRepeating = false;
-                    timer.Tick += (s, e) => { FocusToGetLineEntry(); };
+                    timer.Tick += (s, e) => { FocusToGetLineEntry(promptSerial, openScreenKeyboard); };
                     timer.Start();
 #else
                     GetLineEntryText.Focus();
+                    if (openScreenKeyboard)
+                        ShowGetLineScreenKeyboard();
 #endif
                 }
             }
         }
-        private void FocusToGetLineEntry()
+
+        /* Counts getline prompts, so that a focus timer acts only on the prompt that started it */
+        private int _getLinePromptSerial = 0;
+
+        private void FocusToGetLineEntry(int promptSerial, bool openScreenKeyboard)
         {
             /* Only caller is a dispatcher timer tick, which runs on the UI thread */
-            GetLineEntryText.Focus();
+            bool isCurrentPrompt = promptSerial == _getLinePromptSerial && GetLineGrid.IsVisible;
+            if (GHApp.AutoFocusOnEntry || isCurrentPrompt)
+                GetLineEntryText.Focus();
+            if (openScreenKeyboard && isCurrentPrompt)
+                ShowGetLineScreenKeyboard();
+        }
+
+        /* Focuses the entry and opens the on-screen keyboard for it; false when the keyboard is not available */
+        private bool ShowGetLineScreenKeyboard()
+        {
+            if (PlayingReplay || !GetLineGrid.IsVisible || !GetLineEntryText.IsEnabled || !GHScreenKeyboard.IsAvailable)
+                return false;
+            if (!GetLineEntryText.IsFocused)
+                GetLineEntryText.Focus();
+            return GHScreenKeyboard.Show(GetLineEntryText, GHScreenKeyboardMode.SingleLine);
         }
 
         private void HideGetLine()
         {
+            GHScreenKeyboard.Hide();
             GetLineGrid.IsVisible = false;
             GetLineEntryText.Text = "";
             GetLineCaption.Text = "";
@@ -5022,6 +5072,8 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
+            InitMenuGamepadFocus();
+
             //if (PlayingReplay)
             //{
             //    MenuOKButton.IsEnabled = false;
@@ -5243,6 +5295,7 @@ namespace GnollHackX.Pages.Game
 
             GHApp.BackButtonPressed -= BackButtonPressed;
             RefreshScreen = false;
+            ResetGamepadRoutingState(true);
 
             /* Page lifecycle event; runs on the UI thread */
             if (!_performanceSuiteMode)
@@ -12468,47 +12521,16 @@ namespace GnollHackX.Pages.Game
                         /* HP and MP */
                         if ((ShowOrbs || !ClassicStatusBar) && orbsok)
                         {
-                            float orbfillpercentage = 0.0f;
-                            string valtext = "";
-                            string maxtext = "";
-                            bool pctset = false;
-                            if (_localStatusFields[(int)NhStatusFields.BL_HP].Text != null && _localStatusFields[(int)NhStatusFields.BL_HP].Text != "" && _localStatusFields[(int)NhStatusFields.BL_HPMAX].Text != null && _localStatusFields[(int)NhStatusFields.BL_HPMAX].Text != "")
-                            {
-                                valtext = _localStatusFields[(int)NhStatusFields.BL_HP].Text;
-                                maxtext = _localStatusFields[(int)NhStatusFields.BL_HPMAX].Text;
-                                int hp = 0, hpmax = 1;
-                                if (int.TryParse(_localStatusFields[(int)NhStatusFields.BL_HP].Text, out hp) && int.TryParse(_localStatusFields[(int)NhStatusFields.BL_HPMAX].Text, out hpmax))
-                                {
-                                    if (hpmax > 0)
-                                    {
-                                        orbfillpercentage = (float)hp / (float)hpmax;
-                                        pctset = true;
-                                    }
-                                }
-                                if (!pctset)
-                                    orbfillpercentage = ((float)_localStatusFields[(int)NhStatusFields.BL_HP].Percent) / 100.0f;
-                            }
+                            float orbfillpercentage;
+                            string valtext;
+                            string maxtext;
+                            GetOrbValues(_localStatusFields, false, out valtext, out maxtext, out orbfillpercentage);
                             SKRect orbBorderDest = new SKRect(tx, ty, tx + orbbordersize, ty + orbbordersize);
                             healthRect = orbBorderDest;
                             //healthRectDrawn = true;
                             DrawOrb(canvas, textPaint, orbBorderDest, SKColors.Red, valtext, maxtext, orbfillpercentage, ShowMaxHealthInOrb, false /* isPointerHovering && orbBorderDest.Contains(pointerHoverLocation) */);
 
-                            orbfillpercentage = 0.0f;
-                            valtext = "";
-                            maxtext = "";
-                            if (_localStatusFields[(int)NhStatusFields.BL_ENE].Text != null && _localStatusFields[(int)NhStatusFields.BL_ENE].Text != "" && _localStatusFields[(int)NhStatusFields.BL_ENEMAX].Text != null && _localStatusFields[(int)NhStatusFields.BL_ENEMAX].Text != "")
-                            {
-                                valtext = _localStatusFields[(int)NhStatusFields.BL_ENE].Text;
-                                maxtext = _localStatusFields[(int)NhStatusFields.BL_ENEMAX].Text;
-                                int en = 0, enmax = 1;
-                                if (int.TryParse(_localStatusFields[(int)NhStatusFields.BL_ENE].Text, out en) && int.TryParse(_localStatusFields[(int)NhStatusFields.BL_ENEMAX].Text, out enmax))
-                                {
-                                    if (enmax > 0)
-                                    {
-                                        orbfillpercentage = (float)en / (float)enmax;
-                                    }
-                                }
-                            }
+                            GetOrbValues(_localStatusFields, true, out valtext, out maxtext, out orbfillpercentage);
                             orbBorderDest = new SKRect(tx, ty + orbbordersize + 5, tx + orbbordersize, ty + orbbordersize + 5 + orbbordersize);
                             manaRect = orbBorderDest;
                             //manaRectDrawn = true;
@@ -12745,6 +12767,7 @@ namespace GnollHackX.Pages.Game
                     float buttonsize = showDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
                     SKColor oldcolor = textPaint.Color;
                     textPaint.Color = showDirections ? textPaint.Color.WithAlpha(170) : textPaint.Color.WithAlpha(85);
+                    int gamepadAimArrow = showDirections ? GetGamepadAimArrowIndex() : -1;
 
                     for (int i = 0; i < 9; i++)
                     {
@@ -12795,11 +12818,29 @@ namespace GnollHackX.Pages.Game
                             float truesize = Math.Min(_localCanvasButtonRect.Width, _localCanvasButtonRect.Height) * buttonsize;
                             targetrect = new SKRect(tx + px, ty + py, tx + px + truesize, ty + py + truesize);
                         }
-                        canvas.DrawImage(GHApp._arrowBitmap[i], targetrect
+                        if (i == gamepadAimArrow)
+                        {
+                            /* The direction aimed with the gamepad, at full alpha and highlighted */
+                            SKColor arrowColor = textPaint.Color;
+                            SKColorFilter arrowFilter = textPaint.Paint.ColorFilter;
+                            textPaint.Color = arrowColor.WithAlpha(255);
+                            textPaint.Paint.ColorFilter = UIUtils.HighlightColorFilter;
+                            canvas.DrawImage(GHApp._arrowBitmap[i], targetrect
 #if GNH_MAUI
-                        , SKSamplingOptions.Default
+                            , SKSamplingOptions.Default
 #endif
-                        , textPaint.Paint);
+                            , textPaint.Paint);
+                            textPaint.Paint.ColorFilter = arrowFilter;
+                            textPaint.Color = arrowColor;
+                        }
+                        else
+                        {
+                            canvas.DrawImage(GHApp._arrowBitmap[i], targetrect
+#if GNH_MAUI
+                            , SKSamplingOptions.Default
+#endif
+                            , textPaint.Paint);
+                        }
                     }
                     textPaint.Color = oldcolor;
                 }
@@ -15770,6 +15811,7 @@ namespace GnollHackX.Pages.Game
             {
                 Array.Clear(_savedMenuScrollOffset, 0, _savedMenuScrollOffset.Length);
                 Array.Clear(_savedMenuEquipmentScrollOffset, 0, _savedMenuEquipmentScrollOffset.Length);
+                ClearSavedMenuGamepadFocus();
             }
             lock (_textScrollLock)
             {
@@ -17949,11 +17991,42 @@ namespace GnollHackX.Pages.Game
                 _clipY = y;
             }
 
+            /* While the gamepad pans the map, the view stays where it is: the offset absorbs the clip change */
+            bool gamepadPanHold = !immediate_pan && GamepadPanHold;
+            float holdShiftX = 0;
+            float holdShiftY = 0;
+            if (gamepadPanHold)
+            {
+                float mapWidth;
+                float mapHeight;
+                float canvasWidth;
+                float canvasHeight;
+                lock (_tileSizeLock)
+                {
+                    mapWidth = _mapWidth;
+                    mapHeight = _mapHeight;
+                }
+                lock (_savedCanvasLock)
+                {
+                    canvasWidth = _savedCanvasWidth;
+                    canvasHeight = _savedCanvasHeight;
+                }
+                bool largeMap = mapWidth > canvasWidth || mapHeight > canvasHeight;
+                holdShiftX = GetClipTermX(x, largeMap, usedTileWidth) - GetClipTermX(clipX, largeMap, usedTileWidth);
+                holdShiftY = GetClipTermY(x, y, largeMap, usedTileHeight) - GetClipTermY(clipX, clipY, largeMap, usedTileHeight);
+            }
+
             float newClipX;
             float newClipY;
             lock (_mapOffsetLock)
             {
-                if (immediate_pan || graphicsStyle == GHGraphicsStyle.ASCII || forceAscii)
+                if (gamepadPanHold)
+                {
+                    _targetClipOn = false;
+                    newClipX = _mapOffsetX + holdShiftX;
+                    newClipY = _mapOffsetY + holdShiftY;
+                }
+                else if (immediate_pan || graphicsStyle == GHGraphicsStyle.ASCII || forceAscii)
                 {
                     _targetClipOn = false;
                     newClipX = 0;
@@ -18297,6 +18370,7 @@ namespace GnollHackX.Pages.Game
 
         private void ShowMoreCanvas(object sender, EventArgs e)
         {
+            DismissRadialMenu(GHRadialCloseReason.Superseded);
             UpdateMoreNextPrevButtonVisibility(true, true);
             MoreCommandsGrid.IsVisible = true;
             MoreCommandsFilterEntry.Text = "";
@@ -18522,6 +18596,7 @@ namespace GnollHackX.Pages.Game
 
         private void OpenGameMenu()
         {
+            DismissRadialMenu(GHRadialCloseReason.Superseded);
             try
             {
                 MainThread.BeginInvokeOnMainThread(async () => 
@@ -18562,31 +18637,46 @@ namespace GnollHackX.Pages.Game
             LabeledImageButton lib = sender as LabeledImageButton;
             if (lib == null)
                 return;
-            switch ((int)lib.GHCommand)
+            if (!ExecuteCommandButtonCommand((int)lib.GHCommand))
+                GenericButton_Clicked(sender, e, (int)lib.MappedGHCommand);
+        }
+
+        /* The keys of a command button's special command: -102 Search 20 and -103 Rest; null for any other command */
+        private static int[] GetCommandButtonKeySequence(int cmd)
+        {
+            switch (cmd)
             {
                 case -102:
-                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT2);
-                    GenericButton_Clicked(sender, e, -12);
-                    GenericButton_Clicked(sender, e, -10);
-                    GenericButton_Clicked(sender, e, GHApp.MapCommand('s'));
-                    break;
+                    return new int[] { -100 - (int)nh_keyfunc.NHKF_COUNT2, -12, -10, GHApp.MapCommand('s') };
                 case -103:
-                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT2);
-                    GenericButton_Clicked(sender, e, -12);
-                    GenericButton_Clicked(sender, e, -10);
-                    GenericButton_Clicked(sender, e, -10);
-                    GenericButton_Clicked(sender, e, GHApp.MapCommand('.'));
-                    break;
+                    return new int[] { -100 - (int)nh_keyfunc.NHKF_COUNT2, -12, -10, -10, GHApp.MapCommand('.') };
+                default:
+                    return null;
+            }
+        }
+
+        /* Runs a command button's special command (-102 to -105); false for any other command, which the caller sends */
+        private bool ExecuteCommandButtonCommand(int cmd)
+        {
+            int[] keys = GetCommandButtonKeySequence(cmd);
+            if (keys != null)
+            {
+                int i;
+                for (i = 0; i < keys.Length; i++)
+                    GenericButton_Clicked(this, EventArgs.Empty, keys[i]);
+                return true;
+            }
+            switch (cmd)
+            {
                 case -104:
                     OpenGameMenu();
-                    break;
+                    return true;
                 case -105:
-                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT2);
+                    GenericButton_Clicked(this, EventArgs.Empty, -100 - (int)nh_keyfunc.NHKF_COUNT2);
                     DoShowNumberPad();
-                    break;
+                    return true;
                 default:
-                    GenericButton_Clicked(sender, e, (int)lib.MappedGHCommand);
-                    break;
+                    return false;
             }
         }
 
@@ -18608,6 +18698,17 @@ namespace GnollHackX.Pages.Game
         private readonly SKColor _inventorySlotBackgroundDarkColor = new SKColor(0x66, 0x66, 0x66, 0x44);
         private readonly SKColor _menuHighlightSelectedDarkColor = new SKColor(0x88, 0x88, 0xAA, 0x77);
         private readonly SKColor _menuHighlightHoverOverSelectedDarkColor = new SKColor(0xBB, 0xBB, 0xEE, 0x88);
+
+        /* Gamepad focus selector: a row gets a rounded gradient fill and a glow around it, a button a brightened bitmap
+           and a glow; the row glow uses its own scratch paint so the text paint keeps its style */
+        private readonly SKColor _menuGamepadFocusFillStartColor = new SKColor(0xFF, 0xC0, 0x30, 0xA0);
+        private readonly SKColor _menuGamepadFocusFillEndColor = new SKColor(0xFF, 0xA0, 0x00, 0x50);
+        private readonly SKColor _menuGamepadFocusOverSelectedColor = new SKColor(0xFF, 0x88, 0x00, 0xAA);
+        private readonly SKColor _menuGamepadFocusGlowDarkColor = new SKColor(0xFF, 0xB0, 0x20, 0xFF);
+        private readonly SKColor _menuGamepadFocusGlowLightColor = new SKColor(0xB3, 0x6B, 0x00, 0xC0);
+        private readonly SKPaint _menuGamepadFocusGlowPaint = new SKPaint { Style = SKPaintStyle.Fill, IsAntialias = true };
+        private readonly SKPaint _menuGamepadFocusFillPaint = new SKPaint { Style = SKPaintStyle.Fill, IsAntialias = true, Color = SKColors.White };
+        private readonly SKPaint _menuGamepadFocusImagePaint = new SKPaint { ColorFilter = GHGamepadFocusGlow.FocusedImageColorFilter };
 
         //private readonly object _totalMenuHeightLock = new object();
         private float _totalMenuHeight = 0;
@@ -18701,6 +18802,7 @@ namespace GnollHackX.Pages.Game
             public DrawBoundInfo[] DrawBoundList = null;
             public int FirstDrawnMenuItemIdx = -1;
             public int LastDrawnMenuItemIdx = -1;
+            public float ScrollOffset = 0;  /* the scroll offset included in the bounds' Top and Bottom */
             public DrawBoundInfos(int boundsSize)
             {
                 DrawBoundList = new DrawBoundInfo[boundsSize];
@@ -18717,6 +18819,7 @@ namespace GnollHackX.Pages.Game
                 }
                 destination.FirstDrawnMenuItemIdx = FirstDrawnMenuItemIdx;
                 destination.LastDrawnMenuItemIdx = LastDrawnMenuItemIdx;
+                destination.ScrollOffset = ScrollOffset;
             }
         }
 
@@ -18864,11 +18967,17 @@ namespace GnollHackX.Pages.Game
             SKRect textBounds = new SKRect();
             SKPoint menuHoverPoint = new SKPoint();
             bool isMenuHovering = false;
+            /* While the gamepad is the active input, its focus replaces the mouse hover */
+            bool gamepadFocusVisible = GHGamepadService.IsActive;
+            int gamepadFocusIndex = MenuGamepadFocusIndex;
 #if WINDOWS || GNH_AVALONIA
-            lock (_menuHoverLock)
+            if (!gamepadFocusVisible)
             {
-                menuHoverPoint = _menuHoverPoint;
-                isMenuHovering = _menuIsHovering;
+                lock (_menuHoverLock)
+                {
+                    menuHoverPoint = _menuHoverPoint;
+                    isMenuHovering = _menuIsHovering;
+                }
             }
 #endif
 
@@ -19216,6 +19325,7 @@ namespace GnollHackX.Pages.Game
                         bool has_identifiers = false;
                         localMenuDrawBounds.FirstDrawnMenuItemIdx = -1;
                         localMenuDrawBounds.LastDrawnMenuItemIdx = -1;
+                        localMenuDrawBounds.ScrollOffset = curmenuoffset;
                         foreach (GHMenuItem mi in menuItems)
                         {
                             if (mi.Identifier != 0 || mi.SpecialMark != '\0')
@@ -19375,28 +19485,42 @@ namespace GnollHackX.Pages.Game
                                     bool isSelectable = selectionHow != SelectionMode.None && mi.Identifier != 0;
                                     bool iconsFitRight = x + totalRowWidth + minrowheight < canvaswidth - scaledmenumarginx;
                                     SKRect selectionrect = new SKRect(x, y, x + totalRowWidth + (isInventory && iconsFitRight ? minrowheight : 0), y + totalRowHeight);
+                                    bool isFocused = gamepadFocusVisible && idx == gamepadFocusIndex && !isEquipmentSideShown;
 #if WINDOWS || GNH_AVALONIA
                                     bool isHover = false;
-                                    lock (_menuHoverLock)
+                                    if (!gamepadFocusVisible)
                                     {
-                                        isHover = _menuIsHovering && selectionrect.Contains(_menuHoverPoint);
+                                        lock (_menuHoverLock)
+                                        {
+                                            isHover = _menuIsHovering && selectionrect.Contains(_menuHoverPoint);
+                                        }
                                     }
 #else
                                     bool isHover = IsMiButton; /* On mobile, all buttons are normal / hover color automatically */
 #endif
+                                    float focusScale = scale * customScale;
+                                    float focusRadius = 6f * focusScale;
+                                    SKRect focusRect = selectionrect;
+                                    focusRect.Inflate(-focusScale, -focusScale);
                                     if (IsMiButton)
                                     {
-                                        canvas.DrawImage(isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : isHover ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap, selectionrect
+                                        /* A focused button gets the hover look, brightened, with a glow behind it */
+                                        isHover |= isFocused;
+                                        SKImage buttonImage = isselected || mi.Highlighted ? GHApp.ButtonSelectedBitmap : isHover ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap;
+                                        if (isFocused)
+                                            GHGamepadFocusGlow.DrawImageGlow(canvas, buttonImage, selectionrect, focusScale);
+                                        SKPaint buttonPaint = isFocused && buttonImage != GHApp.ButtonSelectedBitmap ? _menuGamepadFocusImagePaint : null;
+                                        canvas.DrawImage(buttonImage, selectionrect
 #if GNH_MAUI
                                         , SKSamplingOptions.Default
 #endif
-                                        );
+                                        , buttonPaint);
                                     }
                                     else // if (!isEquipmentSideShown)
                                     {
                                         if (isselected)
                                         {
-                                            textPaint.Color = isHover ? _menuHighlightHoverOverSelectedColor : _menuHighlightSelectedColor;
+                                            textPaint.Color = isFocused ? _menuGamepadFocusOverSelectedColor : isHover ? _menuHighlightHoverOverSelectedColor : _menuHighlightSelectedColor;
                                             textPaint.Style = SKPaintStyle.Fill;
                                             canvas.DrawRect(selectionrect, textPaint.Paint);
                                         }
@@ -19405,6 +19529,16 @@ namespace GnollHackX.Pages.Game
                                             textPaint.Color = isHover ? _menuHighlightHoverOverAutoClickedColor : _menuHighlightAutoClickedColor;
                                             textPaint.Style = SKPaintStyle.Fill;
                                             canvas.DrawRect(selectionrect, textPaint.Paint);
+                                        }
+                                        else if (isFocused)
+                                        {
+                                            using (SKShader focusShader = SKShader.CreateLinearGradient(new SKPoint(focusRect.Left, focusRect.Top), new SKPoint(focusRect.Right, focusRect.Top),
+                                                new SKColor[] { _menuGamepadFocusFillStartColor, _menuGamepadFocusFillEndColor }, null, SKShaderTileMode.Clamp))
+                                            {
+                                                _menuGamepadFocusFillPaint.Shader = focusShader;
+                                                canvas.DrawRoundRect(focusRect, focusRadius, focusRadius, _menuGamepadFocusFillPaint);
+                                                _menuGamepadFocusFillPaint.Shader = null;
+                                            }
                                         }
                                         else if (isHover && isSelectable)
                                         {
@@ -19419,6 +19553,14 @@ namespace GnollHackX.Pages.Game
                                     //    textPaint.Style = SKPaintStyle.Fill;
                                     //    canvas.DrawRect(selectionrect, textPaint.Paint);
                                     //}
+
+                                    if (isFocused && !IsMiButton)
+                                    {
+                                        /* The glow around the row marks the focus over any selection or highlight fill */
+                                        GHGamepadFocusGlow.DrawRowGlow(canvas, focusRect, focusRadius, focusScale,
+                                            revertBW ? _menuGamepadFocusGlowLightColor : _menuGamepadFocusGlowDarkColor,
+                                            _menuGamepadFocusGlowPaint);
+                                    }
 
                                     float singlelinepadding = Math.Max(0.0f, ((float)(maintextrows - 1) * (textPaint.FontSpacing)) / 2);
                                     y += topPadding;
@@ -20965,11 +21107,7 @@ namespace GnollHackX.Pages.Game
         private void MenuCanvas_LongTap(object sender, SKTouchEventArgs e)
         {
             int selectedidx = -1;
-            bool menuItemSelected = false;
-            int menuItemMaxCount = 0;
-            string menuItemMainText = "";
             var menuItems = MenuCanvas.MenuItems;
-            SelectionMode selectionHow = MenuCanvas.SelectionHow;
             lock (_menuUIDrawBoundsLock)
             {
                 var localDrawBounds = MenuUIDrawBounds;
@@ -20991,37 +21129,74 @@ namespace GnollHackX.Pages.Game
 
                 if (selectedidx < 0)
                     return;
-
-                if (selectionHow == SelectionMode.None)
-                    return;
-
-                if (menuItems[selectedidx].Identifier == 0)
-                    return;
-
-                menuItemMaxCount = menuItems[selectedidx].MaxCount;
-                if (menuItemMaxCount <= 1)
-                {
-                    if (MenuCanvas.SpecialClickOnLongTap)
-                        MenuCanvas_NormalClickRelease(sender, e, true);
-
-                    return;
-                }
-
-                _countMenuItem = menuItems[selectedidx];
-                menuItemSelected = menuItems[selectedidx].Selected;
-                menuItemMainText = menuItems[selectedidx].MainText;
             }
 
-            /* No further action upon release */
-            _menuTouchMoved = true;
-            _menuPreviousReleaseClick = false;
-            _menuPreviousReleaseClickIndex = -1;
-            _savedPreviousMenuReleaseTimeStamp = new DateTime();
+            OpenMenuItemCountOrSpecial(selectedidx, sender, e);
+        }
+
+        /* Long tap and gamepad action on a row: the count dialog when MaxCount > 1, else the special click if the menu
+           has one; returns true if either happened */
+        private bool OpenMenuItemCountOrSpecial(int idx)
+        {
+            return OpenMenuItemCountOrSpecial(idx, null, null);
+        }
+
+        /* With touch arguments, clicks go through the touch location and the touch release is suppressed; without
+           them, clicks go by index and the count entry is not focused */
+        private bool OpenMenuItemCountOrSpecial(int selectedidx, object sender, SKTouchEventArgs e)
+        {
+            bool menuItemSelected = false;
+            int menuItemMaxCount = 0;
+            string menuItemMainText = "";
+            var menuItems = MenuCanvas.MenuItems;
+            SelectionMode selectionHow = MenuCanvas.SelectionHow;
+            bool isTouch = e != null;
+            if (menuItems == null || selectedidx < 0 || selectedidx >= menuItems.Count)
+                return false;
+
+            if (selectionHow == SelectionMode.None)
+                return false;
+
+            if (menuItems[selectedidx].Identifier == 0)
+                return false;
+
+            menuItemMaxCount = menuItems[selectedidx].MaxCount;
+            if (menuItemMaxCount <= 1)
+            {
+                if (!MenuCanvas.SpecialClickOnLongTap)
+                    return false;
+
+                if (isTouch)
+                    MenuCanvas_NormalClickRelease(sender, e, true);
+                else
+                    ClickMenuItemAndAcceptIfDone(selectedidx, true);
+                return true;
+            }
+
+            _countMenuItem = menuItems[selectedidx];
+            menuItemSelected = menuItems[selectedidx].Selected;
+            menuItemMainText = menuItems[selectedidx].MainText;
+
+            if (isTouch)
+            {
+                /* No further action upon release */
+                _menuTouchMoved = true;
+                _menuPreviousReleaseClick = false;
+                _menuPreviousReleaseClickIndex = -1;
+                _savedPreviousMenuReleaseTimeStamp = new DateTime();
+            }
 
             if ((selectionHow == SelectionMode.Multiple && !menuItemSelected)
                 || (selectionHow == SelectionMode.Single && selectedidx != MenuCanvas.SelectionIndex))
-                MenuCanvas_NormalClickRelease(sender, e, false); /* Normal click selection first */
+            {
+                /* Normal click selection first */
+                if (isTouch)
+                    MenuCanvas_NormalClickRelease(sender, e, false);
+                else
+                    ClickMenuItemAndAcceptIfDone(selectedidx, false);
+            }
 
+            BumpGamepadDialogSerial();
             if (_countMenuItem.MaxCount > 100)
             {
                 MenuCountWidthGrid.VerticalOptions = LayoutOptions.Start;
@@ -21061,11 +21236,50 @@ namespace GnollHackX.Pages.Game
             MenuCountOkButton.IsEnabled = true;
             MenuCountCancelButton.IsEnabled = true;
             MenuCountGrid.IsVisible = true;
-            if(MenuCountEntry.IsVisible)
+            if(MenuCountEntry.IsVisible && isTouch)
             {
                 if(GHApp.AutoFocusOnEntry)
                     MenuCountEntry.Focus();
             }
+            return true;
+        }
+
+        /* A click on a row by index, accepting the menu when the click completes it, as a tap does */
+        private bool ClickMenuItemAndAcceptIfDone(int idx, bool isLongTap)
+        {
+            bool okClicked = ClickMenuItem(idx, isLongTap) && MenuOKButton.IsEnabled;
+            if (okClicked)
+            {
+                MenuCanvas.InvalidateSurface();
+                PressMenuOKButton();
+            }
+            return okClicked;
+        }
+
+        /* Selects the row as its accelerator key does, then accepts the menu when the selection completes it or the
+           menu is single-select; returns true if OK was pressed */
+        private bool ActivateMenuItem(int idx, bool isLongTap)
+        {
+            bool doclickok = ClickMenuItem(idx, isLongTap);
+            _menuCountNumber = -1;
+            if (MenuOKButton.IsEnabled)
+            {
+                if (doclickok)
+                {
+                    MenuCanvas.InvalidateSurface();
+                    PressMenuOKButton();
+                    return true;
+                }
+                else
+                {
+                    if (MenuCanvas.SelectionHow == SelectionMode.Single)
+                    {
+                        PressMenuOKButton();
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         private void ClearHighlightMenuItems()
@@ -21163,6 +21377,10 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
+
+            /* The next gamepad press continues from the tapped row */
+            if (clickIdx >= 0)
+                SetMenuGamepadFocusFromTap(clickIdx);
 
             okClicked = doclickok && MenuOKButton.IsEnabled;
             if (okClicked)
@@ -21336,35 +21554,46 @@ namespace GnollHackX.Pages.Game
                 {
                     canvasheight = _savedMenuCanvasHeight;
                 }
-                bool isEquipment = MenuEquipmentSideShown;
-                float bottomScrollLimit = Math.Min(0, canvasheight - (isEquipment ? TotalEquipmentMenuHeight : TotalMenuHeight));
-                float scrollAmount = (canvasheight * delta) / (10 * 120);
-                lock (_menuScrollLock)
-                {
-                    if (isEquipment)
-                    {
-                        _menuEquipmentScrollOffset += scrollAmount;
-                        if (_menuEquipmentScrollOffset < bottomScrollLimit)
-                            _menuEquipmentScrollOffset = bottomScrollLimit;
-                        if (_menuEquipmentScrollOffset > 0)
-                            _menuEquipmentScrollOffset = 0;
-                        InterlockedEquipmentMenuScrollOffset = _menuEquipmentScrollOffset;
-                    }
-                    else
-                    {
-                        _menuScrollOffset += scrollAmount;
-                        if (_menuScrollOffset < bottomScrollLimit)
-                            _menuScrollOffset = bottomScrollLimit;
-                        if (_menuScrollOffset > 0)
-                            _menuScrollOffset = 0;
-                        InterlockedMenuScrollOffset = _menuScrollOffset;
-                    }
+                ScrollMenuByPixels((canvasheight * delta) / (10 * 120));
+            }
+        }
 
-                    _menuScrollSpeedOn = false;
-                    _menuScrollSpeed = 0;
-                    _menuScrollSpeedRecordOn = false;
-                    _menuScrollSpeedRecords.Clear();
+        /* Scrolls the menu by dy canvas pixels, positive towards the top, and stops any fling */
+        private void ScrollMenuByPixels(float dy)
+        {
+            float canvasheight;
+            lock (_savedMenuCanvasLock)
+            {
+                canvasheight = _savedMenuCanvasHeight;
+            }
+            bool isEquipment = MenuEquipmentSideShown;
+            float bottomScrollLimit = Math.Min(0, canvasheight - (isEquipment ? TotalEquipmentMenuHeight : TotalMenuHeight));
+            float scrollAmount = dy;
+            lock (_menuScrollLock)
+            {
+                if (isEquipment)
+                {
+                    _menuEquipmentScrollOffset += scrollAmount;
+                    if (_menuEquipmentScrollOffset < bottomScrollLimit)
+                        _menuEquipmentScrollOffset = bottomScrollLimit;
+                    if (_menuEquipmentScrollOffset > 0)
+                        _menuEquipmentScrollOffset = 0;
+                    InterlockedEquipmentMenuScrollOffset = _menuEquipmentScrollOffset;
                 }
+                else
+                {
+                    _menuScrollOffset += scrollAmount;
+                    if (_menuScrollOffset < bottomScrollLimit)
+                        _menuScrollOffset = bottomScrollLimit;
+                    if (_menuScrollOffset > 0)
+                        _menuScrollOffset = 0;
+                    InterlockedMenuScrollOffset = _menuScrollOffset;
+                }
+
+                _menuScrollSpeedOn = false;
+                _menuScrollSpeed = 0;
+                _menuScrollSpeedRecordOn = false;
+                _menuScrollSpeedRecords.Clear();
             }
         }
 
@@ -21491,6 +21720,7 @@ namespace GnollHackX.Pages.Game
                         _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle] = _menuScrollOffset;
                         _savedMenuEquipmentScrollOffset[(int)MenuCanvas.MenuStyle] = _menuEquipmentScrollOffset;
                         _savedEquipmentSideOn[(int)MenuCanvas.MenuStyle] = MenuEquipmentSideShown;
+                        _savedMenuFocusIndex[(int)MenuCanvas.MenuStyle] = MenuGamepadFocusIndex;
                     }
                 }
                 _menuScrollOffset = 0;
@@ -21599,6 +21829,7 @@ namespace GnollHackX.Pages.Game
                         _savedMenuScrollOffset[(int)MenuCanvas.MenuStyle] = _menuScrollOffset;
                         _savedMenuEquipmentScrollOffset[(int)MenuCanvas.MenuStyle] = _menuEquipmentScrollOffset;
                         _savedEquipmentSideOn[(int)MenuCanvas.MenuStyle] = MenuEquipmentSideShown;
+                        _savedMenuFocusIndex[(int)MenuCanvas.MenuStyle] = MenuGamepadFocusIndex;
                     }
                 }
                 _menuScrollOffset = 0;
@@ -22556,22 +22787,33 @@ namespace GnollHackX.Pages.Game
                 {
                     canvasheight = _savedTextCanvasHeight;
                 }
-                float bottomScrollLimit = Math.Min(0, canvasheight - TotalTextHeight);
-                float scrollAmount = (canvasheight * delta) / (10 * 120);
-                lock (_textScrollLock)
-                {
-                    _textScrollOffset += scrollAmount;
-                    if (_textScrollOffset < bottomScrollLimit)
-                        _textScrollOffset = bottomScrollLimit;
-                    if (_textScrollOffset > 0)
-                        _textScrollOffset = 0;
+                ScrollTextWindowByPixels((canvasheight * delta) / (10 * 120));
+            }
+        }
 
-                    _textScrollSpeedOn = false;
-                    _textScrollSpeed = 0;
-                    _textScrollSpeedRecordOn = false;
-                    _textScrollSpeedRecords.Clear();
-                    InterlockedTextScrollOffset = _textScrollOffset;
-                }
+        /* Scrolls the text window by dy canvas pixels, positive towards the top, and stops any fling */
+        private void ScrollTextWindowByPixels(float dy)
+        {
+            float canvasheight;
+            lock (_savedTextCanvasLock)
+            {
+                canvasheight = _savedTextCanvasHeight;
+            }
+            float bottomScrollLimit = Math.Min(0, canvasheight - TotalTextHeight);
+            float scrollAmount = dy;
+            lock (_textScrollLock)
+            {
+                _textScrollOffset += scrollAmount;
+                if (_textScrollOffset < bottomScrollLimit)
+                    _textScrollOffset = bottomScrollLimit;
+                if (_textScrollOffset > 0)
+                    _textScrollOffset = 0;
+
+                _textScrollSpeedOn = false;
+                _textScrollSpeed = 0;
+                _textScrollSpeedRecordOn = false;
+                _textScrollSpeedRecords.Clear();
+                InterlockedTextScrollOffset = _textScrollOffset;
             }
         }
 
@@ -23143,33 +23385,7 @@ namespace GnollHackX.Pages.Game
                                         if (cbi_cmd >= 0)
                                             GenericButton_Clicked(CommandCanvas, e, cbi_cmd);
                                         else
-                                        {
-                                            switch (cbi_cmd)
-                                            {
-                                                case -102:
-                                                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT2);
-                                                    GenericButton_Clicked(sender, e, -12);
-                                                    GenericButton_Clicked(sender, e, -10);
-                                                    GenericButton_Clicked(sender, e, GHApp.MapCommand('s'));
-                                                    break;
-                                                case -103:
-                                                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT2);
-                                                    GenericButton_Clicked(sender, e, -12);
-                                                    GenericButton_Clicked(sender, e, -10);
-                                                    GenericButton_Clicked(sender, e, -10);
-                                                    GenericButton_Clicked(sender, e, GHApp.MapCommand('.'));
-                                                    break;
-                                                case -104:
-                                                    OpenGameMenu();
-                                                    break;
-                                                case -105:
-                                                    GenericButton_Clicked(sender, e, -100 - (int)nh_keyfunc.NHKF_COUNT2);
-                                                    DoShowNumberPad();
-                                                    break;
-                                                default:
-                                                    break;
-                                            }
-                                        }
+                                            ExecuteCommandButtonCommand(cbi_cmd);
 
                                         /* Hide the canvas */
                                         CommandCanvas_Pressed(sender, e);
@@ -23329,6 +23545,16 @@ namespace GnollHackX.Pages.Game
             }
             bool prevForceAllMessages = ForceAllMessages;
             ForceAllMessages = !prevForceAllMessages;
+        }
+
+        /* Shows or hides the Extended Status Bar, scrolled to the top, as tapping the status bar does */
+        private void ToggleExtendedStatusBar()
+        {
+            ShowExtendedStatusBar = !ShowExtendedStatusBar;
+            lock (_statusOffsetLock)
+            {
+                _statusOffsetY = 0.0f;
+            }
         }
 
         //private readonly object _tipLock = new object();
@@ -23817,7 +24043,32 @@ namespace GnollHackX.Pages.Game
             textPaint.DrawTextOnCanvas(canvas, str, rect.Left + padding, ty + usedoffsety + (textPaint.FontMetrics.Ascent - textPaint.FontMetrics.Descent) / 2 - textPaint.FontMetrics.Ascent);
         }
 
+        /* The text and fill of the health orb, or of the mana orb when mana is true */
+        private static void GetOrbValues(GHStatusField[] fields, bool mana, out string val, out string maxval, out float orbfillpercentage)
+        {
+            int valIndex = mana ? (int)NhStatusFields.BL_ENE : (int)NhStatusFields.BL_HP;
+            int maxIndex = mana ? (int)NhStatusFields.BL_ENEMAX : (int)NhStatusFields.BL_HPMAX;
+            orbfillpercentage = 0.0f;
+            val = "";
+            maxval = "";
+            if (!string.IsNullOrEmpty(fields[valIndex].Text) && !string.IsNullOrEmpty(fields[maxIndex].Text))
+            {
+                val = fields[valIndex].Text;
+                maxval = fields[maxIndex].Text;
+                int cur = 0, curmax = 1;
+                if (int.TryParse(val, out cur) && int.TryParse(maxval, out curmax) && curmax > 0)
+                    orbfillpercentage = (float)cur / (float)curmax;
+                else if (!mana)
+                    orbfillpercentage = ((float)fields[valIndex].Percent) / 100.0f;
+            }
+        }
+
         private void DrawOrb(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage, bool showmax, bool isHighlighted)
+        {
+            DrawOrb(canvas, _mapOrbPaint, textPaint, orbBorderDest, fillcolor, val, maxval, orbfillpercentage, showmax, isHighlighted);
+        }
+
+        private void DrawOrb(SKCanvas canvas, SKPaint paint, GHSkiaFontPaint textPaint, SKRect orbBorderDest, SKColor fillcolor, string val, string maxval, float orbfillpercentage, bool showmax, bool isHighlighted)
         {
             float orbwidth = Math.Max(0.01f, orbBorderDest.Width / 230.0f * 210.0f);
             float orbheight = Math.Max(0.01f, orbBorderDest.Width / 230.0f * 210.0f);
@@ -23829,7 +24080,6 @@ namespace GnollHackX.Pages.Game
             //textPaint.TextAlign = SKTextAlign.Center;
             StartProfiling(GHProfilingStyle.Bitmap);
             {
-                SKPaint paint = _mapOrbPaint;
                 ResetPaint(paint);
 #if !GNH_MAUI
                 paint.FilterQuality = SKFilterQuality.High;
@@ -23997,6 +24247,8 @@ namespace GnollHackX.Pages.Game
 
         private void GetLineEntryText_Completed(object sender, EventArgs e)
         {
+            /* The on-screen keyboard's Enter closes the keyboard itself */
+            GHScreenKeyboard.MarkClosed();
             if (PlayingReplay)
                 return;
             if (GetLineGrid.IsVisible && GetLineOkButton.IsEnabled && GHApp.PressOkOnEntryCompleted)
@@ -24964,6 +25216,13 @@ namespace GnollHackX.Pages.Game
             {
                 /* Nothing */
             }
+            else if (IsRadialMenuOpen)
+            {
+                /* Character keys never reach the game while the radial menu is open; Escape closes it */
+                if (key == 27)
+                    HandleRadialSpecialKey(GHSpecialKey.Escape);
+                handled = true;
+            }
             else if (MoreCommandsGrid.IsVisible && MoreCommandsFilterEntry.IsFocused)
             {
                 handled = false;
@@ -25002,8 +25261,7 @@ namespace GnollHackX.Pages.Game
                 }
                 else
                 {
-                    bool doclickok = false;
-                    bool somethingFound = false;
+                    int foundIdx = -1;
                     //lock (MenuCanvas.MenuItemLock)
                     {
                         var menuItems = MenuCanvas.MenuItems;
@@ -25014,35 +25272,20 @@ namespace GnollHackX.Pages.Game
                         {
                             if (menuItems[idx].Accelerator == c)
                             {
-                                somethingFound = true;
-                                doclickok = ClickMenuItem(idx, false);
+                                foundIdx = idx;
                                 break;
                             }
                             else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (menuItems[idx].Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0 && menuItems[idx].HeadingGroupAccelerator == c
                                 && (_menuCountNumber < 0 || menuItems[idx].HeadingGroupAccelerator < '0' || menuItems[idx].HeadingGroupAccelerator > '9'))
                             {
-                                somethingFound = true;
-                                doclickok = ClickMenuItem(idx, false);
+                                foundIdx = idx;
                                 break;
                             }
                         }
                     }
-                    if (somethingFound)
+                    if (foundIdx >= 0)
                     {
-                        _menuCountNumber = -1;
-                        if (MenuOKButton.IsEnabled)
-                        {
-                            if (doclickok)
-                            {
-                                MenuCanvas.InvalidateSurface();
-                                PressMenuOKButton();
-                            }
-                            else
-                            {
-                                if (MenuCanvas.SelectionHow == SelectionMode.Single)
-                                    PressMenuOKButton();
-                            }
-                        }
+                        ActivateMenuItem(foundIdx, false);
                         handled = true;
                     }
                     else if (c >= '0' && c <= '9' && _menuCountNumber < int.MaxValue / 10 - 10)
@@ -25124,6 +25367,12 @@ namespace GnollHackX.Pages.Game
                     GHApp.MaybeWriteScreenLog("MARK frame " + frameId);
                 else
                     GHApp.MaybeWriteScreenLog("MARK failed for frame " + frameId);
+                handled = true;
+            }
+            else if (IsRadialMenuOpen)
+            {
+                /* The radial menu takes every key while it is open */
+                HandleRadialSpecialKey(key);
                 handled = true;
             }
             else if (TipView.IsVisible && (key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Space))
@@ -25473,6 +25722,8 @@ namespace GnollHackX.Pages.Game
             MenuCanvas.ShutDown();
             TextCanvas.ShutDown();
             CommandCanvas.ShutDown();
+            ShutDownRadial();
+            RadialCanvas.ShutDown();
         }
 
         private double _threadSafeWidth = 0;

@@ -56,12 +56,29 @@ namespace GnollHackM
         private static void OnKeyUp(object sender, KeyEventArgs e)
         {
             UpdateModifiers(e.KeyModifiers);
+            GHAvaloniaGamepad.TryHandleKey(e, false);
+            GHAvaloniaKeyLog.LogKey(e, false, GHAvaloniaGamepad.LastKeyDecision);
         }
 
         private static void OnKeyDown(object sender, KeyEventArgs e)
         {
+            RouteKeyDown(e);
+            GHAvaloniaKeyLog.LogKey(e, true, GHAvaloniaGamepad.LastKeyDecision);
+        }
+
+        private static void RouteKeyDown(KeyEventArgs e)
+        {
             UpdateModifiers(e.KeyModifiers);
             _keyDownRouted = false;
+
+            /* Back-grip keys go to the gamepad before the keyboard hook check, so they never reach the game */
+            if (GHAvaloniaGamepad.TryHandleKey(e, true))
+            {
+                _keyDownRouted = true;
+                return;
+            }
+            if (!IsModifierKey(e.Key))
+                GHGamepadService.NoteNonGamepadInput();
 
             if (!GHApp.IsKeyboardHookEnabled || IsModifierKey(e.Key))
                 return;
@@ -119,6 +136,12 @@ namespace GnollHackM
         }
 
         private static void OnTextInput(object sender, TextInputEventArgs e)
+        {
+            RouteTextInput(e);
+            GHAvaloniaKeyLog.LogText(e, _keyDownRouted);
+        }
+
+        private static void RouteTextInput(TextInputEventArgs e)
         {
             if (_keyDownRouted || !GHApp.IsKeyboardHookEnabled)
                 return;

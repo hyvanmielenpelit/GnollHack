@@ -24,9 +24,19 @@ done
     if [ -r /etc/os-release ]; then
         (. /etc/os-release; echo "os: ${PRETTY_NAME:-unknown} (${VERSION_ID:-?}, build ${BUILD_ID:-?})")
     fi
-    for name in SteamGamepadUI SteamDeck SteamAppId SteamOS XDG_SESSION_TYPE XDG_CURRENT_DESKTOP WAYLAND_DISPLAY DISPLAY; do
+    for name in SteamGamepadUI SteamDeck SteamAppId SteamGameId SteamClientLaunch SteamOS \
+        SDL_GAMECONTROLLER_ALLOW_STEAM_VIRTUAL_GAMEPAD SteamVirtualGamepadInfo \
+        XDG_SESSION_TYPE XDG_CURRENT_DESKTOP WAYLAND_DISPLAY DISPLAY; do
         printf '%s=%s\n' "$name" "$(printenv "$name" || echo '<unset>')"
     done
+    # Steam's ignore list names every controller it wraps, so only its start and length are logged
+    if [ -n "${SDL_GAMECONTROLLER_IGNORE_DEVICES+set}" ]; then
+        printf 'SDL_GAMECONTROLLER_IGNORE_DEVICES=%.120s (%s characters)\n' \
+            "$SDL_GAMECONTROLLER_IGNORE_DEVICES" "${#SDL_GAMECONTROLLER_IGNORE_DEVICES}"
+    else
+        echo 'SDL_GAMECONTROLLER_IGNORE_DEVICES=<unset>'
+    fi
+    echo "groups: $(id -Gn)"
     echo "arguments: $*"
 } >"$LOG" 2>&1
 

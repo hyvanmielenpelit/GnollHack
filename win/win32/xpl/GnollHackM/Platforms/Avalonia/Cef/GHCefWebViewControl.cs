@@ -207,29 +207,41 @@ namespace GnollHackM
                 Navigate(url);
         }
 
+        // WORKAROUND(WA-CEF-0004): CefBrowser.GoBack does nothing after links followed without a user gesture
+        /* Through the page's own history.back(), else the browser's GoBack when there is no main frame */
         public void GoBack()
         {
-            try
-            {
-                if (_browser != null && !_closeRequested)
-                    _browser.GoBack();
-            }
-            catch (Exception ex)
-            {
-                GHApp.MaybeWriteGHLog("GHCefWebViewControl: GoBack failed: " + ex.Message);
-            }
+            NavigateHistory(-1);
         }
 
         public void GoForward()
         {
+            NavigateHistory(1);
+        }
+
+        private void NavigateHistory(int offset)
+        {
             try
             {
-                if (_browser != null && !_closeRequested)
+                if (_browser == null || _closeRequested)
+                    return;
+                using (CefFrame frame = _browser.GetMainFrame())
+                {
+                    if (frame != null && frame.IsValid)
+                    {
+                        frame.ExecuteJavaScript(offset < 0 ? "history.back();" : "history.forward();", frame.Url, 1);
+                        return;
+                    }
+                }
+                if (offset < 0)
+                    _browser.GoBack();
+                else
                     _browser.GoForward();
             }
             catch (Exception ex)
             {
-                GHApp.MaybeWriteGHLog("GHCefWebViewControl: GoForward failed: " + ex.Message);
+                GHApp.MaybeWriteGHLog("GHCefWebViewControl: " + (offset < 0 ? "GoBack" : "GoForward") + " failed: "
+                    + ex.Message);
             }
         }
 
