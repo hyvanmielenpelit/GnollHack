@@ -376,3 +376,43 @@ single `Cancelled` event.
 
 Checks:
 - 2026-10-23 | SkiaSharp.Views.Maui.Core 4.153.1 | still-needed | SKTouchHandler at v4.153.1 still uses ActionIndex for Cancel; one issue search found nothing.
+
+## WA-SKIASHARP-0011: SKBlurStyle.Outer paints inside a rounded rectangle
+
+- Status: active
+- Added: 2026-10-29
+- GnollHack version: 3.32 (432)
+- Component: SkiaSharp
+- Package: SkiaSharp
+- Defective version: SkiaSharp 4.153.1
+- Platforms: all
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-29
+- Code: `win/win32/xpl/GnollHackX/GnollHackX/Gamepad/GHGamepadFocusGlow.cs` (`GHGamepadFocusGlow.DrawRowGlow`)
+- Remove when: the SkiaSharp release GnollHack uses draws nothing inside the shape with `SKBlurStyle.Outer` on a rounded rectangle, and Verify removal passes.
+
+**Symptom.** A glow drawn with `SKMaskFilter.CreateBlur(SKBlurStyle.Outer, sigma)` around a
+focused menu row paints the glow color inside the row as well: a solid band across a
+wide row, or the whole interior.
+
+**Cause.** Unknown. On a raster surface, `SKBlurStyle.Outer` on an `SKRoundRect` fills its
+interior. In a scratch app this happened at every size tested on SkiaSharp 4.153.1 and at
+some sizes on 3.119.4 (696x68 px with radius 12 was clean there, 696x200 px was not).
+Plain rectangles are unaffected. GPU surfaces were not tested.
+
+**Workaround.** The row glow is a `SKBlurStyle.Normal` blur drawn under
+`ClipRoundRect(..., SKClipOperation.Difference)`, so only the outside of the row is
+painted.
+
+**Verify removal.** On a SkiaSharp release that may fix it:
+- In a scratch console app, draw a 696x68 px rounded rectangle with radius 12 using
+  `SKMaskFilter.CreateBlur(SKBlurStyle.Outer, 6)` on a transparent raster surface, and read
+  the alpha of pixels well inside it (more than two sigmas from the edge). All must be 0.
+  Repeat at 200x68, 696x200 and 100x100 px.
+- Make `DrawRowGlow` use `SKBlurStyle.Outer` without the clip, build, and open an in-game
+  list menu with the gamepad focus shown: the focused row must show no band inside.
+
+Checks:
+- 2026-10-29 | SkiaSharp 4.153.1 | still-needed | Reproduced in a scratch app on 4.153.1 and 3.119.4; no issue found in mono/SkiaSharp.

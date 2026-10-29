@@ -24,7 +24,7 @@ A long press is 0.5 s. The D-pad, L1/R1 and stick directions repeat while held (
 every 0.09 s) where they navigate.
 
 **Pages outside the game.** The main menu and the About, Reset, Import/Export, Vault and Version
-pages work like the game menu: the D-pad or left stick moves a focus ring over the buttons, A
+pages work like the game menu: the D-pad or left stick moves a focus highlight over the buttons, A
 presses the focused button and B goes back (on the main menu B does nothing; its in-page popups
 take A and B as well). The main menu starts on Play Game, and the Reset page starts on Close.
 On the main menu the focus also reaches the Classic, Casual and Wizard Mode switches, between

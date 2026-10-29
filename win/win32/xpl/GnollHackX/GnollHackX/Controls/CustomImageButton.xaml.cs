@@ -35,6 +35,7 @@ namespace GnollHackX.Controls
                 if (UseVaryingTextColors)
                     customButton.TextColor = !IsEnabled ? DisabledTextColor : SelectedTextColor; // (_isPressed is true) _isPressed ? SelectedTextColor : NormalTextColor;
                 customCanvasView.InvalidateSurface();
+                InvalidateFocusGlow();
             };
             customButton.Released += (object sender, EventArgs args) =>
             {
@@ -42,6 +43,7 @@ namespace GnollHackX.Controls
                 if (UseVaryingTextColors)
                     customButton.TextColor = !IsEnabled ? DisabledTextColor : NormalTextColor; // (_isPressed is false) _isPressed ? SelectedTextColor : NormalTextColor;
                 customCanvasView.InvalidateSurface();
+                InvalidateFocusGlow();
             };
             customButton.Unfocused += (object sender, FocusEventArgs args) =>
             {
@@ -49,6 +51,7 @@ namespace GnollHackX.Controls
                 if (UseVaryingTextColors)
                     customButton.TextColor = !IsEnabled ? DisabledTextColor : NormalTextColor; // (_isPressed is false) _isPressed ? SelectedTextColor : NormalTextColor;
                 customCanvasView.InvalidateSurface();
+                InvalidateFocusGlow();
             };
             customButton.SizeChanged += (object sender, EventArgs args) =>
             {
@@ -212,7 +215,66 @@ namespace GnollHackX.Controls
                 _gamepadLookActive = active;
                 TextColor = TextColor;
                 customCanvasView.InvalidateSurface();
+                UpdateFocusGlow();
             }
+        }
+
+        /* Created on the first gamepad focus; reaches ImageGlowExtent beyond the button, takes no input and shows
+           only while the gamepad focus does */
+        private CustomCanvasView _focusGlowView;
+
+        /* The bitmap of the gamepad focus look: pressed or normal */
+        private SKImage GamepadFocusBitmap
+        {
+            get { return UseVaryingBackgroundImages && IsPressed ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap; }
+        }
+
+        private void UpdateFocusGlow()
+        {
+            bool show = _gamepadFocused && _gamepadLookActive;
+            if (show && _focusGlowView == null)
+            {
+                _focusGlowView = new CustomCanvasView
+                {
+                    Margin = new Thickness(-GHGamepadFocusGlow.ImageGlowExtent),
+                    HorizontalOptions = LayoutOptions.Fill,
+                    VerticalOptions = LayoutOptions.Fill,
+                    InputTransparent = true,
+                    EnableTouchEvents = false,
+                    IsVisible = false
+                };
+                _focusGlowView.PaintSurface += FocusGlowView_PaintSurface;
+                customGrid.Children.Insert(0, _focusGlowView);
+            }
+            if (_focusGlowView == null)
+                return;
+            _focusGlowView.IsVisible = show;
+            if (show)
+                _focusGlowView.InvalidateSurface();
+        }
+
+        private void InvalidateFocusGlow()
+        {
+            if (_focusGlowView != null && _focusGlowView.IsVisible)
+                _focusGlowView.InvalidateSurface();
+        }
+
+        private void FocusGlowView_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        {
+            SKImageInfo info = e.Info;
+            SKCanvas canvas = e.Surface.Canvas;
+            canvas.Clear();
+            if (!IsEnabled || _focusGlowView == null)
+                return;
+            SKImage bitmap = GamepadFocusBitmap;
+            if (bitmap == null)
+                return;
+            float dpScale = _focusGlowView.Width > 0 ? info.Width / (float)_focusGlowView.Width : 1.0f;
+            float pad = (float)Math.Ceiling(GHGamepadFocusGlow.ImageGlowExtent * dpScale);
+            SKRect rect = new SKRect(pad, pad, info.Width - pad, info.Height - pad);
+            if (rect.Width < 1 || rect.Height < 1)
+                return;
+            GHGamepadFocusGlow.DrawImageGlow(canvas, bitmap, rect, dpScale);
         }
 
         public void PerformClick()
@@ -311,7 +373,8 @@ namespace GnollHackX.Controls
                 {
                     TextColor = !value ? DisabledTextColor : IsPressed ? SelectedTextColor : NormalTextColor;
                 }
-                customCanvasView.InvalidateSurface(); 
+                customCanvasView.InvalidateSurface();
+                InvalidateFocusGlow();
             }
         }
         public bool UseVaryingTextColors
@@ -356,10 +419,11 @@ namespace GnollHackX.Controls
             SKCanvas canvas = surface.Canvas;
             float canvaswidth = info.Width; // customCanvasView.CanvasSize.Width;
             float canvasheight = info.Height; // customCanvasView.CanvasSize.Height;
+            bool gamepadFocusLook = _gamepadFocused && GHGamepadService.IsActive && IsEnabled;
 #if WINDOWS || GNH_AVALONIA
-            SKImage targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : IsPressed && IsEnabled ? GHApp.ButtonSelectedBitmap : IsHoverLook && IsEnabled ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap;
+            SKImage targetBitmap = gamepadFocusLook ? GamepadFocusBitmap : !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : IsPressed && IsEnabled ? GHApp.ButtonSelectedBitmap : IsHoverLook && IsEnabled ? GHApp.ButtonNormalBitmap : GHApp.ButtonDisabledBitmap;
 #else
-            SKImage targetBitmap = !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : !IsEnabled ? GHApp.ButtonDisabledBitmap : IsPressed ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap;
+            SKImage targetBitmap = gamepadFocusLook ? GamepadFocusBitmap : !UseVaryingBackgroundImages ? GHApp.ButtonNormalBitmap : !IsEnabled ? GHApp.ButtonDisabledBitmap : IsPressed ? GHApp.ButtonSelectedBitmap : GHApp.ButtonNormalBitmap;
 #endif
             if (targetBitmap == null)
                 return;
@@ -371,31 +435,14 @@ namespace GnollHackX.Controls
 #if !GNH_MAUI
                 paint.FilterQuality = SKFilterQuality.High;
 #endif
+                /* The gamepad focus brightens the bitmap; the pressed bitmap is shown as is */
+                if (gamepadFocusLook && targetBitmap != GHApp.ButtonSelectedBitmap)
+                    paint.ColorFilter = GHGamepadFocusGlow.FocusedImageColorFilter;
                 canvas.DrawImage(targetBitmap, sourcerect, targetrect,
 #if GNH_MAUI
                     new SKSamplingOptions(SKFilterMode.Linear),
 #endif
                     paint);
-            }
-
-            if (_gamepadFocused && GHGamepadService.IsActive)
-            {
-                /* Gamepad focus: a gold tint and a 3 dp rounded ring, inset within the button */
-                float dpScale = customCanvasView.Width > 0 ? canvaswidth / (float)customCanvasView.Width : 1.0f;
-                float strokeWidth = 3.0f * dpScale;
-                float radius = 0.18f * canvasheight;
-                SKRect ringRect = new SKRect(strokeWidth / 2, strokeWidth / 2, canvaswidth - strokeWidth / 2, canvasheight - strokeWidth / 2);
-                using (SKPaint focusPaint = new SKPaint())
-                {
-                    focusPaint.IsAntialias = true;
-                    focusPaint.Style = SKPaintStyle.Fill;
-                    focusPaint.Color = UIUtils.GamepadFocusTintSKColor;
-                    canvas.DrawRoundRect(ringRect, radius, radius, focusPaint);
-                    focusPaint.Style = SKPaintStyle.Stroke;
-                    focusPaint.StrokeWidth = strokeWidth;
-                    focusPaint.Color = UIUtils.GamepadFocusRingSKColor;
-                    canvas.DrawRoundRect(ringRect, radius, radius, focusPaint);
-                }
             }
         }
     }

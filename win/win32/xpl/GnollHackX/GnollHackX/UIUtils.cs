@@ -56,9 +56,7 @@ namespace GnollHackX
 
         public static readonly SKColor GHSemiTransparentBlack = new SKColor(0 , 0, 0, 128);
 
-        /* Gamepad focus: a gold tint and ring over CustomImageButton, and a gold background behind LabeledImageButton */
-        public static readonly SKColor GamepadFocusTintSKColor = new SKColor(0xFF, 0xBB, 0x00, 0x40);
-        public static readonly SKColor GamepadFocusRingSKColor = new SKColor(0xFF, 0xD2, 0x4D, 0xE6);
+        /* Gamepad focus: a gold background behind LabeledImageButton, RowImageButton and other highlighted views */
         public static readonly SKColor GamepadFocusBackgroundSKColor = new SKColor(0xFF, 0xBB, 0x00, 0x55);
         public static readonly Color GamepadFocusTintColor = Color.FromRgba(1.0, (double)0xBB / 255.0, 0.0, (double)0x40 / 255.0);
         public static readonly Color GamepadFocusRingColor = Color.FromRgba(1.0, (double)0xD2 / 255.0, (double)0x4D / 255.0, (double)0xE6 / 255.0);
