@@ -1343,6 +1343,9 @@ namespace GnollHackX.Pages.Game
                 _debugDashboard?.Dispose();
                 _menuDashboardTextPaint?.Dispose();
                 _menuDebugDashboard?.Dispose();
+                _menuGamepadFocusGlowPaint?.Dispose();
+                _menuGamepadFocusFillPaint?.Dispose();
+                _menuGamepadFocusImagePaint?.Dispose();
             }
             catch (Exception ex)
             {
