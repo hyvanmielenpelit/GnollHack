@@ -16,10 +16,13 @@ namespace GnollHackX.UnitTests
             Assert.Equal("Close", p.BackFallbackLabel);
             Assert.Null(p.ComposeKey);
             Assert.Null(p.ComposeLabel);
+            Assert.Null(p.ComposeFallback);
             Assert.Equal("top()", p.L3Call);
             Assert.Null(p.L3Label);
             Assert.Equal("Section", p.SectionLabel);
             Assert.Equal("Search", p.SearchLabel);
+            Assert.Equal("Area", p.ZoneLabel);
+            Assert.Equal("Actions", p.RowActionsLabel);
         }
 
         [Fact]
@@ -31,10 +34,13 @@ namespace GnollHackX.UnitTests
             Assert.Equal("Leave", p.BackFallbackLabel);
             Assert.Equal("compose", p.ComposeKey);
             Assert.Equal("Write", p.ComposeLabel);
+            Assert.Equal("textarea", p.ComposeFallback);
             Assert.Equal("bottom('m')", p.L3Call);
             Assert.Equal("Newest", p.L3Label);
             Assert.Equal("Message", p.SectionLabel);
             Assert.Equal("Search", p.SearchLabel);
+            Assert.Equal("Area", p.ZoneLabel);
+            Assert.Equal("Actions", p.RowActionsLabel);
         }
 
         [Fact]

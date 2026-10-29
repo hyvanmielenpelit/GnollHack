@@ -101,6 +101,9 @@ namespace GnollHackX.Controls
         /* The page has a sidebar area; the area of the last usable focus */
         private bool _hasSide = false;
         private char _lastArea = GHWebCandidate.MainArea;
+        /* From the last snapshot or zone call, for the hints only; operations decide from their own snapshot */
+        private bool _zoneMode = false;
+        private bool _rowActions = false;
         private bool _searchQueried = false;
         private bool _failureLogged = false;
         private bool _aArmed = false;
@@ -150,6 +153,8 @@ namespace GnollHackX.Controls
                     _host.ViewChanged += Host_ViewChanged;
                 _generation++;
                 _scriptPresent = false;
+                _zoneMode = false;
+                _rowActions = false;
                 ClearQueue();
                 HideKeyboard();
                 if (_mode == GHWebNavigatorMode.Edit)
@@ -246,6 +251,8 @@ namespace GnollHackX.Controls
             _hasSearch = false;
             _hasSide = false;
             _lastArea = GHWebCandidate.MainArea;
+            _zoneMode = false;
+            _rowActions = false;
             _failureLogged = false;
             ResetStick();
             IGHWebScriptHost host = _host;
@@ -294,6 +301,8 @@ namespace GnollHackX.Controls
             {
                 _generation++;
                 _scriptPresent = false;
+                _zoneMode = false;
+                _rowActions = false;
                 ClearQueue();
                 ResetStick();
                 RefreshHints();
@@ -357,8 +366,25 @@ namespace GnollHackX.Controls
             return true;
         }
 
+        /* X with a compose key, in every mode and on a press that would otherwise only reveal the ring; true if taken */
+        private bool HandleCompose(GHGamepadButtonEvent e)
+        {
+            string composeKey = _profile.ComposeKey;
+            if (e.Button != GHGamepadButton.X || composeKey == null)
+                return false;
+            if (e.Kind == GHGamepadButtonEventKind.Pressed && HasPage)
+            {
+                if (_mode == GHWebNavigatorMode.Toolbar)
+                    SetMode(GHWebNavigatorMode.Page, e.PressId);
+                Enqueue(gen => ComposeAsync(gen, composeKey), -1);
+            }
+            return true;
+        }
+
         private void HandlePageButton(GHGamepadButtonEvent e)
         {
+            if (HandleCompose(e))
+                return;
             if (e.RevealsUi)
             {
                 Enqueue(gen => RevealAsync(gen, null), -1);
@@ -386,13 +412,7 @@ namespace GnollHackX.Controls
                 return;
             case GHGamepadButton.X:
                 if (pressed)
-                {
-                    string composeKey = _profile.ComposeKey;
-                    if (composeKey != null)
-                        Enqueue(gen => ComposeAsync(gen, composeKey), -1);
-                    else
-                        Enqueue(ForwardAsync, -1);
-                }
+                    Enqueue(ForwardAsync, -1);
                 return;
             default:
                 break;
@@ -453,6 +473,8 @@ namespace GnollHackX.Controls
         /* A and B act even on a RevealsUi press, since typing makes the keyboard the active input */
         private void HandleEditButton(GHGamepadButtonEvent e)
         {
+            if (HandleCompose(e))
+                return;
             bool pressed = e.Kind == GHGamepadButtonEventKind.Pressed;
             switch (e.Button)
             {
@@ -490,6 +512,8 @@ namespace GnollHackX.Controls
 
         private void HandleToolbarButton(GHGamepadButtonEvent e)
         {
+            if (HandleCompose(e))
+                return;
             if (e.RevealsUi)
             {
                 _toolbar.HandleButton(e);
@@ -507,18 +531,7 @@ namespace GnollHackX.Controls
                 return;
             case GHGamepadButton.X:
                 if (pressed)
-                {
-                    string composeKey = _profile.ComposeKey;
-                    if (composeKey == null)
-                    {
-                        Enqueue(ForwardAsync, -1);
-                    }
-                    else if (HasPage)
-                    {
-                        SetMode(GHWebNavigatorMode.Page, e.PressId);
-                        Enqueue(gen => ComposeAsync(gen, composeKey), -1);
-                    }
-                }
+                    Enqueue(ForwardAsync, -1);
                 return;
             case GHGamepadButton.Menu:
                 if (pressed)
@@ -535,13 +548,16 @@ namespace GnollHackX.Controls
                 case GHGamepadButton.DPadDown:
                 case GHGamepadButton.LeftStickDown:
                     if (pressed)
+                    {
                         SetMode(GHWebNavigatorMode.Page, e.PressId);
+                        Enqueue(gen => ReturnToPageAsync(gen, false), -1);
+                    }
                     return;
                 case GHGamepadButton.View:
                     if (pressed)
                     {
                         SetMode(GHWebNavigatorMode.Page, e.PressId);
-                        Enqueue(ArticleAsync, -1);
+                        Enqueue(gen => ReturnToPageAsync(gen, true), -1);
                     }
                     return;
                 case GHGamepadButton.DPadUp:
@@ -765,7 +781,29 @@ namespace GnollHackX.Controls
             _viewportHeight = snapshot.ViewportHeight;
             if (GHWebSpatialNavigation.HasUsableFocus(snapshot))
                 NoteArea(snapshot.Candidates[snapshot.FocusPosition].Area);
+            NoteZoneState(snapshot.ZoneMode, snapshot.HasRowActions);
             return snapshot;
+        }
+
+        /* A zone call (zone, zoneMove, rowActions), whose result ends with the page's zone state */
+        private async Task<string> ZoneCallAsync(int generation, string call)
+        {
+            string result = await CallAsync(generation, call);
+            bool zoneMode;
+            bool rowActions;
+            if (generation == _generation && GHWebSnapshot.TryParseResultFlags(result, out zoneMode, out rowActions))
+                NoteZoneState(zoneMode, rowActions);
+            return result;
+        }
+
+        /* The zone state the hints show */
+        private void NoteZoneState(bool zoneMode, bool rowActions)
+        {
+            if (zoneMode == _zoneMode && rowActions == _rowActions)
+                return;
+            _zoneMode = zoneMode;
+            _rowActions = rowActions;
+            RefreshHints();
         }
 
         /* The snapshot an operation starts with; null when the call failed, or when the ring was hidden and the
@@ -837,9 +875,20 @@ namespace GnollHackX.Controls
             RefreshHints();
         }
 
-        /* View in Page mode: the sidebar from the article or another area, when the page has one; else the toolbar */
+        /* View in Page mode: the next zone, wrapping, on a page with zones; else the sidebar from the article or another
+           area, when the page has one; else the toolbar */
         private async Task ViewAsync(int generation, int pressId)
         {
+            GHWebSnapshot s = await SnapshotAsync(generation);
+            if (generation != _generation)
+                return;
+            if (s != null && s.ZoneMode)
+            {
+                await ZoneCallAsync(generation, "zone('c')");
+                if (generation == _generation && GHGamepadService.IsActive)
+                    await SetVisibleAsync(generation, true);
+                return;
+            }
             if (_hasSide && _lastArea != GHWebCandidate.SideArea)
             {
                 string result = await CallAsync(generation, "area('s')");
@@ -854,6 +903,22 @@ namespace GnollHackX.Controls
                 }
             }
             SetMode(GHWebNavigatorMode.Toolbar, pressId);
+        }
+
+        /* Down or View from the toolbar, with Page mode already set: the last zone on a page with zones; else for View
+           the article */
+        private async Task ReturnToPageAsync(int generation, bool view)
+        {
+            GHWebSnapshot s = await SnapshotAsync(generation);
+            if (generation != _generation)
+                return;
+            if (s != null && s.ZoneMode)
+            {
+                await ZoneCallAsync(generation, "zone('r')");
+                return;
+            }
+            if (view)
+                await ArticleAsync(generation);
         }
 
         /* View from the toolbar: the article */
@@ -890,6 +955,29 @@ namespace GnollHackX.Controls
             await CallAsync(generation, call);
         }
 
+        /* A direction on a page with zones: Up and Down move within the zone, scrolling where the next stop is far,
+           and Up from the top of the first zone goes to the toolbar; Left and Right go to the previous or next zone */
+        private async Task ZoneDirectionAsync(int generation, GHWebSnapshot s, GHWebDirection dir, int pressId)
+        {
+            switch (dir)
+            {
+            case GHWebDirection.Up:
+            case GHWebDirection.Down:
+                double step = GHWebSpatialNavigation.ScrollStep(s.ViewportHeight);
+                int moveDir = dir == GHWebDirection.Up ? -1 : 1;
+                string moved = await ZoneCallAsync(generation, "zoneMove(" + Int(moveDir) + "," + Num(step) + ")");
+                if (dir == GHWebDirection.Up && GHWebSnapshot.ResultValue(moved) == "x" && generation == _generation)
+                    SetMode(GHWebNavigatorMode.Toolbar, pressId);
+                break;
+            case GHWebDirection.Left:
+                await ZoneCallAsync(generation, "zone('p')");
+                break;
+            default:
+                await ZoneCallAsync(generation, "zone('n')");
+                break;
+            }
+        }
+
         private async Task DirectionAsync(int generation, GHWebDirection dir, int pressId)
         {
             if (_mode == GHWebNavigatorMode.Edit)
@@ -909,6 +997,12 @@ namespace GnollHackX.Controls
                 s = await SnapshotAsync(generation);
                 if (s == null)
                     return;
+            }
+
+            if (s.ZoneMode)
+            {
+                await ZoneDirectionAsync(generation, s, dir, pressId);
+                return;
             }
 
             if (!GHWebSpatialNavigation.HasUsableFocus(s))
@@ -1017,23 +1111,43 @@ namespace GnollHackX.Controls
             }
         }
 
+        /* Y: the next secondary control of the focused row when it has any, else the page's search field */
         private async Task SearchAsync(int generation)
         {
-            if (await BeginAsync(generation) == null)
+            GHWebSnapshot s = await BeginAsync(generation);
+            if (s == null)
                 return;
+            if (s.HasRowActions)
+            {
+                await ZoneCallAsync(generation, "rowActions()");
+                return;
+            }
             string result = await CallAsync(generation, "search()");
             if (result != null)
                 HandleActivation(result);
         }
 
-        /* X with a compose key: focuses the element marked with the key and activates it, which starts editing a text
-           field */
+        /* X with a compose key: ends an edit in progress, focuses the element marked with the key (else the profile's
+           fallback), shows the ring and activates the element, which starts editing a text field. Without
+           BeginAsync's reveal step, so that the first press after pointer use already writes. */
         private async Task ComposeAsync(int generation, string key)
         {
-            if (await BeginAsync(generation) == null)
+            if (_mode == GHWebNavigatorMode.Edit)
+            {
+                await EndEditAsync(generation);
+                if (generation != _generation)
+                    return;
+            }
+            if (await SnapshotAsync(generation) == null)
                 return;
-            string focused = await CallAsync(generation, "focusMarked(" + Str(key) + ")");
+            string fallback = _profile.ComposeFallback;
+            string call = fallback != null
+                ? "focusMarked(" + Str(key) + "," + Str(fallback) + ")"
+                : "focusMarked(" + Str(key) + ")";
+            string focused = await CallAsync(generation, call);
             if (focused == null || focused == "F~n" || generation != _generation)
+                return;
+            if (GHGamepadService.IsActive && await SetVisibleAsync(generation, true) == null)
                 return;
             string result = await CallAsync(generation, "activate()");
             if (result != null)
@@ -1371,9 +1485,15 @@ namespace GnollHackX.Controls
                 }
                 hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.DPad, "Move"));
                 hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.RightStick, "Scroll"));
-                hints.Add(new GHGamepadHint(GHGamepadButton.View,
-                    _hasSide && _lastArea != GHWebCandidate.SideArea ? "Sidebar" : "Toolbar", false));
-                if (_hasSearch)
+                string viewLabel;
+                if (_zoneMode)
+                    viewLabel = profile.ZoneLabel;
+                else
+                    viewLabel = _hasSide && _lastArea != GHWebCandidate.SideArea ? "Sidebar" : "Toolbar";
+                hints.Add(new GHGamepadHint(GHGamepadButton.View, viewLabel, false));
+                if (_zoneMode && _rowActions)
+                    hints.Add(new GHGamepadHint(GHGamepadButton.Y, profile.RowActionsLabel, false));
+                else if (_hasSearch)
                     hints.Add(new GHGamepadHint(GHGamepadButton.Y, profile.SearchLabel, false));
                 hints.Add(GHGamepadHint.Pair(GHGamepadButton.LB, GHGamepadButton.RB, profile.SectionLabel));
                 hints.Add(GHGamepadHint.Pair(GHGamepadButton.LT, GHGamepadButton.RT, "Page"));

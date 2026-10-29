@@ -129,9 +129,52 @@ namespace GnollHackX.UnitTests
             Assert.Equal('m', s.FocusKind);
 
             Assert.True(GHWebSnapshot.TryParse("S~3~800~600~1~0~0~0~0~-1~~5,b,m,0,0,30,10", out s));
-            Assert.False(s.Editing || s.RingHidden || s.FocusLost);
+            Assert.False(s.Editing || s.RingHidden || s.FocusLost || s.ZoneMode || s.HasRowActions);
             Assert.Equal(-1, s.FocusPosition);
             Assert.Equal('\0', s.FocusKind);
+        }
+
+        [Fact]
+        public void Parse_ZoneAndRowFlags()
+        {
+            GHWebSnapshot s;
+            Assert.True(GHWebSnapshot.TryParse("S~4~800~600~1~0~0~0~0~0~zr~5,b,s,0,0,30,10", out s));
+            Assert.True(s.ZoneMode);
+            Assert.True(s.HasRowActions);
+            Assert.False(s.Editing);
+
+            Assert.True(GHWebSnapshot.TryParse("S~5~800~600~1~0~0~0~0~0~z~5,b,s,0,0,30,10", out s));
+            Assert.True(s.ZoneMode);
+            Assert.False(s.HasRowActions);
+        }
+
+        [Theory]
+        [InlineData("F~b~zr", true, true, "b")]
+        [InlineData("F~b~z", true, false, "b")]
+        [InlineData("D~s~", false, false, "s")]
+        [InlineData("F~x~z", true, false, "x")]
+        [InlineData("F~t~z", true, false, "t")]
+        public void ResultFlags_ParseTrailingField(string result, bool zoneMode, bool rowActions, string value)
+        {
+            bool z;
+            bool r;
+            Assert.True(GHWebSnapshot.TryParseResultFlags(result, out z, out r));
+            Assert.Equal(zoneMode, z);
+            Assert.Equal(rowActions, r);
+            Assert.Equal(value, GHWebSnapshot.ResultValue(result));
+        }
+
+        [Theory]
+        [InlineData("F~n")]
+        [InlineData("F~b")]
+        [InlineData("")]
+        [InlineData(null)]
+        public void ResultFlags_AbsentWithoutTrailingField(string result)
+        {
+            bool z;
+            bool r;
+            Assert.False(GHWebSnapshot.TryParseResultFlags(result, out z, out r));
+            Assert.False(z || r);
         }
 
         [Fact]

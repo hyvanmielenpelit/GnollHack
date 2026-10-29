@@ -20,6 +20,9 @@ namespace GnollHackX
         /* The X hint with ComposeKey */
         public string ComposeLabel { get; set; }
 
+        /* A CSS selector X falls back to when nothing carries ComposeKey; null for none */
+        public string ComposeFallback { get; set; }
+
         /* The page script call of L3 */
         public string L3Call { get; set; }
 
@@ -32,6 +35,12 @@ namespace GnollHackX
         /* The Y hint */
         public string SearchLabel { get; set; }
 
+        /* The View hint on a page with zones */
+        public string ZoneLabel { get; set; }
+
+        /* The Y hint when the focus is in a row with secondary controls */
+        public string RowActionsLabel { get; set; }
+
         /* Web pages such as the wiki */
         public static GHWebGamepadProfile CreateDefault()
         {
@@ -41,10 +50,13 @@ namespace GnollHackX
             profile.BackFallbackLabel = "Close";
             profile.ComposeKey = null;
             profile.ComposeLabel = null;
+            profile.ComposeFallback = null;
             profile.L3Call = "top()";
             profile.L3Label = null;
             profile.SectionLabel = "Section";
             profile.SearchLabel = "Search";
+            profile.ZoneLabel = "Area";
+            profile.RowActionsLabel = "Actions";
             return profile;
         }
 
@@ -57,10 +69,13 @@ namespace GnollHackX
             profile.BackFallbackLabel = "Leave";
             profile.ComposeKey = "compose";
             profile.ComposeLabel = "Write";
+            profile.ComposeFallback = "textarea";
             profile.L3Call = "bottom('m')";
             profile.L3Label = "Newest";
             profile.SectionLabel = "Message";
             profile.SearchLabel = "Search";
+            profile.ZoneLabel = "Area";
+            profile.RowActionsLabel = "Actions";
             return profile;
         }
     }

@@ -99,6 +99,10 @@ namespace GnollHackX
         public bool Editing { get; set; }
         /* The page's initial focus is not in view yet; showing the ring scrolls it into view */
         public bool InitialPending { get; set; }
+        /* The page has zones and no layer is open: directions, View and the toolbar go through the zone calls */
+        public bool ZoneMode { get; set; }
+        /* The focus is in a row that has visible secondary controls, which Y reaches */
+        public bool HasRowActions { get; set; }
         public List<GHWebCandidate> Candidates { get; }
 
         /* The focused candidate's kind, or '\0' without a focus */
@@ -110,6 +114,32 @@ namespace GnollHackX
                     return '\0';
                 return Candidates[FocusPosition].Kind;
             }
+        }
+
+        /* The state flags of a zone call's result, X~value~flags, with the snapshot's letters z and r; false when the
+           result has no flags field */
+        public static bool TryParseResultFlags(string result, out bool zoneMode, out bool hasRowActions)
+        {
+            zoneMode = false;
+            hasRowActions = false;
+            if (string.IsNullOrEmpty(result))
+                return false;
+            string[] parts = result.Split('~');
+            if (parts.Length < 3)
+                return false;
+            string flags = parts[parts.Length - 1];
+            zoneMode = flags.IndexOf('z') >= 0;
+            hasRowActions = flags.IndexOf('r') >= 0;
+            return true;
+        }
+
+        /* The value field of a zone call's result: the second field, or null without one */
+        public static string ResultValue(string result)
+        {
+            if (string.IsNullOrEmpty(result))
+                return null;
+            string[] parts = result.Split('~');
+            return parts.Length >= 2 ? parts[1] : null;
         }
 
         /* False, with a null snapshot, for a wrong field count or prefix, an unparsable or non-finite number, a
@@ -165,6 +195,12 @@ namespace GnollHackX
                     break;
                 case 'p':
                     result.InitialPending = true;
+                    break;
+                case 'z':
+                    result.ZoneMode = true;
+                    break;
+                case 'r':
+                    result.HasRowActions = true;
                     break;
                 default:
                     break;
