@@ -2448,6 +2448,12 @@ namespace GnollHackX
             });
         }
 
+        /* One-button message box from GHApp.DisplayMessageBox; returns before it is dismissed */
+        public void DisplayMessageBoxAlert(string title, string message, string buttonText)
+        {
+            DisplayAlertGrid(title, message, buttonText, GHColors.Orange);
+        }
+
         private void DisplayNewAlert()
         {
             if (_alertQueue.Count > 0)

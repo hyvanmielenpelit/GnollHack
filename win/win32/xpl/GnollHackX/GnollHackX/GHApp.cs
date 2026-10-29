@@ -13892,6 +13892,10 @@ namespace GnollHackX
             {
                 await popupPage.ShowMessagePopupAsync(title, message, cancel);
             }
+            else if (page is MainPage mainPage)
+            {
+                mainPage.DisplayMessageBoxAlert(title, message, cancel);
+            }
             else
             {
                 IsKeyboardHookEnabled = false;

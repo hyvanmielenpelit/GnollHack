@@ -23,7 +23,7 @@ using Xamarin.Forms.Xaml;
 namespace GnollHackX.Pages.MainScreen
 #endif
 {
-    public partial class DisplayFilePage : CustomModalPage, ICloseablePage, IGHGamepadHandlingPage
+    public partial class DisplayFilePage : CustomModalPage, ICloseablePage, IGHGamepadHandlingPage, IMessagePopupPage, IGHGamepadPopupPage
     {
         private string _fileName;
         private int _fixedWidth;
@@ -106,7 +106,9 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     try
                     {
-                        if (CloseButton.IsEnabled)
+                        if (MessagePopup.IsPopupOpen)
+                            MessagePopup.ClosePopup();
+                        else if (CloseButton.IsEnabled)
                             await ClosePageAsync(true);
                     }
                     catch (Exception ex)
@@ -125,6 +127,11 @@ namespace GnollHackX.Pages.MainScreen
         private bool _backPressed = false;
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
         {
+            if (MessagePopup.IsPopupOpen)
+            {
+                MessagePopup.ClosePopup();
+                return false;
+            }
             if (!_backPressed)
             {
                 await ClosePageAsync(false);
@@ -489,5 +496,19 @@ namespace GnollHackX.Pages.MainScreen
                 System.Diagnostics.Debug.WriteLine(ex);
             }
         }
+
+        public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e) => MessagePopup.HandleGamepadButton(e);
+
+        public bool IsPopupOpen => MessagePopup.IsPopupOpen;
+        public void ClosePopup() => MessagePopup.ClosePopup();
+        public bool SendKeyToPopup(int key, bool isCtrl, bool isMeta) => MessagePopup.SendKeyToPopup(key, isCtrl, isMeta);
+        public bool SendSpecialKeyToPopup(GHSpecialKey spkey, bool isCtrl, bool isMeta, bool isShift) => MessagePopup.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
+        public Task<bool> ShowMessagePopupAsync(string title, string message, string okButtonText, string cancelButtonText = null,
+#if GNH_MAUI
+            Microsoft.Maui.Graphics.Color titleColor = null, bool acceptEnterSpaceForOkCancel = false
+#else
+            Color? titleColor = null, bool acceptEnterSpaceForOkCancel = false
+#endif
+            ) => MessagePopup.ShowMessagePopupAsync(title, message, okButtonText, cancelButtonText, titleColor, acceptEnterSpaceForOkCancel);
     }
  }

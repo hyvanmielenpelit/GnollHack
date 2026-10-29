@@ -62,9 +62,16 @@ A only focuses the field; Steam + X opens the keyboard by hand. `GNOLLHACK_STEAM
 allows it on any Linux session, and `GNOLLHACK_STEAM_KEYBOARD_LAUNCH` (`xdg-open`, the default,
 `steam` or `launcher`) picks how the `steam://open/keyboard` link is opened.
 
-Pages that keep the keyboard adapter (the Overseer, and the developer-only editor and performance
-suite): A is Enter, B is Escape (closes the page), directions are arrow keys, L1/R1 are Page Up
-and Page Down.
+Pages that keep the keyboard adapter (the Overseer, the tombstone, and the developer-only editor
+and performance suite) receive A as Enter, B as Escape, directions as arrow keys and L1/R1 as
+Page Up and Page Down, but act only on the keys they handle: the Overseer on B (Escape, with its
+close confirmation), the tombstone on A or B (either dismisses it), and the editor and the
+performance suite on B, which closes them.
+
+**Message boxes.** Every page shows its message boxes (errors, confirmations such as Confirm
+Deletion) as an in-page popup, which takes the controller: Left/Right move between its buttons,
+A presses the focused one, and B is Cancel, or OK when there is no Cancel. On the main menu they
+appear in its alert overlay.
 
 ### On the Map
 

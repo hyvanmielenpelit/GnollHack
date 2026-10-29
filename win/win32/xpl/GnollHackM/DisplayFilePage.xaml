@@ -33,6 +33,7 @@
                     <controls:CustomImageButton Grid.Column="1" Text="Close" x:Name="CloseButton2" WidthRequest="135" Clicked="CloseButton_Clicked" FontFamily="Diablo" FontSize="19" TextColor="White" BackgroundColor="Transparent" HorizontalOptions="Start" VerticalOptions="Fill" />
                 </Grid>
             </Grid>
+            <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>
     
 </gnh:CustomModalPage>
