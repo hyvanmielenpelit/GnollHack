@@ -410,7 +410,8 @@ namespace GnollHackX.Pages.MainScreen
 
         /* Gamepad focus: Close, or Share and Close; B closes the page. While the text label shows, D-pad Up/Down
            scroll it by a line, held to repeat, the left and right sticks scroll it continuously by their vertical
-           deflection, and LB/RB by a page. The HTML view leaves only the buttons. */
+           deflection, LB/RB by a page, and LT/RT jump to the start and end of the text. The HTML view leaves
+           only the buttons. */
         private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
 
         /* A text line in font sizes */
@@ -465,6 +466,11 @@ namespace GnollHackX.Pages.MainScreen
                         case GHGamepadButton.RB:
                             if (step)
                                 TextLabel.ScrollPage(e.Button == GHGamepadButton.LB ? -1 : 1);
+                            return true;
+                        case GHGamepadButton.LT:
+                        case GHGamepadButton.RT:
+                            if (e.Kind == GHGamepadButtonEventKind.Pressed)
+                                TextLabel.ScrollToEdge(e.Button == GHGamepadButton.LT ? -1 : 1);
                             return true;
                         default:
                             break;

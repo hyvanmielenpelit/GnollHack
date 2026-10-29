@@ -11591,7 +11591,7 @@ namespace GnollHackX
             return true;
         }
 
-        private static Span CreateLinkSpan(ContentPage contentPage, string text, string browserTitle, string url)
+        private static MessagePopupView.PopupLink CreateLink(ContentPage contentPage, string text, string browserTitle, string url)
         {
             var linkSpan = new Span
             {
@@ -11601,13 +11601,14 @@ namespace GnollHackX
                 FontFamily = "Underwood"
             };
 
+            Func<Task> open = () => OpenBrowser(contentPage, browserTitle, new Uri(url));
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += async (s, e) =>
             {
-                await OpenBrowser(contentPage, browserTitle, new Uri(url));
+                await open();
             };
             linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
-            return linkSpan;
+            return new MessagePopupView.PopupLink { Span = linkSpan, Open = open };
         }
 
         /* AI Data Processing Consent (Apple Guideline 5.1.2) */
@@ -11626,11 +11627,11 @@ namespace GnollHackX
                 FontFamily = "Underwood"
             });
 
-            Span termsSpan = CreateLinkSpan(contentPage, "Terms of Service", "Terms of Service", GHConstants.OverseerTermsOfServicePage);
-            formattedConsentMessage.Spans.Add(termsSpan);
+            MessagePopupView.PopupLink termsLink = CreateLink(contentPage, "Terms of Service", "Terms of Service", GHConstants.OverseerTermsOfServicePage);
+            formattedConsentMessage.Spans.Add(termsLink.Span);
             formattedConsentMessage.Spans.Add(new Span { Text = " and the ", FontFamily = "Underwood" });
-            Span privacySpan = CreateLinkSpan(contentPage, "Privacy Policy", "Privacy Policy", GHConstants.OverseerPrivacyPolicyPage);
-            formattedConsentMessage.Spans.Add(privacySpan);
+            MessagePopupView.PopupLink privacyLink = CreateLink(contentPage, "Privacy Policy", "Privacy Policy", GHConstants.OverseerPrivacyPolicyPage);
+            formattedConsentMessage.Spans.Add(privacyLink.Span);
 
             formattedConsentMessage.Spans.Add(new Span
             {
@@ -11644,7 +11645,7 @@ namespace GnollHackX
             bool accepted = await messagePopup.ShowMessagePopupAsync(
                 "Gnoll Overseer Terms and AI Data",
                 formattedConsentMessage,
-                new List<Span> { termsSpan, privacySpan },
+                new List<MessagePopupView.PopupLink> { termsLink, privacyLink },
                 "I Agree",
                 "Cancel");
 
@@ -11660,21 +11661,22 @@ namespace GnollHackX
                 FontFamily = "Underwood"
             });
 
-            Span overseerTermsSpan = CreateLinkSpan(contentPage, "Gnoll Overseer Terms of Service", "Terms of Service", GHConstants.OverseerTermsOfServicePage);
-            Span overseerPrivacySpan = CreateLinkSpan(contentPage, "Gnoll Overseer Privacy Policy", "Privacy Policy", GHConstants.OverseerPrivacyPolicyPage);
-            Span appPrivacySpan = CreateLinkSpan(contentPage, "GnollHack App Privacy Policy", "Privacy Policy", GHConstants.GnollHackAppPrivacyPolicyPage);
+            MessagePopupView.PopupLink overseerTermsLink = CreateLink(contentPage, "Gnoll Overseer Terms of Service", "Terms of Service", GHConstants.OverseerTermsOfServicePage);
+            MessagePopupView.PopupLink overseerPrivacyLink = CreateLink(contentPage, "Gnoll Overseer Privacy Policy", "Privacy Policy", GHConstants.OverseerPrivacyPolicyPage);
+            MessagePopupView.PopupLink appPrivacyLink = CreateLink(contentPage, "GnollHack App Privacy Policy", "Privacy Policy", GHConstants.GnollHackAppPrivacyPolicyPage);
             /* A half-height blank line between the links keeps them apart as tap targets */
-            formattedLegalMessage.Spans.Add(overseerTermsSpan);
+            formattedLegalMessage.Spans.Add(overseerTermsLink.Span);
             formattedLegalMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine, FontFamily = "Underwood", FontSize = 8 });
-            formattedLegalMessage.Spans.Add(overseerPrivacySpan);
+            formattedLegalMessage.Spans.Add(overseerPrivacyLink.Span);
             formattedLegalMessage.Spans.Add(new Span { Text = Environment.NewLine + Environment.NewLine, FontFamily = "Underwood", FontSize = 8 });
-            formattedLegalMessage.Spans.Add(appPrivacySpan);
+            formattedLegalMessage.Spans.Add(appPrivacyLink.Span);
 
             await messagePopup.ShowMessagePopupAsync(
                 "Legal",
                 formattedLegalMessage,
-                new List<Span> { overseerTermsSpan, overseerPrivacySpan, appPrivacySpan },
-                "Close");
+                new List<MessagePopupView.PopupLink> { overseerTermsLink, overseerPrivacyLink, appPrivacyLink },
+                "Close",
+                focusFirstLink: true);
         }
 
         public static bool IsPageOnTopOfModalNavigationStack(Page page)

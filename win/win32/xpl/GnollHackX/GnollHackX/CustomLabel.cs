@@ -1360,6 +1360,35 @@ namespace GnollHackX
 
         private const float PageScrollFraction = 0.9f;
 
+        /* Scrolls a scrollable label to the start (direction -1) or the end (+1) of the text; stops a fling or
+           spring-back in progress. Returns true if the text moved. */
+        public bool ScrollToEdge(int direction)
+        {
+            if (!IsScrollable || direction == 0)
+                return false;
+            float canvasheight = InterlockedCanvasHeight;
+            if (canvasheight <= 0f)
+                return false;
+            bool moved;
+            lock (_textScrollLock)
+            {
+                float bottomScrollLimit = Math.Min(0, canvasheight - TextHeight);
+                float oldoffset = _textScrollOffset;
+                _textScrollOffset = direction < 0 ? 0 : bottomScrollLimit;
+                _textScrollSpeed = 0;
+                if (TextScrollSpeedOn)
+                    TextScrollSpeedOn = false;
+                InterlockedTextScrollOffset = _textScrollOffset;
+                moved = _textScrollOffset != oldoffset;
+            }
+            /* An explicit jump wins over the initial roll-down of the first paint */
+            bool rollDownPending = CalculateInitialYPos;
+            CalculateInitialYPos = false;
+            if (moved || rollDownPending)
+                InvalidateSurface();
+            return moved;
+        }
+
         //private void Base_SizeChanged(object sender, EventArgs e)
         //{
         //    if(_currentWidth > 0 && _currentHeight > 0)
