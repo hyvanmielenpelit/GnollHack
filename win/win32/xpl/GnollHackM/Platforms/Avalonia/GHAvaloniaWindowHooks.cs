@@ -34,7 +34,7 @@ namespace GnollHackM
                 window.Icon = icon;
 
             /* Windowed Mode is read at startup; a changed setting applies after a restart, as on WinUI */
-            bool fullScreen = IsFullScreenRequested() || !Preferences.Get("WindowedMode", false);
+            bool fullScreen = GHApp.IsFullScreenForced || !Preferences.Get("WindowedMode", false);
             if (fullScreen)
             {
                 window.WindowState = AvWindowState.FullScreen;
@@ -80,24 +80,6 @@ namespace GnollHackM
                 if (ReferenceEquals(MainWindow, window))
                     MainWindow = null;
             };
-        }
-
-        /* Steam's Gaming Mode sets SteamGamepadUI=1 */
-        private static bool IsFullScreenRequested()
-        {
-            if (Environment.GetEnvironmentVariable("SteamGamepadUI") == "1")
-                return true;
-
-            string[] args = Environment.GetCommandLineArgs();
-            if (args != null)
-            {
-                foreach (string arg in args)
-                {
-                    if (string.Equals(arg, "--fullscreen", StringComparison.OrdinalIgnoreCase))
-                        return true;
-                }
-            }
-            return false;
         }
 
         /* Windowed bounds in this flavor's own preferences: position in physical pixels (Window.Position),

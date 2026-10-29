@@ -227,7 +227,7 @@ namespace GnollHackX
 
             SetMirroredOptionsToDefaults();
             DarkMode = Preferences.Get("DarkMode", false);
-            WindowedMode = Preferences.Get("WindowedMode", false);
+            WindowedMode = Preferences.Get("WindowedMode", false) && !IsFullScreenForced;
             //Edge2Edge = Preferences.Get("Edge2Edge", false); /* In CreateMauiApp */
             HideAndroidNavigationBar = Preferences.Get("HideAndroidNavigationBar", GHConstants.DefaultHideNavigation);
             HideiOSStatusBar = Preferences.Get("HideiOSStatusBar", GHConstants.DefaultHideStatusBar);
@@ -4596,6 +4596,55 @@ namespace GnollHackX
                     _isSteamDeck = res ? 1 : 0;
                 }
                 return _isSteamDeck == 1;
+            }
+        }
+
+#if GNH_AVALONIA
+        private static int _isFullScreenForced = -1; /* -1 until checked */
+#endif
+
+        /* The window opens fullscreen regardless of Windowed Mode: Steam's Gaming Mode sets SteamGamepadUI=1,
+           or the app was started with --fullscreen. Avalonia only; WinUI honors neither. */
+        public static bool IsFullScreenForced
+        {
+            get
+            {
+#if GNH_AVALONIA
+                if (_isFullScreenForced < 0)
+                {
+                    bool res = false;
+                    try
+                    {
+                        if (Environment.GetEnvironmentVariable("SteamGamepadUI") == "1")
+                        {
+                            res = true;
+                        }
+                        else
+                        {
+                            string[] args = Environment.GetCommandLineArgs();
+                            if (args != null)
+                            {
+                                foreach (string arg in args)
+                                {
+                                    if (string.Equals(arg, "--fullscreen", StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        res = true;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                    }
+                    _isFullScreenForced = res ? 1 : 0;
+                }
+                return _isFullScreenForced == 1;
+#else
+                return false;
+#endif
             }
         }
 

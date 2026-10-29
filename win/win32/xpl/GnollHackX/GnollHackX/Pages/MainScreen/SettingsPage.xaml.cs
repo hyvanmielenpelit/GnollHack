@@ -1947,7 +1947,7 @@ namespace GnollHackX.Pages.MainScreen
             SilentModeSwitch.IsToggled = silentmode;
             WindowedModeSwitch.IsToggled = windowedmode;
             Edge2EdgeSwitch.IsToggled = edge2edge;
-            if (!GHApp.IsDesktop)
+            if (!GHApp.IsDesktop || GHApp.IsFullScreenForced)
             {
                 WindowedModeSwitch.IsEnabled = false;
                 WindowedModeLabel.IsEnabled = false;
