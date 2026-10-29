@@ -480,7 +480,7 @@ namespace GnollHackX.Pages.Game
             return _gamepadHintRenderer;
         }
 
-        /* The gamepad hint strip, painted on the UI thread (UseGL is off): the row is centered at the bottom, at
+        /* The gamepad hint strip, painted on the UI thread: the row is centered at the bottom, at
            most GamepadHintMaxWidthShare of the width with its backing, and wraps onto a second line that grows
            upward; the canvas height follows the row */
         private void GamepadHintCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)

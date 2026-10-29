@@ -23,9 +23,9 @@
                                         WidthRequest="55" HeightRequest="45" HorizontalOptions="Start" VerticalOptions="Center" />
                 <ActivityIndicator x:Name="LoadingIndicator" IsRunning="False" IsVisible="False" Color="LightBlue" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="20" HeightRequest="20" Margin="10,0,0,0" />
             </StackLayout>
-            <controls:SwitchableCanvasView x:Name="GamepadHintCanvas" Grid.Row="0" IsVisible="False" InputTransparent="True"
-                                           UseGL="False" Margin="290,0,4,0" HorizontalOptions="Fill" VerticalOptions="Fill"
-                                           PaintSurface="GamepadHintCanvas_PaintSurface" />
+            <gnh:GamepadHintCanvasView x:Name="GamepadHintCanvas" Grid.Row="0" IsVisible="False" InputTransparent="True"
+                                       Margin="290,0,4,0" HorizontalOptions="Fill" VerticalOptions="Fill"
+                                       PaintSurface="GamepadHintCanvas_PaintSurface" />
             <WebView Grid.Row="1" x:Name="DisplayWebView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent"
                       Navigating="DisplayWebView_Navigating" Navigated="DisplayWebView_Navigated"/>
         </Grid>

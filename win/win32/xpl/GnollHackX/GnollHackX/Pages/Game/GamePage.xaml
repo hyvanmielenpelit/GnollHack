@@ -508,9 +508,9 @@
             </gnh:MeasurableGrid>
             <Grid x:Name="GamepadHintGrid" IsVisible="False" InputTransparent="True" VerticalOptions="End" HorizontalOptions="Fill"
                   Margin="0,0,0,140" BackgroundColor="Transparent">
-                <controls:SwitchableCanvasView x:Name="GamepadHintCanvas" UseGL="False" HeightRequest="36"
-                                               PaintSurface="GamepadHintCanvas_PaintSurface"
-                                               HorizontalOptions="Fill" VerticalOptions="End" />
+                <gnh:GamepadHintCanvasView x:Name="GamepadHintCanvas" HeightRequest="36"
+                                           PaintSurface="GamepadHintCanvas_PaintSurface"
+                                           HorizontalOptions="Fill" VerticalOptions="End" />
             </Grid>
             <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>

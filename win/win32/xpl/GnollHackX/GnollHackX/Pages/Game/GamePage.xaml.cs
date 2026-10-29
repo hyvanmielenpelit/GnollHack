@@ -25724,7 +25724,6 @@ namespace GnollHackX.Pages.Game
             CommandCanvas.ShutDown();
             ShutDownRadial();
             RadialCanvas.ShutDown();
-            GamepadHintCanvas.ShutDown();
         }
 
         private double _threadSafeWidth = 0;

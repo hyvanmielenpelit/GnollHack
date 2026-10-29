@@ -18,4 +18,9 @@ namespace GnollHackX
         {
         }
     }
+
+    /* The gamepad hint strips; a type of its own so that Windows RenderSurfaceDiagnostics names their surfaces apart */
+    public class GamepadHintCanvasView : SKCanvasView
+    {
+    }
 }

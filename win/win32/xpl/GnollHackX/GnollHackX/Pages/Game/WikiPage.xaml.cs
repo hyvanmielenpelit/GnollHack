@@ -332,7 +332,7 @@ namespace GnollHackX.Pages.Game
             return _gamepadHintRenderer;
         }
 
-        /* The gamepad hint strip, painted on the UI thread (UseGL is off): one line centered in the canvas, dropping
+        /* The gamepad hint strip, painted on the UI thread: one line centered in the canvas, dropping
            the last hints, down to GamepadHintMinimumCount, while the row needs two lines */
         private void GamepadHintCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
