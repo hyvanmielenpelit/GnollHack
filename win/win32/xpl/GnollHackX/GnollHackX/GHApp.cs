@@ -4004,10 +4004,10 @@ namespace GnollHackX
         public const int GamepadTriggerSlotCount = 8;
         public static readonly GHGamepadButton[] GamepadTriggers = { GHGamepadButton.LT, GHGamepadButton.RT };
 
-        /* L2 Search 20, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm */
-        private static readonly int[] _defaultGamepadLTSlots = { -102, '%', GHUtils.Meta('p'), GHUtils.Meta('y'), 'E', GHUtils.Ctrl('x'), GHUtils.Meta('X'), GHUtils.Meta('P') };
-        /* R2 Fire, Swap, Kick, Throw, Cast, Quick Cast, Zap, Quick Zap */
-        private static readonly int[] _defaultGamepadRTSlots = { 'f', 'x', GHUtils.Ctrl('d'), 't', 'Z', GHUtils.Meta(26), 'z', GHUtils.Meta(27) };
+        /* L2 Kick, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm */
+        private static readonly int[] _defaultGamepadLTSlots = { GHUtils.Ctrl('d'), '%', GHUtils.Meta('p'), GHUtils.Meta('y'), 'E', GHUtils.Ctrl('x'), GHUtils.Meta('X'), GHUtils.Meta('P') };
+        /* R2 Fire, Swap, Chat, Throw, Cast, Quick Cast, Zap, Quick Zap */
+        private static readonly int[] _defaultGamepadRTSlots = { 'f', 'x', 'C', 't', 'Z', GHUtils.Meta(26), 'z', GHUtils.Meta(27) };
         private static readonly int[] _gamepadTriggerSlotCommands = new int[2 * GamepadTriggerSlotCount];
         private static readonly int[] _gamepadTriggerAssignedSlots = new int[2];
 
@@ -4040,7 +4040,7 @@ namespace GnollHackX
             return trigger == GHGamepadButton.LT ? _defaultGamepadLTSlots[slot] : _defaultGamepadRTSlots[slot];
         }
 
-        /* R2 Fire, L2 Search 20 (both slot 1) */
+        /* R2 Fire, L2 Kick (both slot 1) */
         public static int DefaultGamepadTriggerAssignedSlot(GHGamepadButton trigger)
         {
             return 0;

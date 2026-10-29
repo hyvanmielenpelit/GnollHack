@@ -84,11 +84,11 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | Control | Alone | L1 held | R1 held | L1 + R1 held |
 |---------|-------|---------|---------|--------------|
 | A | **Context command**: nothing when there is none, runs it when there is exactly one, opens the Actions radial when there are several | Open the **commands radial** | -- | -- |
-| B | Cancel: close an overlay, else Escape; interrupts running and other occupations | Wait | -- | Rest |
+| B | **Search**; first closes an overlay, and interrupts running and other occupations instead | Search 20 times | -- | -- |
 | X | Pick up | Pick and Stash | -- | -- |
-| Y | **Repeat** | Search | -- | Search 20 times |
+| Y | **Repeat** | Wait | -- | Rest |
 | R2 | R2's **assigned action** (default Fire) | **Right Quick** radial (R2's quick actions) | **Set R2** radial | R2's assigned action |
-| L2 | L2's **assigned action** (default Search 20) | **Set L2** radial | **Left Quick** radial (L2's quick actions) | L2's assigned action |
+| L2 | L2's **assigned action** (default Kick) | **Set L2** radial | **Left Quick** radial (L2's quick actions) | L2's assigned action |
 | Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
 | View | Inventory | -- | Equipment (all equipment in use) | -- |
 | D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, Left toggles the minimap, Right returns to normal zoom | -- |
@@ -108,8 +108,8 @@ controller backend, the page shows Bar Commands instead.
 
 | Trigger | Defaults, slots 1-8 | Assigned by default |
 |---|---|---|
-| R2 | Fire, Swap, Kick, Throw, Cast, Quick Cast, Zap, Quick Zap | Fire |
-| L2 | Search 20, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm | Search 20 |
+| R2 | Fire, Swap, Chat, Throw, Cast, Quick Cast, Zap, Quick Zap | Fire |
+| L2 | Kick, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm | Kick |
 
 The modifier on the trigger's own side (R1 + R2, L1 + L2) opens the teal **Set** radial: choosing
 a slot makes it the trigger's action when pressed alone (the current one is marked NOW). The

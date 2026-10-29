@@ -666,13 +666,12 @@ namespace GnollHackX.Pages.Game
                         break;
                     if (mod && rightMod)
                     {
-                        SignalGamepadBusyInput(ctx);
-                        SubmitGamepadKeys(normal, now, GetCommandButtonKeySequence(-103)); /* Rest */
+                        /* Unused */
                     }
                     else if (mod)
                     {
                         SignalGamepadBusyInput(ctx);
-                        SubmitGamepadKeys(normal, now, GHApp.MapCommand('.'));
+                        SubmitGamepadKeys(normal, now, GetCommandButtonKeySequence(-102)); /* Search 20 */
                     }
                     else if (CloseGamepadOverlay())
                     {
@@ -684,7 +683,7 @@ namespace GnollHackX.Pages.Game
                         InterruptGamepadBusy(now);
                     }
                     else
-                        SubmitGamepadKeys(normal, now, GHConstants.CancelChar);
+                        SubmitGamepadKeys(normal, now, GHApp.MapCommand('s'));
                     break;
                 case GHGamepadButton.X:
                     if (!pressed)
@@ -697,9 +696,9 @@ namespace GnollHackX.Pages.Game
                         break;
                     SignalGamepadBusyInput(ctx);
                     if (mod && rightMod)
-                        SubmitGamepadKeys(normal, now, GetCommandButtonKeySequence(-102)); /* Search 20 */
+                        SubmitGamepadKeys(normal, now, GetCommandButtonKeySequence(-103)); /* Rest */
                     else if (mod)
-                        SubmitGamepadKeys(normal, now, GHApp.MapCommand('s'));
+                        SubmitGamepadKeys(normal, now, GHApp.MapCommand('.'));
                     else
                         SubmitGamepadKeys(normal, now, GHApp.MapCommand(GHUtils.Ctrl('a'))); /* Repeat */
                     break;
@@ -2082,16 +2081,15 @@ namespace GnollHackX.Pages.Game
                     if (_gamepadLeftModifierHeld && _gamepadRightModifierHeld)
                     {
                         AddGamepadHeldModifierHint(hints, GHGamepadHint.Pair(GHGamepadButton.LB, GHGamepadButton.RB, null));
-                        hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Search 20", false));
-                        hints.Add(new GHGamepadHint(GHGamepadButton.B, "Rest", false));
+                        hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Rest", false));
                     }
                     else if (_gamepadLeftModifierHeld)
                     {
                         AddGamepadHeldModifierHint(hints, new GHGamepadHint(GHGamepadButton.LB, null, true));
                         hints.Add(new GHGamepadHint(GHGamepadButton.A, "Commands", false));
-                        hints.Add(new GHGamepadHint(GHGamepadButton.B, "Wait", false));
+                        hints.Add(new GHGamepadHint(GHGamepadButton.B, "Search 20", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.X, "Stash", false));
-                        hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Search", false));
+                        hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Wait", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.RT, "Quick", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.LT, "Set", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Abilities", false));
@@ -2109,7 +2107,7 @@ namespace GnollHackX.Pages.Game
                     {
                         if (_gamepadHintContextCount > 0)
                             hints.Add(new GHGamepadHint(GHGamepadButton.A, _gamepadHintContextCount == 1 ? "Act" : "Actions", false));
-                        hints.Add(new GHGamepadHint(GHGamepadButton.B, "Cancel", false));
+                        hints.Add(new GHGamepadHint(GHGamepadButton.B, "Search", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.X, "Pick up", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Repeat", false));
                         AddGamepadTriggerHint(hints, GHGamepadButton.LT, _gamepadHintLTCommand);
