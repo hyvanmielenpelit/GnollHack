@@ -126,7 +126,13 @@ namespace GnollHackX
 
         /* How far DrawRow's backing extends beyond the row box on each side */
         public float BackingPadX { get { return FontSize * BackingPadOfFont; } }
-        public float BackingPadY { get { return Math.Max(0f, FontSize * (BackingPadOfFont - (LineHeightOfFont - BadgeHeightOfFont) * 0.5f)); } }
+        public float BackingPadY { get { return GetBackingPadY(FontSize); } }
+
+        /* BackingPadY at a font size */
+        public static float GetBackingPadY(float fontSize)
+        {
+            return Math.Max(0f, fontSize * (BackingPadOfFont - (LineHeightOfFont - BadgeHeightOfFont) * 0.5f));
+        }
 
         /* Call once at the top of a paint that draws badges without DrawRow, before any badge;
            DrawRow calls it itself */

@@ -28,6 +28,11 @@ namespace GnollHackX.Pages.Game
         private const float GamepadHintMaxWidthShare = 0.9f;    /* of the canvas width, backing included */
         private const float GamepadHintExtraHeightDips = 2f;    /* above the backing */
 
+        /* The hint canvas's fixed height: LayoutRow makes at most two lines and never enlarges the font */
+        private static readonly float GamepadHintCanvasHeightDips = (float)Math.Ceiling(
+            2f * GamepadHintFontSizeDips * GHGamepadHintRenderer.LineHeightOfFont
+            + 2f * GHGamepadHintRenderer.GetBackingPadY(GamepadHintFontSizeDips)) + GamepadHintExtraHeightDips;
+
         private readonly GHRadialMenuState _radialState = new GHRadialMenuState();
         private GHRadialMenuRenderer _radialRenderer;
         private bool _radialCanvasShown;
@@ -480,9 +485,11 @@ namespace GnollHackX.Pages.Game
             return _gamepadHintRenderer;
         }
 
-        /* The gamepad hint strip, painted on the UI thread: the row is centered at the bottom, at
-           most GamepadHintMaxWidthShare of the width with its backing, and wraps onto a second line that grows
-           upward; the canvas height follows the row */
+        /* The gamepad hint strip, painted on the UI thread: the row is centered horizontally, at most
+           GamepadHintMaxWidthShare of the width with its backing, and wraps onto a second line. Its backing box
+           is centered on _gamepadHintRowCenterDips above the canvas bottom, kept inside the canvas below the
+           extra height; 0 anchors it to the bottom. The canvas has a fixed height, so a new row is only a
+           repaint. */
         private void GamepadHintCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             SKCanvas canvas = e.Surface.Canvas;
@@ -511,29 +518,11 @@ namespace GnollHackX.Pages.Game
                 return;
 
             float padY = renderer.BackingPadY;
-            renderer.DrawRow(canvas, hints, _gamepadHintStyle, pixelWidth * 0.5f, pixelHeight - padY, 1.0f, true);
-
-            /* The height the row needs, set after the paint and only when it changes; the layout does not depend on
-               the height, so the next paint asks for the same */
-            float neededDips = (float)Math.Ceiling((renderer.RowHeight + 2f * padY) / scale) + GamepadHintExtraHeightDips;
-            if (Math.Abs(neededDips - _gamepadHintCanvasHeight) > 1f && Math.Abs(neededDips - GamepadHintCanvas.HeightRequest) > 1f)
-            {
-                _gamepadHintCanvasHeight = neededDips;
-                if (_applyGamepadHintCanvasHeight == null)
-                    _applyGamepadHintCanvasHeight = ApplyGamepadHintCanvasHeight;
-                MainThread.BeginInvokeOnMainThread(_applyGamepadHintCanvasHeight);
-            }
-        }
-
-        private void ApplyGamepadHintCanvasHeight()
-        {
-            float height = _gamepadHintCanvasHeight;
-            if (height > 0f && !CanvasViewsShutDown && Math.Abs(height - GamepadHintCanvas.HeightRequest) > 1f)
-            {
-                GamepadHintCanvas.HeightRequest = height;
-                /* Centered in the command bar, the strip's margin depends on its height */
-                UpdateGamepadHintStripPosition();
-            }
+            float boxHeight = renderer.RowHeight + 2f * padY;
+            float areaHeight = pixelHeight - GamepadHintExtraHeightDips * scale;
+            float boxBottom = Math.Min(_gamepadHintRowCenterDips * scale - boxHeight * 0.5f, areaHeight - boxHeight);
+            boxBottom = Math.Max(0f, boxBottom);
+            renderer.DrawRow(canvas, hints, _gamepadHintStyle, pixelWidth * 0.5f, pixelHeight - boxBottom - padY, 1.0f, true);
         }
 
         private void RadialCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)

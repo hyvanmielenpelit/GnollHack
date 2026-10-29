@@ -124,8 +124,7 @@ namespace GnollHackX.Pages.Game
         private int _gamepadHintLTCommand = int.MinValue;   /* the trigger commands the strip's L2 and R2 labels show */
         private int _gamepadHintRTCommand = int.MinValue;
         private GHGamepadHintRenderer _gamepadHintRenderer;
-        private float _gamepadHintCanvasHeight = 0f;        /* the HeightRequest the strip's paint last asked for, in DIP */
-        private Action _applyGamepadHintCanvasHeight = null;
+        private float _gamepadHintRowCenterDips = 0f;       /* the bar's center above the hint canvas bottom; 0: bottom */
         private bool _gamepadCommandBarHidden = false;      /* the command bar's buttons are transparent, ignore input */
         private bool _gamepadHintDefaultMarginSaved = false;
         private Thickness _gamepadHintDefaultMargin;        /* the strip's margin from the XAML, used outside the bar */
@@ -2016,29 +2015,39 @@ namespace GnollHackX.Pages.Game
             view.InputTransparent = hide;
         }
 
-        /* With the command bar hidden, the strip's visible row is centered vertically in the bar's area, spilling
-           evenly above and below it when taller, but never below the page; otherwise the strip keeps its XAML margin.
-           The margin is set only when it changes by a whole DIP, and it does not affect the bar's bounds. */
+        /* With the command bar hidden, the strip's row area is centered vertically in the bar's area, spilling
+           evenly above and below it when taller, but never below the page, and the paint centers the row on the
+           bar; otherwise the strip keeps its XAML margin and the row sits at its bottom. The canvas height is
+           fixed, so neither depends on the hints. The margin is set only when it changes by a whole DIP, and it
+           does not affect the bar's bounds. */
         private void UpdateGamepadHintStripPosition()
         {
             if (!_gamepadHintDefaultMarginSaved)
             {
                 _gamepadHintDefaultMargin = GamepadHintGrid.Margin;
                 _gamepadHintDefaultMarginSaved = true;
+                GamepadHintCanvas.HeightRequest = GamepadHintCanvasHeightDips;
             }
             Thickness margin = _gamepadHintDefaultMargin;
+            float rowCenter = 0f;
             double barBottomGap, barHeight;
             if (_gamepadCommandBarHidden && TryGetGamepadCommandBarArea(out barBottomGap, out barHeight))
             {
-                double hintHeight = GamepadHintCanvas.HeightRequest > 0 ? GamepadHintCanvas.HeightRequest
-                    : GamepadHintCanvas.Height;
-                double rowHeight = Math.Max(0.0, hintHeight - GamepadHintExtraHeightDips);
-                margin.Bottom = Math.Max(0.0, Math.Round(barBottomGap + (barHeight - rowHeight) * 0.5));
+                double barCenter = barBottomGap + barHeight * 0.5;
+                double areaHeight = GamepadHintCanvasHeightDips - GamepadHintExtraHeightDips;
+                margin.Bottom = Math.Max(0.0, Math.Round(barCenter - areaHeight * 0.5));
+                rowCenter = (float)(barCenter - margin.Bottom);
             }
             Thickness current = GamepadHintGrid.Margin;
             if (Math.Abs(current.Bottom - margin.Bottom) >= 1.0 || Math.Abs(current.Top - margin.Top) >= 1.0
                 || Math.Abs(current.Left - margin.Left) >= 1.0 || Math.Abs(current.Right - margin.Right) >= 1.0)
                 GamepadHintGrid.Margin = margin;
+            if (Math.Abs(rowCenter - _gamepadHintRowCenterDips) >= 0.5f)
+            {
+                _gamepadHintRowCenterDips = rowCenter;
+                if (!CanvasViewsShutDown)
+                    GamepadHintCanvas.InvalidateSurface();
+            }
         }
 
         /* The command bar's height and the distance from its bottom to the bottom of RootGrid, which holds the strip;
