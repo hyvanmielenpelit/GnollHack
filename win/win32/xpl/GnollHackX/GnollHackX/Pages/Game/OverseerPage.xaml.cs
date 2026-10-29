@@ -25,13 +25,15 @@ using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xamarin.Forms.Xaml;
+using GnollHackX.Controls;
 using GnollHackX.Pages.MainScreen;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace GnollHackX.Pages.Game
 #endif
 {
-    public partial class OverseerPage : CustomModalPage, ICloseablePage, IMessagePopupPage, ISpecialKeyPressHandlingPage
+    public partial class OverseerPage : CustomModalPage, ICloseablePage, IMessagePopupPage, ISpecialKeyPressHandlingPage,
+        IGHGamepadHandlingPage, IGHGamepadPopupPage
     {
         private string _baseOverseerUrl;
         private string _snapshotText;
@@ -99,6 +101,7 @@ namespace GnollHackX.Pages.Game
             };
             CloseArea.GestureRecognizers.Add(pointerGesture);
 #endif
+            InitializeGamepadNavigation();
             GHGame curGame = GHApp.CurrentGHGame;
             if (curGame != null)
             {
@@ -140,6 +143,7 @@ namespace GnollHackX.Pages.Game
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             GHApp.SetPlatformResizeAdjustment(true);
+            _overlayNavigator.Attach();
             try
             {
                 await UploadAndConnect();
@@ -155,6 +159,7 @@ namespace GnollHackX.Pages.Game
             _connectCts?.Cancel();
             GHApp.SetPlatformResizeAdjustment(false);
             GHApp.BackButtonPressed -= BackButtonPressed;
+            _overlayNavigator.Detach();
             CleanupJsBridge();
 #if GNH_MAUI && WINDOWS
             UnhookNewWindowRequested();
@@ -969,6 +974,84 @@ namespace GnollHackX.Pages.Game
                 System.Diagnostics.Debug.WriteLine(ex);
             }
             return handled;
+        }
+
+        /* Gamepad: Menu leaves at once in every state, even on a press that only reveals the focus. The connection
+           overlay's buttons have their own navigator; elsewhere B asks to leave, as Escape does. */
+        private readonly GHGamepadPageNavigator _overlayNavigator = new GHGamepadPageNavigator();
+
+        private void InitializeGamepadNavigation()
+        {
+            GHGamepadPageNavigator.Layer main = _overlayNavigator.Main;
+            main.AddButton(CancelButton);
+            main.AddButtons(RetryButtonsPanel);
+            main.HorizontalMoves = true;
+            main.SetInitialFocus(CancelButton);
+            main.Back = OverlayBack;
+        }
+
+        /* B on the connection overlay: cancels while Cancel is enabled, else closes the page */
+        private bool OverlayBack()
+        {
+            if (CancelButton.IsEnabled)
+                CancelButton_Clicked(CancelButton, EventArgs.Empty);
+            else
+                CloseButton_Clicked(null, EventArgs.Empty);
+            return true;
+        }
+
+        /* Closes an open message popup unanswered, then the page without confirmation */
+        private void LeaveFromGamepad()
+        {
+            if (_backPressed || GHApp.PushingModalPage)
+                return;
+            if (MessagePopup.IsPopupOpen)
+                MessagePopup.ClosePopup();
+            ClosePage();
+        }
+
+        private static bool IsMenuPress(GHGamepadButtonEvent e)
+        {
+            return e.Button == GHGamepadButton.Menu && e.Kind == GHGamepadButtonEventKind.Pressed && !e.IsCancelled;
+        }
+
+        /* IGHGamepadHandlingPage implementation; always consumes the event */
+        public bool HandleGamepadButton(GHGamepadButtonEvent e)
+        {
+            try
+            {
+                if (e.Button == GHGamepadButton.Menu)
+                {
+                    if (IsMenuPress(e))
+                        LeaveFromGamepad();
+                    return true;
+                }
+                if (ProgressOverlay.IsVisible)
+                    return _overlayNavigator.HandleButton(e);
+                if (e.Button == GHGamepadButton.B && e.Kind == GHGamepadButtonEventKind.Pressed && !e.IsCancelled)
+                    HandleSpecialKeyPress(GHSpecialKey.Escape, false, false, false);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
+            return true;
+        }
+
+        public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
+        {
+        }
+
+        /* IGHGamepadPopupPage implementation: Menu leaves at once; every other button goes to the popup */
+        public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e)
+        {
+            if (e.Button == GHGamepadButton.Menu)
+            {
+                if (IsMenuPress(e))
+                    LeaveFromGamepad();
+                return true;
+            }
+            return MessagePopup.HandleGamepadButton(e);
         }
 
         /* ===================================================================

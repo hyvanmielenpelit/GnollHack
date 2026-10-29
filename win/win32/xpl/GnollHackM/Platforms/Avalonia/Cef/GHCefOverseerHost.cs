@@ -8,6 +8,30 @@ namespace GnollHackM
        sending frame's URL; Escape never reaches the page, because the window's key handling takes it first. */
     internal sealed class GHCefOverseerHost : IGHAvaloniaWebHost
     {
+        /* Console lines of the page pointer probe */
+        public const string ProbePrefix = "GNHPROBE ";
+
+        /* While the pointer log is on: trusted pointer, mouse, click and touch events as the page receives them, logged
+           to the console in the capture phase without affecting them */
+        private const string ProbeScript =
+            "(function () {" +
+            " if (window.__gnhProbe) return;" +
+            " window.__gnhProbe = true;" +
+            " function log(e) {" +
+            "  if (!e.isTrusted) return;" +
+            "  var t = e.target;" +
+            "  var name = t && t.tagName ? t.tagName.toLowerCase() : '-';" +
+            "  var cls = t && typeof t.className === 'string' && t.className.trim() ? '.' + t.className.trim().split(/\\s+/).slice(0, 2).join('.') : '';" +
+            "  var p = e.touches && e.touches.length ? e.touches[0] : e;" +
+            "  var x = typeof p.clientX === 'number' ? Math.round(p.clientX) : -1;" +
+            "  var y = typeof p.clientY === 'number' ? Math.round(p.clientY) : -1;" +
+            "  console.log('" + ProbePrefix + "' + e.type + ' ' + x + ',' + y + ' ' + name + cls);" +
+            " }" +
+            " ['pointerdown', 'mousedown', 'click', 'touchstart'].forEach(function (k) {" +
+            "  document.addEventListener(k, log, { capture: true, passive: true });" +
+            " });" +
+            "})();";
+
         private readonly Action<string, string> _bridgeMessageReceived;
         private readonly Action<Uri> _newWindowRequested;
         private GHCefWebViewControl _control;
@@ -52,6 +76,8 @@ namespace GnollHackM
 
         public void OnPageLoaded()
         {
+            if (_control != null && GHAvaloniaPointerLog.IsEnabled)
+                _control.ExecuteScript(ProbeScript);
         }
 
         public bool GoBack()

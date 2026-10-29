@@ -462,11 +462,14 @@ namespace GnollHackM
                 return true;
             }
 
-            /* Logged only with debug log messages on; the console output is left to CEF */
+            /* Logged only with debug log messages on, and page pointer probe lines while the pointer log is on; the
+               console output is left to CEF */
             protected override bool OnConsoleMessage(CefBrowser browser, CefLogSeverity level, string message, string source, int line)
             {
                 try
                 {
+                    if (GHAvaloniaPointerLog.IsEnabled && message != null && message.StartsWith(GHCefOverseerHost.ProbePrefix, StringComparison.Ordinal))
+                        GHAvaloniaPointerLog.Log("PAGE " + message.Substring(GHCefOverseerHost.ProbePrefix.Length));
                     if (GnollHackX.GHApp.DebugLogMessages)
                         GHCefRuntime.Log("GHCefClient: console " + level.ToString() + ": " + (message ?? "") + " (" + (source ?? "") + ":" + line.ToString() + ")");
                 }

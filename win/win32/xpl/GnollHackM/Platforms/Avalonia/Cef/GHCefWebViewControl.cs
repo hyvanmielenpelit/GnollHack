@@ -1412,9 +1412,32 @@ namespace GnollHackM
             }
         }
 
+        /* One pointer log line per press or release that reaches the control, while the pointer log is on */
+        private void LogPointerForward(string what, Avalonia.Input.PointerEventArgs e)
+        {
+            if (!GHAvaloniaPointerLog.IsEnabled)
+                return;
+            try
+            {
+                Avalonia.Input.PointerPoint point = e.GetCurrentPoint(this);
+                Avalonia.Controls.TopLevel topLevel = Avalonia.Controls.TopLevel.GetTopLevel(this);
+                GHAvaloniaPointerLog.Log("CEF " + what + " type=" + e.Pointer.Type.ToString()
+                    + " kind=" + point.Properties.PointerUpdateKind.ToString()
+                    + " pos=" + GHAvaloniaPointerLog.Num(point.Position.X) + "," + GHAvaloniaPointerLog.Num(point.Position.Y)
+                    + " host=" + (_host != null ? "ok" : "null") + " focused=" + (IsFocused ? "True" : "False")
+                    + " size=" + GHAvaloniaPointerLog.Num(Bounds.Width) + "x" + GHAvaloniaPointerLog.Num(Bounds.Height)
+                    + " scale=" + GHAvaloniaPointerLog.Num(topLevel != null ? topLevel.RenderScaling : 0.0));
+            }
+            catch (Exception ex)
+            {
+                GHAvaloniaPointerLog.Log("CEF " + what + " log failed: " + ex.Message);
+            }
+        }
+
         protected override void OnPointerPressed(Avalonia.Input.PointerPressedEventArgs e)
         {
             base.OnPointerPressed(e);
+            LogPointerForward("press", e);
             try
             {
                 Focus();
@@ -1450,6 +1473,7 @@ namespace GnollHackM
         protected override void OnPointerReleased(Avalonia.Input.PointerReleasedEventArgs e)
         {
             base.OnPointerReleased(e);
+            LogPointerForward("release", e);
             try
             {
                 CefBrowserHost host = _host;
@@ -1532,6 +1556,7 @@ namespace GnollHackM
         protected override void OnPointerCaptureLost(Avalonia.Input.PointerCaptureLostEventArgs e)
         {
             base.OnPointerCaptureLost(e);
+            GHAvaloniaPointerLog.Log("CEF capture lost type=" + e.Pointer.Type.ToString());
             try
             {
                 Avalonia.Point position;
