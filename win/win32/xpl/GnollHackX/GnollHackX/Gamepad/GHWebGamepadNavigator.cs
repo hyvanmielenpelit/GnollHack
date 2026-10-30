@@ -50,7 +50,8 @@ namespace GnollHackX.Controls
 
     /* Gamepad navigation of a web page through the page script (gamepad_web.js), with the page's button row as a
        toolbar mode. Page mode moves a focus ring between the page's links and controls (GHWebSpatialNavigation),
-       scrolls, activates, and jumps between sections; View cycles the article, the sidebar and the toolbar. Edit mode
+       scrolls, activates, and jumps between sections; View cycles the article, the sidebar and the toolbar. On a page
+       with zones the script moves the ring instead: the D-pad moves physically, LB, RB and View change zones. Edit mode
        is a text field being edited with the on-screen keyboard; Toolbar mode hands the buttons, except B and Menu, to
        the toolbar's GHGamepadPageNavigator. Without a
        ready script host Toolbar is the only mode. Page interaction runs as operations on a serial queue, each
@@ -105,6 +106,7 @@ namespace GnollHackX.Controls
         private bool _zoneMode = false;
         private bool _rowActions = false;
         private bool _zoneShortcutY = false;
+        private bool _zoneHasScroller = false;
         private bool _searchQueried = false;
         private bool _failureLogged = false;
         private bool _aArmed = false;
@@ -157,6 +159,7 @@ namespace GnollHackX.Controls
                 _zoneMode = false;
                 _rowActions = false;
                 _zoneShortcutY = false;
+                _zoneHasScroller = false;
                 ClearQueue();
                 HideKeyboard();
                 if (_mode == GHWebNavigatorMode.Edit)
@@ -256,6 +259,7 @@ namespace GnollHackX.Controls
             _zoneMode = false;
             _rowActions = false;
             _zoneShortcutY = false;
+            _zoneHasScroller = false;
             _failureLogged = false;
             ResetStick();
             IGHWebScriptHost host = _host;
@@ -307,6 +311,7 @@ namespace GnollHackX.Controls
                 _zoneMode = false;
                 _rowActions = false;
                 _zoneShortcutY = false;
+                _zoneHasScroller = false;
                 ClearQueue();
                 ResetStick();
                 RefreshHints();
@@ -450,7 +455,8 @@ namespace GnollHackX.Controls
                 if (pressedOrRepeat)
                 {
                     int sectionDir = e.Button == GHGamepadButton.LB ? -1 : 1;
-                    EnqueueRepeatable(e, gen => SimpleCallAsync(gen, "section(" + Int(sectionDir) + ")"));
+                    bool sectionRepeat = !pressed;
+                    EnqueueRepeatable(e, gen => BumperAsync(gen, sectionDir, sectionRepeat));
                 }
                 break;
             case GHGamepadButton.LT:
@@ -474,7 +480,7 @@ namespace GnollHackX.Controls
             }
         }
 
-        /* A and B act even on a RevealsUi press, since typing makes the keyboard the active input */
+        /* A, B, LB and RB act even on a RevealsUi press, since typing makes the keyboard the active input */
         private void HandleEditButton(GHGamepadButtonEvent e)
         {
             if (HandleCompose(e))
@@ -490,6 +496,16 @@ namespace GnollHackX.Controls
                 if (e.Kind == GHGamepadButtonEventKind.ShortPressed)
                     Enqueue(EditKeyboardAsync, -1);
                 return;
+            case GHGamepadButton.LB:
+            case GHGamepadButton.RB:
+                if (pressed)
+                {
+                    int zoneDir = e.Button == GHGamepadButton.LB ? -1 : 1;
+                    bool zoneReveals = e.RevealsUi;
+                    Enqueue(gen => EditZoneAsync(gen, zoneDir, zoneReveals), -1);
+                    return;
+                }
+                break;
             default:
                 break;
             }
@@ -785,31 +801,34 @@ namespace GnollHackX.Controls
             _viewportHeight = snapshot.ViewportHeight;
             if (GHWebSpatialNavigation.HasUsableFocus(snapshot))
                 NoteArea(snapshot.Candidates[snapshot.FocusPosition].Area);
-            NoteZoneState(snapshot.ZoneMode, snapshot.HasRowActions, snapshot.HasZoneShortcutY);
+            NoteZoneState(snapshot.ZoneMode, snapshot.HasRowActions, snapshot.HasZoneShortcutY, snapshot.ZoneHasScroller);
             return snapshot;
         }
 
-        /* A zone call (zone, zoneMove, rowActions, zoneShortcut), whose result ends with the page's zone state */
+        /* A zone call (zone, zoneMove, zoneSide, rowActions, zoneShortcut), whose result ends with the page's zone state */
         private async Task<string> ZoneCallAsync(int generation, string call)
         {
             string result = await CallAsync(generation, call);
             bool zoneMode;
             bool rowActions;
             bool zoneShortcutY;
+            bool zoneHasScroller;
             if (generation == _generation
-                && GHWebSnapshot.TryParseResultFlags(result, out zoneMode, out rowActions, out zoneShortcutY))
-                NoteZoneState(zoneMode, rowActions, zoneShortcutY);
+                && GHWebSnapshot.TryParseResultFlags(result, out zoneMode, out rowActions, out zoneShortcutY, out zoneHasScroller))
+                NoteZoneState(zoneMode, rowActions, zoneShortcutY, zoneHasScroller);
             return result;
         }
 
         /* The zone state the hints show */
-        private void NoteZoneState(bool zoneMode, bool rowActions, bool zoneShortcutY)
+        private void NoteZoneState(bool zoneMode, bool rowActions, bool zoneShortcutY, bool zoneHasScroller)
         {
-            if (zoneMode == _zoneMode && rowActions == _rowActions && zoneShortcutY == _zoneShortcutY)
+            if (zoneMode == _zoneMode && rowActions == _rowActions && zoneShortcutY == _zoneShortcutY
+                && zoneHasScroller == _zoneHasScroller)
                 return;
             _zoneMode = zoneMode;
             _rowActions = rowActions;
             _zoneShortcutY = zoneShortcutY;
+            _zoneHasScroller = zoneHasScroller;
             RefreshHints();
         }
 
@@ -937,7 +956,8 @@ namespace GnollHackX.Controls
         }
 
         /* Shows the ring, first moving an unset or lost focus to the top visible candidate of the last focus's area;
-           a pending initial focus is scrolled into view by setVisible instead */
+           a pending initial focus is scrolled into view by setVisible instead, as is any focus on a page with zones,
+           where a candidate may be a command inside a message */
         private async Task RevealAsync(int generation, GHWebSnapshot snapshot)
         {
             if (snapshot == null)
@@ -946,13 +966,14 @@ namespace GnollHackX.Controls
                 if (snapshot == null)
                     return;
             }
-            if (!GHWebSpatialNavigation.HasUsableFocus(snapshot) && !snapshot.InitialPending)
+            if (!GHWebSpatialNavigation.HasUsableFocus(snapshot) && !snapshot.InitialPending && !snapshot.ZoneMode)
             {
                 int top = GHWebSpatialNavigation.FindTopVisible(snapshot, _lastArea);
                 if (top >= 0 && await FocusAsync(generation, snapshot, top) == null)
                     return;
             }
-            await SetVisibleAsync(generation, true);
+            if (await SetVisibleAsync(generation, true) != null && snapshot.ZoneMode)
+                await SnapshotAsync(generation);
         }
 
         /* L2 and R2: on a page with zones, the current zone's target for the button when it has one; else a page of
@@ -964,6 +985,9 @@ namespace GnollHackX.Controls
                 return;
             if (s.ZoneMode)
             {
+                /* A field focused by other means: the button ends its edit first */
+                if (s.Editing)
+                    await EndEditAsync(generation);
                 string moved = await ZoneCallAsync(generation, dir < 0 ? "zoneShortcut('lt')" : "zoneShortcut('rt')");
                 if (moved == null || generation != _generation || GHWebSnapshot.ResultValue(moved) != "n")
                     return;
@@ -971,15 +995,58 @@ namespace GnollHackX.Controls
             await CallAsync(generation, "page(" + Int(dir) + ")");
         }
 
-        private async Task SimpleCallAsync(int generation, string call)
+        /* LB and RB: on a page with zones, the previous or next zone, once per press; else the previous or next section */
+        private async Task BumperAsync(int generation, int dir, bool repeat)
         {
-            if (await BeginAsync(generation) == null)
+            GHWebSnapshot s = await BeginAsync(generation);
+            if (s == null)
                 return;
-            await CallAsync(generation, call);
+            if (!s.ZoneMode)
+            {
+                await CallAsync(generation, "section(" + Int(dir) + ")");
+                return;
+            }
+            if (repeat)
+                return;
+            /* A field focused by other means: the button ends its edit first */
+            if (s.Editing)
+                await EndEditAsync(generation);
+            await ZoneCallAsync(generation, dir < 0 ? "zone('p')" : "zone('n')");
         }
 
-        /* A direction on a page with zones: Up and Down move within the zone, scrolling where the next stop is far,
-           and Up from the top of the first zone goes to the toolbar; Left and Right go to the previous or next zone */
+        /* LB and RB while editing: on a page with zones, ends the edit and goes to the previous or next zone; elsewhere
+           only a RevealsUi press has an effect */
+        private async Task EditZoneAsync(int generation, int dir, bool revealsUi)
+        {
+            GHWebSnapshot s = await SnapshotAsync(generation);
+            if (s == null || generation != _generation)
+                return;
+            if (!s.ZoneMode)
+            {
+                if (revealsUi)
+                    await RevealAsync(generation, s);
+                return;
+            }
+            await EndEditAsync(generation);
+            if (generation != _generation)
+                return;
+            await ZoneCallAsync(generation, dir < 0 ? "zone('p')" : "zone('n')");
+            if (generation == _generation && GHGamepadService.IsActive)
+                await SetVisibleAsync(generation, true);
+        }
+
+        private async Task SimpleCallAsync(int generation, string call)
+        {
+            GHWebSnapshot s = await BeginAsync(generation);
+            if (s == null)
+                return;
+            await CallAsync(generation, call);
+            if (s.ZoneMode)
+                await SnapshotAsync(generation);
+        }
+
+        /* A direction on a page with zones: Up and Down move physically, scrolling where the next stop is far, and Up
+           with nothing above goes to the toolbar; Left and Right move along a line or a row's commands */
         private async Task ZoneDirectionAsync(int generation, GHWebSnapshot s, GHWebDirection dir, int pressId)
         {
             switch (dir)
@@ -993,10 +1060,10 @@ namespace GnollHackX.Controls
                     SetMode(GHWebNavigatorMode.Toolbar, pressId);
                 break;
             case GHWebDirection.Left:
-                await ZoneCallAsync(generation, "zone('p')");
+                await ZoneCallAsync(generation, "zoneSide(-1)");
                 break;
             default:
-                await ZoneCallAsync(generation, "zone('n')");
+                await ZoneCallAsync(generation, "zoneSide(1)");
                 break;
             }
         }
@@ -1106,7 +1173,10 @@ namespace GnollHackX.Controls
             char kind = _aKind;
             string result = await CallAsync(generation, "activate()");
             if (result != null)
+            {
                 HandleActivation(result);
+                await SnapshotAsync(generation);
+            }
             else if (generation != _generation && kind == 'a' && _attached)
                 GHApp.PlayButtonClickedSound();
         }
@@ -1235,13 +1305,17 @@ namespace GnollHackX.Controls
                     HideKeyboard();
                     if (_mode == GHWebNavigatorMode.Edit)
                         SetMode(GHWebNavigatorMode.Page, -1);
+                    await SnapshotAsync(generation);
                     return;
                 }
                 string closed = ended != null ? await CallAsync(generation, "closeLayer()") : null;
                 if (generation != _generation)
                     return;
                 if (closed == "D~1")
+                {
+                    await SnapshotAsync(generation);
                     return;
+                }
             }
 
             bool canGoBack = false;
@@ -1272,6 +1346,7 @@ namespace GnollHackX.Controls
         private async Task EndEditOperationAsync(int generation)
         {
             await EndEditAsync(generation);
+            await SnapshotAsync(generation);
         }
 
         /* Blurs the field being edited, closes the keyboard and returns to Page mode */
@@ -1523,20 +1598,21 @@ namespace GnollHackX.Controls
                 }
                 hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.DPad, "Move"));
                 hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.RightStick, "Scroll"));
-                string viewLabel;
-                if (_zoneMode)
-                    viewLabel = profile.ZoneLabel;
-                else
-                    viewLabel = _hasSide && _lastArea != GHWebCandidate.SideArea ? "Sidebar" : "Toolbar";
-                hints.Add(new GHGamepadHint(GHGamepadButton.View, viewLabel, false));
+                if (!_zoneMode)
+                {
+                    hints.Add(new GHGamepadHint(GHGamepadButton.View,
+                        _hasSide && _lastArea != GHWebCandidate.SideArea ? "Sidebar" : "Toolbar", false));
+                }
                 if (_zoneMode && _rowActions)
                     hints.Add(new GHGamepadHint(GHGamepadButton.Y, profile.RowActionsLabel, false));
                 else if (_zoneMode && _zoneShortcutY)
                     hints.Add(new GHGamepadHint(GHGamepadButton.Y, profile.ZoneShortcutYLabel, false));
                 else if (_hasSearch)
                     hints.Add(new GHGamepadHint(GHGamepadButton.Y, profile.SearchLabel, false));
-                hints.Add(GHGamepadHint.Pair(GHGamepadButton.LB, GHGamepadButton.RB, profile.SectionLabel));
-                hints.Add(GHGamepadHint.Pair(GHGamepadButton.LT, GHGamepadButton.RT, "Page"));
+                hints.Add(GHGamepadHint.Pair(GHGamepadButton.LB, GHGamepadButton.RB,
+                    _zoneMode ? profile.ZoneLabel : profile.SectionLabel));
+                if (!_zoneMode || _zoneHasScroller)
+                    hints.Add(GHGamepadHint.Pair(GHGamepadButton.LT, GHGamepadButton.RT, "Page"));
                 if (profile.L3Label != null && !string.IsNullOrEmpty(profile.L3Call))
                     hints.Add(new GHGamepadHint(GHGamepadButton.L3, profile.L3Label, false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.Menu, profile.CloseLabel, false));

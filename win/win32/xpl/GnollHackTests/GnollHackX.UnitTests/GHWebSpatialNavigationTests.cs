@@ -152,6 +152,26 @@ namespace GnollHackX.UnitTests
             Assert.True(s.ZoneMode);
             Assert.True(s.HasZoneShortcutY);
             Assert.False(s.HasRowActions);
+            Assert.False(s.ZoneHasScroller);
+
+            Assert.True(GHWebSnapshot.TryParse("S~7~800~600~1~0~0~0~0~0~zs~5,b,m,0,0,30,10", out s));
+            Assert.True(s.ZoneHasScroller);
+            Assert.False(s.HasZoneShortcutY);
+        }
+
+        [Theory]
+        [InlineData("F~b~zrys", true)]
+        [InlineData("D~s~zs", true)]
+        [InlineData("F~b~z", false)]
+        public void ResultFlags_ParseZoneHasScroller(string result, bool hasScroller)
+        {
+            bool z;
+            bool r;
+            bool y;
+            bool s;
+            Assert.True(GHWebSnapshot.TryParseResultFlags(result, out z, out r, out y, out s));
+            Assert.Equal(hasScroller, s);
+            Assert.True(z);
         }
 
         [Theory]

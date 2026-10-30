@@ -819,6 +819,7 @@ namespace GnollHackM
             string[] acceptExtensions, CefFileDialogCallback callback)
         {
             string[] paths = null;
+            GHAvaloniaPointerLog.Log("FILEDIALOG start mode=" + mode.ToString());
             try
             {
                 Avalonia.Platform.Storage.IStorageProvider storage = Avalonia.Controls.TopLevel.GetTopLevel(this)?.StorageProvider;
@@ -857,8 +858,10 @@ namespace GnollHackM
             catch (Exception ex)
             {
                 GHApp.MaybeWriteGHLog("GHCefWebViewControl: file dialog failed: " + ex.Message);
+                GHAvaloniaPointerLog.Log("FILEDIALOG failed: " + ex.Message);
                 paths = null;
             }
+            GHAvaloniaPointerLog.Log("FILEDIALOG done paths=" + (paths != null ? paths.Length : 0).ToString());
 
             try
             {
