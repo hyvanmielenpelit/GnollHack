@@ -6453,6 +6453,7 @@ doapply_core(int applymode)
             break;
         case POT_OIL:
             res = use_oil(obj);
+            obj = (struct obj*)0; /* use_oil may free it; potions are never artifacts */
             break;
         case EXPENSIVE_CAMERA:
             res = use_camera(obj);
