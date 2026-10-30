@@ -54,6 +54,10 @@ assigned to exactly one agent. When several agents add entries for the same comp
 the orchestrator reserves each agent's IDs in the spawn prompt, or runs them one after
 another.
 
+**The Steam Deck is a shared device.** Packaging and `Deploy-SteamDeck.ps1` count as verification, so
+only the orchestrator runs them, after every subagent has returned: a deploy replaces the build the
+user may be testing. See `client_gamepad_testing`.
+
 ---
 
 ## Escalation Is the Common Case Here

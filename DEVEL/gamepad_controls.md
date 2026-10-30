@@ -359,6 +359,10 @@ On the Deck's development shortcut, standard error goes to
 
 ## Development
 
+A change to what a controller does or shows is tested on a Steam Deck in Game Mode before it counts
+as verified. The agent procedure is in the `client_gamepad_testing` skill
+(`.agents/skills/client_gamepad_testing/SKILL.md`).
+
 ### Steam Deck
 
 `Deploy-SteamDeck.ps1` (in `win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/`) copies a
@@ -389,6 +393,9 @@ The build itself is described in the `build_pipeline` skill (`.agents/skills/bui
 The Avalonia Windows flavor reads Xbox controllers through XInput, so the analog paths that ship
 on the Deck can be exercised on a PC. Connected controllers are polled every frame, empty slots
 every 2 s. A PlayStation controller works through Steam's XInput wrapping only.
+This build does not ship, so it is a backup for an unavailable Deck and an extra check, not a
+replacement for testing on the Deck: XInput is a different backend, with no Steam Input, Steam
+keyboard or Gaming Mode.
 
 For the grips, set `GNOLLHACK_GAMEPAD_KEYS=on` and press F2-F5 on the keyboard.
 

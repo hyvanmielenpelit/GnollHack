@@ -138,6 +138,17 @@ a step. See `client_workarounds`.
 
 ---
 
+## Gamepad Changes in a Plan
+
+A plan that changes what a game controller does or shows names the devices it must be tested on
+(today the Steam Deck) and has a **Device** subsection in its Verification Plan: the packaging and
+deploy commands, a numbered list of checks for the user to run in Gaming Mode, and what the plan
+does if the Deck is unreachable. The Avalonia Linux build also goes in Build Impact. An Xbox
+controller on the Avalonia Windows build may appear as the backup for an unavailable Deck or as an
+extra check, never in place of the Deck test. See `client_gamepad_testing`.
+
+---
+
 ## Related Skills
 
 - **`client_subagent_guidelines`** -- the build dependency chains that constrain
@@ -146,3 +157,4 @@ a step. See `client_workarounds`.
   automation targets
 - **`maui_frontend`** -- the XAML generation pipeline and the `makedefsdroid.vcxproj`
   template for a new page or control
+- **`client_gamepad_testing`** -- The scope, deploy sequence, and Deck tests for gamepad work

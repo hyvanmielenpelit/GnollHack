@@ -12,6 +12,7 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
 - **Do NOT block the UI Thread**: Long-running native calls or file I/O must run asynchronously.
 - **Cross-Platform XAML**: Use `OnPlatform` in XAML to handle differences between iOS/Android/Windows.
 - **Workarounds are registered**: a workaround for a MAUI, SkiaSharp, WinUI, Avalonia, Android or iOS defect gets a `WORKAROUND(WA-...)` tag and an entry in `DEVEL/workarounds/` in the same change. See `client_workarounds`.
+- **Gamepad code is shared but does not run in the MAUI builds**: `GnollHackX/Gamepad/`, `Radial/` and the pages' controller navigation compile into every flavor, but only the Avalonia flavor has controller support, so a MAUI build proves only that they compile. Test such changes on a Steam Deck. See `client_gamepad_testing`.
 - **XAML `WidthRequest` / `HeightRequest` → `MaximumWidthRequest` / `MaximumHeightRequest` Convention**:
 
   > [!CAUTION]
@@ -316,3 +317,4 @@ All platforms delegate lifecycle to `GHApp.OnStart()`, `GHApp.OnResume()`, `GHAp
 - **`debugging_gnollhack`** — Wizard mode, running the MAUI app locally
 - **`client_framework_sources`** — The source of the frameworks under this layer, read at the shipped version
 - **`client_workarounds`** — Recording, re-checking and removing workarounds for framework and OS defects
+- **`client_gamepad_testing`** — Testing gamepad and controller changes on a Steam Deck

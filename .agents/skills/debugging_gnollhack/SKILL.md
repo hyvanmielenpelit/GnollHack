@@ -57,6 +57,7 @@ When in wizard mode, special commands become available:
   ```
   > **Note:** The exact target framework moniker may change over time. Check `GnollHackM.csproj` for the current value.
 - The Avalonia port (Linux and Windows flavors) is built and run differently, from `Platforms/Avalonia` with `-p:GnhAvalonia=true`; see the Avalonia section of `build_pipeline`.
+- Gamepad work is tested on a Steam Deck, not on this machine; deployment, the Deck's logs and the `GAMEPAD` diagnostics are in `client_gamepad_testing`.
 - Use `Debug.WriteLine` in C# for console output.
 - For native C debug output, use `raw_printf` (only visible if the console is attached).
 
@@ -65,4 +66,5 @@ When in wizard mode, special commands become available:
 - **`build_pipeline`** — Full build process, two-solution architecture, data pipeline, `makedefs` flags
 - **`maui_frontend`** — MAUI frontend architecture, XAML pipeline, SkiaSharp rendering
 - **`client_framework_sources`** — When a bug leads into framework code
+- **`client_gamepad_testing`** — Testing controller changes on a Steam Deck, and reading its logs
 
