@@ -88,6 +88,7 @@ namespace GnollHackX.Pages.Game
                 btnDeveloper.IsVisible = false;
                 btnVersion.IsVisible = false;
                 btnTips.IsVisible = false;
+                _isLimited = true;
             }
         }
 
@@ -267,6 +268,7 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed += BackButtonPressed;
             GHGamepadService.StateChanged += GamepadService_StateChanged;
             _gamepadAArmed = false;
+            UpdateTipsButtonVisibility();
             RefreshGamepadVisuals();
         }
 
@@ -949,6 +951,7 @@ namespace GnollHackX.Pages.Game
         /* Gamepad focus: the main buttons in layout order, and the developer popup buttons while it is shown */
         private readonly GHGamepadFocusList _gamepadMainFocus = new GHGamepadFocusList();
         private readonly GHGamepadFocusList _gamepadDevFocus = new GHGamepadFocusList();
+        private bool _isLimited = false;
         private bool _gamepadAArmed = false;
         private int _gamepadAPressId = 0;
 
@@ -1000,7 +1003,14 @@ namespace GnollHackX.Pages.Game
 
         private void GamepadService_StateChanged()
         {
+            UpdateTipsButtonVisibility();
             RefreshGamepadVisuals();
+        }
+
+        /* The guide explains the touch and mouse interface */
+        private void UpdateTipsButtonVisibility()
+        {
+            btnTips.IsVisible = !_isLimited && !GHGamepadService.IsActive;
         }
 
         /* Back to Game through the same posted path as the Escape key */

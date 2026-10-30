@@ -23831,6 +23831,7 @@ namespace GnollHackX.Pages.Game
                     {
                         TipView.IsVisible = false;
                         ShownTip = -1;
+                        GHApp.GUITipsShown = true;
                         try
                         {
                             Preferences.Set("GUITipsShown", true);

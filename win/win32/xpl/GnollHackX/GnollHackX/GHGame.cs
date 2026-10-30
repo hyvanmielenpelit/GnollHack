@@ -4352,7 +4352,8 @@ namespace GnollHackX
                             break;
                         }
 
-                        if (GHApp.GUITipsShown)
+                        /* The guide explains the touch and mouse interface */
+                        if (GHApp.GUITipsShown || GHGamepadService.IsActive)
                             break;
 
                         _guiTipsFinished = false;
