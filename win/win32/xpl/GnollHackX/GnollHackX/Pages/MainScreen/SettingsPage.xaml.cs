@@ -2910,7 +2910,7 @@ namespace GnollHackX.Pages.MainScreen
                                     TextOkButton_Clicked(TextOkButton, EventArgs.Empty);
                                 }
                             }
-                            else
+                            else if (!_gamepadNavigator.Main.EndFocusedTextEdit()) /* A focused text field only ends its edit */
                             {
                                 if (CloseButton.IsEnabled)
                                     await ClosePageAsync(true);
