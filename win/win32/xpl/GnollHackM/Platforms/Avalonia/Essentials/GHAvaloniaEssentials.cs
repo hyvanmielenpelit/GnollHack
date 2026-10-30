@@ -23,6 +23,7 @@ namespace GnollHackM
         private static GHAvaloniaBrowser _browser = null;
         private static GHAvaloniaLauncher _launcher = null;
         private static GHAvaloniaShare _share = null;
+        private static GHAvaloniaFilePicker _filePicker = null;
 
         // WORKAROUND(WA-AVALONIA-0013): ACM Essentials leaves most Essentials APIs unimplemented
         /* Installs all ten implementations. Runs before GHApp's static initializers and before
@@ -48,7 +49,8 @@ namespace GnollHackM
 
         // WORKAROUND(WA-AVALONIA-0013): ACM Essentials leaves most Essentials APIs unimplemented
         /* Re-installs Preferences and AppInfo, which UseAvaloniaEssentials() and UseAvaloniaApp()
-           replace when called. The other eight are not touched by ACM. */
+           replace when called. The other eight are not touched by ACM. Wraps the FilePicker that
+           UseAvaloniaEssentials() installed, once. */
         public static void InstallAfterBuilder()
         {
             lock (_installLock)
@@ -56,10 +58,17 @@ namespace GnollHackM
                 if (_preferences == null || _appInfo == null)
                 {
                     InstallEarly();
-                    return;
                 }
-                SetPreferences(null, _preferences);
-                SetAppInfo(null, _appInfo);
+                else
+                {
+                    SetPreferences(null, _preferences);
+                    SetAppInfo(null, _appInfo);
+                }
+                if (_filePicker == null)
+                {
+                    _filePicker = new GHAvaloniaFilePicker(FilePicker.Default);
+                    SetFilePicker(null, _filePicker);
+                }
             }
         }
 
@@ -137,5 +146,10 @@ namespace GnollHackM
             [UnsafeAccessorType("Microsoft.Maui.ApplicationModel.DataTransfer.Share, Microsoft.Maui.Essentials")]
             object facade,
             IShare implementation);
+
+        [UnsafeAccessor(UnsafeAccessorKind.StaticMethod, Name = "SetDefault")]
+        private static extern void SetFilePicker(
+            [UnsafeAccessorType("Microsoft.Maui.Storage.FilePicker, Microsoft.Maui.Essentials")] object facade,
+            IFilePicker implementation);
     }
 }

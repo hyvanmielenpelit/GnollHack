@@ -188,7 +188,7 @@ Post-build `.proj` files copy libraries and assets to `GnollHackM/Platforms/`:
 
 ### XAML Transformation
 
-Auto-generates 31 MAUI XAML files (6 controls, 25 pages) from Xamarin source in `GnollHackX/GnollHackX/`. Key conversions: Xamarin→MAUI namespaces, `WidthRequest  =`→`MaximumWidthRequest=`, `HeightRequest  =`→`MaximumHeightRequest=`, `<Frame>`→`<Border>`, content wrapper stripping. See `maui_frontend` skill for the full conversion list, exempt files, and template for adding new XAML files.
+Auto-generates 32 MAUI XAML files (7 controls, 25 pages) from Xamarin source in `GnollHackX/GnollHackX/`. Key conversions: Xamarin→MAUI namespaces, `WidthRequest  =`→`MaximumWidthRequest=`, `HeightRequest  =`→`MaximumHeightRequest=`, `<Frame>`→`<Border>`, content wrapper stripping. See `maui_frontend` skill for the full conversion list, exempt files, and template for adding new XAML files.
 
 App-level XAML (`App.xaml`, `AppShell.xaml`, `Resources/Styles/`) is **not** generated — edit directly in `GnollHackM`.
 
@@ -287,7 +287,7 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 | `win/win32/xpl/gnollhacklinux/date_unix.h` | `afterdroidutils.proj` (WSL pipeline) |
 | `GnollHackM/Platforms/*/tileset/*.ghpng` (3 each; WinUI 3, Android, iOS — the Avalonia port reads `win/win32/tileset`) | `copytilesetdroid.proj` |
 | `GnollHackM/Platforms/*/banks/*.bank` (6 each; WinUI 3, Android, iOS — the Avalonia port reads `win/win32/bank/Desktop`) | `update-wsl-in-*.bat` |
-| 31 generated `.xaml` in `GnollHackM/` | `makedefsdroid` `InitialBuild` |
+| 32 generated `.xaml` in `GnollHackM/` | `makedefsdroid` `InitialBuild` |
 
 ## Troubleshooting
 

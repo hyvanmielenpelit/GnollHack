@@ -69,6 +69,10 @@ namespace GnollHackX.Controls
             /* Left/Right move the focus as well */
             public bool HorizontalMoves { get; set; }
 
+            /* A or X with the focus scrolled wholly out of ScrollView moves it to the top visible entry instead of
+               acting on what cannot be seen */
+            public bool ActsOnVisibleFocusOnly { get; set; }
+
             /* Up/Down that cannot move the focus scroll ScrollView by a line, and LB/RB by a page unless the layer
                has section stops */
             public bool ScrollsContent { get; set; }
@@ -833,7 +837,7 @@ namespace GnollHackX.Controls
                         if (e.Kind == GHGamepadButtonEventKind.Pressed)
                         {
                             /* A press that only restores the focus does not activate */
-                            _aArmed = EnsureFocus(layer);
+                            _aArmed = EnsureFocus(layer) && !(layer.ActsOnVisibleFocusOnly && FocusTopVisibleIfLost(layer));
                             _aPressId = e.PressId;
                             if (!_aArmed)
                             {
@@ -859,7 +863,7 @@ namespace GnollHackX.Controls
                         if (e.Kind == GHGamepadButtonEventKind.Pressed)
                         {
                             /* A press that only restores the focus does not run the secondary action */
-                            bool hadFocus = EnsureFocus(layer);
+                            bool hadFocus = EnsureFocus(layer) && !(layer.ActsOnVisibleFocusOnly && FocusTopVisibleIfLost(layer));
                             _xArmed = hadFocus && layer.Focus.HasSecondary;
                             _xPressId = e.PressId;
                             if (!hadFocus)

@@ -14,9 +14,9 @@ namespace GnollHackX
     /* The gamepad hub, on the UI thread. Poll pumps every backend, gates input on the window being active,
        the app not being suspended, the keyboard hook being enabled and the Use Controller setting, resyncs
        after a stall, tracks presses, derives LT/RT and the virtual stick directions from the active
-       controller, and routes button events and then the stick snapshot to the top page: the top modal page,
-       else the game page, else the main page, in or out of a game. Routing: an open message popup gets the
-       event (IGHGamepadPopupPage, else B Pressed as Escape and A ShortPressed as Enter); else an
+       controller, and routes button events and then the stick snapshot to the top page:
+       the top modal page, else the game page, else the main page, in or out of a game. Routing: an open message popup gets the
+       event (IGHGamepadPopupPage, else B Pressed as Escape and A ShortPressed as Enter); else an open file dialog; else an
        IGHGamepadHandlingPage; else the keyboard adapter.
        Presses are captured per (top page, popup open). Every Poll ends with the game page's frame tick. */
     public static class GHGamepadService
@@ -482,20 +482,22 @@ namespace GnollHackX
                 RaiseStateChanged();
         }
 
-        /* The top modal page, else the game page, else the main page, and whether its message popup is open;
-           null before the main page exists */
+        /* The top modal page, else the game page, else the main page, and whether its message popup is open; with no popup
+           open, an open file dialog goes first; null before the main page exists */
         private static object GetTarget(out bool popupOpen)
         {
             popupOpen = false;
-            Page top = GHApp.PageFromTopOfModalNavigationStack();
-            if (top == null)
-                top = GHApp.CurrentGamePage;
-            if (top == null)
-                top = GHApp.CurrentMainPage;
+            Page top = GHApp.GetInputTargetPage();
             if (top == null)
                 return null;
             IMessagePopupPage popupPage = top as IMessagePopupPage;
             popupOpen = popupPage != null && popupPage.IsPopupOpen;
+            if (!popupOpen)
+            {
+                IGHGamepadHandlingPage fileDialog = GHFileDialogHost.ActiveView;
+                if (fileDialog != null)
+                    return fileDialog;
+            }
             return top;
         }
 

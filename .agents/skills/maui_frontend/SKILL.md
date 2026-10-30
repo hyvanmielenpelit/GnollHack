@@ -37,7 +37,7 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
 
   > [!IMPORTANT]
   > **Four files are exempt.** The conversion is declared per file in
-  > `makedefsdroid.vcxproj`, and it is applied in 27 of the 31 blocks. These four
+  > `makedefsdroid.vcxproj`, and it is applied in 28 of the 32 blocks. These four
   > do **not** get it:
   >
   > - `Controls/CustomImageButton.xaml`
@@ -60,7 +60,7 @@ GnollHack's graphical client is a .NET 10.0 MAUI application targeting Android, 
 > 
 > *Note: Although auto-generated, these `.xaml` files are currently checked into the repository for ease of use. This is expected behavior for the time being.*
 
-**Scope**: 31 files are generated — 6 controls and 25 pages. The app-level XAML
+**Scope**: 32 files are generated — 7 controls and 25 pages. The app-level XAML
 in `GnollHackM` is **not** generated, has no GnollHackX source, and is edited
 directly in `GnollHackM`:
 
@@ -120,7 +120,7 @@ This runs the `InitialBuild` target which transforms all GnollHackX XAML files i
 
 > [!CAUTION]
 > `InitialBuild` contains **one `<PropertyGroup>` + `<WriteLinesToFile>` block per
-> XAML file** — 31 of them — each naming its own input, output, and replacement
+> XAML file** — 32 of them — each naming its own input, output, and replacement
 > chain. There is no wildcard and no shared rule set.
 
 Two consequences:
@@ -240,7 +240,7 @@ Callback categories: window management, input handling, display/glyph rendering,
 | [SettingsPage.xaml](../../../win/win32/xpl/GnollHackM/SettingsPage.xaml) | 141KB | Comprehensive settings: graphics, sound volumes, keybindings, debug flags. |
 | [GameMenuPage.xaml](../../../win/win32/xpl/GnollHackM/GameMenuPage.xaml) | 6KB | In-game menu overlay. |
 
-### Other Pages (31 generated XAML files in total)
+### Other Pages (32 generated XAML files in total)
 AboutPage, AchievementsDisplayPage, AchievementsPage, DisplayFilePage, EditorPage, ImportExportPage, LibraryPage, MusicPage, NamePage, OraclePage, OutRipPage, OverseerPage, PerformanceSuitePage, ReplayPage, ResetPage, SaveTransferPage, SnapshotPage, TopScorePage, VaultPage, VersionPage, WikiPage.
 
 ### Custom Controls

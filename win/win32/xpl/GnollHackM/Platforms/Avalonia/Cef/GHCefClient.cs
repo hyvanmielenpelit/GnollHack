@@ -1,5 +1,10 @@
 #if GNH_AVALONIA && LINUX
 using System;
+using System.Collections.Generic;
+using System.IO;
+using GnollHackX;
+using Microsoft.Maui.ApplicationModel.DataTransfer;
+using Microsoft.Maui.Storage;
 using Xilium.CefGlue;
 
 namespace GnollHackM
@@ -18,10 +23,12 @@ namespace GnollHackM
         private readonly GHCefJSDialogHandler _jsDialogHandler;
         private readonly GHCefContextMenuHandler _contextMenuHandler;
         private readonly GHCefDialogHandler _dialogHandler;
+        private readonly GHCefDownloadHandler _downloadHandler;
 
         internal GHCefClient(IGHCefClientTarget target)
         {
             _dialogHandler = new GHCefDialogHandler(target);
+            _downloadHandler = new GHCefDownloadHandler();
             _target = target;
             _renderHandler = new GHCefRenderHandler(target);
             _lifeSpanHandler = new GHCefLifeSpanHandler(target);
@@ -60,6 +67,11 @@ namespace GnollHackM
         protected override CefDialogHandler GetDialogHandler()
         {
             return _dialogHandler;
+        }
+
+        protected override CefDownloadHandler GetDownloadHandler()
+        {
+            return _downloadHandler;
         }
 
         protected override CefJSDialogHandler GetJSDialogHandler()
@@ -556,6 +568,117 @@ namespace GnollHackM
                 {
                     GHCefRuntime.Log("GHCefClient: file dialog failed: " + ex.Message);
                     return false;
+                }
+            }
+        }
+
+        /* A download goes to a cache folder of its own, and from there through Share, so the user chooses where it ends
+           up by the same rules as any other shared file. The folder is deleted afterward. */
+        private sealed class GHCefDownloadHandler : CefDownloadHandler
+        {
+            private static bool s_leftoversDeleted = false;
+
+            private readonly Dictionary<uint, string> _paths = new Dictionary<uint, string>();
+
+            /* The folders of downloads an earlier run never finished saving */
+            private static void DeleteLeftoverFolders(string shareFolder)
+            {
+                try
+                {
+                    if (!Directory.Exists(shareFolder))
+                        return;
+                    foreach (string folder in Directory.GetDirectories(shareFolder))
+                        Directory.Delete(folder, true);
+                }
+                catch (Exception ex)
+                {
+                    GHCefRuntime.Log("GHCefClient: deleting old downloads failed: " + ex.Message);
+                }
+            }
+
+            protected override bool OnBeforeDownload(CefBrowser browser, CefDownloadItem downloadItem, string suggestedName, CefBeforeDownloadCallback callback)
+            {
+                try
+                {
+                    string shareFolder = Path.Combine(FileSystem.CacheDirectory, "overseer_share");
+                    if (!s_leftoversDeleted)
+                    {
+                        s_leftoversDeleted = true;
+                        DeleteLeftoverFolders(shareFolder);
+                    }
+                    string folder = Path.Combine(shareFolder, Guid.NewGuid().ToString("N"));
+                    Directory.CreateDirectory(folder);
+                    string path = Path.Combine(folder, GHFileDialogLogic.SanitizeFileName(suggestedName));
+                    _paths[downloadItem.Id] = path;
+                    callback.Continue(path, false);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    GHCefRuntime.Log("GHCefClient: OnBeforeDownload failed: " + ex.Message);
+                    return false;
+                }
+            }
+
+            protected override void OnDownloadUpdated(CefBrowser browser, CefDownloadItem downloadItem, CefDownloadItemCallback callback)
+            {
+                try
+                {
+                    string path;
+                    if (!_paths.TryGetValue(downloadItem.Id, out path))
+                        return;
+                    if (downloadItem.IsComplete)
+                    {
+                        _paths.Remove(downloadItem.Id);
+                        Avalonia.Threading.Dispatcher.UIThread.Post(() => ShareDownload(path));
+                    }
+                    else if (downloadItem.IsCanceled)
+                    {
+                        _paths.Remove(downloadItem.Id);
+                        GHCefRuntime.Log("GHCefClient: a download was canceled");
+                        DeleteDownloadFolder(path);
+                    }
+                    else if (downloadItem.IsInterrupted)
+                    {
+                        _paths.Remove(downloadItem.Id);
+                        GHCefRuntime.Log("GHCefClient: a download was interrupted");
+                        callback.Cancel();
+                        DeleteDownloadFolder(path);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    GHCefRuntime.Log("GHCefClient: OnDownloadUpdated failed: " + ex.Message);
+                }
+            }
+
+            private static async void ShareDownload(string path)
+            {
+                try
+                {
+                    await Share.RequestAsync(new ShareFileRequest { Title = "Save a Copy", File = new ShareFile(path) });
+                }
+                catch (Exception ex)
+                {
+                    GHCefRuntime.Log("GHCefClient: saving a download failed: " + ex.Message);
+                }
+                finally
+                {
+                    DeleteDownloadFolder(path);
+                }
+            }
+
+            private static void DeleteDownloadFolder(string path)
+            {
+                try
+                {
+                    string folder = Path.GetDirectoryName(path);
+                    if (Directory.Exists(folder))
+                        Directory.Delete(folder, true);
+                }
+                catch (Exception ex)
+                {
+                    GHCefRuntime.Log("GHCefClient: deleting a download failed: " + ex.Message);
                 }
             }
         }

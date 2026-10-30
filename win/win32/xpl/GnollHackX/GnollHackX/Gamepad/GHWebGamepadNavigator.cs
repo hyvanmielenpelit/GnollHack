@@ -31,6 +31,9 @@ namespace GnollHackX.Controls
         /* The script's result as the platform returns it, or null on timeout, failure or without a view */
         Task<string> EvaluateAsync(string script);
 
+        /* Gives the page's next script a user gesture where the platform can; never throws and completes within a bound */
+        Task PrepareUserGestureAsync();
+
         /* Gives the web view native keyboard focus */
         void FocusNative();
 
@@ -1163,6 +1166,16 @@ namespace GnollHackX.Controls
             return Task.CompletedTask;
         }
 
+        /* A script's click carries no user gesture, which a page's file chooser needs and consumes, so each press
+           gets its own */
+        private async Task<string> ActivateFocusAsync(int generation)
+        {
+            IGHWebScriptHost host = _host;
+            if (host != null && host.IsReady)
+                await host.PrepareUserGestureAsync();
+            return await CallAsync(generation, "activate()");
+        }
+
         /* A ShortPressed of the armed press. A followed link usually starts the navigation before the call returns,
            which leaves the call without a result. */
         private async Task ActivateAsync(int generation, int pressId)
@@ -1171,7 +1184,7 @@ namespace GnollHackX.Controls
                 return;
             _aArmed = false;
             char kind = _aKind;
-            string result = await CallAsync(generation, "activate()");
+            string result = await ActivateFocusAsync(generation);
             if (result != null)
             {
                 HandleActivation(result);
@@ -1224,7 +1237,7 @@ namespace GnollHackX.Controls
                     return;
                 if (GHWebSnapshot.ResultValue(target) != "n")
                 {
-                    result = await CallAsync(generation, "activate()");
+                    result = await ActivateFocusAsync(generation);
                     if (result != null)
                         HandleActivation(result);
                     return;
@@ -1257,7 +1270,7 @@ namespace GnollHackX.Controls
                 return;
             if (GHGamepadService.IsActive && await SetVisibleAsync(generation, true) == null)
                 return;
-            string result = await CallAsync(generation, "activate()");
+            string result = await ActivateFocusAsync(generation);
             if (result != null)
                 HandleActivation(result);
         }
@@ -1370,7 +1383,7 @@ namespace GnollHackX.Controls
             {
                 HideKeyboard();
                 SetMode(GHWebNavigatorMode.Page, -1);
-                string result = await CallAsync(generation, "activate()");
+                string result = await ActivateFocusAsync(generation);
                 if (result != null)
                     HandleActivation(result);
                 return;

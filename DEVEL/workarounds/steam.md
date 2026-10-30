@@ -52,3 +52,39 @@ gets a Steam Input API backend:
 
 Checks:
 - 2026-10-28 | Steam client 1792618285, SteamOS 3.9.5 | still-needed | Grips reach the game only as keys (Step 1b G3); no upstream issue found.
+
+## WA-STEAM-0002: SteamOS Gaming Mode has no FileChooser portal, and its GTK dialogs take no controller input
+
+- Status: active
+- Added: 2026-10-30
+- GnollHack version: 3.32 (432)
+- Component: SteamOS, gamescope
+- Package: SteamOS
+- Defective version: SteamOS 3.9.5 stable
+- Platforms: Linux
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-30
+- Code: `win/win32/xpl/GnollHackX/GnollHackX/FileDialog/GHFileDialogHost.cs` (`GHFileDialogHost.UseCustomDialog`)
+- Remove when: Gaming Mode offers a file dialog that can be used with a controller, including its overwrite prompt, and Verify removal passes.
+
+**Symptom.** In Gaming Mode, a file dialog opened by the game can only be operated by touch
+or the trackpad. The controller does nothing in it or in its "replace this file?" prompt.
+
+**Cause.** Under gamescope, `xdg-desktop-portal` has no `org.freedesktop.portal.FileChooser`
+backend, so Avalonia's storage provider falls back to GTK. GTK reads no gamepad, and Steam
+Input gives the game a virtual pad rather than keys. A missing feature, not a defect.
+
+**Workaround.** `FileDialogView`, drawn inside the page, replaces the system's dialog for
+attaching, importing, sharing and saving downloads whenever
+`GHFileDialogHost.UseCustomDialog` is true, including outside Gaming Mode when the last input
+came from a controller. See `DEVEL/gamepad_controls.md`.
+
+**Verify removal.** Set `GNOLLHACK_FILE_DIALOG=system` in `~/gnollhack-dev/dev.env` on a
+Deck, run in Gaming Mode, and share a file twice to the same name with the controller. The
+workaround is still needed if any part of that cannot be done with the controller. Removing
+only the Gaming Mode condition keeps the control for controller use on other desktops.
+
+Checks:
+- 2026-10-30 | SteamOS 3.9.5 stable | still-needed | The Deck's logs show no FileChooser interface in Gaming Mode; a GTK replace prompt appeared there and could not be operated with the controller.

@@ -28,6 +28,7 @@
                                        PaintSurface="GamepadHintCanvas_PaintSurface" />
             <WebView Grid.Row="1" x:Name="DisplayWebView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent"
                       Navigating="DisplayWebView_Navigating" Navigated="DisplayWebView_Navigated"/>
+            <!-- FileDialogView is added here at run time (GHFileDialogHost). -->
         </Grid>
     
 </gnh:CustomModalPage>

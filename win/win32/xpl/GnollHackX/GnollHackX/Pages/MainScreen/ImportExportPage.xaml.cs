@@ -99,7 +99,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 if (file != null)
                 {
-                    using (Stream s = await file.OpenReadAsync())
+                    using (Stream s = await GHApp.OpenPickedFileAsync(file))
                     {
                         if (s != null)
                         {
@@ -265,7 +265,7 @@ namespace GnollHackX.Pages.MainScreen
 
                 if (file != null)
                 {
-                    using (Stream s = await file.OpenReadAsync())
+                    using (Stream s = await GHApp.OpenPickedFileAsync(file))
                     {
                         if (s != null)
                         {

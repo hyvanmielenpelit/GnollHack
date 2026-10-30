@@ -217,6 +217,33 @@ press only shows it again. **Text fields:** A or Y focuses the field and, on a S
 keyboard placed away from it; its Enter submits, B ends the edit, and a direction leaves the field.
 A hint strip in the toolbar row shows the controls for the current mode.
 
+### File Dialogs
+
+Attaching, importing, sharing and saving a download use a dialog drawn inside the page (`FileDialogView`, shown by
+`GHFileDialogHost`) when the system's own cannot be used with a controller: always in Game Mode, where there is no
+FileChooser portal and GTK dialogs take no controller input (`WA-STEAM-0002`), and elsewhere when the last input came from
+a controller. After touch or the mouse, outside Game Mode, the system's dialog opens. `GNOLLHACK_FILE_DIALOG=custom` or
+`system` decides for testing. A message popup draws above the dialog and takes input first, and a second dialog opens when
+the first closes. `GNOLLHACK_FILE_DIALOG_TEST=1` makes both happen once, 3 seconds into a save dialog.
+
+| Control | Action |
+|---------|--------|
+| D-pad, left stick | Move between rows and the buttons |
+| Right stick | Scroll |
+| A | Open a place or folder; select a file; save to a place; OK on a message |
+| X | Attach the selected files |
+| B | Go up, then cancel; while saving, nothing |
+| L2 / R2 | First / last row |
+| Menu | Cancel |
+
+**Attaching and importing** read from named places only: Pictures, GnollHack Screenshots (Steam's folder for the game),
+Documents, Downloads and SD cards; importing also lists GnollHack Exports first. Hidden files, and anything a link would
+lead outside the place, are not listed. Attaching lists only the types the page accepts. The dialog cannot change a file.
+
+**Saving** goes to a `GnollHack` folder under Documents, Downloads or an SD card. It never overwrites: a second copy
+becomes `name (2).ext`. The copy appears only when complete, and the dialog says where it went. Anything else is done in
+Desktop Mode, where the system's dialog also refuses GnollHack's own folders and the file being shared.
+
 ## Steam Input
 
 GnollHack reads **Steam Input's virtual gamepad**, not the Deck's own controller. Steam turns

@@ -382,6 +382,7 @@
     <None Remove="..\GnollHackX\GnollHackX.FMOD\FmodService.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\CustomImageButton.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\MessagePopupView.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Controls\FileDialogView.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\LabeledImageButton.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\RowImageButton.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\SimpleImageButton.xaml.cs" />
@@ -561,6 +562,10 @@
     <Compile Include="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHEnums.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\FileDialog\GHFileDialogLogic.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\FileDialog\GHFilePlaces.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\FileDialog\GHFileDialogBehavior.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\FileDialog\GHFileDialogHost.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHMapFps.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadTypes.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHEvdevProtocol.cs" />
@@ -686,6 +691,7 @@
     <Compile Include="..\GnollHackX\GnollHackX.FMOD\FmodService.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\CustomImageButton.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\MessagePopupView.xaml.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Controls\FileDialogView.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\LabeledImageButton.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\RowImageButton.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\SimpleImageButton.xaml.cs" />

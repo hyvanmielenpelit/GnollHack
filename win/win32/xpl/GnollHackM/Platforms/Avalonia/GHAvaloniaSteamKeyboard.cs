@@ -229,7 +229,7 @@ namespace GnollHackM
         }
 
         /* Steam's Game Mode runs games under gamescope and sets SteamGamepadUI */
-        private static bool IsGameMode(string desktop, string gamepadUI)
+        internal static bool IsGameMode(string desktop, string gamepadUI)
         {
             if (desktop != null && string.Equals(desktop.Trim(), "gamescope", StringComparison.OrdinalIgnoreCase))
                 return true;

@@ -446,7 +446,8 @@ internal setters for another implementation.
 
 **Workaround.** GnollHack's own implementations are installed into the facades with
 `UnsafeAccessor` before GHApp's static initializers run, and Preferences and AppInfo
-again after `UseAvaloniaEssentials` and `UseAvaloniaApp` replace them. Storage permission
+again after `UseAvaloniaEssentials` and `UseAvaloniaApp` replace them. ACM's FilePicker is
+wrapped by `GHAvaloniaFilePicker` at that point too, for `WA-STEAM-0002`. Storage permission
 checks return Granted without calling Permissions.
 
 **Verify removal.** For each API ACM gains, drop GnollHack's installer line for it (or
@@ -750,3 +751,38 @@ workaround is still needed if the callback intervals after skipped ticks cluster
 
 Checks:
 - 2026-10-27 | Avalonia 12.1.4 | still-needed | Measured on a Steam Deck OLED in Desktop Mode, before the workaround: 15.75 ms median after skipped ticks. No upstream issue found.
+
+## WA-AVALONIA-0022: FileResult.OpenReadAsync throws for ACM's file picker results
+
+- Status: active
+- Added: 2026-10-30
+- GnollHack version: 3.32 (432)
+- Component: Avalonia.Controls.Maui
+- Package: Avalonia.Controls.Maui.Essentials
+- Defective version: Avalonia.Controls.Maui.Essentials 11.0.0-rc.2.26287.618
+- Platforms: Linux, Windows (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-30
+- Code: `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.OpenPickedFileAsync`)
+- Remove when: `FileResult.OpenReadAsync`, called through a `FileResult` reference, works on the Avalonia flavor in a release GnollHack uses, and Verify removal passes.
+
+**Symptom.** Import Saved Games and Import Replays fail with an error as soon as a file is
+chosen.
+
+**Cause.** `AvaloniaFileResult` only shadows `OpenReadAsync`, as
+`FileBase.PlatformOpenReadAsync` is internal. A call through a `FileResult` reference, which
+is what `FilePicker.PickAsync` returns, runs the base method, and on portable Essentials that
+throws (`FileSystem.netstandard.cs`). The class's documentation says so. Read in source; the
+failure itself was not run before the workaround.
+
+**Workaround.** `GHApp.OpenPickedFileAsync` opens `FileResult.FullPath` directly on the
+Avalonia flavor, where picked files have local paths.
+
+**Verify removal.** Make `GHApp.OpenPickedFileAsync` call `file.OpenReadAsync()` everywhere.
+Build the Avalonia flavor, and import a saved game with the system's dialog. The import must
+succeed.
+
+Checks:
+- 2026-10-30 | Avalonia.Controls.Maui.Essentials 11.0.0-rc.2.26287.618 | still-needed | Read in the decompiled package and MAUI's source; no upstream issue found.

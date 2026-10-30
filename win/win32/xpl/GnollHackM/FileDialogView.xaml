@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gnh="clr-namespace:GnollHackM"
+             xmlns:controls="clr-namespace:GnollHackM"
+             x:Class="GnollHackM.FileDialogView">
+    
+        <Grid HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.MsgBoxPageOverlayColor}">
+            <Grid MaximumWidthRequest="660" Margin="8" HorizontalOptions="Fill" VerticalOptions="Fill">
+                <Border x:Name="PanelFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Fill">
+                    <Grid RowSpacing="6" HorizontalOptions="Fill" VerticalOptions="Fill">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="0" x:Name="TitleLabel" FontFamily="Immortal" FontSize="20" TextColor="White" HorizontalOptions="Center" />
+                        <Label Grid.Row="1" x:Name="SubtitleLabel" FontFamily="LatoRegular" FontSize="14" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                        <Label Grid.Row="2" x:Name="NoticeLabel" IsVisible="False" FontFamily="LatoRegular" FontSize="13" TextColor="Yellow" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                        <ScrollView Grid.Row="3" x:Name="RowsScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" VerticalScrollBarVisibility="Default">
+                            <StackLayout x:Name="RowsLayout" Spacing="4" HorizontalOptions="Fill" />
+                        </ScrollView>
+                        <gnh:GamepadHintCanvasView Grid.Row="4" x:Name="GamepadHintCanvas" IsVisible="False" InputTransparent="True" HeightRequest="40"
+                                                   HorizontalOptions="Fill" VerticalOptions="Fill" PaintSurface="GamepadHintCanvas_PaintSurface" />
+                        <StackLayout Grid.Row="5" Orientation="Horizontal" HorizontalOptions="Center" Spacing="10">
+                            <controls:CustomImageButton x:Name="ConfirmButton" Clicked="ConfirmButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" />
+                            <controls:CustomImageButton Text="Cancel" x:Name="CancelButton" Clicked="CancelButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" />
+                        </StackLayout>
+                    </Grid>
+                </Border>
+                <Grid x:Name="StatusGrid" IsVisible="False" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="{x:Static gnh:GHColors.MsgBoxPageOverlayColor}">
+                    <Border x:Name="StatusFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center" Margin="20">
+                        <StackLayout Spacing="12">
+                            <Label x:Name="StatusLabel" FontFamily="LatoRegular" FontSize="16" TextColor="White" HorizontalOptions="Center" HorizontalTextAlignment="Center" />
+                            <controls:CustomImageButton Text="OK" x:Name="StatusOkButton" Clicked="StatusOkButton_Clicked" FontFamily="Diablo" FontSize="15" TextColor="White" BackgroundColor="Transparent" WidthRequest="150" HeightRequest="50" HorizontalOptions="Center" />
+                        </StackLayout>
+                    </Border>
+                </Grid>
+            </Grid>
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer />
+            </Grid.GestureRecognizers>
+        </Grid>
+    
+</ContentView>

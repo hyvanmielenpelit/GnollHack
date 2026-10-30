@@ -441,9 +441,12 @@ namespace GnollHackX.Controls
                 ViewButton_Clicked(this, EventArgs.Empty);
         }
 
+        /* The label is private to the user, such as a file name, and stays out of crash reports */
+        public bool OmitLabelFromBreadcrumb { get; set; }
+
         private void ViewButton_Clicked(object sender, EventArgs e)
         {
-            GHApp.AddSentryBreadcrumb("RowImageButton: " + LblText, GHConstants.SentryGnollHackButtonClickCategoryName);
+            GHApp.AddSentryBreadcrumb("RowImageButton: " + (OmitLabelFromBreadcrumb ? "(omitted)" : LblText), GHConstants.SentryGnollHackButtonClickCategoryName);
             BtnClicked?.Invoke(this, e);
         }
 

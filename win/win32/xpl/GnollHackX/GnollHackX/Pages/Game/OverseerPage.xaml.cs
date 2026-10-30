@@ -136,11 +136,11 @@ namespace GnollHackX.Pages.Game
                 UpdateAvaloniaWebViewVisibility();
         }
 
-        /* A native web view is drawn above all Avalonia content, so it is hidden while the progress overlay or a
-           message popup is shown */
+        /* A native web view is drawn above all Avalonia content, so it is hidden while the progress overlay, a
+           message popup or a file dialog is shown */
         private void UpdateAvaloniaWebViewVisibility()
         {
-            DisplayWebView.IsVisible = !_avaloniaHost.DrawsAboveAvalonia || (!ProgressOverlay.IsVisible && !MessagePopup.IsVisible);
+            DisplayWebView.IsVisible = !_avaloniaHost.DrawsAboveAvalonia || (!ProgressOverlay.IsVisible && !MessagePopup.IsVisible && !GHFileDialogHost.IsOpen);
         }
 #endif
 
@@ -159,6 +159,9 @@ namespace GnollHackX.Pages.Game
             GHApp.SetPlatformResizeAdjustment(true);
             _overlayNavigator.Attach();
 #if GNH_AVALONIA
+            GHFileDialogHost.ActiveViewChanged -= UpdateAvaloniaWebViewVisibility;
+            GHFileDialogHost.ActiveViewChanged += UpdateAvaloniaWebViewVisibility;
+            UpdateAvaloniaWebViewVisibility();
             if (_webScriptHost == null)
             {
                 _webScriptHost = new GHAvaloniaWebScriptHost(DisplayWebView);
@@ -189,6 +192,7 @@ namespace GnollHackX.Pages.Game
             _webNavigator.HintsChanged -= WebNavigator_HintsChanged;
             _webNavigator.Detach();
 #if GNH_AVALONIA
+            GHFileDialogHost.ActiveViewChanged -= UpdateAvaloniaWebViewVisibility;
             _webNavigator.Host = null;
             if (_webScriptHost != null)
             {
@@ -1202,7 +1206,7 @@ namespace GnollHackX.Pages.Game
         /* IGHGamepadPopupPage implementation: Menu leaves at once; every other button goes to the popup */
         public bool SendGamepadButtonToPopup(GHGamepadButtonEvent e)
         {
-            if (e.Button == GHGamepadButton.Menu)
+            if (e.Button == GHGamepadButton.Menu && !GHFileDialogHost.IsOpen)
             {
                 if (IsMenuPress(e))
                     LeaveFromGamepad();

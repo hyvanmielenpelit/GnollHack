@@ -39,6 +39,7 @@
                     <controls:CustomImageButton Grid.Column="2" Text="Reset" x:Name="ResetButton" Clicked="ResetButton_Clicked" WidthRequest="100" FontFamily="Diablo" FontSize="16" TextColor="White" BackgroundColor="Transparent" HeightRequest="50" HorizontalOptions="Start" VerticalOptions="Center" />
                 </Grid>
             </Grid>
+            <!-- FileDialogView is inserted here at run time (GHFileDialogHost). Keep MessagePopupView the last child, so that a popup stays above it. -->
             <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>
     

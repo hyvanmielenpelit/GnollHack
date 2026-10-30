@@ -7798,6 +7798,17 @@ namespace GnollHackX
             return true;
         }
 
+        /* A stream on a file FilePicker returned */
+        public static Task<Stream> OpenPickedFileAsync(FileResult file)
+        {
+#if GNH_AVALONIA
+            // WORKAROUND(WA-AVALONIA-0022): FileResult.OpenReadAsync throws on portable Essentials
+            return Task.FromResult<Stream>(File.OpenRead(file.FullPath));
+#else
+            return file.OpenReadAsync();
+#endif
+        }
+
         public static async Task<PermissionStatus> CheckAndRequestWritePermission(Page page)
         {
 #if GNH_AVALONIA
@@ -11736,6 +11747,18 @@ namespace GnollHackX
             return topPage == page;
         }
 
+        /* The page that takes input: the top modal page, else the game page, else the main page; null before the main
+           page exists */
+        public static Page GetInputTargetPage()
+        {
+            Page top = PageFromTopOfModalNavigationStack();
+            if (top == null)
+                top = CurrentGamePage;
+            if (top == null)
+                top = CurrentMainPage;
+            return top;
+        }
+
         public static Page PageFromTopOfModalNavigationStack()
         {
             Page topPage = null;
@@ -13465,10 +13488,12 @@ namespace GnollHackX
         public static bool SendKeyPress(int key, bool isCtrl, bool isMeta)
         {
             Page topPage = PageFromTopOfModalNavigationStack();
-            if (topPage == null)
-                return CurrentMainPage?.HandleKeyPress(key, isCtrl, isMeta) ?? false;
-            else if (topPage is IMessagePopupPage popupPage && popupPage.IsPopupOpen)
+            if (topPage is IMessagePopupPage popupPage && popupPage.IsPopupOpen)
                 return popupPage.SendKeyToPopup(key, isCtrl, isMeta);
+            else if (GHFileDialogHost.IsOpen)
+                return true;
+            else if (topPage == null)
+                return CurrentMainPage?.HandleKeyPress(key, isCtrl, isMeta) ?? false;
             else if (topPage is IKeyPressHandlingPage keyPressPage)
                 return keyPressPage.HandleKeyPress(key, isCtrl, isMeta);
             else
@@ -13500,10 +13525,16 @@ namespace GnollHackX
             }
 
             Page topPage = PageFromTopOfModalNavigationStack();
-            if(topPage == null)
-                return CurrentMainPage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
-            else if (topPage is IMessagePopupPage popupPage && popupPage.IsPopupOpen)
+            if (topPage is IMessagePopupPage popupPage && popupPage.IsPopupOpen)
                 return popupPage.SendSpecialKeyToPopup(spkey, isCtrl, isMeta, isShift);
+            else if (GHFileDialogHost.IsOpen)
+            {
+                if (spkey == GHSpecialKey.Escape)
+                    GHFileDialogHost.SendBack();
+                return true;
+            }
+            else if (topPage == null)
+                return CurrentMainPage?.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift) ?? false;
             else if (topPage is ISpecialKeyPressHandlingPage keyPressPage)
                 return keyPressPage.HandleSpecialKeyPress(spkey, isCtrl, isMeta, isShift);
             else if (spkey == GHSpecialKey.Escape && topPage is ICloseablePage closeablePage)

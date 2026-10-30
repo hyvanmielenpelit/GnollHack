@@ -61,6 +61,9 @@ namespace GnollHackM
         private const int WheelDeltaPerUnit = 40;
         private const int KeptHtmlFiles = 4;
         private const string UnavailableText = "Web view unavailable";
+        private const int UserGestureTimeoutMilliseconds = 250;
+        /* The Overseer's limit on pending attachments; the page drops any beyond its own count */
+        private const int MaxAttachedFiles = 5;
 
         private static readonly Regex s_baseTagRegex = new Regex(@"<base[\s/>]", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         private static readonly Regex s_headTagRegex = new Regex(@"<head(\s[^>]*)?>", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
@@ -89,6 +92,11 @@ namespace GnollHackM
         private readonly List<KeyValuePair<int, string>> _pendingEvals = new List<KeyValuePair<int, string>>();
         private readonly Dictionary<int, PendingEval> _evals = new Dictionary<int, PendingEval>();
         private int _nextEvalId = 0;
+
+        /* DevTools calls that give the page a user gesture */
+        private CefRegistration _devToolsRegistration = null;
+        private readonly Dictionary<int, TaskCompletionSource<bool>> _userGestures = new Dictionary<int, TaskCompletionSource<bool>>();
+        private int _nextUserGestureId = 0;
 
         /* Visual tree */
         private bool _attached = false;
@@ -308,6 +316,114 @@ namespace GnollHackM
                 CompleteEval(id, null);
 
             return source.Task;
+        }
+
+        /* Sets the user activation that a script's click lacks, which lasts about 5 s and which a file chooser consumes.
+           Completes when CEF answers, or after a bound, so that a press is never lost; never throws. */
+        public async Task PrepareUserGestureAsync()
+        {
+            bool success = false;
+            long start = Stopwatch.GetTimestamp();
+            try
+            {
+                if (_host != null && !_closeRequested)
+                {
+                    if (_devToolsRegistration == null)
+                        _devToolsRegistration = _host.AddDevToolsMessageObserver(new GHCefUserGestureObserver(this));
+
+                    int id = ++_nextUserGestureId;
+                    TaskCompletionSource<bool> source = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                    _userGestures[id] = source;
+                    Avalonia.Threading.DispatcherTimer.RunOnce(() => CompleteUserGesture(id, false),
+                        TimeSpan.FromMilliseconds(UserGestureTimeoutMilliseconds), AvDispatcherPriority.Background);
+                    using (CefDictionaryValue parameters = CefDictionaryValue.Create())
+                    {
+                        parameters.SetString("expression", "0");
+                        parameters.SetBool("userGesture", true);
+                        if (_host.ExecuteDevToolsMethod(id, "Runtime.evaluate", parameters) == 0)
+                            CompleteUserGesture(id, false);
+                    }
+                    success = await source.Task;
+                }
+                if (GHAvaloniaPointerLog.IsEnabled)
+                    LogUserGesture(success, start);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHCefWebViewControl: preparing a user gesture failed: " + ex.Message);
+            }
+        }
+
+        /* Sent before the press that follows, so it reads the activation that press will find, and not awaited by it */
+        private async void LogUserGesture(bool success, long start)
+        {
+            try
+            {
+                string active = await EvaluateScriptAsync("String(navigator.userActivation.isActive)");
+                double milliseconds = (Stopwatch.GetTimestamp() - start) * 1000.0 / Stopwatch.Frequency;
+                GHAvaloniaPointerLog.Log(string.Format(CultureInfo.InvariantCulture, "GESTURE ok={0} ms={1:0.0} active={2}", success, milliseconds, active));
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHCefWebViewControl: logging a user gesture failed: " + ex.Message);
+            }
+        }
+
+        private void CompleteUserGesture(int id, bool success)
+        {
+            TaskCompletionSource<bool> source;
+            if (_userGestures.TryGetValue(id, out source))
+            {
+                _userGestures.Remove(id);
+                source.TrySetResult(success);
+            }
+        }
+
+        private void CompleteAllUserGestures()
+        {
+            foreach (TaskCompletionSource<bool> source in _userGestures.Values)
+                source.TrySetResult(false);
+            _userGestures.Clear();
+        }
+
+        /* Reports DevTools results; runs on the UI thread inside CefRuntime.DoMessageLoopWork */
+        private sealed class GHCefUserGestureObserver : CefDevToolsMessageObserver
+        {
+            private readonly GHCefWebViewControl _owner;
+
+            public GHCefUserGestureObserver(GHCefWebViewControl owner)
+            {
+                _owner = owner;
+            }
+
+            protected override bool OnDevToolsMessage(CefBrowser browser, IntPtr message, int messageSize)
+            {
+                return false;
+            }
+
+            protected override void OnDevToolsMethodResult(CefBrowser browser, int messageId, bool success, IntPtr result, int resultSize)
+            {
+                try
+                {
+                    _owner.CompleteUserGesture(messageId, success);
+                }
+                catch (Exception ex)
+                {
+                    GHApp.MaybeWriteGHLog("GHCefWebViewControl: a DevTools result failed: " + ex.Message);
+                }
+            }
+
+            protected override void OnDevToolsEvent(CefBrowser browser, string method, IntPtr parameters, int parametersSize)
+            {
+            }
+
+            protected override void OnDevToolsAgentAttached(CefBrowser browser)
+            {
+            }
+
+            protected override void OnDevToolsAgentDetached(CefBrowser browser)
+            {
+            }
         }
 
         /* Closes the browser for good; before it exists, it is closed as soon as CEF reports it created */
@@ -802,8 +918,9 @@ namespace GnollHackM
             }
         }
 
-        /* Avalonia's file pickers, which use the desktop portal: the page's extensions as glob patterns, plus all
-           files. Chromium's own portal dialog listed folders but no files for extension filters. */
+        /* GHFileDialogHost's control when the system's dialog cannot be used with a controller. Otherwise Avalonia's file
+           pickers, which use the desktop portal: the page's extensions as glob patterns, plus all files. Chromium's own
+           portal dialog listed folders but no files for extension filters. */
         void IGHCefClientTarget.OnFileDialog(CefFileDialogMode mode, string title, string defaultFilePath, string[] acceptFilters,
             string[] acceptExtensions, CefFileDialogCallback callback)
         {
@@ -823,7 +940,23 @@ namespace GnollHackM
             try
             {
                 Avalonia.Platform.Storage.IStorageProvider storage = Avalonia.Controls.TopLevel.GetTopLevel(this)?.StorageProvider;
-                if (storage != null)
+                if (GHFileDialogHost.UseCustomDialog)
+                {
+                    /* Out of CefRuntime.DoMessageLoopWork, as this builds views */
+                    await Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => { }, AvDispatcherPriority.Normal);
+                    if (mode == CefFileDialogMode.Open || mode == CefFileDialogMode.OpenMultiple)
+                    {
+                        bool multiple = mode == CefFileDialogMode.OpenMultiple;
+                        IList<string> picked = await GHFileDialogHost.PickFilesAsync(string.IsNullOrEmpty(title) ? "Attach Files" : title, "Attach", multiple,
+                            multiple ? MaxAttachedFiles : 1, ExtensionPatterns(acceptFilters, acceptExtensions), false);
+                        paths = picked != null ? picked.ToArray() : null;
+                    }
+                    else
+                    {
+                        GHApp.MaybeWriteGHLog("GHCefWebViewControl: file dialog mode " + mode.ToString() + " is not available here");
+                    }
+                }
+                else if (storage != null)
                 {
                     if (mode == CefFileDialogMode.OpenFolder)
                     {
@@ -899,27 +1032,13 @@ namespace GnollHackM
            extensions as a ';'-separated list; a filter that is itself an extension is used as is. */
         private static List<Avalonia.Platform.Storage.FilePickerFileType> FileTypeFilters(string[] acceptFilters, string[] acceptExtensions)
         {
-            List<string> patterns = new List<string>();
+            List<string> patterns = ExtensionPatterns(acceptFilters, acceptExtensions);
             List<string> mimeTypes = new List<string>();
-            if (acceptExtensions != null)
-            {
-                foreach (string entry in acceptExtensions)
-                {
-                    if (string.IsNullOrEmpty(entry))
-                        continue;
-                    foreach (string extension in entry.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
-                        AddExtensionPattern(patterns, extension);
-                }
-            }
             if (acceptFilters != null)
             {
                 foreach (string filter in acceptFilters)
                 {
-                    if (string.IsNullOrEmpty(filter))
-                        continue;
-                    if (filter.StartsWith(".", StringComparison.Ordinal))
-                        AddExtensionPattern(patterns, filter);
-                    else if (filter.Contains('/') && !mimeTypes.Contains(filter))
+                    if (!string.IsNullOrEmpty(filter) && filter.Contains('/') && !mimeTypes.Contains(filter))
                         mimeTypes.Add(filter);
                 }
             }
@@ -935,6 +1054,31 @@ namespace GnollHackM
             }
             filters.Add(Avalonia.Platform.Storage.FilePickerFileTypes.All);
             return filters;
+        }
+
+        /* The page's extensions as glob patterns */
+        private static List<string> ExtensionPatterns(string[] acceptFilters, string[] acceptExtensions)
+        {
+            List<string> patterns = new List<string>();
+            if (acceptExtensions != null)
+            {
+                foreach (string entry in acceptExtensions)
+                {
+                    if (string.IsNullOrEmpty(entry))
+                        continue;
+                    foreach (string extension in entry.Split(';', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries))
+                        AddExtensionPattern(patterns, extension);
+                }
+            }
+            if (acceptFilters != null)
+            {
+                foreach (string filter in acceptFilters)
+                {
+                    if (!string.IsNullOrEmpty(filter) && filter.StartsWith(".", StringComparison.Ordinal))
+                        AddExtensionPattern(patterns, filter);
+                }
+            }
+            return patterns;
         }
 
         private static void AddExtensionPattern(List<string> patterns, string extension)
@@ -1104,6 +1248,9 @@ namespace GnollHackM
                 _client = null;
                 _creating = false;
                 _closeRequested = true;
+                CompleteAllUserGestures();
+                _devToolsRegistration?.Dispose();
+                _devToolsRegistration = null;
                 _popupShown = false;
                 _activeTouches.Clear();
                 _pendingUrl = null;

@@ -512,6 +512,7 @@
                                            PaintSurface="GamepadHintCanvas_PaintSurface"
                                            HorizontalOptions="Fill" VerticalOptions="End" />
             </Grid>
+            <!-- FileDialogView is inserted here at run time (GHFileDialogHost). Keep MessagePopupView the last child, so that a popup stays above it. -->
             <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>
     </gnh:CustomModalPage.Content>

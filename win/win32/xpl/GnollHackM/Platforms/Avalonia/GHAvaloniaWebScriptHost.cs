@@ -121,6 +121,15 @@ namespace GnollHackM
             return scriptTask.Result;
         }
 
+        public Task PrepareUserGestureAsync()
+        {
+#if LINUX
+            if (!_disposed && _cefView != null)
+                return _cefView.PrepareUserGestureAsync();
+#endif
+            return Task.CompletedTask;
+        }
+
         public void FocusNative()
         {
             try

@@ -239,6 +239,7 @@
                     <TapGestureRecognizer />
                 </Grid.GestureRecognizers>
             </Grid>
+            <!-- FileDialogView is inserted here at run time (GHFileDialogHost). Keep MessagePopupView the last child, so that a popup stays above it. -->
             <controls:MessagePopupView x:Name="MessagePopup" />
         </Grid>
     </gnh:CustomModalPage.Content>
