@@ -64,6 +64,14 @@
     var ROW_MARK = "[data-gnh-pad-row]";
     var SECONDARY_MARK = "[data-gnh-pad-secondary]";
     var FOCUSED_ATTR = "data-gnh-pad-focused";
+    /* In zone mode, the element the keys y, lt and rt go to while it is in the current zone; a mark on an element that
+       is not a candidate applies to the first candidate inside it. */
+    var SHORTCUT_ATTR = "data-gnh-pad-shortcut";
+    /* Largest gap or overlap, in CSS px, between the boxes of zones stacked so that Down or Up hands off */
+    var NEIGHBOR_GAP = 8;
+    /* Values of will-change and contain that make an element the containing block of fixed-position descendants */
+    var FIXED_WILL_CHANGE = /\b(?:transform|perspective|filter)\b/;
+    var FIXED_CONTAIN = /\b(?:paint|layout|strict|content)\b/;
     /* Attributes whose changes re-place the ring while it shows */
     var WATCHED_ATTRS = ["open", "hidden", "style", "class", "popover", "aria-expanded"];
 
@@ -208,6 +216,15 @@
             b = Math.max(b, list[i].y + list[i].h);
         }
         return { x: l, y: t, w: r - l, h: b - t };
+    }
+
+    /* The intersection of two rectangles, or null when it is empty. */
+    function intersectRects(a, b) {
+        var l = Math.max(a.x, b.x);
+        var t = Math.max(a.y, b.y);
+        var r = Math.min(a.x + a.w, b.x + b.w);
+        var e = Math.min(a.y + a.h, b.y + b.h);
+        return (r > l && e > t) ? { x: l, y: t, w: r - l, h: e - t } : null;
     }
 
     function contains(outer, inner, tolerance) {
@@ -1431,9 +1448,90 @@
         return !focusEl && !!zoneBox && zoneBox.isConnected && !activeLayer();
     }
 
-    /* One fixed div per fragment of the focus, else of the current zone's box; hidden without either, a fragment,
-       or visibility. The outlined element carries data-gnh-pad-focused. A div's style is written only when it
-       changes. */
+    /* Whether a computed value is present and other than none */
+    function notNone(v) {
+        return !!v && v !== "none";
+    }
+
+    /* Whether a computed style makes its element the containing block of fixed-position descendants */
+    function holdsFixed(cs) {
+        return notNone(cs.transform) || notNone(cs.perspective) || notNone(cs.filter) || notNone(cs.backdropFilter) ||
+            FIXED_WILL_CHANGE.test(cs.willChange || "") || FIXED_CONTAIN.test(cs.contain || "");
+    }
+
+    /*
+     * The rectangle in which el can show, or null when nothing is left: the viewport narrowed to the padding box of
+     * each ancestor that clips it, along each axis whose overflow is not visible. An ancestor clips el only when it
+     * is on el's containing block chain, so fixed and absolute elements escape those they are not positioned in, and
+     * nothing above the top layer clips. The body and the root element are covered by the viewport.
+     */
+    function shownArea(el) {
+        var vp = viewport();
+        var area = { x: 0, y: 0, w: vp.w, h: vp.h };
+        var cs = window.getComputedStyle(el);
+        var pos = cs.position;
+        var e = el;
+        var b;
+        var x;
+        var y;
+        while (area && !matchesSafe(e, ":modal", false) && !popoverOpen(e)) {
+            e = parentOf(e);
+            if (!e || e.nodeType !== 1 || e === document.body || e === document.documentElement) {
+                break;
+            }
+            cs = window.getComputedStyle(e);
+            if ((pos === "fixed" && !holdsFixed(cs)) ||
+                (pos === "absolute" && cs.position === "static" && !holdsFixed(cs))) {
+                continue;
+            }
+            pos = cs.position;
+            if (cs.display === "inline" || cs.display === "contents") {
+                continue;
+            }
+            x = cs.overflowX !== "visible";
+            y = cs.overflowY !== "visible";
+            if (x || y) {
+                b = e.getBoundingClientRect();
+                area = intersectRects(area, {
+                    x: x ? b.left + e.clientLeft : area.x,
+                    y: y ? b.top + e.clientTop : area.y,
+                    w: x ? e.clientWidth : area.w,
+                    h: y ? e.clientHeight : area.h
+                });
+            }
+        }
+        return area;
+    }
+
+    /* The parts of an element's fragments that can show, the empty ones left out. */
+    function shownFragments(el, frags) {
+        var area = shownArea(el);
+        var out = [];
+        var r;
+        var i;
+        for (i = 0; area && i < frags.length; i++) {
+            r = intersectRects(frags[i], area);
+            if (r) {
+                out.push(r);
+            }
+        }
+        return out;
+    }
+
+    /* The rectangles the ring follows around el: its fragments; for the current zone's box, the box's own rectangle
+       if not empty, as what it holds may be scrolled out of it. */
+    function ringFragments(el) {
+        var r;
+        if (el !== zoneBox) {
+            return fragments(el);
+        }
+        r = el.getBoundingClientRect();
+        return (r.width > 0 && r.height > 0) ? [toRect(r)] : [];
+    }
+
+    /* One fixed div per shown part of a fragment of the focus, else of the current zone's box; hidden without either,
+       a fragment, a shown part, or visibility. The outlined element carries data-gnh-pad-focused, shown or not, while
+       it has a fragment. A div's style is written only when it changes. */
     function placeRingNow() {
         var f;
         var el = null;
@@ -1449,10 +1547,12 @@
             }
             markFocused(el);
             if (el) {
-                frags = fragments(el);
+                frags = ringFragments(el);
             }
             if (!frags.length) {
                 markFocused(null);
+            } else {
+                frags = shownFragments(el, frags);
             }
             for (i = 0; i < MAX_FRAGMENTS; i++) {
                 if (i < frags.length) {
@@ -1962,6 +2062,48 @@
         return null;
     }
 
+    /* The bounding box of zone z: the union of its shown containers, clipped to the viewport; null without one.
+       A container counts with its own box only, so what it holds or scrolls does not widen it. */
+    function zoneBounds(z, vp) {
+        var list = document.querySelectorAll("[" + ZONE_ATTR + "]");
+        var view = { x: 0, y: 0, w: vp.w, h: vp.h };
+        var rects = [];
+        var r;
+        var i;
+        for (i = 0; i < list.length; i++) {
+            if (zoneOf(list[i]) === z && shownBy(list[i], true)) {
+                r = intersectRects(toRect(list[i].getBoundingClientRect()), view);
+                if (r) {
+                    rects.push(r);
+                }
+            }
+        }
+        return unionRects(rects);
+    }
+
+    /* Whether box b is stacked under box a: it starts within NEIGHBOR_GAP of a's bottom and ends below it. Boxes that
+       overlap more than that, such as a zone and a zone nested in it, are not stacked. */
+    function stackedUnder(a, b) {
+        var end = a.y + a.h;
+        return Math.abs(b.y - end) <= NEIGHBOR_GAP && b.y + b.h > end;
+    }
+
+    /* The zone that a Down (d > 0) or Up from zone z hands off to: the nearest in that direction in zone order whose
+       box is stacked under or over z's box and overlaps it horizontally; else 0. */
+    function neighborZone(info, z, d, vp) {
+        var box = zoneBounds(z, vp);
+        var i = info.zones.indexOf(z) + d;
+        var r;
+        for (; box && i >= 0 && i < info.zones.length; i += d) {
+            r = zoneBounds(info.zones[i], vp);
+            if (r && r.x < box.x + box.w && box.x < r.x + r.w &&
+                (d > 0 ? stackedUnder(box, r) : stackedUnder(r, box))) {
+                return info.zones[i];
+            }
+        }
+        return 0;
+    }
+
     function rowOf(el) {
         return el.closest(ROW_MARK);
     }
@@ -2105,19 +2247,70 @@
         return !!row && rowCandidates(row, true).length > 0;
     }
 
-    /* State flags of snapshots and zone call results: z in zone mode, r for rowFlag(). */
-    function stateFlags(on) {
-        return (on ? "z" : "") + (rowFlag() ? "r" : "");
+    /* The elements marked data-gnh-pad-shortcut="key" */
+    function shortcutMarks(key) {
+        return toArray(document.querySelectorAll("[" + SHORTCUT_ATTR + "]")).filter(function (m) {
+            return m.getAttribute(SHORTCUT_ATTR) === key;
+        });
+    }
+
+    /* The target of key in zone z: of the first mark in that zone that has one, the marked element if it is a
+       candidate, else the first candidate inside it; else null. */
+    function shortcutOf(z, key) {
+        var marks = shortcutMarks(key);
+        var nodes;
+        var i;
+        var j;
+        for (i = 0; i < marks.length; i++) {
+            if (zoneOf(marks[i]) !== z) {
+                continue;
+            }
+            if (matchesKind(marks[i]) && candidateFragments(marks[i])) {
+                return marks[i];
+            }
+            nodes = marks[i].querySelectorAll(SELECTOR);
+            for (j = 0; j < nodes.length; j++) {
+                if (matchesKind(nodes[j]) && candidateFragments(nodes[j])) {
+                    return nodes[j];
+                }
+            }
+        }
+        return null;
+    }
+
+    /* Whether the current zone has a y target, on a page with a y mark. Without zone state passed, the current zone is
+       taken as the focus's zone, else the zone entered last, so that no candidates are collected. */
+    function hasYTarget(info) {
+        var f;
+        var z;
+        if (!shortcutMarks("y").length) {
+            return false;
+        }
+        if (info) {
+            z = currentZone(info);
+        } else {
+            f = liveFocus();
+            z = (f ? zoneOf(f) : 0) || curZone;
+        }
+        return !!z && !!shortcutOf(z, "y");
+    }
+
+    /* State flags of snapshots and zone call results: z in zone mode, r for rowFlag(), y in zone mode for
+       hasYTarget(). */
+    function stateFlags(on, info) {
+        return (on ? "z" : "") + (rowFlag() ? "r" : "") + (on && hasYTarget(info) ? "y" : "");
     }
 
     /* The trailing field of a zone call's result: ~ and the state flags after the call, with the ring placed
        first so that a row it moved to shows its secondary candidates. Zone mode is computed unless on is given. */
     function tail(on) {
+        var info;
         placeRing();
         if (on === undefined) {
-            on = zoneInfo().on;
+            info = zoneInfo();
+            on = info.on;
         }
-        return "~" + stateFlags(on);
+        return "~" + stateFlags(on, info);
     }
 
     /* The viewport span { top, bottom } in which the scroller sc shows content; the viewport for null. */
@@ -2151,6 +2344,18 @@
     function topVisibleStop(stops, vp, only, sc) {
         var i;
         for (i = 0; i < stops.length; i++) {
+            if ((!only || scrollMarkOf(stops[i].el) === sc) && showsInSpan(stops[i], vp)) {
+                return stops[i];
+            }
+        }
+        return null;
+    }
+
+    /* The last stop in reading order that shows; with only set, among those whose [data-gnh-pad-scroll] container is
+       sc, null for none. */
+    function bottomVisibleStop(stops, vp, only, sc) {
+        var i;
+        for (i = stops.length - 1; i >= 0; i--) {
             if ((!only || scrollMarkOf(stops[i].el) === sc) && showsInSpan(stops[i], vp)) {
                 return stops[i];
             }
@@ -2229,6 +2434,30 @@
         return focusStop(c, on);
     }
 
+    /* Makes zone z current with the ring around its outline and no focus: F~z and the trailing field. */
+    function outlineZone(z, on) {
+        focusEl = null;
+        zoneBox = zoneOutline(z);
+        return "F~z" + tail(on);
+    }
+
+    /* Zone z's last focus while still a candidate, else that focus's row stop, when that shows in its scroller's
+       view; else null. */
+    function rememberedStop(info, stops, z, vp) {
+        var last = lastByZone[z];
+        var pick = null;
+        var i;
+        if (last && last.isConnected && zoneOf(last) === z) {
+            i = indexOfEl(info.all, last);
+            pick = i >= 0 ? info.all[i] : null;
+            if (!pick) {
+                i = stopIndex(stops, last);
+                pick = i >= 0 ? stops[i] : null;
+            }
+        }
+        return (pick && showsInSpan(pick, vp)) ? pick : null;
+    }
+
     /* Enters zone z: its last focus while still a candidate, else that focus's row stop, when that shows in its
        scroller's view, else the zone's first stop that shows. A zone without a last focus, or with none of its
        stops showing, gets its stop that is, is inside, or holds a data-gnh-pad-initial element; else its
@@ -2243,16 +2472,9 @@
         var i;
         var j;
         curZone = z;
-        if (last && last.isConnected && zoneOf(last) === z) {
-            i = indexOfEl(info.all, last);
-            pick = i >= 0 ? info.all[i] : null;
-            if (!pick) {
-                i = stopIndex(stops, last);
-                pick = i >= 0 ? stops[i] : null;
-            }
-            if (!pick || !showsInSpan(pick, vp)) {
-                pick = topVisibleStop(stops, vp, false, null);
-            }
+        pick = rememberedStop(info, stops, z, vp);
+        if (!pick && last && last.isConnected && zoneOf(last) === z) {
+            pick = topVisibleStop(stops, vp, false, null);
         }
         marks = pick ? [] : toArray(document.querySelectorAll(INITIAL_MARK));
         for (i = 0; i < stops.length && !pick && marks.length; i++) {
@@ -2273,9 +2495,36 @@
         if (pick) {
             return focusStop(pick, info.on);
         }
-        focusEl = null;
-        zoneBox = zoneOutline(z);
-        return "F~z" + tail(info.on);
+        return outlineZone(z, info.on);
+    }
+
+    /* Enters zone z by a Down (d > 0) or Up handing off to it. Down enters it as zone('n') does. Up prefers the zone's
+       scroller: its remembered focus inside the scroller while that shows, else the scroller's bottom visible stop;
+       with neither and room to scroll up, the zone's outline, from which further moves scroll or enter the scroller.
+       Otherwise its remembered focus while that shows, else its bottom visible stop, else its outline. */
+    function enterNeighbor(info, z, d, vp) {
+        var stops;
+        var sc;
+        var pick;
+        var inner;
+        if (d > 0) {
+            return enterZone(info, z);
+        }
+        stops = zoneStops(info.all, z);
+        sc = zoneScroller(z, null);
+        pick = rememberedStop(info, stops, z, vp);
+        curZone = z;
+        if (sc) {
+            inner = (pick && sc.contains(pick.el)) ? pick : bottomVisibleStop(stops, vp, true, sc);
+            if (inner) {
+                return focusStop(inner, info.on);
+            }
+            if (canScroll(sc, "y", -1)) {
+                return outlineZone(z, info.on);
+            }
+        }
+        pick = pick || bottomVisibleStop(stops, vp, false, null);
+        return pick ? focusStop(pick, info.on) : outlineZone(z, info.on);
     }
 
     /* In zone mode, the top visible stop of the current zone, those in its scroller first; else null. */
@@ -2295,7 +2544,7 @@
     /* snapshot(reach): S~seq~vw~vh~dpr~sx~sy~maxX~maxY~focus~flags~items, items index,kind,area,x,y,w,h....
        A focus that is disconnected or has no fragment in the viewport is reported as lost (l). Flags: h ring
        hidden, l focus lost, e editing, p initial focus pending, z zone mode, r the focus is in a row with a
-       visible secondary candidate. */
+       visible secondary candidate, y the current zone has a y target. */
     function snapshot(reach) {
         var vp = viewport();
         var mx = maxScroll(vp);
@@ -2305,6 +2554,7 @@
         var parts = [];
         var focusPos = -1;
         var flags = "";
+        var info;
         var i;
         var c;
         reach = Math.max(0, num(reach));
@@ -2333,7 +2583,8 @@
         if (initialPending) {
             flags += "p";
         }
-        flags += stateFlags(zoneInfo(all).on);
+        info = zoneInfo(all);
+        flags += stateFlags(info.on, info);
         return "S~" + seq + "~" + rnd(vp.w) + "~" + rnd(vp.h) + "~" + (window.devicePixelRatio || 1).toFixed(2) +
             "~" + rnd(scrollX()) + "~" + rnd(scrollY()) + "~" + rnd(mx.x) + "~" + rnd(mx.y) +
             "~" + focusPos + "~" + flags + "~" + parts.join(";");
@@ -2355,12 +2606,26 @@
     }
 
     /* activate(): selects step forward with wrapping; text fields are DOM-focused for editing. After a click or a
-       select step the ring is re-placed again shortly, as the page may still be changing. */
+       select step the ring is re-placed again shortly, as the page may still be changing. A focus with no shown part
+       is not pressed: the focus moves to the current zone's top visible stop in zone mode, else it is revealed,
+       and the result is A~n. */
     function activate() {
         var f = liveFocus();
+        var frags;
+        var tv;
         var k;
         var r;
         if (!f) {
+            return "A~n";
+        }
+        frags = fragments(f);
+        if (!shownFragments(f, frags).length) {
+            tv = zoneTopVisible(viewport());
+            if (tv) {
+                focusEl = tv.el;
+            } else if (frags.length) {
+                reveal(f);
+            }
             return "A~n";
         }
         k = kindOf(f);
@@ -2762,15 +3027,20 @@
     }
 
     /* search(): the first search field that is shown, or is shown once the closed details around
-       it are opened; details opened for a field that stays hidden are closed again. */
+       it are opened; details opened for a field that stays hidden are closed again. While a layer is
+       open, only the fields inside it count. */
     function search() {
         var fields = searchFields();
+        var layer = activeLayer();
         var i;
         var el;
         var opened;
         var j;
         for (i = 0; i < fields.length; i++) {
             el = fields[i];
+            if (layer && !layer.contains(el)) {
+                continue;
+            }
             if (!fragments(el).length) {
                 if (!inClosedDetails(el)) {
                     continue;
@@ -3023,14 +3293,30 @@
     }
 
     /*
+     * zoneShortcut(key): in zone mode, focuses and reveals the current zone's target of key 'y', 'lt' or 'rt'. It
+     * neither activates the target nor scrolls a zone list. F~<kind>~<flags>; F~n~<flags> without a target, outside
+     * zone mode or with a layer open.
+     */
+    function zoneShortcut(key) {
+        var info = zoneInfo();
+        var z = info.on ? currentZone(info) : 0;
+        var el = z ? shortcutOf(z, String(key)) : null;
+        if (!el) {
+            return "F~n" + tail(info.on);
+        }
+        return focusStop({ el: el }, true);
+    }
+
+    /*
      * zoneMove(dir, stepPx): moves to the next stop of the current zone in reading order in direction dir, or
      * scrolls one step of stepPx CSS px toward it when it lies more than that outside its scroller's view. A focus
      * that is not a shown stop of the zone moves to the top visible stop instead, of its scroller first. Leaving
      * a scroller that can still move in direction dir scrolls it; entering one goes to its first stop in view, or
      * scrolls it when none is there. Without a next stop, the stop's scroller, else the zone's, scrolls one step
-     * when it can. Results end with the state flags after the call: F~<kind>~<flags> moved, D~s~<flags>
-     * scrolled, F~x~<flags> up from the first stop of the lowest zone, F~n~<flags> nothing to do or outside zone
-     * mode.
+     * when it can; with nothing to scroll, the move enters the zone neighborZone() finds, else a focus that is not
+     * a shown stop moves to the zone's top visible stop. Results end with the state flags after the call:
+     * F~<kind>~<flags> moved, F~z~<flags> entered a neighbor zone at its outline, D~s~<flags> scrolled, F~x~<flags>
+     * up from the first stop of the lowest zone, F~n~<flags> nothing to do or outside zone mode.
      */
     function zoneMove(dir, stepPx) {
         var info = zoneInfo();
@@ -3042,6 +3328,7 @@
         var stops;
         var nsc;
         var sc;
+        var nz;
         var z;
         var f;
         var i;
@@ -3087,6 +3374,10 @@
         }
         if (sc && canScroll(sc, "y", d)) {
             return scrollStep(sc, d, px, true);
+        }
+        nz = neighborZone(info, z, d, vp);
+        if (nz) {
+            return enterNeighbor(info, nz, d, vp);
         }
         if (i < 0) {
             next = topVisibleStop(stops, vp, false, null);
@@ -3200,6 +3491,7 @@
         focusMarked: guard(focusMarked),
         refresh: guard(refresh),
         zone: guard(zone),
+        zoneShortcut: guard(zoneShortcut),
         zoneMove: guard(zoneMove),
         rowActions: guard(rowActions)
     };

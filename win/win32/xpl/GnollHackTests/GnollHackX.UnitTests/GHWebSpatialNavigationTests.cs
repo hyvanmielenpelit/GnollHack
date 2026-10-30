@@ -146,6 +146,27 @@ namespace GnollHackX.UnitTests
             Assert.True(GHWebSnapshot.TryParse("S~5~800~600~1~0~0~0~0~0~z~5,b,s,0,0,30,10", out s));
             Assert.True(s.ZoneMode);
             Assert.False(s.HasRowActions);
+            Assert.False(s.HasZoneShortcutY);
+
+            Assert.True(GHWebSnapshot.TryParse("S~6~800~600~1~0~0~0~0~0~zy~5,b,m,0,0,30,10", out s));
+            Assert.True(s.ZoneMode);
+            Assert.True(s.HasZoneShortcutY);
+            Assert.False(s.HasRowActions);
+        }
+
+        [Theory]
+        [InlineData("F~b~zy", true, false, true)]
+        [InlineData("F~b~zr", true, true, false)]
+        [InlineData("F~n~", false, false, false)]
+        public void ResultFlags_ParseZoneShortcutY(string result, bool zoneMode, bool rowActions, bool shortcutY)
+        {
+            bool z;
+            bool r;
+            bool y;
+            Assert.True(GHWebSnapshot.TryParseResultFlags(result, out z, out r, out y));
+            Assert.Equal(zoneMode, z);
+            Assert.Equal(rowActions, r);
+            Assert.Equal(shortcutY, y);
         }
 
         [Theory]

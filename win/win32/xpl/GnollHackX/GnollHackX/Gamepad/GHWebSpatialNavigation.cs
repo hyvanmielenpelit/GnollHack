@@ -103,6 +103,8 @@ namespace GnollHackX
         public bool ZoneMode { get; set; }
         /* The focus is in a row that has visible secondary controls, which Y reaches */
         public bool HasRowActions { get; set; }
+        /* The current zone has an element that Y presses */
+        public bool HasZoneShortcutY { get; set; }
         public List<GHWebCandidate> Candidates { get; }
 
         /* The focused candidate's kind, or '\0' without a focus */
@@ -116,12 +118,14 @@ namespace GnollHackX
             }
         }
 
-        /* The state flags of a zone call's result, X~value~flags, with the snapshot's letters z and r; false when the
-           result has no flags field */
-        public static bool TryParseResultFlags(string result, out bool zoneMode, out bool hasRowActions)
+        /* The state flags of a zone call's result, X~value~flags, with the snapshot's letters z, r and y; false when
+           the result has no flags field */
+        public static bool TryParseResultFlags(string result, out bool zoneMode, out bool hasRowActions,
+            out bool hasZoneShortcutY)
         {
             zoneMode = false;
             hasRowActions = false;
+            hasZoneShortcutY = false;
             if (string.IsNullOrEmpty(result))
                 return false;
             string[] parts = result.Split('~');
@@ -130,7 +134,14 @@ namespace GnollHackX
             string flags = parts[parts.Length - 1];
             zoneMode = flags.IndexOf('z') >= 0;
             hasRowActions = flags.IndexOf('r') >= 0;
+            hasZoneShortcutY = flags.IndexOf('y') >= 0;
             return true;
+        }
+
+        public static bool TryParseResultFlags(string result, out bool zoneMode, out bool hasRowActions)
+        {
+            bool hasZoneShortcutY;
+            return TryParseResultFlags(result, out zoneMode, out hasRowActions, out hasZoneShortcutY);
         }
 
         /* The value field of a zone call's result: the second field, or null without one */
@@ -201,6 +212,9 @@ namespace GnollHackX
                     break;
                 case 'r':
                     result.HasRowActions = true;
+                    break;
+                case 'y':
+                    result.HasZoneShortcutY = true;
                     break;
                 default:
                     break;

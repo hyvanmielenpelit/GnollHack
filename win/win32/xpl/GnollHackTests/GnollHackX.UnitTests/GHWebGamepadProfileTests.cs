@@ -23,6 +23,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal("Search", p.SearchLabel);
             Assert.Equal("Area", p.ZoneLabel);
             Assert.Equal("Actions", p.RowActionsLabel);
+            Assert.Equal("Open", p.ZoneShortcutYLabel);
         }
 
         [Fact]
@@ -41,6 +42,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal("Search", p.SearchLabel);
             Assert.Equal("Area", p.ZoneLabel);
             Assert.Equal("Actions", p.RowActionsLabel);
+            Assert.Equal("Model", p.ZoneShortcutYLabel);
         }
 
         [Fact]

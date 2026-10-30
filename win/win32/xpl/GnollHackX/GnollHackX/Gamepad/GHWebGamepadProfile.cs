@@ -41,6 +41,9 @@ namespace GnollHackX
         /* The Y hint when the focus is in a row with secondary controls */
         public string RowActionsLabel { get; set; }
 
+        /* The Y hint in a zone that has an element Y presses */
+        public string ZoneShortcutYLabel { get; set; }
+
         /* Web pages such as the wiki */
         public static GHWebGamepadProfile CreateDefault()
         {
@@ -57,6 +60,7 @@ namespace GnollHackX
             profile.SearchLabel = "Search";
             profile.ZoneLabel = "Area";
             profile.RowActionsLabel = "Actions";
+            profile.ZoneShortcutYLabel = "Open";
             return profile;
         }
 
@@ -76,6 +80,7 @@ namespace GnollHackX
             profile.SearchLabel = "Search";
             profile.ZoneLabel = "Area";
             profile.RowActionsLabel = "Actions";
+            profile.ZoneShortcutYLabel = "Model";
             return profile;
         }
     }
