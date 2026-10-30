@@ -24,6 +24,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal("Area", p.ZoneLabel);
             Assert.Equal("Actions", p.RowActionsLabel);
             Assert.Equal("Open", p.ZoneShortcutYLabel);
+            Assert.Null(p.ZoneLinearTriggersLabel);
         }
 
         [Fact]
@@ -43,6 +44,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal("Area", p.ZoneLabel);
             Assert.Equal("Actions", p.RowActionsLabel);
             Assert.Equal("Model", p.ZoneShortcutYLabel);
+            Assert.Equal("Model/Entry", p.ZoneLinearTriggersLabel);
         }
 
         [Fact]

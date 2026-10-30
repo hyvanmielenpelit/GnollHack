@@ -63,11 +63,10 @@ A only focuses the field; Steam + X opens the keyboard by hand. `GNOLLHACK_STEAM
 allows it on any Linux session, and `GNOLLHACK_STEAM_KEYBOARD_LAUNCH` (`xdg-open`, the default,
 `steam` or `launcher`) picks how the `steam://open/keyboard` link is opened.
 
-Pages that keep the keyboard adapter (the Overseer, the tombstone, and the developer-only editor
-and performance suite) receive A as Enter, B as Escape, directions as arrow keys and L1/R1 as
-Page Up and Page Down, but act only on the keys they handle: the Overseer on B (Escape, with its
-close confirmation), the tombstone on A or B (either dismisses it), and the editor and the
-performance suite on B, which closes them.
+Pages that keep the keyboard adapter (the tombstone, and the developer-only editor and performance
+suite) receive A as Enter, B as Escape, directions as arrow keys and L1/R1 as Page Up and Page
+Down, but act only on the keys they handle: the tombstone on A or B (either dismisses it), and the
+editor and the performance suite on B, which closes them.
 
 **Message boxes.** Every page shows its message boxes (errors, confirmations such as Confirm
 Deletion) as an in-page popup, which takes the controller: Left/Right move between its buttons,
@@ -216,6 +215,39 @@ scrolls it into view. Touch, the mouse or a key inside the page hides the ring; 
 press only shows it again. **Text fields:** A or Y focuses the field and, on a Steam Deck in Game Mode, opens Steam's
 keyboard placed away from it; its Enter submits, B ends the edit, and a direction leaves the field.
 A hint strip in the toolbar row shows the controls for the current mode.
+
+### Overseer Chat
+
+The Overseer chat uses the same script, with the page divided into zones. L1/R1 step through them
+in this order, and View cycles them: Menu, Chat controls (New Chat, Search chats), Chat list,
+Messages, Write. The D-pad and left stick move physically and also cross zones; Left/Right stay on
+the line. The quota buttons (chat count, pinned count, trash) are a zone of their own that L1, R1
+and View pass over: only Up from the Menu links and Down from the last chat reach them. With nothing
+else to do, B leaves the page, with a confirmation.
+
+In the Write zone:
+
+| Control | Action |
+|---------|--------|
+| L2 | The model selector |
+| R2 | The Ask the Overseer entry |
+| Up / Down | The next line up or down, entering it at the entry, else at the model selector. Up from the top line goes to Messages |
+| Left / Right | Along the line: `+`, the entry and Send; the model selector, its filter and Make confidential |
+| Y | Open the model selector |
+| X | Write in the entry |
+
+While typing in a field with text on this page, including Search chats:
+
+| Control | Action |
+|---------|--------|
+| D-pad, left stick | Move the text cursor by a character or a displayed line |
+| L2 / R2 | The start / end of the text |
+| B | End the typing |
+| L1 / R1 | End the typing and go to the previous / next zone |
+
+A field with no text counts as not typing, so these keep their usual actions there. Other lines
+with buttons in the Write zone, such as attachment chips, Stop or a notice, are stops of their own
+for Up and Down.
 
 ### File Dialogs
 

@@ -44,6 +44,9 @@ namespace GnollHackX
         /* The Y hint in a zone that has an element Y presses */
         public string ZoneShortcutYLabel { get; set; }
 
+        /* The LT/RT hint in a linear zone; null shows none */
+        public string ZoneLinearTriggersLabel { get; set; }
+
         /* Web pages such as the wiki */
         public static GHWebGamepadProfile CreateDefault()
         {
@@ -61,6 +64,7 @@ namespace GnollHackX
             profile.ZoneLabel = "Area";
             profile.RowActionsLabel = "Actions";
             profile.ZoneShortcutYLabel = "Open";
+            profile.ZoneLinearTriggersLabel = null;
             return profile;
         }
 
@@ -81,6 +85,7 @@ namespace GnollHackX
             profile.ZoneLabel = "Area";
             profile.RowActionsLabel = "Actions";
             profile.ZoneShortcutYLabel = "Model";
+            profile.ZoneLinearTriggersLabel = "Model/Entry";
             return profile;
         }
     }

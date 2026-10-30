@@ -160,6 +160,34 @@ namespace GnollHackX.UnitTests
         }
 
         [Theory]
+        [InlineData("F~b~zyi", true)]
+        [InlineData("F~b~zy", false)]
+        [InlineData("F~b~zl", false)]
+        public void ResultFlags_ParseZoneIsLinear(string result, bool linear)
+        {
+            bool z;
+            bool r;
+            bool y;
+            bool s;
+            bool i;
+            Assert.True(GHWebSnapshot.TryParseResultFlags(result, out z, out r, out y, out s, out i));
+            Assert.Equal(linear, i);
+        }
+
+        [Fact]
+        public void Parse_LinearFlagIsNotFocusLost()
+        {
+            GHWebSnapshot s;
+            Assert.True(GHWebSnapshot.TryParse("S~7~1280~720~1.25~3~340.5~10~2100~0~zyi~0,t,o,10,20,30,40", out s));
+            Assert.True(s.ZoneIsLinear);
+            Assert.False(s.FocusLost);
+
+            Assert.True(GHWebSnapshot.TryParse("S~7~1280~720~1.25~3~340.5~10~2100~0~zl~0,t,o,10,20,30,40", out s));
+            Assert.False(s.ZoneIsLinear);
+            Assert.True(s.FocusLost);
+        }
+
+        [Theory]
         [InlineData("F~b~zrys", true)]
         [InlineData("D~s~zs", true)]
         [InlineData("F~b~z", false)]

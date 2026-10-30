@@ -107,6 +107,8 @@ namespace GnollHackX
         public bool HasZoneShortcutY { get; set; }
         /* The current zone has its own scrolling list, which L2 and R2 page */
         public bool ZoneHasScroller { get; set; }
+        /* The current zone is linear: L2 and R2 go to its y target and its text field */
+        public bool ZoneIsLinear { get; set; }
         public List<GHWebCandidate> Candidates { get; }
 
         /* The focused candidate's kind, or '\0' without a focus */
@@ -120,15 +122,16 @@ namespace GnollHackX
             }
         }
 
-        /* The state flags of a zone call's result, X~value~flags, with the snapshot's letters z, r, y and s; false when
+        /* The state flags of a zone call's result, X~value~flags, with the snapshot's letters z, r, y, s and i; false when
            the result has no flags field */
         public static bool TryParseResultFlags(string result, out bool zoneMode, out bool hasRowActions,
-            out bool hasZoneShortcutY, out bool zoneHasScroller)
+            out bool hasZoneShortcutY, out bool zoneHasScroller, out bool zoneIsLinear)
         {
             zoneMode = false;
             hasRowActions = false;
             hasZoneShortcutY = false;
             zoneHasScroller = false;
+            zoneIsLinear = false;
             if (string.IsNullOrEmpty(result))
                 return false;
             string[] parts = result.Split('~');
@@ -139,7 +142,15 @@ namespace GnollHackX
             hasRowActions = flags.IndexOf('r') >= 0;
             hasZoneShortcutY = flags.IndexOf('y') >= 0;
             zoneHasScroller = flags.IndexOf('s') >= 0;
+            zoneIsLinear = flags.IndexOf('i') >= 0;
             return true;
+        }
+
+        public static bool TryParseResultFlags(string result, out bool zoneMode, out bool hasRowActions,
+            out bool hasZoneShortcutY, out bool zoneHasScroller)
+        {
+            bool zoneIsLinear;
+            return TryParseResultFlags(result, out zoneMode, out hasRowActions, out hasZoneShortcutY, out zoneHasScroller, out zoneIsLinear);
         }
 
         public static bool TryParseResultFlags(string result, out bool zoneMode, out bool hasRowActions,
@@ -229,6 +240,9 @@ namespace GnollHackX
                     break;
                 case 's':
                     result.ZoneHasScroller = true;
+                    break;
+                case 'i':
+                    result.ZoneIsLinear = true;
                     break;
                 default:
                     break;

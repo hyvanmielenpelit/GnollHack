@@ -63,16 +63,19 @@
        in its secondary part. A row with the value item, inside a zone, is itself a candidate and the stop, and all
        candidates inside it are its secondary part. The element with the ring carries data-gnh-pad-focused. */
     var ZONE_ATTR = "data-gnh-pad-zone";
+    /* On a zone's container: stepping between zones passes over the zone, which only a physical move reaches. */
+    var ZONE_SKIP_MARK = "[data-gnh-pad-zone-skip]";
     var ROW_ATTR = "data-gnh-pad-row";
     var ROW_MARK = "[data-gnh-pad-row]";
     var ITEM_MARK = "[data-gnh-pad-row=item]";
     var SECONDARY_MARK = "[data-gnh-pad-secondary]";
     var FOCUSED_ATTR = "data-gnh-pad-focused";
-    /* On a zone's container: Up and Down walk through every stop of the zone one at a time. */
+    /* On a zone's container: Up and Down move a line at a time and enter a line at its text field, else at the zone's y
+       target; L2 goes to the y target and R2 to the text field. */
     var LINEAR_MARK = "[data-gnh-pad-linear]";
     /* In zone mode, the element the key y goes to while it is in the current zone, and the keys lt and rt from a zone
-       without a scroller while it is in a zone of the same area; a mark on an element that is not a candidate applies
-       to the first candidate inside it. */
+       without a scroller, except a linear one, while it is in a zone of the same area; a mark on an element that is not
+       a candidate applies to the first candidate inside it. */
     var SHORTCUT_ATTR = "data-gnh-pad-shortcut";
     /* Values of will-change and contain that make an element the containing block of fixed-position descendants */
     var FIXED_WILL_CHANGE = /\b(?:transform|perspective|filter)\b/;
@@ -2403,10 +2406,11 @@
     }
 
     /* State flags of snapshots and zone call results: z in zone mode, r for rowFlag(), y in zone mode for
-       hasYTarget(), s in zone mode for zoneHasScroller(). */
+       hasYTarget(), s in zone mode for zoneHasScroller(), i in zone mode for a linear current zone. */
     function stateFlags(on, info) {
+        var z = on ? flagZone(info) : 0;
         return (on ? "z" : "") + (rowFlag() ? "r" : "") + (on && hasYTarget(info) ? "y" : "") +
-            (on && zoneHasScroller(info) ? "s" : "");
+            (on && zoneHasScroller(info) ? "s" : "") + (z && isLinearZone(z) ? "i" : "");
     }
 
     /* The trailing field of a zone call's result: ~ and the state flags after the call, with the ring placed
@@ -2631,9 +2635,9 @@
         return topVisibleStop(stops, vp, true, zoneScroller(z, focusEl)) || topVisibleStop(stops, vp, false, null);
     }
 
-    /* Whether zone z has a container marked data-gnh-pad-linear */
-    function isLinearZone(z) {
-        var list = document.querySelectorAll(LINEAR_MARK);
+    /* Whether zone z has a container matching the selector mark */
+    function zoneHasMark(z, mark) {
+        var list = document.querySelectorAll(mark);
         var i;
         for (i = 0; i < list.length; i++) {
             if (zoneOf(list[i]) === z) {
@@ -2643,20 +2647,61 @@
         return false;
     }
 
-    /* The stops in the order of a linear zone's walk going down: lines top to bottom, a line holding a text field left
-       to right, any other line right to left. */
-    function linearWalk(stops) {
-        var lines = readingLines(stops);
-        var out = [];
+    /* Whether zone z has a container marked data-gnh-pad-linear */
+    function isLinearZone(z) {
+        return zoneHasMark(z, LINEAR_MARK);
+    }
+
+    /* Whether the stop c is a text field */
+    function isTextStop(c) {
+        var k = kindOf(c.el);
+        return k === "t" || k === "m";
+    }
+
+    /* The stop a linear zone's move in direction d reaches from the stop c, on the next line: the line's text field,
+       else the zone's y target, else the stop whose left edge is nearest c's; else null. */
+    function linearStop(z, stops, c, d) {
+        var near = nextLineStop(stops, c, d);
+        var y = shortcutOf(z, "y");
+        var lines;
+        var line = null;
         var i;
-        function isText(c) {
-            var k = kindOf(c.el);
-            return k === "t" || k === "m";
+        if (!near) {
+            return null;
         }
-        for (i = 0; i < lines.length; i++) {
-            out = out.concat(lines[i].some(isText) ? lines[i] : lines[i].slice().reverse());
+        lines = readingLines(stops);
+        for (i = 0; i < lines.length && !line; i++) {
+            if (indexOfEl(lines[i], near.el) >= 0) {
+                line = lines[i];
+            }
         }
-        return out;
+        for (i = 0; i < line.length; i++) {
+            if (isTextStop(line[i])) {
+                return line[i];
+            }
+        }
+        for (i = 0; i < line.length; i++) {
+            if (line[i].el === y) {
+                return line[i];
+            }
+        }
+        return near;
+    }
+
+    /* The target of key lt or rt from the linear zone z: for lt its y target, for rt its text field; else null. */
+    function linearShortcut(info, z, key) {
+        var stops;
+        var i;
+        if (key === "lt") {
+            return shortcutOf(z, "y");
+        }
+        stops = zoneStops(info.all, z);
+        for (i = 0; i < stops.length; i++) {
+            if (isTextStop(stops[i])) {
+                return stops[i].el;
+            }
+        }
+        return null;
     }
 
     /* The stop of the next line in direction d after the line holding the stop c, whose left edge is nearest c's;
@@ -2816,7 +2861,8 @@
     /* snapshot(reach): S~seq~vw~vh~dpr~sx~sy~maxX~maxY~focus~flags~items, items index,kind,area,x,y,w,h....
        A focus that is disconnected or has no fragment in the viewport is reported as lost (l). Flags: h ring
        hidden, l focus lost, e editing, p initial focus pending, z zone mode, r the focus is in a row with a
-       visible secondary candidate, y the current zone has a y target, s the current zone has its own scroller. */
+       visible secondary candidate, y the current zone has a y target, s the current zone has its own scroller, i the
+       current zone is linear. */
     function snapshot(reach) {
         var vp = viewport();
         var mx = maxScroll(vp);
@@ -3561,8 +3607,9 @@
     /*
      * zone(arg): enters a zone and reveals its focus: arg 'n' the next and 'p' the previous, both without
      * wrapping and the first zone without a current one; 'c' the next with wrapping; 'r' the current one again;
-     * a number that zone. Results end with the state flags after the call: F~<kind>~<flags>; F~z~<flags> for a
-     * zone without candidates; F~n~<flags> outside zone mode or without such a zone.
+     * a number that zone. 'n', 'p' and 'c' pass over a zone marked data-gnh-pad-zone-skip. Results end with the state
+     * flags after the call: F~<kind>~<flags>; F~z~<flags> for a zone without candidates; F~n~<flags> outside zone mode
+     * or without such a zone.
      */
     function zone(arg) {
         var info = zoneInfo();
@@ -3579,7 +3626,11 @@
             z = zs.indexOf(parseInt(arg, 10)) >= 0 ? parseInt(arg, 10) : 0;
         } else if (arg === "r") {
             z = cur || zs[0];
-        } else if (arg === "n" || arg === "c") {
+        }
+        zs = zs.filter(function (n) {
+            return !zoneHasMark(n, ZONE_SKIP_MARK);
+        });
+        if (arg === "n" || arg === "c") {
             for (i = 0; i < zs.length && !z; i++) {
                 if (zs[i] > cur) {
                     z = zs[i];
@@ -3605,10 +3656,10 @@
     }
 
     /*
-     * zoneShortcut(key): in zone mode, focuses and reveals the target of key: for 'y' the current zone's, and for 'lt'
-     * and 'rt', from a zone without a scroller, that of the zone or of a zone in the same data-gnh-pad-area. It neither
-     * activates the target nor scrolls a zone list. F~<kind>~<flags>; F~n~<flags> without a target, outside zone mode
-     * or with a layer open.
+     * zoneShortcut(key): in zone mode, focuses and reveals the target of key: for 'y' the current zone's, for 'lt' and
+     * 'rt' in a linear zone linearShortcut(), and for 'lt' and 'rt' from another zone without a scroller, that of the
+     * zone or of a zone in the same data-gnh-pad-area. It neither activates the target nor scrolls a zone list.
+     * F~<kind>~<flags>; F~n~<flags> without a target, outside zone mode or with a layer open.
      */
     function zoneShortcut(key) {
         var info = zoneInfo();
@@ -3617,6 +3668,8 @@
         key = String(key);
         if (z && key === "y") {
             el = shortcutOf(z, key);
+        } else if (z && isLinearZone(z)) {
+            el = linearShortcut(info, z, key);
         } else if (z && !zoneScroller(z, null)) {
             el = areaShortcut(z, key, liveFocus());
         }
@@ -3629,8 +3682,8 @@
     /*
      * zoneMove(dir, stepPx): moves in direction dir, from a row's secondary part as from its stop. A focus that is not
      * a shown stop of the zone moves to the top visible stop, of its scroller first, or toward its scroller's first
-     * stop in view, or scrolls the scroller when it can. In a data-gnh-pad-linear zone, a shown stop moves to the next
-     * stop of linearWalk(). Otherwise, in a [data-gnh-pad-scroll] scroller, it moves to the next line of the scroller's
+     * stop in view, or scrolls the scroller when it can. In a data-gnh-pad-linear zone, a shown stop moves to
+     * linearStop(). Otherwise, in a [data-gnh-pad-scroll] scroller, it moves to the next line of the scroller's
      * stops, at the left edge nearest its own; a stop more than one step of stepPx CSS px outside the scroller's view
      * scrolls one step instead, and without a next line a scroller that can still move scrolls one step. Past all that,
      * crossPage() moves physically on the page. Results end with the state flags after the call: F~<kind>~<flags>
@@ -3643,7 +3696,6 @@
         var px = Math.max(1, Math.abs(num(stepPx)));
         var vp = viewport();
         var next = null;
-        var walk;
         var stops;
         var sc;
         var z;
@@ -3685,8 +3737,7 @@
             return next ? focusStop(next, true) : crossPage(info, z, null, zoneOutline(z), d, vp);
         }
         if (isLinearZone(z)) {
-            walk = linearWalk(stops);
-            next = walk[indexOfEl(walk, stops[i].el) + d];
+            next = linearStop(z, stops, stops[i], d);
             if (next) {
                 return approach(next, px, vp, true, d);
             }
@@ -3818,6 +3869,75 @@
         return "F~" + kindOf(next.el) + tail(true);
     }
 
+    /* Scrolls a textarea so that its caret shows, measured on a hidden copy of its text: selection.modify() moves the
+       caret without scrolling. */
+    var CARET_MIRROR_STYLES = ["fontFamily", "fontSize", "fontWeight", "fontStyle", "letterSpacing", "wordSpacing",
+        "lineHeight", "textTransform", "textIndent", "tabSize", "paddingTop", "paddingRight", "paddingBottom",
+        "paddingLeft"];
+    function revealCaret(a) {
+        var cs;
+        var m;
+        var s;
+        var i;
+        var y;
+        var h;
+        if (a.localName !== "textarea" || a.scrollHeight <= a.clientHeight) {
+            return;
+        }
+        cs = getComputedStyle(a);
+        m = document.createElement("div");
+        for (i = 0; i < CARET_MIRROR_STYLES.length; i++) {
+            m.style[CARET_MIRROR_STYLES[i]] = cs[CARET_MIRROR_STYLES[i]];
+        }
+        m.style.position = "absolute";
+        m.style.visibility = "hidden";
+        m.style.left = "-9999px";
+        m.style.top = "0";
+        m.style.whiteSpace = "pre-wrap";
+        m.style.overflowWrap = "break-word";
+        m.style.boxSizing = "border-box";
+        m.style.width = a.clientWidth + "px";
+        m.textContent = a.value.slice(0, a.selectionStart);
+        s = document.createElement("span");
+        s.textContent = String.fromCharCode(0x200B);
+        m.appendChild(s);
+        document.documentElement.appendChild(m);
+        y = s.offsetTop;
+        h = s.offsetHeight;
+        m.remove();
+        if (y - parseFloat(cs.paddingTop) < a.scrollTop) {
+            a.scrollTop = y - parseFloat(cs.paddingTop);
+        } else if (y + h + parseFloat(cs.paddingBottom) > a.scrollTop + a.clientHeight) {
+            a.scrollTop = y + h + parseFloat(cs.paddingBottom) - a.clientHeight;
+        }
+    }
+
+    /*
+     * caret(move): in zone mode, in a text field being edited that holds text, moves the caret: 's' to the start, 'e' to
+     * the end, 'l' and 'r' a character, 'u' and 'd' a displayed line. D~1 when it took the move, also at the end of the
+     * text; D~0 otherwise.
+     */
+    var CARET_MOVES = {
+        s: ["backward", "documentboundary"], e: ["forward", "documentboundary"],
+        l: ["backward", "character"], r: ["forward", "character"],
+        u: ["backward", "line"], d: ["forward", "line"]
+    };
+    function caret(move) {
+        var a = deepActive();
+        var m = CARET_MOVES[String(move)];
+        var text;
+        if (!m || !isTextField(a) || !zoneInfo().on) {
+            return "D~0";
+        }
+        text = a.value !== undefined ? a.value : a.textContent;
+        if (!text) {
+            return "D~0";
+        }
+        getSelection().modify("move", m[0], m[1]);
+        revealCaret(a);
+        return "D~1";
+    }
+
     /* rowActions(): in a row, focuses the next visible candidate of its secondary part in reading order, from the
        row's stop the first that shows, and after the last one the row's stop again: F~<kind>~<flags>; F~n~<flags>
        outside a row or without one to go to. In zone mode, a focus out of view moves into view instead. */
@@ -3929,6 +4049,7 @@
         zoneShortcut: guard(zoneShortcut),
         zoneMove: guard(zoneMove),
         zoneSide: guard(zoneSide),
-        rowActions: guard(rowActions)
+        rowActions: guard(rowActions),
+        caret: guard(caret)
     };
 })();
