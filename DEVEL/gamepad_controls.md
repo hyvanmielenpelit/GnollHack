@@ -98,8 +98,9 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | R3 | Open the Toggles radial | | | |
 | L4, L5, R4, R5 (back grips) | Configurable; defaults Apply, Cast, Quick Cast, Quick Zap | | | |
 The grips are set in **Settings, Controller**. Their pickers appear only when the controller
-has grips, and they work only with the GnollHack Steam Input layout (see below); with any other
-layout they do nothing, which the game cannot detect.
+has grips, and they work only with the GnollHack Steam Input layout or another layout that binds
+them to the same keys (see below); with any other layout they do nothing or act as whatever button
+they are bound to, which the game cannot detect.
 
 **Trigger quick actions.** L2 and R2 each have eight quick actions, set in **Settings, Trigger
 Quick Actions** (any command the bar buttons can hold, or None). The section sits just before
@@ -286,13 +287,19 @@ evdev (`/dev/input/event*`). Two consequences:
 - **The layout must output a gamepad.** Steam's default for a game without declared controller
   support sends keyboard and mouse only. With that default **no virtual pad exists, and the
   controller does nothing in GnollHack** (touch still works). If the controls do nothing, open
-  the Steam button menu in game, Controller Settings, and select the template **"Gamepad with
-  Mouse Trackpad"**, or the GnollHack layout once it is published. Making the GnollHack layout
-  the default in Steamworks is therefore a release prerequisite.
+  the Steam button menu in game, Controller Settings, and select the **"GnollHack (Steam Deck)"**
+  layout from the official layouts. Steam's template **"Gamepad with Mouse Trackpad"** also
+  works, apart from the grips. Making the GnollHack layout the default in Steamworks is therefore
+  a release prerequisite.
 - **The back grips need key bindings.** The virtual pad has no paddle buttons, so the GnollHack
   layout sends the grips as **F2, F3, F4 and F5** (L4, L5, R4, R5), which the game turns back
   into grips (`WA-STEAM-0001` in `DEVEL/workarounds/steam.md`). With Steam's plain Gamepad
-  template everything except the grips works.
+  template everything except the grips works. A player with another layout can bind the same four
+  keys in it by hand: Controller Settings, Edit Layout, back grips, keyboard keys.
+
+**A player's selection is kept.** Steam remembers the layout each player chose for the game, so
+publishing or changing the default does not reach a player who has already selected a template or
+a layout of their own. They switch to the GnollHack layout in Controller Settings.
 
 If Steam Input is turned off for the game, only the Deck's physical controller is visible
 (`28DE:1205`, the hid-steam trackpad-mouse and keyboard devices). GnollHack does not read it,
@@ -323,47 +330,60 @@ The analog sticks reach the game raw; GnollHack applies its own deadzone.
 
 ### Authoring and Exporting
 
-Official configurations need the real app ID, so the layout is authored as a **personal layout
-on the Non-Steam development shortcut** (see [Development](#development)):
+Official configurations need the real app ID, so the layout is authored on the **GnollHack app
+installed from Steam** (app ID 3558190), by a developer who owns it:
 
-1. Launch the shortcut, open Controller Settings, and pick the "Gamepad with Mouse Trackpad"
-   template.
-2. Bind the four grips as above, turn gyro off, and save the layout with the title above.
-3. In Desktop Mode, export it with
-   `xdg-open "steam://dumpcontrollerconfig?appid=<id>"`, which writes the `.vdf` to `/tmp`.
-   For the shortcut, `<id>` is its `SteamGameId`, which `run-gnollhack.sh` writes at the top of
-   each log.
-4. Copy the file over SSH to
+1. Launch the game from the library, open Controller Settings, and pick the "Gamepad with Mouse
+   Trackpad" template.
+2. Bind the four grips as above and leave gyro off.
+3. In Steam, Settings, System, turn on developer mode, then "Steam Input Layout Dev Mode" under
+   Developer.
+4. In the layout's gear menu, Export Layout, with the title above.
+5. Take the exported `.vdf` from `Steam Controller Configs/<account>/config/` under
+   `steamapps/common`, or in Desktop Mode run
+   `xdg-open "steam://dumpcontrollerconfig?appid=3558190"`, which writes it to `/tmp`. The same
+   URL through `steam -ifrunning` over SSH in Game Mode writes nothing.
+6. Delete the `creator` line, which holds the author's Steam ID. Copy the file over SSH to
    `win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/steam/input/controller_neptune.vdf` and
-   commit it. It is both the record of the layout and the file the depot ships.
+   commit it. It is the record of the layout, and the file the depot ships. It is not otherwise
+   edited by hand.
 
-A later developer can apply the exported layout by placing it in the shortcut's personal
-configuration folder, or rebind it by hand from the list above.
+The Non-Steam development shortcut (see [Development](#development)) keeps its own personal layout.
+Rebind it by hand from the list above, or place the exported file in the shortcut's personal
+configuration folder.
 
 ### Publishing
 
-**Primary route: the bundled Action Manifest.**
+**Active route: an official configuration.**
+
+1. Export the layout as described above.
+2. Make it the official configuration.
+3. Select it for the Steam Deck controller type in Steamworks: Application, Steam Input. Save,
+   then publish the app changes. If the page can only set it for all controller types, do not
+   publish it that way; Windows players' default would change too.
+
+This needs no new game build, because the game code that reads the grips is already live, and it
+leaves the depots alone. To undo it, select the previous template and publish.
+
+**Later option: the bundled Action Manifest**, which versions the layout together with the game
+code:
 
 - `Packaging/steam/input/gnollhack_input_manifest.vdf` is the manifest; it names
   `controller_neptune.vdf` as the Steam Deck configuration.
 - The Steam target of `Build-LinuxPackages.ps1` copies the `.vdf` files of that folder into the
-  content root as `steam_input/`, and warns when `controller_neptune.vdf` is missing.
+  content root as `steam_input/`, and warns when `controller_neptune.vdf` is missing. The files
+  are inert until Steamworks selects them.
 - In Steamworks: Application, Steam Input, "Steam Input Template" = **"Custom Configuration
   (Bundled with game)"**, path `steam_input/gnollhack_input_manifest.vdf`. Steam reads the
-  manifest from the depots, so the layout ships together with the game code that reads it.
-- **Select it only after every live branch's depot contains both files.** A branch without
-  them would get a missing configuration.
+  manifest from the depots.
+- **Select it only after every live branch's depot contains both files, on every platform.** The
+  setting belongs to the app, which also ships on Windows, and that depot does not come from
+  `Build-LinuxPackages.ps1`.
+- **Unanswered by Valve's documentation:** what happens with a depot that has no manifest, what
+  happens with a controller type the manifest does not name, and whether `legacy_set` works in a
+  game that does not use the Steam Input API. Test these before relying on this route.
 
-**Fallback route: an official configuration**, if Steam rejects a manifest for a game that does
-not use the Steam Input API:
-
-1. Export the layout with a developer account ("Steam Input Layout Dev Mode", gear, Export
-   layout).
-2. Make it the official configuration.
-3. Select it for the Steam Deck controller type in Steamworks.
-
-A player who picks another template or their own layout keeps it; Steam remembers the choice
-per user. A keyboard template produces no virtual pad, so keys behave as they always did.
+A keyboard template produces no virtual pad, so keys behave as they always did.
 
 ## Eligibility and Environment Variables
 
@@ -407,7 +427,7 @@ every hot-plug, with lines starting `GAMEPAD`:
 | `GAMEPAD dev eventN +open ... verdict=accept:steam-virtual ... style=...` | A pad was opened, with its axes, deadzone and glyph style |
 | `GAMEPAD dev eventN ... verdict=skip` | A device was skipped, with the reason; most are filtered through sysfs without being opened |
 | `GAMEPAD keys bridge on (...)` / `off (...)` | Whether the back-grip bridge runs, and its keys |
-| `GAMEPAD hint: no Steam virtual gamepad (GnollHack's Steam Input layout is not a gamepad layout?)` | A Steam launch with no virtual pad: the layout outputs keyboard and mouse. Select "Gamepad with Mouse Trackpad" or the GnollHack layout |
+| `GAMEPAD hint: no Steam virtual gamepad (GnollHack's Steam Input layout is not a gamepad layout?)` | A Steam launch with no virtual pad: the layout outputs keyboard and mouse. Select the GnollHack layout or "Gamepad with Mouse Trackpad" |
 | `GAMEPAD hint: only valve-physical device present (Steam Input off?)` | Only the Deck's physical controller is visible. Turn Steam Input on for the game |
 
 The hints are written once, 10 s after the backend starts. A frame that throws is

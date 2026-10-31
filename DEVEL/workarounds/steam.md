@@ -22,7 +22,7 @@ issues at the end of the file. Never renumber or reuse an ID.
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-28
+- Last checked: 2026-10-31
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/Gamepad/GHGamepadKeyMap.cs` (`GHGamepadKeyMap.Primary`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaGamepad.cs` (`GHAvaloniaGamepad.TryHandleKey`)
 - Remove when: Steam Input can send the back grips to the game as gamepad buttons (a virtual pad with paddle outputs, or a Steam Input API backend in GnollHack), and Verify removal passes.
 
@@ -52,6 +52,7 @@ gets a Steam Input API backend:
 
 Checks:
 - 2026-10-28 | Steam client 1792618285, SteamOS 3.9.5 | still-needed | Grips reach the game only as keys (Step 1b G3); no upstream issue found.
+- 2026-10-31 | Steam client 1792618285, SteamOS 3.9.5 | still-needed | Same Steam version as the last check; no paddle output added. The live Steam build has the key bridge; the layout that carries this workaround is not yet published.
 
 ## WA-STEAM-0002: SteamOS Gaming Mode has no FileChooser portal, and its GTK dialogs take no controller input
 

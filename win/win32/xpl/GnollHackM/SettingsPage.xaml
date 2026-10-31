@@ -684,7 +684,7 @@
                                         </Picker>
                                     </Grid>
                                     <Label x:Name="GamepadGripHelpLabel"
-                                                Text="The back grips need GnollHack's Steam Input layout."
+                                                Text="The back grips need the GnollHack (Steam Deck) layout, or L4, L5, R4, R5 bound to the keys F2, F3, F4, F5."
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="13"
                                                 HorizontalOptions="Start" />
