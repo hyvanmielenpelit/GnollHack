@@ -283,7 +283,7 @@ namespace GnollHackM
             {
                 Debug.WriteLine(ex.Message);
             }
-            GHApp.WriteGHLog(line);
+            GHApp.MaybeWriteGHLog(line);
         }
     }
 }

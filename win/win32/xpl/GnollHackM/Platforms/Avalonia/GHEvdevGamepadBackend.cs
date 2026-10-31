@@ -104,7 +104,7 @@ namespace GnollHackM
 
         public string Name { get { return "evdev"; } }
 
-        /* Device log lines: standard error, which the Deck launcher captures, and the app log */
+        /* Device log lines: standard error, which the Deck launcher captures, and with Debug Logging on the app log */
         public static void WriteDeviceLog(string line)
         {
             try
@@ -115,7 +115,7 @@ namespace GnollHackM
             {
                 Debug.WriteLine(ex.Message);
             }
-            GHApp.WriteGHLog(line);
+            GHApp.MaybeWriteGHLog(line);
         }
 
         /* Reads the environment and logs it; false when the backend is not eligible (GHGamepadLaunchEnvironment).

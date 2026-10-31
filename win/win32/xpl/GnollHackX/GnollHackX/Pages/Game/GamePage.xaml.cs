@@ -18310,6 +18310,12 @@ namespace GnollHackX.Pages.Game
             {
                 TextCanvasPressed();
             }
+            else if (GetLineGrid.IsVisible)
+            {
+                /* At a wish this button is "Random": it would spend the wish on a random item, with no confirmation */
+                if (GetLineCancelButton.IsEnabled && GetLineCancelButton.Text != "Random")
+                    GetLineCancelButton_Clicked(null, null);
+            }
             else if (YnGrid.IsVisible)
             {
                 if (!string.IsNullOrWhiteSpace(YnQuestionLabel.Text))
@@ -18335,6 +18341,8 @@ namespace GnollHackX.Pages.Game
                         charForSaving = 'q';
                     else if (!GameEnteredMoveloop)
                         charForSaving = GHConstants.CancelChar;
+                    else
+                        charForSaving = _ynDefaultResponse;
 
                     if (charForSaving != 0)
                     {
