@@ -17,7 +17,12 @@ namespace GnollHackM
         private static readonly object _saveLock = new object();
         private static bool _saveAttempted = false;
 #if LINUX
+        private const int SignalExitCode = 143;
+        /* How long the normal shutdown may take after a signal; Main ends the process well before this */
+        private const int SignalShutdownTimeoutMs = 5000;
+
         private static PosixSignalRegistration[] _signalRegistrations;
+        private static int _signalReceived = 0;
 
         public static void RegisterSignals()
         {
@@ -29,12 +34,28 @@ namespace GnollHackM
             };
         }
 
-        /* On a thread pool thread. A further signal waits for the first one's save inside SaveGameBeforeExit. */
+        /* On a thread pool thread; only the first signal acts. The lifetime shuts down as for the Exit button, so that
+           rendering has stopped when Main ends the process: exiting during GL calls can crash. Environment.Exit here
+           covers a UI thread that does not respond. */
         private static void OnSignal(PosixSignalContext context)
         {
             context.Cancel = true;
+            if (Interlocked.Exchange(ref _signalReceived, 1) != 0)
+                return;
             SaveGameBeforeExit();
-            Environment.Exit(143);
+            try
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+                {
+                    (Avalonia.Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.Shutdown(SignalExitCode);
+                });
+                Thread.Sleep(SignalShutdownTimeoutMs);
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("GHAvaloniaShutdown: " + ex.Message);
+            }
+            Environment.Exit(SignalExitCode);
         }
 #endif
 
