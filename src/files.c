@@ -3047,7 +3047,8 @@ get_saved_games(void)
                 boolean isbackupfile = !!filter_backup(namelist[i]);
                 boolean isimportedbackupfile = !!filter_imported_backup(namelist[i]);
                 boolean isimportedfile = !!filter_imported(namelist[i]);
-                if (isbackupfile || isimportedbackupfile || (TournamentMode && isimportedfile))
+                boolean istrackingfile = !!is_save_file_tracking_file_name(namelist[i]->d_name);
+                if (isbackupfile || isimportedbackupfile || istrackingfile || (TournamentMode && isimportedfile))
                     continue;
                 char filename[BUFSZ + PL_NSIZ + 64];
                 char* r;
