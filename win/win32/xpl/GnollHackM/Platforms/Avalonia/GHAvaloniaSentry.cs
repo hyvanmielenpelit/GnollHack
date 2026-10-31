@@ -55,6 +55,8 @@ namespace GnollHackM
                         options.EnableScopeSync = true;
                         options.CrashedLastRun = () => crashedLastRun;
                     }
+                    // WORKAROUND(WA-AVALONIA-0023): IBus's Destroy reply reaches Sentry as an unobserved exception
+                    options.AddExceptionFilter(new IBusDestroyReplyExceptionFilter());
                     options.SetBeforeSend(@event =>
                     {
                         if (@event == null)
@@ -101,6 +103,14 @@ namespace GnollHackM
         private static void OnProcessExit(object sender, EventArgs e)
         {
             GHSentryNative.Close();
+        }
+
+        private sealed class IBusDestroyReplyExceptionFilter : Sentry.Extensibility.IExceptionFilter
+        {
+            public bool Filter(Exception ex)
+            {
+                return GHIBusDestroyReplyFilter.IsIBusDestroyReply(ex);
+            }
         }
 
         /* APPIMAGE first: an AppImage started from Steam as a non-Steam game also sees Steam's variables */

@@ -69,6 +69,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialMenuState.cs" Link="Shared\GHRadialMenuState.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Android\FrameworkObjectDisposedFilter.cs" Link="Shared\FrameworkObjectDisposedFilter.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Avalonia\GHRefreshRateEstimator.cs" Link="Shared\GHRefreshRateEstimator.cs" />
+    <Compile Include="..\..\GnollHackM\Platforms\Avalonia\GHIBusDestroyReplyFilter.cs" Link="Shared\GHIBusDestroyReplyFilter.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\FileDialog\GHFileDialogLogic.cs" Link="Shared\GHFileDialogLogic.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\FileDialog\GHFilePlaces.cs" Link="Shared\GHFilePlaces.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\FileDialog\GHFileDialogBehavior.cs" Link="Shared\GHFileDialogBehavior.cs" />

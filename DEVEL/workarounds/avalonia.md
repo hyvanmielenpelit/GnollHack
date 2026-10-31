@@ -786,3 +786,42 @@ succeed.
 
 Checks:
 - 2026-10-30 | Avalonia.Controls.Maui.Essentials 11.0.0-rc.2.26287.618 | still-needed | Read in the decompiled package and MAUI's source; no upstream issue found.
+
+## WA-AVALONIA-0023: IBus's Destroy reply reaches Sentry as an unobserved exception
+
+- Status: active
+- Added: 2026-10-31
+- GnollHack version: 3.34 (434)
+- Component: Avalonia
+- Package: Avalonia
+- Defective version: Avalonia 12.1.4
+- Platforms: Linux (Avalonia)
+- Upstream issue: https://github.com/AvaloniaUI/Avalonia/issues/22564
+- Upstream status when added: fixed-unreleased
+- Upstream status: fixed-unreleased
+- Fixed upstream in: https://github.com/AvaloniaUI/Avalonia/pull/22594
+- Last checked: 2026-10-31
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHIBusDestroyReplyFilter.cs` (`GHIBusDestroyReplyFilter`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaSentry.cs` (`GHAvaloniaSentry.Init`)
+- Remove when: GnollHack uses an Avalonia release containing pull request 22594, and Verify removal passes.
+- Related: GNOLLHACK-J1
+
+**Symptom.** On Linux with IBus, closing the window sends Sentry an unhandled
+`UnobservedTaskException`: `Method Destroy is not implemented on interface
+org.freedesktop.IBus.Service`, and marks the session as unhandled. Players see nothing.
+
+**Cause.** `ibus_portal_context_handle_destroy` in IBus's `portal.c` destroys the context and
+returns `FALSE`, so the code `gdbus-codegen` generates replies UnknownMethod. Avalonia's
+`DBusTextInputMethodBase.Dispose` awaits the call inside a `try`/`catch`, but resumes on the
+dispatcher, which has already stopped at exit, so the faulted task is never observed.
+
+**Workaround.** A Sentry exception filter drops this exception, matched by exact type name and
+message. Any other D-Bus error is still reported.
+
+**Verify removal.** With the Avalonia release containing the fix, remove the
+`AddExceptionFilter` call, its filter class, `GHIBusDestroyReplyFilter.cs`, its unit tests and
+test project link. Publish the Linux build, run it on a desktop using IBus, focus a text box,
+and close the window five times. No new event may reach GNOLLHACK-J1. The reproduction in the
+upstream issue must print only "Exited".
+
+Checks:
+- 2026-10-31 | Avalonia 12.1.4 | still-needed | Fix merged to main in pull request 22594, labeled for a 12.1.x backport; 12.1.4 is the newest release and does not contain it.
