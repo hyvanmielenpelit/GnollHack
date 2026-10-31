@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using GnollHackX;
+using Microsoft.Maui.ApplicationModel;
+using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
 using AvWindow = Avalonia.Controls.Window;
 using AvWindowState = Avalonia.Controls.WindowState;
@@ -45,6 +47,7 @@ namespace GnollHackM
                 RestoreWindowedBounds(window);
                 window.Closing += (sender, e) => SaveWindowedBounds(window);
             }
+            window.Closing += OnWindowClosing;
 
             /* Writes the frame loop report to the log while a game is running */
             Avalonia.Threading.DispatcherTimer reportTimer = new Avalonia.Threading.DispatcherTimer();
@@ -82,6 +85,72 @@ namespace GnollHackM
                 if (ReferenceEquals(MainWindow, window))
                     MainWindow = null;
             };
+        }
+
+        /* A close the user asked for goes through the game's own flow, as on Windows. Programmatic closes pass: they
+           are the Exit button's shutdown. So does a close from the operating system, which cannot wait for a prompt;
+           Main saves the game once the lifetime ends. A replay has nothing to save. Unlike Windows this does not
+           depend on focus: a window manager can close an unfocused window. */
+        private static void OnWindowClosing(object sender, Avalonia.Controls.WindowClosingEventArgs e)
+        {
+            if (e.IsProgrammatic || e.CloseReason != Avalonia.Controls.WindowCloseReason.WindowClosing)
+                return;
+
+            try
+            {
+                GamePage curGamePage = GHApp.CurrentGamePage;
+                if (curGamePage != null)
+                {
+                    if (curGamePage.PlayingReplay)
+                        return;
+                    e.Cancel = true;
+                    (sender as AvWindow)?.Activate();
+                    MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        try
+                        {
+                            Page topPage = GHApp.PageFromTopOfModalNavigationStack();
+                            if (topPage is NamePage)
+                            {
+                                await ((NamePage)topPage).DoPressCancel();
+                            }
+                            else
+                            {
+                                await GHApp.PopAllModalPagesAboveGamePageAsync();
+                                curGamePage.CloseMoreCommands();
+                                curGamePage.PressCharForSaving();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            GHApp.MaybeWriteGHLog(ex.Message);
+                        }
+                    });
+                    return;
+                }
+
+                MainPage curMainPage = GHApp.CurrentMainPage;
+                if (curMainPage != null)
+                {
+                    e.Cancel = true;
+                    (sender as AvWindow)?.Activate();
+                    MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+                        try
+                        {
+                            await curMainPage.CheckPendingOrPressOk();
+                        }
+                        catch (Exception ex)
+                        {
+                            GHApp.MaybeWriteGHLog(ex.Message);
+                        }
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog(ex.Message);
+            }
         }
 
         /* Windowed bounds in this flavor's own preferences: position in physical pixels (Window.Position),

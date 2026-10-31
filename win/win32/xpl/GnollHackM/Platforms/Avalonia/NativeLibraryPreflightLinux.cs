@@ -141,7 +141,7 @@ namespace GnollHackM
         }
 
         /* The first dialog tool found on PATH shows the text; nothing is shown without a display or a tool */
-        private static void ShowDialog(string text)
+        internal static void ShowDialog(string text)
         {
             try
             {

@@ -19,14 +19,24 @@ internal static class AvaloniaDesktopProgram
             return GHCefSubprocess.Run(args);
         // WORKAROUND(WA-SKIASHARP-0009): libHarfBuzzSharp binds its own calls to the system HarfBuzz
         PreloadHarfBuzzSharp();
+        if (!GHAvaloniaInstanceLock.TryAcquire())
+        {
+            GHAvaloniaInstanceLock.ReportAlreadyRunning();
+            return 0;
+        }
+        GHAvaloniaShutdown.RegisterSignals();
         GHAvaloniaFontConfig.Install();
 #endif
         if (OperatingSystem.IsLinux())
             NativeLibrary.SetDllImportResolver(typeof(AvaloniaDesktopProgram).Assembly, ResolveLinuxLibrary);
         int exitCode = BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
+        /* The lifetime can end with a game running, for example when the desktop session ends */
+        GHAvaloniaShutdown.SaveGameBeforeExit();
 #if LINUX
         GHCefRuntime.ShutdownIfInitialized();
 #endif
+        /* Explicit: the parked game thread is a foreground thread and would keep the process alive */
+        Environment.Exit(exitCode);
         return exitCode;
     }
 
