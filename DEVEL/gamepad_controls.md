@@ -330,23 +330,27 @@ The analog sticks reach the game raw; GnollHack applies its own deadzone.
 
 ### Authoring and Exporting
 
-Official configurations need the real app ID, so the layout is authored on the **GnollHack app
-installed from Steam** (app ID 3558190), by a developer who owns it:
+The layout is authored on a Steam Deck, on the **GnollHack app installed from Steam** (app ID
+3558190) or the Non-Steam development shortcut. The file holds only the controller type and the
+bindings, so either one gives the same layout:
 
-1. Launch the game from the library, open Controller Settings, and pick the "Gamepad with Mouse
-   Trackpad" template.
+1. Launch the game, open Controller Settings, and pick the "Gamepad with Mouse Trackpad" template.
 2. Bind the four grips as above and leave gyro off.
 3. In Steam, Settings, System, turn on developer mode, then "Steam Input Layout Dev Mode" under
    Developer.
-4. In the layout's gear menu, Export Layout, with the title above.
-5. Take the exported `.vdf` from `Steam Controller Configs/<account>/config/` under
-   `steamapps/common`, or in Desktop Mode run
-   `xdg-open "steam://dumpcontrollerconfig?appid=3558190"`, which writes it to `/tmp`. The same
-   URL through `steam -ifrunning` over SSH in Game Mode writes nothing.
-6. Delete the `creator` line, which holds the author's Steam ID. Copy the file over SSH to
+4. In the layout's gear menu, Export Layout, type Shareable Personal Save, with the title above.
+   Share Layout with Community would publish it under the logged-in account.
+5. Take the exported `.vdf` from
+   `~/.local/share/Steam/userdata/<account>/ugc/referenced/<id>/<file ID>_controller_config.vdf`, or
+   in Desktop Mode run `xdg-open "steam://dumpcontrollerconfig?appid=3558190"`, which writes it to
+   `/tmp`. The same URL through `steam -ifrunning` over SSH in Game Mode writes nothing.
+6. Delete the `creator` and `url` lines, because the repository and the depots are public: the
+   first holds the author's Steam ID, and the second a local path with their account number. Valve's
+   templates have neither line. Copy the file over SSH to
    `win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/steam/input/controller_neptune.vdf` and
-   commit it. It is the record of the layout, and the file the depot ships. It is not otherwise
-   edited by hand.
+   commit it. It is both the record of the layout and the file the depot ships. It is not otherwise
+   edited by hand. Its localization block remains the template's; the title it shows is the
+   top-level `title`.
 
 The Non-Steam development shortcut (see [Development](#development)) keeps its own personal layout.
 Rebind it by hand from the list above, or place the exported file in the shortcut's personal
@@ -354,19 +358,9 @@ configuration folder.
 
 ### Publishing
 
-**Active route: an official configuration.**
-
-1. Export the layout as described above.
-2. Make it the official configuration.
-3. Select it for the Steam Deck controller type in Steamworks: Application, Steam Input. Save,
-   then publish the app changes. If the page can only set it for all controller types, do not
-   publish it that way; Windows players' default would change too.
-
-This needs no new game build, because the game code that reads the grips is already live, and it
-leaves the depots alone. To undo it, select the previous template and publish.
-
-**Later option: the bundled Action Manifest**, which versions the layout together with the game
-code:
+**Active route: the bundled Action Manifest.** No Steam account is attached to the layout, the
+person changing the Steamworks setting needs no Steam Deck, and the layout is versioned with the
+game code. Valve also no longer recommends the Workshop for official configurations of new titles.
 
 - `Packaging/steam/input/gnollhack_input_manifest.vdf` is the manifest; it names
   `controller_neptune.vdf` as the Steam Deck configuration.
@@ -374,14 +368,24 @@ code:
   content root as `steam_input/`, and warns when `controller_neptune.vdf` is missing. The files
   are inert until Steamworks selects them.
 - In Steamworks: Application, Steam Input, "Steam Input Template" = **"Custom Configuration
-  (Bundled with game)"**, path `steam_input/gnollhack_input_manifest.vdf`. Steam reads the
-  manifest from the depots.
-- **Select it only after every live branch's depot contains both files, on every platform.** The
-  setting belongs to the app, which also ships on Windows, and that depot does not come from
-  `Build-LinuxPackages.ps1`.
+  (Bundled with game)"**, path `steam_input/gnollhack_input_manifest.vdf`. Save, then publish the
+  app changes. Steam reads the manifest from the depots.
+- **Select it only after every live Linux branch's depot contains both files.** A branch without
+  the layout would name a missing file. Note the previous template first: to undo the change,
+  select it and publish, with no new build.
+- **The Windows depot does not carry the manifest.** The Steam Windows build is WinUI 3 and reads no
+  controller. When a shipping Windows build gains controller support, this needs revisiting.
 - **Unanswered by Valve's documentation:** what happens with a depot that has no manifest, what
-  happens with a controller type the manifest does not name, and whether `legacy_set` works in a
-  game that does not use the Steam Input API. Test these before relying on this route.
+  happens with a controller type the manifest does not name, whether `legacy_set` works in a
+  game that does not use the Steam Input API, and whether a bundled layout needs its `creator` or
+  `url` line.
+  The setting belongs to the whole app, so it cannot be tried on a beta branch. "Steam Input Layout
+  Dev Mode" shows manifest errors.
+
+**Fallback route: an official configuration.** Publish the layout with Share Layout with Community,
+then in Steamworks choose "Custom Configuration", "Add Custom Configuration", paste the file ID and
+publish the app changes. It needs no new build, but the layout is published under the logged-in
+account, so that account must be fit to be public, and it must be used on a Steam Deck.
 
 A keyboard template produces no virtual pad, so keys behave as they always did.
 
