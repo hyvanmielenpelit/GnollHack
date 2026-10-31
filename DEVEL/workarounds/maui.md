@@ -1085,3 +1085,44 @@ appended to both the `FormattedText` and the `LineHeight` mappings so that MAUI'
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | still-needed | dotnet/maui#36534 is open (proposal/open).
+
+## WA-MAUI-0029: Shell shows its navigation bar at startup before hiding it for the first page
+
+- Status: active
+- Added: 2026-10-31
+- GnollHack version: 3.33 (433)
+- Component: .NET MAUI
+- Package: Microsoft.Maui.Controls
+- Defective version: Microsoft.Maui.Controls 10.0.120
+- Platforms: iOS
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-31
+- Code: `win/win32/xpl/GnollHackM/Platforms/iOS/CustomShellRenderer.cs` (`CustomSectionRenderer.ViewDidLoad`)
+- Remove when: A Microsoft.Maui.Controls release GnollHack uses never shows the navigation bar of a first page with `Shell.NavBarIsVisible` false, and Verify removal passes.
+
+**Symptom.** At app start on iOS 27, a gray bar slides up out of the top of the screen at the
+handover from the launch screen to the main page. The page resizes as the bar goes, so the
+logos on it jump. It looks like a status bar flash, but it is not one.
+
+**Cause.** `ShellSectionRenderer` is a `UINavigationController`, whose bar is visible until
+something hides it. For a page with `Shell.NavBarIsVisible` false, MAUI hides it from
+`WillShowViewController`, not when the renderer is created. `NavBarVisibilityAnimationEnabled`
+defaults to true, which makes that hide animated when UIKit reports an animated show. The bar
+has an opaque system background, and while it shows it adds to the page's top safe area. It is
+not known why iOS 26 was not seen to show this. The Liquid Glass design, which apps linked
+against the iOS 27 SDK cannot opt out of, is unconfirmed as the difference.
+
+**Workaround.** `CustomSectionRenderer.ViewDidLoad` calls `SetNavigationBarHidden(true, false)`,
+so the bar is hidden without animation before it is first drawn. No page in GnollHack's Shell
+uses the navigation bar.
+
+**Verify removal.** Remove the `SetNavigationBarHidden` call from
+`CustomSectionRenderer.ViewDidLoad`. Then:
+- Build for iOS and run on an iOS 27 device.
+- Watch several cold launches at the handover from the launch screen to the main page.
+- Confirm that no gray bar appears and that the logos do not move when the main page first shows.
+
+Checks:
+- 2026-10-31 | Microsoft.Maui.Controls 10.0.120, iOS 27.2, workload ios 27.0.10722 | still-needed | Device test by the user: the gray bar and the logo jump are present without the call and gone with it.

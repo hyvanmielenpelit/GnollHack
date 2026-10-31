@@ -30,6 +30,8 @@ namespace GnollHackM.Platforms.iOS
         {
             base.ViewDidLoad();
             InteractivePopGestureRecognizer.Enabled = false;
+            // WORKAROUND(WA-MAUI-0029): Shell shows its navigation bar at startup before hiding it for the first page
+            SetNavigationBarHidden(true, false);
         }
     }
 }
