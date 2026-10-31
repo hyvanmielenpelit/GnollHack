@@ -43,6 +43,12 @@ namespace GnollHackM.Platforms.iOS
         [DllImport(Constants.ObjectiveCLibrary)]
         private static extern IntPtr object_getClassName(IntPtr obj);
 
+        /// <summary>
+        /// The visibility the app asks for, set before the first window exists. IsHidden gives the
+        /// state on screen instead.
+        /// </summary>
+        public static bool RequestedHidden => _hidden;
+
         public static void Register()
         {
             if (_registered)

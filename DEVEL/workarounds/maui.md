@@ -1126,3 +1126,43 @@ uses the navigation bar.
 
 Checks:
 - 2026-10-31 | Microsoft.Maui.Controls 10.0.120, iOS 27.2, workload ios 27.0.10722 | still-needed | Device test by the user: the gray bar and the logo jump are present without the call and gone with it.
+
+## WA-MAUI-0030: Shell reports the status bar as visible while a modal page has no handler
+
+- Status: active
+- Added: 2026-10-31
+- GnollHack version: 3.33 (433)
+- Component: .NET MAUI
+- Package: Microsoft.Maui.Controls
+- Defective version: Microsoft.Maui.Controls 10.0.120
+- Platforms: iOS
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-10-31
+- Code: `win/win32/xpl/GnollHackM/Platforms/iOS/CustomShellRenderer.cs` (`CustomShellRenderer.PrefersStatusBarHidden`)
+- Remove when: `ShellRenderer` keeps the status bar hidden while a modal page is being set up, in a Microsoft.Maui.Controls release GnollHack uses, and Verify removal passes.
+- Related: WA-MAUI-0004
+
+**Symptom.** With the status bar hidden, the iOS battery meter shows for a moment the first time
+the Settings page is opened after a launch. The other status bar items have no time to appear.
+
+**Cause.** `ShellRenderer.PrefersStatusBarHidden` returns true only when `Shell.CurrentPage` has
+`StatusBarHiddenMode.True`, and `Shell.CurrentPage` returns the top modal page.
+`ModalNavigationManager.PushModalAsync` adds the page to the modal stack before `PresentModal`
+creates its handler, and GnollHack's mapping sets the mode only when that handler connects. Until
+then Shell reports the bar as visible. This is read in MAUI's source and fits the device test; the
+timing was not traced. Slow first-time creation of the Settings page's many controls is the likely
+reason it was seen only then, which is unconfirmed.
+
+**Workaround.** `CustomShellRenderer` overrides `PrefersStatusBarHidden` to return
+`StatusBarVisibility.RequestedHidden`, whichever page is on top. The setting is app-wide, so the
+page's own value adds nothing at this level. Presented pages still use it through the modal wrapper.
+
+**Verify removal.** Remove the `PrefersStatusBarHidden` override from `CustomShellRenderer`. Then:
+- Build for iOS and run on an iOS 27 device with Hide Status Bar on.
+- Launch the app fresh and open Settings from the main screen. Repeat several times.
+- Confirm that the battery meter never appears as the page opens.
+
+Checks:
+- 2026-10-31 | Microsoft.Maui.Controls 10.0.120, iOS 27.2, workload ios 27.0.10722 | still-needed | Device test by the user: the battery meter shows without the override and is gone with it.

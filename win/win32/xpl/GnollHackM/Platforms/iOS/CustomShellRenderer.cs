@@ -14,6 +14,10 @@ namespace GnollHackM.Platforms.iOS
         {
 
         }
+
+        // WORKAROUND(WA-MAUI-0030): Shell reports the status bar as visible while a modal page has no handler
+        public override bool PrefersStatusBarHidden() => StatusBarVisibility.RequestedHidden;
+
         protected override IShellSectionRenderer CreateShellSectionRenderer(ShellSection shellSection)
         {
             return new CustomSectionRenderer(this);
