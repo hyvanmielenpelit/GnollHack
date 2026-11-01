@@ -18,7 +18,9 @@ description: >-
 > `At a Glance` table of one row per ID (`| ID | Kind | Where | What | Needs |`), followed by the
 > steps. Before the first step is handed over, the walkthrough gets a `## Runbook status` section with
 > the table `| ID | Kind | Where | What | State | Date | Note |`, and `State` is one of `remaining`,
-> `failed`, `blocked`, `done`, `waived` or `superseded`. Only the user's report closes a check. Install
+> `failed`, `blocked`, `done`, `waived` or `superseded`. Only the user's report closes a check. Ask for the
+> fewest checks that could show the change is wrong: one for a trivial change, at most three for an
+> ordinary one, at most five for a large one. Install
 > the full guidance from `https://github.com/hyvanmielenpelit/SharedAgentSkills` (`.\setup.ps1`).
 
 > [!IMPORTANT]
@@ -75,6 +77,25 @@ chose for it.
 
 ---
 
+## How Few Checks
+
+`agent-developer-runbook` sets the limit: **one for a trivial change, at most three for an ordinary one,
+at most five for a large one**, in total, and fewer when fewer will do. What that means here:
+
+- **C core and game data:** one wizard-mode scenario on `Any` for each behavior changed. The same C runs
+  everywhere, so do not repeat it per platform.
+- **Shared C#:** one platform, the one easiest to run. Add another only if the change alters how the code
+  uses something that platform implements itself: a native control, a dialog, the frame loop.
+- **Shared controller code:** the Steam Deck only, as `client_gamepad_testing` already says. Its first
+  implementation on a new platform gets a full pass there, the one standing exception to the limit, and
+  that list is still as short as it can be.
+- **Android and iOS smoke tests:** only when their own code changed. The agent's compile builds cover the rest.
+- **Automated first:** whatever `GnollHackTests` or a build can establish is not a check for a person.
+
+A hint text change is one check, or none. A fix in one C function is one wizard-mode scenario.
+
+---
+
 ## Order of the Steps
 
 | Position | Kinds | Why |
@@ -100,8 +121,8 @@ Keep an agent session's steps out of the middle of a device session.
   `^G` to create a monster, `^V` to teleport between levels (see `debugging_gnollhack`).
 
 **Do** and **Expect** name what the person presses and sees, using the labels the app prints. Check
-UI text against the XAML or C# rather than from memory. Include what should still work next to the
-change.
+UI text against the XAML or C# rather than from memory. Check something unchanged only when you can name
+how this change could break it.
 
 **If a check fails** names what to capture: the Deck's `~/gnollhack-dev/logs/latest.log`, a
 screenshot, or the Sentry event, and tells the person to give the agent the check's ID.
@@ -156,8 +177,9 @@ says they have a device at hand, or asks what to test on it:
 - **`client_gamepad_testing`** -- which device; packaging and deploying; an unreachable Deck leaves
   the `DEPLOY` step and its checks `blocked`. An agent never waives them. If the user decides that the
   Xbox backup is enough, the checks become `waived`, and the note says so.
-- **`sentry_crash_analysis`** -- when a fix is implemented, the analysis's Testing actions become
-  `TEST` checks and its Monitoring actions become `WATCH` steps. A `WATCH` step names the issue, the
+- **`sentry_crash_analysis`** -- when a fix is implemented, the Testing action that best shows the fix
+  works becomes a `TEST` check, within the limit above, and its Monitoring action becomes a `WATCH`
+  step. A `WATCH` step names the issue, the
   first version with the fix, and what would refute it.
 - **`client_workarounds`** -- a full re-check that needs a device is a `TEST` check. Until its result
   is recorded, the entry's newest `Checks` line says `unverified`. Recording it also appends a new

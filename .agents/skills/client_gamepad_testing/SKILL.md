@@ -151,7 +151,7 @@ Only the orchestrating agent does this, after every subagent has returned.
 6. **Confirm** that the output names the version you just packaged.
 7. **Hand over the tests.** They are a `TEST` session in the task's Developer Runbook
    (`client_developer_runbook`): numbered, concrete checks for this change (press this, in this
-   place, expect that), run in **Gaming Mode**, including what should still work next to the change.
+   place, expect that), run in **Gaming Mode**, and as few as that skill's limit allows.
    Write the walkthrough with its `## Runbook status` table first, so that the tests can be listed.
    Then report the state as "deployed to the Deck, tests M1-Mn pending".
 8. **After the user has tested,** read the log (below) if anything went wrong, and record the results

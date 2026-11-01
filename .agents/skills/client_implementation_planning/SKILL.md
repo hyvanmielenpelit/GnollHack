@@ -156,7 +156,9 @@ A plan whose work leaves a person anything beyond the commit has a Developer Run
 `developer_runbook_v<N>.md`, written with the plan as a member of its document set. Automated
 verification stays in the plan. The plan's Manual subsection is one line naming the runbook and its
 checks by ID and device; the checks themselves live only in the runbook, and the walkthrough has
-its `## Runbook status` table. See `client_developer_runbook`.
+its `## Runbook status` table. Ask for the fewest checks that could show the change is wrong: one for a
+trivial change, at most three for an ordinary one, at most five for a large one. See
+`client_developer_runbook`.
 
 ---
 

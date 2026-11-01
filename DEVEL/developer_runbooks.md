@@ -4,6 +4,9 @@ When an agent finishes work on GnollHack, whatever only a person can do next goe
 Runbook**: device tests, wizard-mode checks, builds an agent cannot run, upstream reports to file,
 work for another developer, things to look for in Sentry after a release.
 
+Runbooks ask for as few tests as will do: one for a trivial change, at most three for an ordinary one, at
+most five for a large one. If an agent hands you more, say so.
+
 ## Where They Are
 
 Each task has its own, in the shared `plans` repository, beside its plan:

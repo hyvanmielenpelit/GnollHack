@@ -195,8 +195,9 @@ Anything finished work leaves a person beyond the commit -- manual and device te
 person can run, upstream reports to file, work for another developer, checks after a release -- goes
 in a **Developer Runbook** beside the plan (`developer_runbook_v<N>.md`), with its status in the
 walkthrough's `## Runbook status` table, never only in a chat message or a private memory. That
-holds for a fix made with no plan too. Follow the `client_developer_runbook` skill. To list every
-open step:
+holds for a fix made with no plan too. **Ask for the fewest checks that could show the change is wrong:
+one for a trivial change, at most three for an ordinary one, at most five for a large one.** Follow the
+`client_developer_runbook` skill. To list every open step:
 
 `& C:\hmp\SharedAgentSkills\tools\Get-OpenRunbookSteps.ps1 -Scope hyvanmielenpelit/GnollHack`
 
