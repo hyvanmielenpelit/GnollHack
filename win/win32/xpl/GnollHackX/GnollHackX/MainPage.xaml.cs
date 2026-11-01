@@ -2665,7 +2665,8 @@ namespace GnollHackX
         /* Gamepad focus: the upper buttons, the mode switches and Play Game, and each in-page popup's buttons while
            it is shown, in the order the special-key handler checks them; B on a popup acts as Escape, on the main
            layer nothing. A switch or check box shows its focus as a tint on the row holding it and its label. Right on
-           a mode switch or Play Game goes to Exit, and X, Y, Menu and View are shortcuts (HandleGamepadButton). */
+           a mode switch or Play Game goes to Exit, Left on an upper button to Classic Mode, and X, Y, Menu and View
+           are shortcuts (HandleGamepadButton). */
         private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
 
         private void InitializeGamepadNavigation()
@@ -2673,12 +2674,15 @@ namespace GnollHackX
             _gamepadNavigator.IsBusy = () => WaitLayout.IsVisible;
 
             GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
-            main.AddButton(ResetButton);
-            main.AddButton(VaultButton);
-            main.AddButton(OptionsButton);
-            main.AddButton(SettingsButton);
-            main.AddButton(AboutButton);
-            main.AddButton(ExitButton);
+            /* Left on an upper button goes to Classic Mode, or Play Game while that is hidden */
+            GHGamepadFocusList.EntryOptions leftToModesOptions = new GHGamepadFocusList.EntryOptions();
+            leftToModesOptions.Adjust = dir =>
+            {
+                if (dir < 0 && !main.Focus.SetFocus(classicModeSwitch))
+                    main.Focus.SetFocus(StartLocalGameButton);
+            };
+            foreach (CustomImageButton upperButton in new CustomImageButton[] { ResetButton, VaultButton, OptionsButton, SettingsButton, AboutButton, ExitButton })
+                main.Add(upperButton, upperButton.PerformClick, null, null, leftToModesOptions);
             /* Right on a mode switch or Play Game goes to Exit */
             GHGamepadFocusList.EntryOptions rightToExitOptions = new GHGamepadFocusList.EntryOptions();
             rightToExitOptions.Adjust = dir =>

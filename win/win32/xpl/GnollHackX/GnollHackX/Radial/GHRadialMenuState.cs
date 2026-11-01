@@ -78,6 +78,7 @@ namespace GnollHackX
 
         private bool _dirty;
         private bool _needsFrame;
+        private bool _animatedLastTick;
         private bool _pointerMode;
         private float _stickX;
         private float _stickY;
@@ -233,6 +234,7 @@ namespace GnollHackX
             _lastTick = nowTicks;
             _toggleMask = ComputeToggleMask();
             _dirty = true;
+            _animatedLastTick = false;
             Evaluate(nowTicks);
             return true;
         }
@@ -271,6 +273,7 @@ namespace GnollHackX
             _flash = 0;
             _needsFrame = false;
             _dirty = false;
+            _animatedLastTick = false;
         }
 
         public GHRadialApplyResult Apply(GHRadialInput input, long nowTicks)
@@ -500,7 +503,9 @@ namespace GnollHackX
                 }
             }
 
-            _needsFrame = animating || _dirty;
+            /* The tick that ends an animation has the final values, so it needs a frame too */
+            _needsFrame = animating || _animatedLastTick || _dirty;
+            _animatedLastTick = animating;
             _dirty = false;
         }
 

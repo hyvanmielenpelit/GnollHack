@@ -29,8 +29,8 @@ presses the focused button and B goes back (on the main menu B does nothing; its
 take A and B as well). The main menu starts on Play Game, and the Reset page starts on Close.
 On the main menu the focus also reaches the Classic, Casual and Wizard Mode switches, between
 Exit and Play Game, and a popup's "do not show again" check box: their row is tinted while
-focused, and A flips them as a tap does. Right on a mode switch or Play Game goes to Exit. The
-main menu's shortcuts are X Play Game, Y About, Menu Settings and View Vault, each when its
+focused, and A flips them as a tap does. Right on a mode switch or Play Game goes to Exit, and
+Left on the buttons from Reset to Exit goes to Classic Mode. The main menu's shortcuts are X Play Game, Y About, Menu Settings and View Vault, each when its
 button is available. On every page, L2/R2 go to the first and last entry of the scrolling list
 (or of the page when it has none).
 

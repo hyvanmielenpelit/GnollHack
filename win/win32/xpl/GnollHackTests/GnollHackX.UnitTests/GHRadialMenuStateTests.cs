@@ -358,6 +358,34 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void NeedsFrame_IsTrueOnTheTickThatEndsAnAnimation()
+        {
+            GHRadialMenuState s = Opened(Def(FullPage("Ctx", 8, 0)), 0);
+            s.Tick(Ms(100));
+            Assert.True(s.NeedsFrame);
+            Assert.True(s.Opacity < 1f);
+
+            /* A late tick ends the opening at once: it must still paint full opacity */
+            s.Tick(Ms(200));
+            Assert.Equal(GHRadialPhase.Open, s.Phase);
+            Assert.Equal(1f, s.Opacity);
+            Assert.False(s.IsAnimating);
+            Assert.True(s.NeedsFrame);
+            s.Tick(Ms(216));
+            Assert.False(s.NeedsFrame);
+
+            Push(s, 90, 0.9);
+            s.Tick(Ms(220));
+            Assert.True(s.NeedsFrame);
+            Assert.True(s.GetHighlightWeight(2) < 1f);
+            s.Tick(Ms(700));
+            Assert.Equal(1f, s.GetHighlightWeight(2));
+            Assert.True(s.NeedsFrame);
+            s.Tick(Ms(716));
+            Assert.False(s.NeedsFrame);
+        }
+
+        [Fact]
         public void NeedsFrame_IsFalseAtRest()
         {
             GHRadialMenuState s = Opened(Def(FullPage("Ctx", 8, 0)), 0);
