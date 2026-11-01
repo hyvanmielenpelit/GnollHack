@@ -192,8 +192,8 @@ namespace GnollHackX.Pages.MainScreen
             { "Back Grip L5", GamepadGripDescription("L5", "F3") },
             { "Back Grip R4", GamepadGripDescription("R4", "F4") },
             { "Back Grip R5", GamepadGripDescription("R5", "F5") },
-            { "R2 Action", ("What R2 does when pressed alone.", "The command R2 runs when pressed alone. If the command asks for a direction, keep R2 held to choose it in a radial, and release R2 to confirm. A command that shows a menu first asks for the direction in the usual way.") },
-            { "L2 Action", ("What L2 does when pressed alone.", "The command L2 runs when pressed alone. If the command asks for a direction, keep L2 held to choose it in a radial, and release L2 to confirm. A command that shows a menu first asks for the direction in the usual way.") },
+            { "R2 Action", ("What R2 does when pressed alone.", "The command R2 runs when pressed alone. If the command asks for a direction, keep R2 held to choose it in a radial, and release R2 to confirm. After a menu or a release, the same radial stays until you confirm with A.") },
+            { "L2 Action", ("What L2 does when pressed alone.", "The command L2 runs when pressed alone. If the command asks for a direction, keep L2 held to choose it in a radial, and release L2 to confirm. After a menu or a release, the same radial stays until you confirm with A.") },
             { "Right Quick 1", GamepadQuickSlotDescription("Right Quick", 1, "L1 + R2") },
             { "Right Quick 2", GamepadQuickSlotDescription("Right Quick", 2, "L1 + R2") },
             { "Right Quick 3", GamepadQuickSlotDescription("Right Quick", 3, "L1 + R2") },
@@ -222,7 +222,7 @@ namespace GnollHackX.Pages.MainScreen
         private static (string Tooltip, string Description) GamepadQuickSlotDescription(string radial, int slot, string opener)
         {
             return ("Action " + slot + " of the " + radial + " radial.",
-                "An action in the " + radial + " radial, which " + opener + " opens during a game. It runs when you choose it. If it asks for a direction, the usual prompt appears.");
+                "An action in the " + radial + " radial, which " + opener + " opens during a game. It runs when you choose it. If it asks for a direction, the direction radial opens.");
         }
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)

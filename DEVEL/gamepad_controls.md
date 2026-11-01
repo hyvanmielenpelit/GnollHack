@@ -119,7 +119,7 @@ they are bound to, which the game cannot detect.
 buttons can hold, or None, by default Fire and Kick. They suit a command that asks for a direction.
 
 **Quick radials.** L1 + R2 opens the gold **Right Quick** radial and R1 + L2 the gold **Left Quick**
-radial, which run the chosen action at once, with the ordinary prompt if it asks for a direction.
+radial, which run the chosen action at once, with the direction radial if it asks for a direction.
 Pressing the trigger again closes them. Their eight slots are set in **Settings, Quick Radials** (any
 command the bar buttons can hold, or None). The section sits between Controller and Bar Commands,
 after Behavior. The page shows Bar Commands with Use Controller off, without a controller backend, or
@@ -130,11 +130,10 @@ with Hide Command Bar off.
 | Right Quick | 2-Weapon, Swap, Chat, Throw, Cast, Cast Quick, Zap, Zap Quick |
 | Left Quick | Apply, Drop Items, Drop Types, Pray, Yell, Engrave, Pick-axe, Polearm |
 
-**Direction radial.** When a trigger's command asks for a direction while that trigger is
-still held, within a second of the press and with no menu or dialog in between, the violet
-**Direction** radial opens over the prompt (see [Radials](#radials)). This covers L2 or R2 alone and
-L1 + R1 + the trigger. Otherwise, and for commands run any other way (a grip, a Quick radial), the
-ordinary prompt appears, and releasing the trigger does nothing. Force Fight on a trigger opens no
+**Direction radial.** When a command asks for a direction with the controller active, the violet
+**Direction** radial opens over the prompt (see [Radials](#radials)). If a trigger's command raised it
+while that trigger is still held, within a second of the press and with no menu or dialog in between,
+releasing the trigger confirms. This covers L2 or R2 alone and L1 + R1 + the trigger. Force Fight on a trigger opens no
 radial, because it is a prefix: press a direction on the left stick or the D-pad next. Any other key,
 including B, gets the core's invalid direction help.
 
@@ -146,10 +145,11 @@ still walks.
 push; the right stick pans. A selects, B cancels, L1/R1 go to the previous/next interesting
 spot, L2/R2 to the previous/next monster, and Y puts the cursor on the hero.
 
-**Choosing a direction** (getdir): a D-pad press picks the direction at once (two directions
-pressed together pick the diagonal); or aim with the left stick and confirm with A. B cancels.
-L1 is up (`<`) and R1 is down (`>`). A prompt raised by a held trigger opens the direction radial
-instead.
+**Choosing a direction** (getdir): the direction radial answers every direction prompt while the
+controller is active; see [Radials](#radials). After touch, the mouse or a key, the prompt's arrows
+return; B cancels, Menu opens the game menu, and the next other press brings back the radial. With
+the Status Screen or More Messages open, B in the radial cancels the command and leaves the overlay
+open.
 
 **Running with L3.** L3 on the map arms a run: the hint strip shows it, and the next direction on the
 left stick or the D-pad sends the keyboard's run prefix (`G`) with that direction, once, as R1 + the left stick does. Clicking
@@ -157,7 +157,7 @@ L3 while the stick is pushed runs at once. L3 again or B cancels it, and B then 
 other command button cancels it and does its own action. Only the direction reaches the game with the
 prefix, so a cancel never brings up the core's invalid direction help.
 
-In both prompts, L3 opens the Actions radial without its commands pages, and R3 the Toggles radial.
+When choosing a position, L3 opens the Actions radial without its commands pages, and R3 the Toggles radial.
 
 **Hint badges.** The hints on the map, in menus and dialogs, and in the radials draw button
 badges: A, B, X and Y as white circles with a black letter (drawn symbols on PlayStation pads),
@@ -183,7 +183,7 @@ Turn, B quits. In Go to Turn, A confirms and B cancels; the number itself takes 
 ### Radials
 
 The radials stay open until an item is chosen or they are closed. The exception is the direction
-radial, which lasts only as long as its trigger is held.
+radial while its trigger is held, which lasts as long as the trigger.
 
 - **Select** with whichever stick is pushed further, or step with D-pad Left/Right; D-pad
   Up/Down jump to the top and bottom slots. The center hub describes the highlighted item.
@@ -200,14 +200,15 @@ radial, which lasts only as long as its trigger is held.
   mode, the wizard commands are left out. The hub shows the page number above the page
   name.
   **X** switches between the context page and the first commands page; L1/R1 page.
-- **Direction radial** (a trigger held through its action's direction prompt): violet and see-through,
+- **Direction radial** (any direction prompt): violet and see-through,
   with no dimming of the map and slices only 8 % opaque, 16 % when selected, because it is used for
-  aiming. The eight directions sit at their compass positions, in place of the map's direction arrows. Either stick selects, and a stick already pushed when it opens counts at
-  once. **Releasing the trigger** confirms the highlighted direction; with nothing highlighted, it
-  cancels the command. **A** also confirms the highlighted direction, **B** cancels the command and
+  aiming. The eight directions sit at their compass positions, in place of the map's direction arrows. Either stick selects.
+  **A** confirms the highlighted direction, **B** cancels the command and
   **L3** does nothing. **D-pad Up** answers `<`, **D-pad Down** `>` and **Y** self, at once. L3 is not
-  self because aiming hard can click the stick. D-pad Left/Right step the highlight. Losing the window closes the radial and leaves the
-  ordinary prompt up, with its arrows.
+  self because aiming hard can click the stick. D-pad Left/Right step the highlight. While a trigger is held through its own
+  prompt, a stick already pushed when the radial opens counts at once, and **releasing the trigger** confirms the highlighted
+  direction; with nothing highlighted, it cancels the command. Losing the window, or touch, the mouse or a key, closes the radial
+  and leaves the ordinary prompt up, with its arrows.
 
 - **Command radial** (A on a picker of commands in Settings): see Settings above. A stick still
   pushed when it closes does nothing on the page until it returns to center.

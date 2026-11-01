@@ -3364,10 +3364,12 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.ShowDirections:
                                 DoShowDirections();
-                                TryOpenGamepadDirectionRadial();
+                                OpenGamepadDirectionRadialForPrompt();
                                 break;
                             case GHRequestType.HideDirections:
                                 DoHideDirections();
+                                if (IsGamepadDirectionRadial(_radialState.Definition))
+                                    DismissRadialMenu(GHRadialCloseReason.Superseded);
                                 break;
                             case GHRequestType.GetChar:
                                 GetChar();
@@ -12768,7 +12770,6 @@ namespace GnollHackX.Pages.Game
                     float buttonsize = showDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;
                     SKColor oldcolor = textPaint.Color;
                     textPaint.Color = showDirections ? textPaint.Color.WithAlpha(170) : textPaint.Color.WithAlpha(85);
-                    int gamepadAimArrow = showDirections ? GetGamepadAimArrowIndex() : -1;
 
                     for (int i = 0; i < 9; i++)
                     {
@@ -12819,29 +12820,11 @@ namespace GnollHackX.Pages.Game
                             float truesize = Math.Min(_localCanvasButtonRect.Width, _localCanvasButtonRect.Height) * buttonsize;
                             targetrect = new SKRect(tx + px, ty + py, tx + px + truesize, ty + py + truesize);
                         }
-                        if (i == gamepadAimArrow)
-                        {
-                            /* The direction aimed with the gamepad, at full alpha and highlighted */
-                            SKColor arrowColor = textPaint.Color;
-                            SKColorFilter arrowFilter = textPaint.Paint.ColorFilter;
-                            textPaint.Color = arrowColor.WithAlpha(255);
-                            textPaint.Paint.ColorFilter = UIUtils.HighlightColorFilter;
-                            canvas.DrawImage(GHApp._arrowBitmap[i], targetrect
+                        canvas.DrawImage(GHApp._arrowBitmap[i], targetrect
 #if GNH_MAUI
-                            , SKSamplingOptions.Default
+                        , SKSamplingOptions.Default
 #endif
-                            , textPaint.Paint);
-                            textPaint.Paint.ColorFilter = arrowFilter;
-                            textPaint.Color = arrowColor;
-                        }
-                        else
-                        {
-                            canvas.DrawImage(GHApp._arrowBitmap[i], targetrect
-#if GNH_MAUI
-                            , SKSamplingOptions.Default
-#endif
-                            , textPaint.Paint);
-                        }
+                        , textPaint.Paint);
                     }
                     textPaint.Color = oldcolor;
                 }

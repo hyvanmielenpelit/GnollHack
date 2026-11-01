@@ -96,7 +96,8 @@ namespace GnollHackX.Pages.Game
 
         /* Acts on Pressed, and on Repeat for D-pad Left and Right; every other event is swallowed, except the release
            of the opener of a radial that confirms on it, where a cancelled release leaves the prompt under the radial
-           unanswered. Menu closes the radial and returns false, so that the caller opens the game menu. */
+           unanswered. The direction radial answers D-pad Up, D-pad Down and Y directly. Menu closes the radial and returns
+           false, so that the caller opens the game menu. */
         public bool HandleRadialGamepadButton(GHGamepadButtonEvent e)
         {
             if (!_radialState.IsOpen)
@@ -105,19 +106,16 @@ namespace GnollHackX.Pages.Game
             bool repeat = e.Kind == GHGamepadButtonEventKind.Repeat;
             GHRadialMenuDefinition def = _radialState.Definition;
             GHGamepadButton opener = GetRadialOpenerButton(def);
-            if (def != null && def.ReleaseConfirms)
+            if (def != null && def.ReleaseConfirms && e.Kind == GHGamepadButtonEventKind.Released && e.Button == opener)
             {
-                if (e.Kind == GHGamepadButtonEventKind.Released && e.Button == opener)
-                {
-                    if (e.IsCancelled)
-                        DismissRadialMenu(GHRadialCloseReason.Superseded);
-                    else
-                        ApplyRadialInput(GHRadialInput.OpenerReleased);
-                    return true;
-                }
-                if (TryHandleGamepadDirectionRadialButton(e))
-                    return true;
+                if (e.IsCancelled)
+                    DismissRadialMenu(GHRadialCloseReason.Superseded);
+                else
+                    ApplyRadialInput(GHRadialInput.OpenerReleased);
+                return true;
             }
+            if (IsGamepadDirectionRadial(def) && TryHandleGamepadDirectionRadialButton(e))
+                return true;
             if (!pressed && !repeat)
                 return true;
 
@@ -219,6 +217,8 @@ namespace GnollHackX.Pages.Game
                     DismissRadialMenu(GHRadialCloseReason.PageHidden);
                 else if (!GHGamepadService.IsWindowActive)
                     DismissRadialMenu(GHRadialCloseReason.Deactivated);
+                else if (IsGamepadDirectionRadial(_radialState.Definition) && !_radialState.Definition.ReleaseConfirms && !GHGamepadService.IsActive)
+                    DismissRadialMenu(GHRadialCloseReason.Superseded); /* Touch, the mouse or a key: the prompt's arrows return */
             }
 
             _radialState.Tick(Stopwatch.GetTimestamp());
@@ -285,12 +285,19 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        private static bool IsGamepadDirectionRadial(GHRadialMenuDefinition def)
+        {
+            return def != null && def.MenuId == "DIR";
+        }
+
         private static GHGamepadButton GetRadialOpenerButton(GHRadialMenuDefinition def)
         {
             if (def == null)
                 return GHGamepadButton.L3;
             if (def.ReleaseConfirms)
                 return def.ConfirmButton;
+            if (IsGamepadDirectionRadial(def))
+                return GHGamepadButton.Count;   /* no button closes it, since aiming hard can click a stick */
             if (def.MenuId == "R3")
                 return GHGamepadButton.R3;
             if (def.MenuId == "L3")
