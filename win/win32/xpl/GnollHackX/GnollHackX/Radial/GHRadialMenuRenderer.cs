@@ -15,9 +15,10 @@ namespace GnollHackX
          caches.
        - Controller buttons are drawn as badges by an owned GHGamepadHintRenderer, which takes
          this renderer's typefaces and text blob cache setting.
-       - The definition's Accent picks the gold or teal border, highlight, glow and flash colors.
+       - The definition's Accent picks the gold, teal or violet border, highlight, glow and flash colors.
          A teal radial assigns: its toggle items mark only the current choice, with a "NOW" pill,
          and its hub shows no "Currently: On/Off" line.
+       - A SeeThrough definition gets lighter slices and hub and no vignette, to keep the map readable.
        - Free of GHApp: the host supplies the typefaces, the icon lookup, the text blob cache
          setting and the keyboard shortcut setting.
        - Opacity and scale animate through a layer and a canvas transform only while animating;
@@ -49,6 +50,12 @@ namespace GnollHackX
         private static readonly SKColor TealHighlightFill = new SKColor(10, 52, 50, 0xE6);
         private static readonly SKColor TealFlashFill = new SKColor(16, 89, 85, 0xF0);
         private static readonly SKColor TealTitle = new SKColor(0x9F, 0xE8, 0xE2);
+        private static readonly SKColor Violet = new SKColor(0xA8, 0x7B, 0xFF);
+        private static readonly SKColor VioletHighlightFill = new SKColor(44, 30, 74, 0xE6);
+        private static readonly SKColor VioletFlashFill = new SKColor(84, 58, 140, 0xF0);
+        private static readonly SKColor VioletTitle = new SKColor(0xD8, 0xC8, 0xFF);
+        private static readonly SKColor SeeThroughSliceFill = new SKColor(38, 38, 38, 0x66);
+        private static readonly SKColor SeeThroughHubFill = new SKColor(0, 0, 0, 0x55);
         private static readonly SKColor SliceFill = new SKColor(38, 38, 38, 0xD9);
         private static readonly SKColor SliceBorder = new SKColor(255, 255, 255, 0x40);
         private static readonly SKColor EmptyOutline = new SKColor(255, 255, 255, 0x20);
@@ -82,10 +89,10 @@ namespace GnollHackX
 
         private sealed class HintBar
         {
-            public readonly GHGamepadHint[] Hints = new GHGamepadHint[4];    /* the badges; the label is in Labels */
-            public readonly string[] Labels = new string[4];
-            public readonly float[] BadgeWidths = new float[4];
-            public readonly float[] LabelWidths = new float[4];
+            public readonly GHGamepadHint[] Hints = new GHGamepadHint[6];    /* the badges; the label is in Labels */
+            public readonly string[] Labels = new string[6];
+            public readonly float[] BadgeWidths = new float[6];
+            public readonly float[] LabelWidths = new float[6];
             public int Count;
             public float TotalWidth;
         }
@@ -146,6 +153,9 @@ namespace GnollHackX
         private SKColor _accent = Gold;
         private SKColor _accentHighlightFill = GoldHighlightFill;
         private SKColor _accentFlashFill = GoldFlashFill;
+        private SKColor _accentTitle = SKColors.White;
+        private SKColor _sliceBaseFill = SliceFill;
+        private SKColor _hubBaseFill = HubFill;
         private bool _disposed;
 
         public GHRadialMenuRenderer()
@@ -198,6 +208,8 @@ namespace GnollHackX
             EnsureResources(g);
             GHRadialMenuDefinition def = state.Definition;
             ResolveAccent(def.Accent);
+            _sliceBaseFill = def.SeeThrough ? SeeThroughSliceFill : SliceFill;
+            _hubBaseFill = def.SeeThrough ? SeeThroughHubFill : HubFill;
             EnsureLayouts(def, g);
 
             float opacity = state.Opacity;
@@ -205,8 +217,11 @@ namespace GnollHackX
 
             _plainFill.Color = new SKColor(0, 0, 0, ToByte(state.BackdropOpacity));
             canvas.DrawRect(0, 0, g.Width, g.Height, _plainFill);
-            _vignettePaint.Color = new SKColor(255, 255, 255, ToByte(opacity));
-            canvas.DrawCircle(g.CenterX, g.CenterY, (float)(GHRadialTuning.VignetteRadius * g.OuterRadius), _vignettePaint);
+            if (!def.SeeThrough)
+            {
+                _vignettePaint.Color = new SKColor(255, 255, 255, ToByte(opacity));
+                canvas.DrawCircle(g.CenterX, g.CenterY, (float)(GHRadialTuning.VignetteRadius * g.OuterRadius), _vignettePaint);
+            }
 
             DrawHeader(canvas, state, def, g, opacity, still);
             DrawChips(canvas, state, def, g, opacity, still);
@@ -307,7 +322,7 @@ namespace GnollHackX
                 _glowPaint.Color = _accent.WithAlpha(ToByte(e * 0x60 / 255f));
                 canvas.DrawPath(path, _glowPaint);
             }
-            SKColor fill = LerpColor(SliceFill, _accentHighlightFill, enabled ? e : e * 0.5f);
+            SKColor fill = LerpColor(_sliceBaseFill, _accentHighlightFill, enabled ? e : e * 0.5f);
             float flash = isCurrent && state.FlashSlot == slot ? state.FlashIntensity : 0f;
             if (flash > 0f)
                 fill = LerpColor(fill, _accentFlashFill, flash);
@@ -425,7 +440,7 @@ namespace GnollHackX
         {
             float cx = g.CenterX;
             float cy = g.CenterY;
-            _plainFill.Color = HubFill;
+            _plainFill.Color = _hubBaseFill;
             canvas.DrawCircle(cx, cy, g.HubRadius, _plainFill);
             _plainStroke.Color = _accent;
             _plainStroke.StrokeWidth = (float)(GHRadialTuning.HubBorderDip * g.DipScale);
@@ -637,7 +652,7 @@ namespace GnollHackX
             {
                 _textPaint.Typeface = TitleTypeface;
                 _textPaint.TextSize = pageIndex < _pageTitleSizes.Length ? _pageTitleSizes[pageIndex] : g.PageTitleFontSize;
-                _textPaint.Color = (_tealAccent ? TealTitle : SKColors.White).WithAlpha(a);
+                _textPaint.Color = _accentTitle.WithAlpha(a);
                 DrawCentered(canvas, page.Title, g.CenterX, g.PageTitleBaselineY, snap);
             }
 
@@ -744,9 +759,27 @@ namespace GnollHackX
         private void ResolveAccent(GHRadialAccent accent)
         {
             _tealAccent = accent == GHRadialAccent.Teal;
-            _accent = _tealAccent ? Teal : Gold;
-            _accentHighlightFill = _tealAccent ? TealHighlightFill : GoldHighlightFill;
-            _accentFlashFill = _tealAccent ? TealFlashFill : GoldFlashFill;
+            switch (accent)
+            {
+            case GHRadialAccent.Teal:
+                _accent = Teal;
+                _accentHighlightFill = TealHighlightFill;
+                _accentFlashFill = TealFlashFill;
+                _accentTitle = TealTitle;
+                break;
+            case GHRadialAccent.Violet:
+                _accent = Violet;
+                _accentHighlightFill = VioletHighlightFill;
+                _accentFlashFill = VioletFlashFill;
+                _accentTitle = VioletTitle;
+                break;
+            default:
+                _accent = Gold;
+                _accentHighlightFill = GoldHighlightFill;
+                _accentFlashFill = GoldFlashFill;
+                _accentTitle = SKColors.White;
+                break;
+            }
         }
 
         private void DrawCentered(SKCanvas canvas, string text, float x, float baseline, bool snap)
@@ -880,6 +913,12 @@ namespace GnollHackX
             bar.Count = 0;
             AddHint(bar, new GHGamepadHint(def.ConfirmButton, null, false), def.ConfirmHint, def.Style, g);
             AddHint(bar, new GHGamepadHint(def.CancelButton, null, false), def.CancelHint, def.Style, g);
+            if (def.ExtraHints != null)
+            {
+                int e;
+                for (e = 0; e < def.ExtraHints.Length; e++)
+                    AddHint(bar, new GHGamepadHint(def.ExtraHints[e].Button, null, false), def.ExtraHints[e].Label, def.Style, g);
+            }
             if (def.SwitchSetPageIndex > 0)
                 AddHint(bar, new GHGamepadHint(def.SecondaryButton, null, false), switched ? def.SecondaryHintOnSwitchedSet : def.SecondaryHint, def.Style, g);
             if (def.HasGroups)

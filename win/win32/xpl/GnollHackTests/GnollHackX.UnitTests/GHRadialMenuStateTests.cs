@@ -346,6 +346,127 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void OpenerReleased_WithHighlight_ActivatesOnceAndCloses()
+        {
+            int activated = 0;
+            List<GHRadialCloseReason> reasons = new List<GHRadialCloseReason>();
+            GHRadialMenuDefinition def = Def(FullPage("Dir", 8, 0));
+            def.OnActivate = item => activated++;
+            def.OnClosed = reason => reasons.Add(reason);
+            GHRadialMenuState s = Opened(def, 0);
+            Push(s, 90, 1.0);
+            GHRadialApplyResult r = s.Apply(GHRadialInput.OpenerReleased, Ms(1));
+            Assert.True(r.Has(GHRadialEffects.Activated));
+            Assert.True(r.Has(GHRadialEffects.Closed));
+            Assert.False(s.IsOpen);
+            Assert.Equal(1, activated);
+            Assert.Equal(new List<GHRadialCloseReason> { GHRadialCloseReason.Confirmed }, reasons);
+        }
+
+        [Fact]
+        public void OpenerReleased_WithoutHighlight_Cancels()
+        {
+            int activated = 0;
+            List<GHRadialCloseReason> reasons = new List<GHRadialCloseReason>();
+            GHRadialMenuDefinition def = Def(FullPage("Dir", 8, 0));
+            def.OnActivate = item => activated++;
+            def.OnClosed = reason => reasons.Add(reason);
+            GHRadialMenuState s = Opened(def, 0);
+            GHRadialApplyResult r = s.Apply(GHRadialInput.OpenerReleased, Ms(1));
+            Assert.True(r.Has(GHRadialEffects.Closed));
+            Assert.False(r.Has(GHRadialEffects.Activated));
+            Assert.False(s.IsOpen);
+            Assert.Equal(0, activated);
+            Assert.Equal(new List<GHRadialCloseReason> { GHRadialCloseReason.Cancelled }, reasons);
+        }
+
+        [Fact]
+        public void OpenerReleased_OnDisabledItem_Cancels()
+        {
+            int activated = 0;
+            List<GHRadialCloseReason> reasons = new List<GHRadialCloseReason>();
+            GHRadialPage page = FullPage("Dir", 8, 0);
+            page.Slots[2].IsEnabled = false;
+            GHRadialMenuDefinition def = Def(page);
+            def.OnActivate = item => activated++;
+            def.OnClosed = reason => reasons.Add(reason);
+            GHRadialMenuState s = Opened(def, 0);
+            Push(s, 90, 1.0);
+            Assert.Equal(2, s.HighlightedSlot);
+            s.Apply(GHRadialInput.OpenerReleased, Ms(1));
+            Assert.False(s.IsOpen);
+            Assert.Equal(0, activated);
+            Assert.Equal(new List<GHRadialCloseReason> { GHRadialCloseReason.Cancelled }, reasons);
+        }
+
+        [Fact]
+        public void OpenerReleased_OnItemThatStaysOpen_Closes()
+        {
+            int activated = 0;
+            List<GHRadialCloseReason> reasons = new List<GHRadialCloseReason>();
+            GHRadialPage page = FullPage("Dir", 8, 0);
+            page.Slots[2].ClosesOnActivate = false;
+            GHRadialMenuDefinition def = Def(page);
+            def.OnActivate = item => activated++;
+            def.OnClosed = reason => reasons.Add(reason);
+            GHRadialMenuState s = Opened(def, 0);
+            Push(s, 90, 1.0);
+            GHRadialApplyResult r = s.Apply(GHRadialInput.OpenerReleased, Ms(1));
+            Assert.True(r.Has(GHRadialEffects.Activated));
+            Assert.True(r.Has(GHRadialEffects.Closed));
+            Assert.False(s.IsOpen);
+            Assert.Equal(1, activated);
+            Assert.Equal(new List<GHRadialCloseReason> { GHRadialCloseReason.Confirmed }, reasons);
+        }
+
+        [Fact]
+        public void OpenerReleased_AfterStickReturnedToCenter_KeepsTheSelection()
+        {
+            GHRadialItem activated = null;
+            GHRadialPage page = FullPage("Dir", 8, 0);
+            GHRadialMenuDefinition def = Def(page);
+            def.OnActivate = item => activated = item;
+            GHRadialMenuState s = Opened(def, 0);
+            Push(s, 90, 1.0);
+            s.UpdateStick(0, 0, 1.0);
+            Assert.Equal(2, s.HighlightedSlot);
+            s.Apply(GHRadialInput.OpenerReleased, Ms(1));
+            Assert.Same(page.Slots[2], activated);
+        }
+
+        [Fact]
+        public void StickArmedAtOpen_APushedStickSelectsAtOnce()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("Dir", 8, 0));
+            def.StickArmedAtOpen = true;
+            GHRadialMenuState s = new GHRadialMenuState(Tps);
+            Assert.True(s.Open(def, 0));
+            s.UpdateStick(1.0, 0, 0.0);
+            Assert.Equal(2, s.HighlightedSlot);
+
+            GHRadialMenuState other = new GHRadialMenuState(Tps);
+            Assert.True(other.Open(Def(FullPage("Ctx", 8, 0)), 0));
+            other.UpdateStick(1.0, 0, 0.0);
+            Assert.Equal(-1, other.HighlightedSlot);
+        }
+
+        [Fact]
+        public void SeeThrough_LowersTheBackdrop()
+        {
+            GHRadialMenuDefinition seeThrough = Def(FullPage("Dir", 8, 0));
+            seeThrough.SeeThrough = true;
+            GHRadialMenuState s = new GHRadialMenuState(Tps);
+            Assert.True(s.Open(seeThrough, 0));
+            s.Tick(Ms(1000));
+            Assert.Equal((float)GHRadialTuning.SeeThroughBackdropOpacity, s.BackdropOpacity, 3);
+
+            GHRadialMenuState other = new GHRadialMenuState(Tps);
+            Assert.True(other.Open(Def(FullPage("Ctx", 8, 0)), 0));
+            other.Tick(Ms(1000));
+            Assert.Equal((float)GHRadialTuning.BackdropMaxOpacity, other.BackdropOpacity, 3);
+        }
+
+        [Fact]
         public void HostClose_ReportsTheReasonAndCanSkipTheAnimation()
         {
             List<GHRadialCloseReason> reasons = new List<GHRadialCloseReason>();

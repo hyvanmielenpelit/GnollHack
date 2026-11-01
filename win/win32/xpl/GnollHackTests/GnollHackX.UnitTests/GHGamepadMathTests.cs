@@ -10,6 +10,23 @@ namespace GnollHackX.UnitTests
         private static readonly GHGamepadTiming Timing = GHGamepadTiming.Default;
 
         [Fact]
+        public void ZoomRatio_DoublesEveryDoublingTime()
+        {
+            Assert.Equal(2f, GHGamepadMath.GetZoomRatio(1.0, 1.0), 5);
+            Assert.Equal(2f, GHGamepadMath.GetZoomRatio(0.5, 1.0) * GHGamepadMath.GetZoomRatio(0.5, 1.0), 4);
+            Assert.Equal(4f, GHGamepadMath.GetZoomRatio(1.0, 0.5), 4);
+        }
+
+        [Fact]
+        public void ZoomRatio_NoTimeOrNoRateIsOne()
+        {
+            Assert.Equal(1f, GHGamepadMath.GetZoomRatio(0.0, 1.0));
+            Assert.Equal(1f, GHGamepadMath.GetZoomRatio(-0.1, 1.0));
+            Assert.Equal(1f, GHGamepadMath.GetZoomRatio(1.0, 0.0));
+            Assert.Equal(1f, GHGamepadMath.GetZoomRatio(1.0, -1.0));
+        }
+
+        [Fact]
         public void Deadzone_InsideIsZero()
         {
             float x, y;

@@ -93,26 +93,40 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        /* Acts on Pressed, and on Repeat for D-pad Left and Right; every other event is swallowed. Menu closes the
-           radial and returns false, so that the caller opens the game menu. */
+        /* Acts on Pressed, and on Repeat for D-pad Left and Right; every other event is swallowed, except the release
+           of the opener of a radial that confirms on it, where a cancelled release leaves the prompt under the radial
+           unanswered. Menu closes the radial and returns false, so that the caller opens the game menu. */
         public bool HandleRadialGamepadButton(GHGamepadButtonEvent e)
         {
             if (!_radialState.IsOpen)
                 return false;
             bool pressed = e.Kind == GHGamepadButtonEventKind.Pressed;
             bool repeat = e.Kind == GHGamepadButtonEventKind.Repeat;
+            GHRadialMenuDefinition def = _radialState.Definition;
+            GHGamepadButton opener = GetRadialOpenerButton(def);
+            if (def != null && def.ReleaseConfirms)
+            {
+                if (e.Kind == GHGamepadButtonEventKind.Released && e.Button == opener)
+                {
+                    if (e.IsCancelled)
+                        DismissRadialMenu(GHRadialCloseReason.Superseded);
+                    else
+                        ApplyRadialInput(GHRadialInput.OpenerReleased);
+                    return true;
+                }
+                if (TryHandleGamepadDirectionRadialButton(e))
+                    return true;
+            }
             if (!pressed && !repeat)
                 return true;
 
-            GHRadialMenuDefinition def = _radialState.Definition;
-            GHGamepadButton opener = GetRadialOpenerButton(def);
             bool isActionsMenu = opener == GHGamepadButton.L3;
             bool hasInput = false;
             GHRadialInput input = GHRadialInput.Confirm;
             switch (e.Button)
             {
             case GHGamepadButton.A:
-                hasInput = pressed;
+                hasInput = pressed && (def == null || !def.ReleaseConfirms);
                 input = GHRadialInput.Confirm;
                 break;
             case GHGamepadButton.B:
@@ -273,6 +287,8 @@ namespace GnollHackX.Pages.Game
         {
             if (def == null)
                 return GHGamepadButton.L3;
+            if (def.ReleaseConfirms)
+                return def.ConfirmButton;
             if (def.MenuId == "R3")
                 return GHGamepadButton.R3;
             if (def.MenuId == "L3")

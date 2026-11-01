@@ -215,7 +215,7 @@ namespace GnollHackX
             else
                 Array.Clear(_weights, 0, _weights.Length);
 
-            _selector.Reset(true);
+            _selector.Reset(!def.StickArmedAtOpen);
             _previousPage = -1;
             _pageDirection = 0;
             _pageTransition = 1;
@@ -292,6 +292,26 @@ namespace GnollHackX
                 res.Effects = GHRadialEffects.Closed;
                 res.CloseReason = GHRadialCloseReason.Cancelled;
                 return res;
+            case GHRadialInput.OpenerReleased:
+            {
+                /* A refused confirm would leave the menu open with its opener already up */
+                GHRadialItem item = HighlightedItem;
+                if (item == null || !item.IsEnabled)
+                {
+                    Close(GHRadialCloseReason.Cancelled, nowTicks);
+                    res.Effects = GHRadialEffects.Closed;
+                    res.CloseReason = GHRadialCloseReason.Cancelled;
+                    return res;
+                }
+                res = Confirm(nowTicks);
+                if (IsOpen)
+                {
+                    Close(GHRadialCloseReason.Confirmed, nowTicks);
+                    res.Effects |= GHRadialEffects.Closed;
+                    res.CloseReason = GHRadialCloseReason.Confirmed;
+                }
+                return res;
+            }
             case GHRadialInput.PrevPage:
                 return GoToPage(_pageIndex - 1, nowTicks);
             case GHRadialInput.NextPage:
@@ -719,7 +739,7 @@ namespace GnollHackX
                 _ringScale = 1;
                 break;
             }
-            _backdrop = (float)(GHRadialTuning.BackdropMaxOpacity * _opacity);
+            _backdrop = (float)((_def != null && _def.SeeThrough ? GHRadialTuning.SeeThroughBackdropOpacity : GHRadialTuning.BackdropMaxOpacity) * _opacity);
             _pageTransition = _previousPage >= 0 ? (float)Progress(_pageChangeStart, nowTicks, GHRadialTuning.PageChangeDuration) : 1f;
             _flash = _flashSlot >= 0 ? (float)(1 - Progress(_flashStart, nowTicks, GHRadialTuning.ConfirmFlashDuration)) : 0f;
         }

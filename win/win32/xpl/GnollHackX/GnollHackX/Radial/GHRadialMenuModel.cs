@@ -33,7 +33,8 @@ namespace GnollHackX
         StepClockwise,
         StepCounterClockwise,
         JumpNorth,
-        JumpSouth
+        JumpSouth,
+        OpenerReleased
     }
 
     /* A More Commands cell or another command source, as plain data for the slot assigner.
@@ -157,6 +158,7 @@ namespace GnollHackX
     {
         Gold,
         Teal,
+        Violet,
     }
 
     /* A whole radial menu as the host builds it for one opening. OnActivate and OnClosed run on
@@ -193,8 +195,14 @@ namespace GnollHackX
         public GHGamepadButton GroupButton = GHGamepadButton.LT;      /* shown as a pair with GroupButton2 */
         public GHGamepadButton GroupButton2 = GHGamepadButton.RT;
 
-        /* The highlight colors: Gold for radials that act, Teal for one that assigns (the trigger assign radial) */
+        /* The highlight colors: Gold for radials that act, Teal for one that assigns (the trigger assign radial),
+           Violet for one that confirms on the trigger's release (the direction radial) */
         public GHRadialAccent Accent = GHRadialAccent.Gold;
+
+        public bool ReleaseConfirms;                    /* the held ConfirmButton opened it: its release confirms the highlight, or cancels without one; A does not confirm */
+        public bool StickArmedAtOpen;                   /* a stick already pushed selects at once */
+        public bool SeeThrough;                         /* lighter backdrop, slices and hub, to keep the map readable */
+        public GHGamepadHint[] ExtraHints;              /* more hint bar entries after the cancel hint */
 
         public int PageCount { get { return Pages == null ? 0 : Pages.Count; } }
 

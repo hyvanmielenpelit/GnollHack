@@ -93,6 +93,14 @@ namespace GnollHackX
             return mask;
         }
 
+        /* The zoom ratio of dtSeconds at a constant rate that doubles the zoom every doublingSeconds */
+        public static float GetZoomRatio(double dtSeconds, double doublingSeconds)
+        {
+            if (dtSeconds <= 0.0 || doublingSeconds <= 0.0)
+                return 1f;
+            return (float)Math.Pow(2.0, dtSeconds / doublingSeconds);
+        }
+
         public static float Clamp(float value, float minimum, float maximum)
         {
             if (value < minimum)

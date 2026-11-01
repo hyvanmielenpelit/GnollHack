@@ -17,6 +17,7 @@ namespace GnollHackX
         public static readonly double OpenStartScale = 0.85;
         public static readonly double CloseEndScale = 0.92;
         public static readonly double BackdropMaxOpacity = 0.6;          /* black at 0x99 */
+        public static readonly double SeeThroughBackdropOpacity = 0.2;   /* a SeeThrough definition's backdrop */
         public static readonly double PageChangeRotationDegrees = 10.0;
         public static readonly double MaxTickStep = 0.25;               /* longer gaps between ticks count as this */
         public static readonly double HighlightSoundMinInterval = 0.045;

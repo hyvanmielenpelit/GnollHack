@@ -3364,6 +3364,7 @@ namespace GnollHackX.Pages.Game
                                 break;
                             case GHRequestType.ShowDirections:
                                 DoShowDirections();
+                                TryOpenGamepadDirectionRadial();
                                 break;
                             case GHRequestType.HideDirections:
                                 DoHideDirections();

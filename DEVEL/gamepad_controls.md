@@ -97,7 +97,7 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | L2 | L2's **assigned action** (default Kick) | **Set L2** radial | **Left Quick** radial (L2's quick actions) | L2's assigned action |
 | Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
 | View | Inventory | -- | Equipment (all equipment in use) | -- |
-| D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, Left toggles the minimap, Right returns to normal zoom | -- |
+| D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, one step per press and then continuously while held, Left toggles the minimap, Right returns to normal zoom | -- |
 | Left stick | Walk (8-way) | -- | Run in that direction | -- |
 | Right stick | Pan the map | | | |
 | L3 | Center the map on the hero | | | |
@@ -124,6 +124,12 @@ section's R2 Action and L2 Action pickers do. The
 modifier on the other side (L1 + R2, R1 + L2) opens the gold **Right Quick** or **Left Quick**
 radial, which runs the chosen action at once. Pressing the trigger again closes either radial.
 
+**Direction radial.** When a trigger's assigned action asks for a direction while that trigger is
+still held, within a second of the press and with no menu or dialog in between, the violet
+**Direction** radial opens over the prompt (see [Radials](#radials)). This covers L2 or R2 alone and
+L1 + R1 + the trigger. Otherwise, and for commands run any other way (a grip, a Quick radial), the
+ordinary prompt appears, and releasing the trigger does nothing.
+
 **Map overlays.** While More Messages or the Status Screen (the extended status bar) is open
 (both from the Toggles radial), the right stick and D-pad Up/Down scroll it, B closes it, and the left stick
 still walks.
@@ -134,7 +140,8 @@ spot, L2/R2 to the previous/next monster, and Y puts the cursor on the hero.
 
 **Choosing a direction** (getdir): a D-pad press picks the direction at once (two directions
 pressed together pick the diagonal); or aim with the left stick and confirm with A. B cancels.
-L1 is up (`<`) and R1 is down (`>`).
+L1 is up (`<`) and R1 is down (`>`). A prompt raised by a held trigger opens the direction radial
+instead.
 
 In both, L3 opens the Actions radial without its commands pages, and R3 the Toggles radial.
 
@@ -161,7 +168,8 @@ Turn, B quits. In Go to Turn, A confirms and B cancels; the number itself takes 
 
 ### Radials
 
-The radials stay open until an item is chosen or they are closed.
+The radials stay open until an item is chosen or they are closed. The exception is the direction
+radial, which lasts only as long as its trigger is held.
 
 - **Select** with whichever stick is pushed further, or step with D-pad Left/Right; D-pad
   Up/Down jump to the top and bottom slots. The center hub describes the highlighted item.
@@ -178,6 +186,13 @@ The radials stay open until an item is chosen or they are closed.
   mode, the wizard commands are left out. The hub shows the page number above the page
   name.
   **X** switches between the context page and the first commands page; L1/R1 page.
+- **Direction radial** (a trigger held through its action's direction prompt): violet and see-through,
+  so that the map stays readable, with the eight directions at their compass positions. Either stick
+  selects, and a stick already pushed when it opens counts at once. **Releasing the trigger** confirms
+  the highlighted direction; with nothing highlighted, it cancels the command. **A** does nothing and
+  **B** cancels the command. **D-pad Up** answers `<`, **D-pad Down** `>` and **L3** self, at once.
+  D-pad Left/Right step the highlight. Losing the window closes the radial and leaves the ordinary
+  prompt up.
 
 After a radial closes, both sticks stay disarmed until they return to center.
 

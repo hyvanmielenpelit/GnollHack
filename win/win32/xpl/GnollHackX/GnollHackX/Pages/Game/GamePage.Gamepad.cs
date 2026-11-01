@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using GnollHackX;
+using SkiaSharp;
 
 #if GNH_MAUI
 using Microsoft.Maui.Controls;
@@ -32,9 +33,9 @@ namespace GnollHackX.Pages.Game
     }
 
     /* Gameplay routing for the gamepad: context resolution, press ownership, the command gate and its pending slot,
-       left-stick and D-pad walking, getpos cursor, getdir aim and D-pad pick, right-stick panning and overlay scrolling,
-       the button tables, the Actions, Toggles and trigger radial definitions and the hint strip's content. Everything
-       runs on the UI thread. */
+       left-stick and D-pad walking, D-pad zoom, getpos cursor, getdir aim and D-pad pick, right-stick panning and overlay
+       scrolling, the button tables, the Actions, Toggles, trigger and direction radial definitions and the hint strip's
+       content. Everything runs on the UI thread. */
     public partial class GamePage : IGHGamepadHandlingPage, IGHGamepadPopupPage, IGHGamepadFrameTickPage
     {
         /* A discrete command for the game: keys, the first tagged and the rest continuations */
@@ -81,6 +82,9 @@ namespace GnollHackX.Pages.Game
         private static readonly int[] GamepadDPadSectors = { 7, 0, 1, 6, -1, 2, 5, 4, 3 };
         /* The GHCommands of Rest, Search 20 and Extended, as GHApp identifies them, in their commands radial order */
         private static readonly int[] GamepadLeadingCommands = { -103, -102, (int)'#' };
+        /* The direction radial's slots, in the order of GamepadSectorDirections */
+        private static readonly string[] GamepadDirectionRadialLabels = { "North", "Northeast", "East", "Southeast", "South", "Southwest", "West", "Northwest" };
+        private static readonly string[] GamepadDirectionRadialIcons = { "arrow_up.png", "arrow_upright.png", "arrow_right.png", "arrow_downright.png", "arrow_down.png", "arrow_downleft.png", "arrow_left.png", "arrow_upleft.png" };
 
         /* Bits of the held D-pad directions */
         private const int GamepadDPadUpBit = 1;
@@ -97,6 +101,10 @@ namespace GnollHackX.Pages.Game
         private int _gamepadDPadPrevHeld = 0;               /* _gamepadDPadHeld at the previous UpdateGamepadDPadWalk */
         private int _gamepadDPadOwed = 0;                   /* walking D-pad directions pressed since the last D-pad step */
         private int _gamepadDPadZoomHeld = 0;               /* D-pad directions pressed with R1 */
+        private long _gamepadDPadZoomSinceTicks = 0;        /* when the last vertical one of them went down */
+        private GHGamepadButton _gamepadDirectionRadialTrigger = GHGamepadButton.Count; /* the held trigger whose command may ask a direction; Count for none */
+        private long _gamepadDirectionRadialArmedTicks = 0; /* when it went down */
+        private GHGamepadSticks _gamepadLastSticks;         /* as of the last UpdateGamepadSticks */
         private readonly GamepadStickDirection _gamepadDPadDirection = new GamepadStickDirection();
         private int _gamepadDirDPadHeld = 0;                /* D-pad directions pressed in GetDir and still held */
         private int _gamepadDirDPadPicked = 0;              /* D-pad directions pressed in GetDir since the last pick */
@@ -239,6 +247,8 @@ namespace GnollHackX.Pages.Game
                 return;
             _gamepadContext = ctx;
             _gamepadHintsDirty = true;
+            if (ctx != GHGamepadMapContext.Normal && ctx != GHGamepadMapContext.Busy && ctx != GHGamepadMapContext.GetDir)
+                _gamepadDirectionRadialTrigger = GHGamepadButton.Count;
 
             if (ctx == GHGamepadMapContext.Inactive)
             {
@@ -289,6 +299,7 @@ namespace GnollHackX.Pages.Game
             _gamepadRightModifierHeld = false;
             _gamepadViewWithRightModifier = false;
             _gamepadDPadZoomHeld = 0;
+            _gamepadDirectionRadialTrigger = GHGamepadButton.Count;
             ClearGamepadDPadWalk();
             ClearGamepadDirDPad();
             _gamepadPending = null;
@@ -327,6 +338,8 @@ namespace GnollHackX.Pages.Game
             /* Releases end the layers and the held D-pad directions wherever the press went */
             if (e.Kind == GHGamepadButtonEventKind.Released)
             {
+                if (e.Button == _gamepadDirectionRadialTrigger)
+                    _gamepadDirectionRadialTrigger = GHGamepadButton.Count;
                 if (e.Button == GHGamepadButton.LB && _gamepadLeftModifierHeld)
                 {
                     _gamepadLeftModifierHeld = false;
@@ -391,6 +404,7 @@ namespace GnollHackX.Pages.Game
 
         public void UpdateGamepadSticks(GHGamepadSticks sticks, double dtSeconds)
         {
+            _gamepadLastSticks = sticks;
             long now = Stopwatch.GetTimestamp();
             GHGamepadMapContext ctx = ResolveGamepadContext();
             NoteGamepadContext(ctx, now);
@@ -621,9 +635,10 @@ namespace GnollHackX.Pages.Game
 
         /* Normal and Busy. L1 and R1 are hold modifiers sampled when another button goes down: L1 for A, B, X, Y,
            Menu and the triggers, R1 for the D-pad, the left stick, View and the triggers. A trigger alone, or with
-           both modifiers, runs its assigned quick action; with the opposite side's modifier it opens its quick-action
-           radial, and with its own side's modifier its assign radial. In Busy, game input signals the game, which
-           the command gate would otherwise hold back unseen. */
+           both modifiers, runs its assigned quick action, and a direction prompt that action raises while the trigger
+           is held opens the direction radial; with the opposite side's modifier it opens its quick-action radial, and
+           with its own side's modifier its assign radial. In Busy, game input signals the game, which the command gate
+           would otherwise hold back unseen. */
         private void HandleNormalGamepadButton(GHGamepadMapContext ctx, GHGamepadButtonEvent e, long now)
         {
             bool pressed = e.Kind == GHGamepadButtonEventKind.Pressed;
@@ -709,7 +724,7 @@ namespace GnollHackX.Pages.Game
                     else if (rightMod && !mod)
                         OpenRadialMenu(BuildGamepadTriggerRadial(GHGamepadButton.RT, true));
                     else
-                        ExecuteGamepadBoundCommand(ctx, GHApp.GetGamepadTriggerCommand(GHGamepadButton.RT));
+                        RunGamepadTriggerCommand(ctx, GHGamepadButton.RT, now);
                     break;
                 case GHGamepadButton.LT:
                     if (!pressed)
@@ -719,7 +734,7 @@ namespace GnollHackX.Pages.Game
                     else if (mod && !rightMod)
                         OpenRadialMenu(BuildGamepadTriggerRadial(GHGamepadButton.LT, true));
                     else
-                        ExecuteGamepadBoundCommand(ctx, GHApp.GetGamepadTriggerCommand(GHGamepadButton.LT));
+                        RunGamepadTriggerCommand(ctx, GHGamepadButton.LT, now);
                     break;
                 case GHGamepadButton.View:
                     /* A tap acts on release; R1 counts as it was when View went down */
@@ -754,7 +769,7 @@ namespace GnollHackX.Pages.Game
                 case GHGamepadButton.DPadDown:
                 case GHGamepadButton.DPadLeft:
                 case GHGamepadButton.DPadRight:
-                    HandleNormalGamepadDPad(e, rightMod);
+                    HandleNormalGamepadDPad(e, rightMod, now);
                     break;
                 case GHGamepadButton.L4:
                 case GHGamepadButton.L5:
@@ -817,9 +832,10 @@ namespace GnollHackX.Pages.Game
             return count;
         }
 
-        /* The D-pad in Normal and Busy. Pressed with R1 it zooms; Up and Down scroll the message history while it is
-           shown; otherwise its press joins the walking set that UpdateGamepadDPadWalk steps with. */
-        private void HandleNormalGamepadDPad(GHGamepadButtonEvent e, bool rightMod)
+        /* The D-pad in Normal and Busy. Pressed with R1 it zooms, Up and Down one step here and on through
+           UpdateGamepadDPadZoom while held; Up and Down scroll the message history while it is shown; otherwise its
+           press joins the walking set that UpdateGamepadDPadWalk steps with. */
+        private void HandleNormalGamepadDPad(GHGamepadButtonEvent e, bool rightMod, long now)
         {
             bool pressed = e.Kind == GHGamepadButtonEventKind.Pressed;
             bool repeat = e.Kind == GHGamepadButtonEventKind.Repeat;
@@ -829,8 +845,11 @@ namespace GnollHackX.Pages.Game
                 _gamepadDPadZoomHeld |= bit;
             if ((_gamepadDPadZoomHeld & bit) != 0)
             {
-                if (vertical && (pressed || repeat))
-                    ZoomInOutInCurrentMode(e.Button == GHGamepadButton.DPadDown, false);
+                if (vertical && pressed)
+                {
+                    _gamepadDPadZoomSinceTicks = now;
+                    ZoomGamepadMap(e.Button == GHGamepadButton.DPadDown ? 1f / GHConstants.GamepadZoomPressRatio : GHConstants.GamepadZoomPressRatio);
+                }
                 else if (pressed && e.Button == GHGamepadButton.DPadLeft)
                     ToggleZoomMiniButton_Clicked(ToggleZoomMiniButton, EventArgs.Empty);
                 else if (pressed && e.Button == GHGamepadButton.DPadRight)
@@ -848,6 +867,34 @@ namespace GnollHackX.Pages.Game
                 _gamepadDPadHeld |= bit;
                 _gamepadDPadOwed |= bit;
             }
+        }
+
+        /* Scales the zoom of the current mode about the canvas center */
+        private void ZoomGamepadMap(float ratio)
+        {
+            float canvasWidth, canvasHeight;
+            lock (_savedCanvasLock)
+            {
+                canvasWidth = _savedCanvasWidth;
+                canvasHeight = _savedCanvasHeight;
+            }
+            if (canvasWidth <= 0 || canvasHeight <= 0)
+                return;
+            SKPoint center = new SKPoint(canvasWidth / 2, canvasHeight / 2);
+            AdjustZoomByRatio(ratio, center, center, center);
+            MapFontShowPercentageDecimal = false;
+        }
+
+        /* A held D-pad Up or Down with R1 zooms at a constant rate; both together cancel */
+        private void UpdateGamepadDPadZoom(long now, double dtSeconds)
+        {
+            int vertical = _gamepadDPadZoomHeld & (GamepadDPadUpBit | GamepadDPadDownBit);
+            if ((vertical != GamepadDPadUpBit && vertical != GamepadDPadDownBit)
+                || now - _gamepadDPadZoomSinceTicks < GamepadMsToTicks(GHConstants.GamepadZoomHoldDelayMs))
+                return;
+            float ratio = GHGamepadMath.GetZoomRatio(dtSeconds, GHConstants.GamepadZoomDoublingSeconds);
+            if (ratio != 1f)
+                ZoomGamepadMap(vertical == GamepadDPadUpBit ? ratio : 1f / ratio);
         }
 
         private static int GetGamepadDPadBit(GHGamepadButton button)
@@ -1218,6 +1265,14 @@ namespace GnollHackX.Pages.Game
             SubmitGamepadKeys(GHGamepadMapContext.Normal, now, GHApp.MapCommand(ghCommand));
         }
 
+        /* A trigger's assigned action, which may raise the prompt that TryOpenGamepadDirectionRadial answers */
+        private void RunGamepadTriggerCommand(GHGamepadMapContext ctx, GHGamepadButton trigger, long now)
+        {
+            _gamepadDirectionRadialTrigger = trigger;
+            _gamepadDirectionRadialArmedTicks = now;
+            ExecuteGamepadBoundCommand(ctx, GHApp.GetGamepadTriggerCommand(trigger));
+        }
+
         /* Game input in Busy, which the gate holds back: animations and output delays end early and running and
            traveling stop, as they do for queued touch input */
         private static void SignalGamepadBusyInput(GHGamepadMapContext ctx)
@@ -1260,6 +1315,7 @@ namespace GnollHackX.Pages.Game
             else
                 UpdateGamepadLeftStick(ctx, sticks, now);
             UpdateGamepadDPadWalk(ctx, now);
+            UpdateGamepadDPadZoom(now, dtSeconds);
             UpdateGamepadDirDPad(ctx, now);
 
             /* Right stick: scroll an open overlay, else pan the map */
@@ -1694,6 +1750,102 @@ namespace GnollHackX.Pages.Game
         {
             GHGamepadMapContext ctx = ResolveGamepadContext();
             ExecuteGamepadBoundCommand(ctx == GHGamepadMapContext.Busy ? GHGamepadMapContext.Busy : GHGamepadMapContext.Normal, command);
+        }
+
+        /* A direction prompt raised by a trigger that is still held opens the direction radial. The press belongs to
+           the radial from here on, so that its release reaches the radial, and a stick already pushed selects before
+           that release can arrive. */
+        private void TryOpenGamepadDirectionRadial()
+        {
+            GHGamepadButton trigger = _gamepadDirectionRadialTrigger;
+            if (trigger == GHGamepadButton.Count)
+                return;
+            _gamepadDirectionRadialTrigger = GHGamepadButton.Count;
+            if (Stopwatch.GetTimestamp() - _gamepadDirectionRadialArmedTicks > GamepadMsToTicks(GHConstants.GamepadDirectionRadialWindowMs))
+                return;
+            OpenRadialMenu(BuildGamepadDirectionRadial(trigger));
+            if (IsRadialMenuOpen)
+            {
+                _gamepadButtonOwner[(int)trigger] = GHGamepadMapContext.Radial;
+                UpdateRadialSticks(_gamepadLastSticks, 0.0);
+            }
+        }
+
+        /* The eight directions at their compass angles; the held trigger confirms, and the hint bar names the prompt's
+           other answers */
+        private GHRadialMenuDefinition BuildGamepadDirectionRadial(GHGamepadButton trigger)
+        {
+            List<GHRadialItem> items = new List<GHRadialItem>(GamepadSectorDirections.Length);
+            int sector;
+            for (sector = 0; sector < GamepadSectorDirections.Length; sector++)
+            {
+                int key = GamepadSectorDirections[sector];
+                GHRadialItem item = new GHRadialItem();
+                item.Id = "dir:" + sector.ToString();
+                item.Label = GamepadDirectionRadialLabels[sector];
+                item.IconPath = GetGamepadUIIconPath(GamepadDirectionRadialIcons[sector]);
+                item.Kind = GHRadialItemKind.Command;
+                item.PreferredAngle = sector * 45.0;
+                item.Tag = (Action)(() => SubmitGamepadKeys(GHGamepadMapContext.GetDir, Stopwatch.GetTimestamp(), key));
+                items.Add(item);
+            }
+
+            GHRadialMenuDefinition def = new GHRadialMenuDefinition();
+            def.MenuId = "DIR";
+            def.OwningStick = 0;
+            def.Pages.Add(GHRadialSlotAssigner.BuildFixedPage("Direction", 0, items));
+            def.Accent = GHRadialAccent.Violet;
+            def.ReleaseConfirms = true;
+            def.StickArmedAtOpen = true;
+            def.SeeThrough = true;
+            def.ConfirmButton = trigger;
+            def.ConfirmHint = "Release to select";
+            def.CancelHint = "Cancel";
+            def.NoHighlightStickText = "Tilt to aim";
+            def.ExtraHints = new GHGamepadHint[]
+            {
+                new GHGamepadHint(GHGamepadButton.DPadUp, "Upwards", false),
+                new GHGamepadHint(GHGamepadButton.DPadDown, "Downwards", false),
+                new GHGamepadHint(GHGamepadButton.L3, "Self", false),
+            };
+            def.OnActivate = OnGamepadRadialActivate;
+            def.OnClosed = OnGamepadDirectionRadialClosed;
+            ApplyGamepadRadialGlyphs(def);
+            return def;
+        }
+
+        /* The direction radial's direct answers to the prompt; false for every other button and event */
+        private bool TryHandleGamepadDirectionRadialButton(GHGamepadButtonEvent e)
+        {
+            if (e.Kind != GHGamepadButtonEventKind.Pressed)
+                return false;
+            int key;
+            switch (e.Button)
+            {
+                case GHGamepadButton.DPadUp:
+                    key = (int)'<';
+                    break;
+                case GHGamepadButton.DPadDown:
+                    key = (int)'>';
+                    break;
+                case GHGamepadButton.L3:
+                    key = MapK(nh_keyfunc.NHKF_GETDIR_SELF);
+                    break;
+                default:
+                    return false;
+            }
+            DismissRadialMenu(GHRadialCloseReason.Confirmed);
+            SubmitGamepadKeys(GHGamepadMapContext.GetDir, Stopwatch.GetTimestamp(), key);
+            GHApp.PlayButtonClickedSound();
+            return true;
+        }
+
+        /* Cancel answers the prompt too, so nothing is left waiting; the reasons from outside leave the ordinary prompt up */
+        private void OnGamepadDirectionRadialClosed(GHRadialCloseReason reason)
+        {
+            OnGamepadRadialClosed(reason);
+            if (reason == GHRadialCloseReason.Cancelled)
+                SubmitGamepadKeys(GHGamepadMapContext.GetDir, Stopwatch.GetTimestamp(), GHConstants.CancelChar);
         }
 
         /* The Actions radial: the context buttons with the left-side buttons, then the commands pages (Normal and Busy

@@ -587,6 +587,10 @@ namespace GnollHackX
         public const int GamepadMessageScrollStep = 120;            /* D-pad Up and Down while all messages are shown */
         public const int GamepadPendingCommandMs = 350;             /* a refused discrete button waits this long for the game */
         public const int GamepadInterruptMinBusyMs = 150;           /* B interrupts only a busy period at least this long */
+        public const int GamepadDirectionRadialWindowMs = 1000;     /* a trigger's press opens the direction radial for a prompt within this time */
+        public const float GamepadZoomPressRatio = 1.10f;           /* one D-pad press with R1 */
+        public const int GamepadZoomHoldDelayMs = 250;              /* a held direction starts zooming after this */
+        public const double GamepadZoomDoublingSeconds = 1.0;       /* a held direction doubles or halves the zoom in this time */
         public const float RadialMenuHighlightVolume = 0.06f;       /* the radial menu's highlight tick, a quiet Button Down */
     }
 
