@@ -97,6 +97,7 @@ namespace GnollHackX.Pages.Game
         private bool _gamepadLeftModifierHeld = false;     /* L1: the layer of A, B, X, Y, Menu and the triggers */
         private bool _gamepadRightModifierHeld = false;    /* R1: the layer of the D-pad, the left stick, View and the triggers */
         private bool _gamepadViewWithRightModifier = false; /* R1 was held when View went down */
+        private bool _gamepadRunArmed = false;              /* L3 was pressed: the next direction rushes */
         private int _gamepadDPadHeld = 0;                   /* walking D-pad directions pressed in Normal or Busy */
         private int _gamepadDPadPrevHeld = 0;               /* _gamepadDPadHeld at the previous UpdateGamepadDPadWalk */
         private int _gamepadDPadOwed = 0;                   /* walking D-pad directions pressed since the last D-pad step */
@@ -275,6 +276,7 @@ namespace GnollHackX.Pages.Game
                 _gamepadLeftModifierHeld = false;
                 _gamepadRightModifierHeld = false;
                 _gamepadViewWithRightModifier = false;
+                _gamepadRunArmed = false;
                 _gamepadDPadZoomHeld = 0;
                 ClearGamepadDPadWalk();
             }
@@ -302,6 +304,7 @@ namespace GnollHackX.Pages.Game
             _gamepadLeftModifierHeld = false;
             _gamepadRightModifierHeld = false;
             _gamepadViewWithRightModifier = false;
+            _gamepadRunArmed = false;
             _gamepadDPadZoomHeld = 0;
             _gamepadDirectionRadialTrigger = GHGamepadButton.Count;
             ClearGamepadDPadWalk();
@@ -641,14 +644,21 @@ namespace GnollHackX.Pages.Game
            Menu and the triggers, R1 for the D-pad, the left stick, View and the triggers. A trigger alone, or with
            both modifiers, runs its assigned quick action, and a direction prompt that action raises while the trigger
            is held opens the direction radial; with the opposite side's modifier it opens its quick-action radial, and
-           with its own side's modifier its assign radial. In Busy, game input signals the game, which the command gate
-           would otherwise hold back unseen. */
+           with its own side's modifier its assign radial. L3 arms a run for the next direction, and any other command
+           button disarms it, B doing nothing else. In Busy, game input signals the game, which the command gate would
+           otherwise hold back unseen. */
         private void HandleNormalGamepadButton(GHGamepadMapContext ctx, GHGamepadButtonEvent e, long now)
         {
             bool pressed = e.Kind == GHGamepadButtonEventKind.Pressed;
             bool mod = _gamepadLeftModifierHeld;
             bool rightMod = _gamepadRightModifierHeld;
             GHGamepadMapContext normal = GHGamepadMapContext.Normal;
+            if (pressed && _gamepadRunArmed && !KeepsGamepadRunArmed(e.Button))
+            {
+                SetGamepadRunArmed(false);
+                if (e.Button == GHGamepadButton.B)
+                    return;
+            }
             switch (e.Button)
             {
                 case GHGamepadButton.LB:
@@ -762,8 +772,12 @@ namespace GnollHackX.Pages.Game
                         OpenGamepadGameMenu();
                     break;
                 case GHGamepadButton.L3:
-                    if (pressed)
+                    if (!pressed)
+                        break;
+                    if (rightMod && !mod)
                         CenterGamepadMapOnHero();
+                    else if (!rightMod && !mod)
+                        SetGamepadRunArmed(!_gamepadRunArmed);
                     break;
                 case GHGamepadButton.R3:
                     if (pressed)
@@ -784,6 +798,32 @@ namespace GnollHackX.Pages.Game
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void SetGamepadRunArmed(bool armed)
+        {
+            if (_gamepadRunArmed == armed)
+                return;
+            _gamepadRunArmed = armed;
+            _gamepadHintsDirty = true;
+        }
+
+        /* Directions use the armed run, and L1 and R1 only change layers; the virtual stick directions are not presses */
+        private static bool KeepsGamepadRunArmed(GHGamepadButton button)
+        {
+            switch (button)
+            {
+                case GHGamepadButton.L3:
+                case GHGamepadButton.LB:
+                case GHGamepadButton.RB:
+                case GHGamepadButton.DPadUp:
+                case GHGamepadButton.DPadDown:
+                case GHGamepadButton.DPadLeft:
+                case GHGamepadButton.DPadRight:
+                    return true;
+                default:
+                    return button >= GHGamepadButton.LeftStickUp;
             }
         }
 
@@ -937,8 +977,8 @@ namespace GnollHackX.Pages.Game
         /* D-pad walking, one step per press and per repeat in the direction of the held set, through the same gate as
            the left stick. A press waits the stick's settle time, so two presses a moment apart give one diagonal
            step. A press released before its step steps at once, through the pending slot, in the direction of the set
-           it was part of. A release that leaves a direction held continues after the first repeat delay. The
-           deflected left stick wins. */
+           it was part of. A release that leaves a direction held continues after the first repeat delay. An armed
+           run sends its prefix with the direction, once per direction. The deflected left stick wins. */
         private void UpdateGamepadDPadWalk(GHGamepadMapContext ctx, long now)
         {
             GamepadStickDirection d = _gamepadDPadDirection;
@@ -960,7 +1000,13 @@ namespace GnollHackX.Pages.Game
                 if (paidSector >= 0)
                 {
                     SignalGamepadBusyInput(ctx);
-                    SubmitGamepadKeys(GHGamepadMapContext.Normal, now, GamepadSectorDirections[paidSector]);
+                    if (_gamepadRunArmed)
+                    {
+                        SubmitGamepadKeys(GHGamepadMapContext.Normal, now, MapK(nh_keyfunc.NHKF_RUSH), GamepadSectorDirections[paidSector]);
+                        SetGamepadRunArmed(false);
+                    }
+                    else
+                        SubmitGamepadKeys(GHGamepadMapContext.Normal, now, GamepadSectorDirections[paidSector]);
                 }
                 _gamepadDPadOwed = 0;
                 if (sector >= 0)
@@ -987,12 +1033,24 @@ namespace GnollHackX.Pages.Game
                 d.Sector = sector;
                 d.SectorSinceTicks = now;
                 d.FirstStep = fresh;
+                d.RunSent = false;
                 d.NextStepTicks = fresh ? now : now + GamepadMsToTicks(GHConstants.GamepadWalkFirstRepeatDelayMs);
             }
             bool settled = !d.FirstStep || now - d.SectorSinceTicks >= GamepadMsToTicks(GHConstants.GamepadWalkSettleMs);
-            if (!settled || now < d.NextStepTicks)
+            if (!settled || d.RunSent || now < d.NextStepTicks)
                 return;
-            if (TrySendGamepadKey(GHGamepadMapContext.Normal, GamepadSectorDirections[sector]))
+            if (_gamepadRunArmed)
+            {
+                if (TrySendGamepadKeyPair(GHGamepadMapContext.Normal, MapK(nh_keyfunc.NHKF_RUSH), GamepadSectorDirections[sector]))
+                {
+                    d.RunSent = true;
+                    _gamepadDPadOwed = 0;
+                    SetGamepadRunArmed(false);
+                }
+                else
+                    SignalGamepadBusyInput(ctx);
+            }
+            else if (TrySendGamepadKey(GHGamepadMapContext.Normal, GamepadSectorDirections[sector]))
             {
                 d.NextStepTicks = now + GamepadMsToTicks(d.FirstStep ? GHConstants.GamepadWalkFirstRepeatDelayMs : GHConstants.GamepadWalkRepeatIntervalMs);
                 d.FirstStep = false;
@@ -1382,11 +1440,14 @@ namespace GnollHackX.Pages.Game
                     if (!settled || d.RunSent || now < d.NextStepTicks)
                         break;
                     /* A due step or run that the gate holds back signals the busy game */
-                    if (_gamepadRightModifierHeld)
+                    if (_gamepadRightModifierHeld || _gamepadRunArmed)
                     {
-                        /* Run: once per engaged direction */
-                        if (TrySendGamepadKeyPair(GHGamepadMapContext.Normal, MapK(nh_keyfunc.NHKF_RUN), dir))
+                        /* Run: once per engaged direction; the armed L3 is the keyboard's rush prefix */
+                        if (TrySendGamepadKeyPair(GHGamepadMapContext.Normal, MapK(_gamepadRunArmed ? nh_keyfunc.NHKF_RUSH : nh_keyfunc.NHKF_RUN), dir))
+                        {
                             d.RunSent = true;
+                            SetGamepadRunArmed(false);
+                        }
                         else
                             SignalGamepadBusyInput(ctx);
                     }
@@ -1621,7 +1682,7 @@ namespace GnollHackX.Pages.Game
         private const string GamepadMaxHitPointsToggleId = "l3:maxhp";
         private const string GamepadMaxManaToggleId = "l3:maxmana";
 
-        /* R3: the eight toggles at fixed directions; L3 centers on the hero. The orb toggles are
+        /* R3: the eight toggles at fixed directions; R1 + L3 centers on the hero. The orb toggles are
            disabled when the orbs are not shown, and like an orb tap they are not saved; their icons are
            drawn orbs (DrawRadialOrbIcon), with the image as a fallback. */
         private GHRadialMenuDefinition BuildGamepadTogglesRadial()
@@ -2253,7 +2314,18 @@ namespace GnollHackX.Pages.Game
                     break;
                 case GHGamepadMapContext.Normal:
                 case GHGamepadMapContext.Busy:
-                    if (_gamepadLeftModifierHeld && _gamepadRightModifierHeld)
+                    if (_gamepadRunArmed)
+                    {
+                        GHGamepadHint runHint = GHGamepadHint.ForSymbol(GHGamepadHintSymbol.LeftStick, "Run");
+                        runHint.Highlight = true;
+                        hints.Add(runHint);
+                        runHint = GHGamepadHint.ForSymbol(GHGamepadHintSymbol.DPad, "Run");
+                        runHint.Highlight = true;
+                        hints.Add(runHint);
+                        hints.Add(new GHGamepadHint(GHGamepadButton.L3, "Cancel", false));
+                        hints.Add(new GHGamepadHint(GHGamepadButton.B, "Cancel", false));
+                    }
+                    else if (_gamepadLeftModifierHeld && _gamepadRightModifierHeld)
                     {
                         AddGamepadHeldModifierHint(hints, GHGamepadHint.Pair(GHGamepadButton.LB, GHGamepadButton.RB, null));
                         hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Rest", false));
@@ -2277,6 +2349,7 @@ namespace GnollHackX.Pages.Game
                         hints.Add(new GHGamepadHint(GHGamepadButton.RT, "Set", false));
                         hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.DPad, "Zoom"));
                         hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.LeftStick, "Run"));
+                        hints.Add(new GHGamepadHint(GHGamepadButton.L3, "Center", false));
                     }
                     else
                     {
@@ -2291,7 +2364,7 @@ namespace GnollHackX.Pages.Game
                         leftModifier.LineBreakBefore = true;
                         hints.Add(leftModifier);
                         hints.Add(new GHGamepadHint(GHGamepadButton.RB, "More", true));
-                        hints.Add(new GHGamepadHint(GHGamepadButton.L3, "Center", false));
+                        hints.Add(new GHGamepadHint(GHGamepadButton.L3, "Run", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.R3, "Toggles", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Game menu", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.View, "Inventory", false));

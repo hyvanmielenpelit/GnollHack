@@ -83,7 +83,7 @@ appear in its alert overlay.
 
 Both shoulder buttons are **hold modifiers** on the map, each for the controls the other hand
 uses: **L1** changes the right-side controls (A, B, X, Y, R2, Menu) and **R1** the left-side
-controls (D-pad, left stick, View). Neither does anything on its own. A layer is sampled when
+controls (D-pad, left stick, L3, View). Neither does anything on its own. A layer is sampled when
 the other button is pressed. The hint strip shows the layer while a modifier is held, with the
 held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 
@@ -100,7 +100,7 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, one step per press and then continuously while held, Left toggles the minimap, Right returns to normal zoom | -- |
 | Left stick | Walk (8-way) | -- | Run in that direction | -- |
 | Right stick | Pan the map | | | |
-| L3 (also the left trackpad's click) | Center the map on the hero | | | |
+| L3 (also the left trackpad's click) | **Run**: the next direction, on the left stick or the D-pad, rushes as the keyboard's `g` prefix does | -- | Center the map on the hero | -- |
 | R3 | Open the Toggles radial | | | |
 | L4, L5, R4, R5 (back grips) | Configurable; defaults Apply, Cast, Cast Quick, Zap Quick | | | |
 The grips are set in **Settings, Controller**. Their pickers appear only when the controller
@@ -143,7 +143,14 @@ pressed together pick the diagonal); or aim with the left stick and confirm with
 L1 is up (`<`) and R1 is down (`>`). A prompt raised by a held trigger opens the direction radial
 instead.
 
-In both, L3 opens the Actions radial without its commands pages, and R3 the Toggles radial.
+**Running with L3.** L3 on the map arms a run: the hint strip shows it, and the next direction on the
+left stick or the D-pad sends the keyboard's rush prefix (`g`) with that direction, once. Clicking
+L3 while the stick is pushed runs at once. L3 again or B cancels it, and B then does nothing else; any
+other command button cancels it and does its own action. Only the direction reaches the game with the
+prefix, so a cancel never brings up the core's invalid direction help. R1 + the left stick still runs
+with the `G` prefix.
+
+In both prompts, L3 opens the Actions radial without its commands pages, and R3 the Toggles radial.
 
 **Hint badges.** The hints on the map, in menus and dialogs, and in the radials draw button
 badges: A, B, X and Y as white circles with a black letter (drawn symbols on PlayStation pads),
@@ -187,8 +194,8 @@ radial, which lasts only as long as its trigger is held.
   name.
   **X** switches between the context page and the first commands page; L1/R1 page.
 - **Direction radial** (a trigger held through its action's direction prompt): violet and see-through,
-  so that the map stays readable, with the eight directions at their compass positions, in place of
-  the map's direction arrows. Either stick selects, and a stick already pushed when it opens counts at
+  with no dimming of the map and slices only 8 % opaque, 16 % when selected, because it is used for
+  aiming. The eight directions sit at their compass positions, in place of the map's direction arrows. Either stick selects, and a stick already pushed when it opens counts at
   once. **Releasing the trigger** confirms the highlighted direction; with nothing highlighted, it
   cancels the command. **A** also confirms the highlighted direction, **B** cancels the command and
   **L3** does nothing. **D-pad Up** answers `<`, **D-pad Down** `>` and **Y** self, at once. L3 is not

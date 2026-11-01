@@ -18,7 +18,8 @@ namespace GnollHackX
        - The definition's Accent picks the gold, teal or violet border, highlight, glow and flash colors.
          A teal radial assigns: its toggle items mark only the current choice, with a "NOW" pill,
          and its hub shows no "Currently: On/Off" line.
-       - A SeeThrough definition gets lighter slices and hub and no vignette, to keep the map readable.
+       - A SeeThrough definition gets nearly clear slices, a lighter hub, and no slice glow or vignette, to keep the
+         map readable; the slice outlines carry the highlight.
        - Free of GHApp: the host supplies the typefaces, the icon lookup, the text blob cache
          setting and the keyboard shortcut setting.
        - Opacity and scale animate through a layer and a canvas transform only while animating;
@@ -54,8 +55,10 @@ namespace GnollHackX
         private static readonly SKColor VioletHighlightFill = new SKColor(44, 30, 74, 0xE6);
         private static readonly SKColor VioletFlashFill = new SKColor(84, 58, 140, 0xF0);
         private static readonly SKColor VioletTitle = new SKColor(0xD8, 0xC8, 0xFF);
-        private static readonly SKColor SeeThroughSliceFill = new SKColor(38, 38, 38, 0x66);
+        private static readonly SKColor SeeThroughSliceFill = new SKColor(38, 38, 38, 0x14);    /* 8 % opaque */
         private static readonly SKColor SeeThroughHubFill = new SKColor(0, 0, 0, 0x55);
+        private const byte SeeThroughHighlightAlpha = 0x29;                                     /* 16 % opaque */
+        private const byte SeeThroughFlashAlpha = 0x4D;                                         /* 30 % opaque */
         private static readonly SKColor SliceFill = new SKColor(38, 38, 38, 0xD9);
         private static readonly SKColor SliceBorder = new SKColor(255, 255, 255, 0x40);
         private static readonly SKColor EmptyOutline = new SKColor(255, 255, 255, 0x20);
@@ -156,6 +159,7 @@ namespace GnollHackX
         private SKColor _accentTitle = SKColors.White;
         private SKColor _sliceBaseFill = SliceFill;
         private SKColor _hubBaseFill = HubFill;
+        private bool _sliceGlow = true;
         private bool _disposed;
 
         public GHRadialMenuRenderer()
@@ -210,6 +214,12 @@ namespace GnollHackX
             ResolveAccent(def.Accent);
             _sliceBaseFill = def.SeeThrough ? SeeThroughSliceFill : SliceFill;
             _hubBaseFill = def.SeeThrough ? SeeThroughHubFill : HubFill;
+            _sliceGlow = !def.SeeThrough;
+            if (def.SeeThrough)
+            {
+                _accentHighlightFill = _accentHighlightFill.WithAlpha(SeeThroughHighlightAlpha);
+                _accentFlashFill = _accentFlashFill.WithAlpha(SeeThroughFlashAlpha);
+            }
             EnsureLayouts(def, g);
 
             float opacity = state.Opacity;
@@ -317,7 +327,8 @@ namespace GnollHackX
 
             canvas.Save();
             canvas.Translate(g.CenterX + dirX * offset, g.CenterY + dirY * offset);
-            if (e > 0f && enabled)
+            /* The blurred glow fills the whole slice, so a see-through slice goes without it */
+            if (e > 0f && enabled && _sliceGlow)
             {
                 _glowPaint.Color = _accent.WithAlpha(ToByte(e * 0x60 / 255f));
                 canvas.DrawPath(path, _glowPaint);
