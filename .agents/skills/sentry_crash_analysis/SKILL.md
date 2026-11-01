@@ -750,6 +750,10 @@ workaround is recommended, or it covers only part of the crashes, the action lis
 instead includes a `KI-` entry for the defect and the Sentry note and archive that
 `client_workarounds` describes.
 
+This skill does not modify source, but its action list outlives it: when a fix is implemented, its
+Testing actions become `TEST` checks and its Monitoring actions become `WATCH` steps in the fix's
+Developer Runbook (`client_developer_runbook`).
+
 ---
 
 ## Section D: Analysis Report Format

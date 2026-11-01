@@ -142,6 +142,7 @@ Git stores all text files with **LF** line endings in the repository. On checkou
 | VS solution | `win/win32/vs/GnollHack.sln` |
 | Dev documentation | `DEVEL/` |
 | Workaround and known-issue register | `DEVEL/workarounds/` |
+| Developer runbook guide | `DEVEL/developer_runbooks.md` |
 
 ## Build Prerequisites
 
@@ -188,6 +189,17 @@ skill — read it rather than a summary.
 plan's file path. If the plan turns out to be wrong during implementation, stop
 and re-confirm rather than silently diverging from what the user approved.
 
+### Developer Runbooks
+
+Anything finished work leaves a person beyond the commit -- manual and device tests, builds only a
+person can run, upstream reports to file, work for another developer, checks after a release -- goes
+in a **Developer Runbook** beside the plan (`developer_runbook_v<N>.md`), with its status in the
+walkthrough's `## Runbook status` table, never only in a chat message or a private memory. That
+holds for a fix made with no plan too. Follow the `client_developer_runbook` skill. To list every
+open step:
+
+`& C:\hmp\SharedAgentSkills\tools\Get-OpenRunbookSteps.ps1 -Scope hyvanmielenpelit/GnollHack`
+
 ### Subagent Use and Pair Programming
 
 Every implementation plan **MUST** include a **Subagent Use** section. Read the full guidelines in the [client_subagent_guidelines skill](../.agents/skills/client_subagent_guidelines/SKILL.md) before creating any plan. Key points:
@@ -228,4 +240,4 @@ the MobileGnollHackLogger server. Canonical bodies live in
   4. **`HorizontalOptions  =` behaves the same way**: in files whose block includes it, `HorizontalOptions  ="Center"` becomes `HorizontalOptions="Fill"` in GnollHackM. Use the plain one-space form unless you want that override.
 - **Do NOT hardcode version numbers in AI skills**: NuGet package versions, SDK build numbers, game version strings, and platform minimum OS versions change frequently. AI skills (`.agents/skills/`) must reference the source-of-truth files (e.g., `GnollHackM.csproj` for NuGet and target framework versions, `include/date.h` for game version) rather than embedding specific version strings that will drift out of date.
 - **Record every third-party workaround in `DEVEL/workarounds/`**: adding, changing, re-checking, or removing a workaround for a defect or limitation in MAUI, SkiaSharp, the .NET runtime, Android, iOS, WinUI, Avalonia, CEF, FMOD, Sentry, or any other third-party component updates its register entry and its `WORKAROUND(WA-...)` code tag in the same change, and runs `DEVEL/workarounds/Test-WorkaroundRegister.ps1`. A third-party defect that GnollHack cannot work around is recorded there too, as a `KI-` known issue with no code tag, once its cause is attributed. Upgrading a package, SDK, or workload re-checks that component's entries. Follow the `client_workarounds` skill.
-- **Test gamepad work on a real device**: a change to what a game controller does or shows is not verified until it has been tested on a device. Shared controller code is tested on the primary device, the Steam Deck through the Avalonia Linux build; code specific to one platform is tested on that platform's device and needs no Deck. An unavailable device is reported as an outstanding test, never waived; an Xbox controller on the non-shipping Avalonia Windows build is a backup for a Deck test, not a replacement. Follow the `client_gamepad_testing` skill.
+- **Test gamepad work on a real device**: a change to what a game controller does or shows is not verified until it has been tested on a device. Shared controller code is tested on the primary device, the Steam Deck through the Avalonia Linux build; code specific to one platform is tested on that platform's device and needs no Deck. An unavailable device is reported as an outstanding test, never waived by an agent; an Xbox controller on the non-shipping Avalonia Windows build is a backup for a Deck test, not a replacement. Follow the `client_gamepad_testing` skill.

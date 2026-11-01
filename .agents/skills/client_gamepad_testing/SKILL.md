@@ -149,11 +149,13 @@ Only the orchestrating agent does this, after every subagent has returned.
 
    The script does its own connection check and stops with a clear message. See below if it fails.
 6. **Confirm** that the output names the version you just packaged.
-7. **Hand over the tests.** Give the user numbered, concrete checks for this change (press this, in
-   this place, expect that), run in **Gaming Mode**, including what should still work next to the
-   change. Then report the state as "deployed to the Deck, tests M1-Mn pending".
+7. **Hand over the tests.** They are a `TEST` session in the task's Developer Runbook
+   (`client_developer_runbook`): numbered, concrete checks for this change (press this, in this
+   place, expect that), run in **Gaming Mode**, including what should still work next to the change.
+   Write the walkthrough with its `## Runbook status` table first, so that the tests can be listed.
+   Then report the state as "deployed to the Deck, tests M1-Mn pending".
 8. **After the user has tested,** read the log (below) if anything went wrong, and record the results
-   in the walkthrough. Only the user's result makes the work verified.
+   in the walkthrough's `## Runbook status` table. Only the user's result makes the work verified.
 
 ## When the Deploy Fails
 
@@ -167,9 +169,9 @@ Only the orchestrating agent does this, after every subagent has returned.
 | `No staged build` | Packaging did not run for this version | Run step 4 |
 
 **An unreachable Deck does not end the task, and it does not waive the rule.** Report plainly: the
-package was built, it was **not** deployed, and the Deck tests are outstanding. Give the deploy
-command and the test list, and offer the Xbox backup below. Record the same in the plan's `task.md`
-and walkthrough. Never describe the work as verified.
+package was built, it was **not** deployed, and the Deck tests are outstanding. The runbook
+already has the deploy command and the test list: point to it, and offer the Xbox backup below. Record the same in the plan's `task.md`, and leave the `DEPLOY` step and its checks `blocked`
+in the status table. Never describe the work as verified.
 
 ## Xbox on Desktop Linux
 
@@ -190,7 +192,8 @@ There is no deploy step.
 dotnet build GnollHackM.csproj -c Debug -f net10.0-windows10.0.19041.0
 ```
 
-Give the user numbered checks for the change, as for the Deck, and read `GAMEPAD` lines in the app log if anything goes wrong.
+The numbered checks for the change are a `TEST` session in the task's Developer Runbook, as for the
+Deck. Read `GAMEPAD` lines in the app log if anything goes wrong.
 
 ## Xbox on Avalonia Windows
 
@@ -220,7 +223,8 @@ the backup cannot speak for it.
 
 **Report it as what it is:** "tested with the Xbox backup on Avalonia Windows, Deck tests M1-Mn
 outstanding". The Deck test stays outstanding, and only the user can decide that the backup is enough
-for a particular change. Record that decision in the walkthrough if they make it.
+for a particular change. If they make it, the checks become `waived` in the status table, and the note
+says so.
 
 ## First-Time Setup
 
@@ -258,3 +262,4 @@ not change it.
 - **`build_pipeline`** -- Linux native prerequisites, packaging, and what `Deploy-SteamDeck.ps1` does
 - **`client_implementation_planning`** -- How a plan records this
 - **`client_workarounds`** -- A controller workaround for a Steam or Avalonia defect is registered too
+- **`client_developer_runbook`** -- Where the checks and their results are recorded

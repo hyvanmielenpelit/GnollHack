@@ -143,6 +143,11 @@ check, and appends `still-present`, `not-present` or `unverified`.
 Every appended line also updates `Last checked`. Set `Status: removable` only after a
 full re-check found `not-needed` and GnollHack uses the fixed release.
 
+A full re-check that needs a device a person must use is a `TEST` check in a Developer Runbook
+(`client_developer_runbook`). Until its result is recorded, the entry's newest `Checks` line says
+`unverified`; recording it appends a new line. An upstream report waiting on such a test is a `FILE`
+step.
+
 `-CheckUpstream` makes the lint compare the state of every linked GitHub issue or pull
 request with the entry. It uses the network, so run it during sweeps, not in CI.
 

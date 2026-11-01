@@ -141,12 +141,22 @@ a step. See `client_workarounds`.
 ## Gamepad Changes in a Plan
 
 A plan that changes what a game controller does or shows says whether the change is shared or specific to a platform, and
-names the devices that follow: the Steam Deck for shared code, the platform's device for what is specific to it. It has a
-**Device** subsection in its Verification Plan: for the Deck, the packaging and deploy commands, a numbered list of checks
-for the user to run in Gaming Mode, and what the plan does if the Deck is unreachable; for another platform, how to run it
-and its checks. A build that a named device uses goes in Build Impact. An Xbox controller on the Avalonia Windows build may
-appear as the backup for an unavailable Deck or as an extra check, never in place of a Deck test of shared code. See
+names the devices that follow: the Steam Deck for shared code, the platform's device for what is specific to it. Its
+Verification Plan has a **Device** subsection saying which devices and why and, for the Deck, what the plan does if it is
+unreachable. For each device, how to get the build onto it and the numbered checks for the user to run, in Gaming Mode on
+the Deck, are steps of the plan's Developer Runbook. A build that a named device uses goes in Build Impact. An Xbox
+controller on the Avalonia Windows build may appear as the backup for an unavailable Deck or as an extra check, never in place of a Deck test of shared code. See
 `client_gamepad_testing`.
+
+---
+
+## Developer Runbook in a Plan
+
+A plan whose work leaves a person anything beyond the commit has a Developer Runbook,
+`developer_runbook_v<N>.md`, written with the plan as a member of its document set. Automated
+verification stays in the plan. The plan's Manual subsection is one line naming the runbook and its
+checks by ID and device; the checks themselves live only in the runbook, and the walkthrough has
+its `## Runbook status` table. See `client_developer_runbook`.
 
 ---
 
@@ -159,3 +169,4 @@ appear as the backup for an unavailable Deck or as an extra check, never in plac
 - **`maui_frontend`** -- the XAML generation pipeline and the `makedefsdroid.vcxproj`
   template for a new page or control
 - **`client_gamepad_testing`** -- The scope, the choice of device, deploy sequence, and Deck tests for gamepad work
+- **`client_developer_runbook`** -- what finished work leaves for a person, and its status
