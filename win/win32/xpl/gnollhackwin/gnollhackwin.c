@@ -9,6 +9,26 @@
 #define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
 #include <windows.h>
 
+/* Moves from over to atomically; retries because a scanner can hold the target for a moment.
+   Returns 0 on success, otherwise the Windows error code. */
+int
+gnhwin_move_file_replacing(const char *from, const char *to)
+{
+    int i;
+
+    for (i = 0; ; i++)
+    {
+        DWORD err;
+
+        if (MoveFileExA(from, to, MOVEFILE_REPLACE_EXISTING))
+            return 0;
+        err = GetLastError();
+        if ((err != ERROR_ACCESS_DENIED && err != ERROR_SHARING_VIOLATION) || i >= 4)
+            return (int) err;
+        Sleep(20);
+    }
+}
+
 BOOL APIENTRY DllMain(HMODULE hModule,
     DWORD  ul_reason_for_call,
     LPVOID lpReserved

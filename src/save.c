@@ -748,8 +748,9 @@ tricked_fileremoved(int fd, char *whynot)
 static boolean havestate = TRUE;
 
 #ifdef INSURANCE
-void
-savestateinlock(void)
+/* Writes level 0's temporary file; FALSE if there is none to move into place */
+static boolean
+write_state_to_level0_temp(void)
 {
     int fd, hpid;
     char whynot[BUFSZ];
@@ -765,69 +766,87 @@ savestateinlock(void)
      * noop pid rewriting will take place on the first "checkpoint" after
      * the game is started or restored, if checkpointing is off.
      */
-    if (flags.ins_chkpt || havestate)
+    /* save the rest of the current game state in the lock file,
+     * following the original int pid, the current level number,
+     * and the current savefile name, which should not be subject
+     * to any internal compression schemes since they must be
+     * readable by an external utility
+     */
+    fd = open_levelfile(0, whynot);
+    if (tricked_fileremoved(fd, whynot))
+        return FALSE;
+
+    IGNORE_RESULT read(fd, (genericptr_t) &hpid, (readLenType)sizeof(hpid));
+    if (hackpid != hpid)
     {
-        /* save the rest of the current game state in the lock file,
-         * following the original int pid, the current level number,
-         * and the current savefile name, which should not be subject
-         * to any internal compression schemes since they must be
-         * readable by an external utility
-         */
-        fd = open_levelfile(0, whynot);
-        if (tricked_fileremoved(fd, whynot))
-            return;
-
-        IGNORE_RESULT read(fd, (genericptr_t) &hpid, (readLenType)sizeof(hpid));
-        if (hackpid != hpid)
-        {
-            Sprintf(whynot, "Level #0 pid (%d) doesn't match ours (%d)!",
-                    hpid, hackpid);
-            pline1(whynot);
+        Sprintf(whynot, "Level #0 pid (%d) doesn't match ours (%d)!",
+                hpid, hackpid);
+        pline1(whynot);
 #ifdef GNH_MOBILE
-            debugprint("savestateinlock: %s", whynot);
-            nonfatal_error("savestateinlock: level 0 belongs to another process");
-            (void)nhclose(fd);
-            return;
+        debugprint("savestateinlock: %s", whynot);
+        nonfatal_error("savestateinlock: level 0 belongs to another process");
+        (void)nhclose(fd);
+        return FALSE;
 #else
-            Strcpy(killer.name, whynot);
-            done(TRICKED);
+        Strcpy(killer.name, whynot);
+        done(TRICKED);
 #endif
-        }
-        (void) nhclose(fd);
-
-        fd = create_levelfile(0, whynot);
-        if (fd < 0)
-        {
-            pline1(whynot);
-#ifdef GNH_MOBILE
-            nonfatal_error("savestateinlock: %s", whynot);
-            return;
-#else
-            Strcpy(killer.name, whynot);
-            done(TRICKED);
-            return;
-#endif
-        }
-        IGNORE_RESULT write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
-        if (flags.ins_chkpt)
-        {
-            int currlev = ledger_no(&u.uz);
-            int64_t time_stamp = (int64_t)getnow();
-
-            IGNORE_RESULT write(fd, (genericptr_t) &currlev, sizeof(currlev));
-            save_savefile_name(fd);
-            store_version(fd);
-            store_savefileinfo(fd);
-            store_plname_in_file(fd);
-            store_save_game_stats_in_file(fd, time_stamp);
-            check_steed_on_level("savestateinlock");
-            ustuck_id = (u.ustuck ? u.ustuck->m_id : 0);
-            usteed_id = (u.usteed ? u.usteed->m_id : 0);
-            savegamestate(fd, WRITE_SAVE, time_stamp);
-        }
-        bclose(fd);
     }
-    havestate = flags.ins_chkpt;
+    (void) nhclose(fd);
+
+    fd = create_levelfile_temp(0, whynot);
+    if (fd < 0)
+    {
+        pline1(whynot);
+#ifdef GNH_MOBILE
+        nonfatal_error("savestateinlock: %s", whynot);
+        return FALSE;
+#else
+        Strcpy(killer.name, whynot);
+        done(TRICKED);
+        return FALSE;
+#endif
+    }
+    IGNORE_RESULT write(fd, (genericptr_t) &hackpid, sizeof(hackpid));
+    if (flags.ins_chkpt)
+    {
+        int currlev = ledger_no(&u.uz);
+        int64_t time_stamp = (int64_t)getnow();
+
+        IGNORE_RESULT write(fd, (genericptr_t) &currlev, sizeof(currlev));
+        save_savefile_name(fd);
+        store_version(fd);
+        store_savefileinfo(fd);
+        store_plname_in_file(fd);
+        store_save_game_stats_in_file(fd, time_stamp);
+        check_steed_on_level("savestateinlock");
+        ustuck_id = (u.ustuck ? u.ustuck->m_id : 0);
+        usteed_id = (u.usteed ? u.usteed->m_id : 0);
+        savegamestate(fd, WRITE_SAVE, time_stamp);
+    }
+    bclose(fd);
+    return TRUE;
+}
+
+/* Moves the current level's temporary file, if pending_ledger names one, and level 0's over their
+   files one right after the other. Level 0 stays as it was if the current level could not be stored,
+   because a checkpoint must not name a level whose latest state is not on disk. */
+void
+savestateinlock(int pending_ledger)
+{
+    boolean write_state = (boolean) (flags.ins_chkpt || havestate);
+    boolean written = write_state && write_state_to_level0_temp();
+
+    if (pending_ledger > 0 && !commit_levelfile_temp(pending_ledger))
+    {
+        if (written)
+            delete_levelfile_temp(0);
+        return;
+    }
+    if (written)
+        (void) commit_levelfile_temp(0);
+    if (written || !write_state)
+        havestate = flags.ins_chkpt;
 }
 #endif
 

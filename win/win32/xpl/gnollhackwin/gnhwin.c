@@ -34,7 +34,9 @@ eraseoldlocks(void)
         /* try to remove all */
         set_levelfile_name(lock, i);
         (void) unlink(fqname(lock, LEVELPREFIX, 0));
+        delete_levelfile_temp(i);
     }
+    delete_levelfile_temp(0);
     set_levelfile_name(lock, 0);
     if (res)
         return(0);                /* cannot remove it */

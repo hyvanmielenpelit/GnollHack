@@ -1283,6 +1283,12 @@ E void set_lock_and_bones(void);
 #endif
 E void set_levelfile_name(char *, int);
 E int create_levelfile(int, char *);
+E int create_levelfile_temp(int, char *);
+E boolean commit_levelfile_temp(int);
+E void delete_levelfile_temp(int);
+#ifdef GNH_WIN
+E int gnhwin_move_file_replacing(const char *, const char *);
+#endif
 E int open_levelfile(int, char *);
 E void delete_levelfile(int);
 E void delete_excess_levelfiles(void);
@@ -1349,6 +1355,7 @@ E boolean check_has_backup_savefile(void);
 E int delete_prerecovery_savefile(void);
 E int restore_prerecovery_savefile(void);
 E boolean ask_restore_prerecovery_savefile(const char *, boolean);
+E int offer_prerecovery_savefile_after_panic(void);
 E int restore_fallback_savefile(const char **);
 E int delete_savefile_if_exists(void);
 E int delete_error_savefile(void);
@@ -3381,7 +3388,7 @@ E int dosave(void);
 E int dosave0(boolean);
 E boolean tricked_fileremoved(int, char *);
 #ifdef INSURANCE
-E void savestateinlock(void);
+E void savestateinlock(int);
 #endif
 #ifdef MFLOPPY
 E boolean savelev(int, xchar, int);

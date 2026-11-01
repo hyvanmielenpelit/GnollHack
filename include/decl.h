@@ -236,6 +236,7 @@ E int exit_hack_code;
 E boolean restoring;
 E boolean saving;
 E boolean reseting;
+E int restoring_savefile_fd; /* the save file dorestore0() is reading, -1 if none */
 E boolean check_pointing;
 E boolean ignore_onsleep_autosave;
 E boolean ransacked;

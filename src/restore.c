@@ -91,6 +91,7 @@ extern int amii_numcolors;
 
 boolean restoring = FALSE;
 boolean reseting = FALSE;
+int restoring_savefile_fd = -1;
 
 static NEARDATA struct fruit *oldfruit;
 static NEARDATA int64_t omoves;
@@ -1139,6 +1140,7 @@ dorestore0(int fd)
     issue_breadcrumb("Start dorestore0");
 
     restoring = TRUE;
+    restoring_savefile_fd = fd;
     rest_ledger = 0;
     (void) memset((genericptr_t) rest_restored, 0, sizeof rest_restored);
     boolean readok = get_plname_from_file(fd, plname, sizeof(plname));
@@ -1313,7 +1315,7 @@ dorestore0(int fd)
 #ifdef INSURANCE
     /* Only once every level file exists, and before the save file is deleted below:
        recover_savefile() rebuilds the save from this and whichever level files exist */
-    savestateinlock();
+    savestateinlock(0);
 #endif
     program_state.something_worth_saving = 1; /* useful data now exists */
 
@@ -1799,10 +1801,17 @@ restore_msghistory(int fd)
         mread(fd, (genericptr_t) &msgsize, sizeof(msgsize));
         if (msgsize == -1)
             break;
-        if (msgsize > (BUFSZ - 1))
+        if (msgsize < 1 || msgsize > (BUFSZ - 1))
         {
+            long long at = (long long) lseek(fd, (off_t) 0, SEEK_CUR);
+            long long size = (long long) lseek(fd, (off_t) 0, SEEK_END);
+
+            debugprint("restore_msghistory: after %d messages, at %lld of %lld", msgcount, at, size);
             program_state.panic_handling = 3; /* Safe to do a full game reset and ok to replace the save file with backup */
-            panic("restore_msghistory: msg too big (%d)", msgsize);
+            if (msgsize < 1)
+                panic("restore_msghistory: bad msg size (%d)", msgsize);
+            else
+                panic("restore_msghistory: msg too big (%d)", msgsize);
             return;
         }
         mread(fd, (genericptr_t) msg, msgsize);

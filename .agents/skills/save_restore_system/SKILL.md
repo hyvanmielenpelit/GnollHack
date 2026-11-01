@@ -41,6 +41,13 @@ running, and the saved-games menu does not delete one (`game_in_progress_elsewhe
 `program_state.levelfiles_claimed`. Any new code that deletes level files before that point must
 check `game_in_progress_elsewhere()` first.
 
+`save_currentstate()` writes the current level and level 0, and `goto_level()` the level being left, to
+`<file>.new`, moving each over the real file only when complete (`commit_levelfile_temp()`), so a killed
+process cannot leave a cut-off checkpoint. `recover_savefile()` could not detect one: the format has no end marker,
+and in the rebuilt file a cut-off game state runs straight into the next level's bytes.
+`restlevelfile()` still writes directly; a kill there leaves level 0 without a checkpoint, which
+`getlock()` discards.
+
 ## Modifying State
 - If you add a new field to a struct, add it to the END of the struct to minimize padding shifts.
 - If the new field contains pointers, you MUST add corresponding fixup logic in `restore.c`.

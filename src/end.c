@@ -3400,9 +3400,25 @@ nh_terminate(int status)
 
     if (program_state.panicking && restoring)
     {
-        if (sysopt.make_backup_savefiles && (program_state.panic_handling & 2) != 0 && check_has_backup_savefile())
+        int earlier;
+
+        /* Windows can neither replace nor delete a save file the failed load holds open */
+        if (restoring_savefile_fd >= 0)
+            (void) nhclose(restoring_savefile_fd);
+
+        /* The save file crash recovery replaced is newer than the backup */
+        earlier = offer_prerecovery_savefile_after_panic();
+
+        if (earlier != 1 && sysopt.make_backup_savefiles && (program_state.panic_handling & 2) != 0
+            && check_has_backup_savefile())
         {
-            char res = special_yn_query("Replace Save File with Backup", "Your save file appears corrupted. Do you want to replace it with its backup?");
+            char res = special_yn_query("Replace Save File with Backup",
+                                        earlier == 0
+                                            ? "Your save file appears corrupted. "
+                                              "Do you want to replace it with its backup? "
+                                              "The earlier save file is discarded once the backup has loaded."
+                                            : "Your save file appears corrupted. "
+                                              "Do you want to replace it with its backup?");
             if (res == 'y')
             {
                 (void)restore_backup_savefile(TRUE);

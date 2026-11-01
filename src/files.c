@@ -120,6 +120,7 @@ char lock[PL_NSIZ + 27 + GNH_EXTRA_BSIZ]; /* long enough for username+-+name+.99
 #define PRERECOVERY_EXTENSION "rec"  /* before TEMP_BACKUP_EXTENSION: the save file crash recovery replaced */
 #define SAVE_FILE_TRACKING_EXTENSION "ghsft"  /* extension for save file tracking files */
 #define RUNNING_EXTENSION ".0"  /* running */
+#define LEVEL_TEMP_EXTENSION ".new"  /* a level file being written; must not end in 0 (filter_running) */
 
 #ifdef WIN32
 #include <io.h>
@@ -248,6 +249,10 @@ static void livelog_write_string(unsigned int, const char*);
 static void livelog_post_to_forum(unsigned int, const char*);
 static void livelog_post_to_forum_rt(unsigned int, struct u_realtime, const char*);
 static int copy_savefile(const char*, const char*);
+static void get_levelfile_temp_name(char *, int);
+static boolean move_file_replacing(const char *, const char *);
+static boolean replace_file(const char *, const char *);
+static boolean query_restore_prerecovery_savefile(const char *, boolean, int);
 
 #define INBUF_SIZ (8 * BUFSZ)
 
@@ -726,6 +731,92 @@ create_levelfile(int lev, char errbuf[])
     return fd;
 }
 
+/* The file a level is written to until commit_levelfile_temp() moves it over the level file; leaves
+   lock named for lev */
+static void
+get_levelfile_temp_name(char *buf, int lev)
+{
+    set_levelfile_name(lock, lev);
+    Strcpy(buf, fqname(lock, LEVELPREFIX, 0));
+    Strcat(buf, LEVEL_TEMP_EXTENSION);
+}
+
+/* Like create_levelfile(), but the level file itself stays as it was until commit_levelfile_temp() */
+int
+create_levelfile_temp(int lev, char errbuf[])
+{
+    int fd;
+    char fq_temp[FQN_MAX_FILENAME + BUFSZ];
+
+    if (errbuf)
+        *errbuf = '\0';
+    get_levelfile_temp_name(fq_temp, lev);
+    fd = open(fq_temp, O_WRONLY | O_CREAT | O_TRUNC | O_BINARY, FCMASK);
+    if (fd >= 0)
+        level_info[lev].flags |= LFILE_EXISTS;
+    else if (errbuf)
+    {
+        Sprintf(errbuf, "Cannot create temporary file for level %d (errno %d).", lev, errno);
+        maybe_report_file_descriptors(errbuf, errno);
+    }
+    return fd;
+}
+
+/* Atomic where the platform allows; TRUE on success. On GNH_WIN a failure leaves the Windows error
+   code in errno. */
+static boolean
+move_file_replacing(const char *from, const char *to)
+{
+#if defined(GNH_WIN)
+    int err = gnhwin_move_file_replacing(from, to);
+
+    if (err)
+        errno = err;
+    return (boolean) !err;
+#elif defined(WIN32)
+    return replace_file(from, to);
+#else
+    return (boolean) (rename(from, to) == 0);
+#endif
+}
+
+/* Moves a closed temporary level file over the level file. The temporary file holds the only copy
+   of a level being left, so if the move fails it is copied instead, which is not atomic. */
+boolean
+commit_levelfile_temp(int lev)
+{
+    char fq_temp[FQN_MAX_FILENAME + BUFSZ], fq_level[FQN_MAX_FILENAME + BUFSZ];
+
+    get_levelfile_temp_name(fq_temp, lev);
+    Strcpy(fq_level, fqname(lock, LEVELPREFIX, 0));
+#ifdef HOLD_LOCKFILE_OPEN
+    if (lev == 0)
+        really_close();
+#endif
+    if (move_file_replacing(fq_temp, fq_level))
+        return TRUE;
+    debugprint("commit_levelfile_temp: moving level %d failed (error %d)", lev, errno);
+    if (copy_savefile(fq_level, fq_temp) == 0)
+    {
+        (void) unlink(fq_temp);
+        return TRUE;
+    }
+    nonfatal_error("commit_levelfile_temp: cannot store level %d (errno %d)", lev, errno);
+    /* A flagged level with no file makes returning to it fatal and refuses every save */
+    if (access(fq_level, F_OK) != 0)
+        level_info[lev].flags &= ~LFILE_EXISTS;
+    return FALSE;
+}
+
+void
+delete_levelfile_temp(int lev)
+{
+    char fq_temp[FQN_MAX_FILENAME + BUFSZ];
+
+    get_levelfile_temp_name(fq_temp, lev);
+    (void) unlink(fq_temp);
+}
+
 #if defined(UNIX) && defined(GNH_MOBILE)
 /* This changes the soft limit */
 boolean
@@ -1055,9 +1146,13 @@ clearlocks(void)
 #endif
         /* level 0 first, so an interrupted cleanup leaves no checkpoint to recover from */
         delete_levelfile(0);
+        delete_levelfile_temp(0);
         /* can't access maxledgerno() before dungeons are created -dlc */
         for (x = (n_dgns ? maxledgerno() : 0); x > 0; x--)
+        {
             delete_levelfile(x); /* not all levels need be present */
+            delete_levelfile_temp(x);
+        }
         set_levelfile_name(lock, 0);
     }
 #endif /* ?PC_LOCKING,&c */
@@ -1149,6 +1244,8 @@ really_close(void)
 int
 nhclose(int fd)
 {
+    if (fd == restoring_savefile_fd)
+        restoring_savefile_fd = -1;
     if (lftrack.fd == fd) {
         really_close(); /* close it, but reopen it to hold it */
         fd = open_levelfile(0, (char *) 0);
@@ -1162,6 +1259,8 @@ nhclose(int fd)
 int
 nhclose(int fd)
 {
+    if (fd == restoring_savefile_fd)
+        restoring_savefile_fd = -1;
     return close(fd);
 }
 #endif /* ?HOLD_LOCKFILE_OPEN */
@@ -2161,7 +2260,11 @@ restore_prerecovery_savefile(void)
         return -2;
     nh_uncompress(fq_save);
     if (!replace_file(prebuf, fq_save))
-        return -4;
+    {
+        if (copy_savefile(fq_save, prebuf) != 0)
+            return -4;
+        (void) unlink(prebuf);
+    }
     nh_compress(fq_save);
     /* A tracking file beside the save belongs to the file just replaced */
     get_tracking_file_name(trkbuf);
@@ -2172,20 +2275,16 @@ restore_prerecovery_savefile(void)
     return 0;
 }
 
-/* Asks whether to restore a usable pre-recovery save file; problem completes
-   "Save file X ...". A "no" makes the silent fallback skip it during this load. */
-boolean
-ask_restore_prerecovery_savefile(const char *problem, boolean to_main_screen)
+/* Asks whether to restore the pre-recovery save file; problem completes "Save file X ...".
+   A "no" makes the silent fallback skip it during this load. */
+static boolean
+query_restore_prerecovery_savefile(const char *problem, boolean to_main_screen, int viewtype)
 {
     char txtbuf[BUFSZ * 2 + SAVESIZE];
     struct special_view_info info = { 0 };
     int res;
 
-    if (!open_special_view || !iflags.window_inited || iflags.debug_fuzzer
-        || check_prerecovery_savefile() != 1)
-        return FALSE;
-
-    info.viewtype = SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y;
+    info.viewtype = viewtype;
     info.title = "Restore Earlier Save File";
     Sprintf(txtbuf,
             "Save file \"%s\" %s. Crash recovery rebuilt it and kept the save file it replaced. "
@@ -2199,6 +2298,34 @@ ask_restore_prerecovery_savefile(const char *problem, boolean to_main_screen)
     if (res != 'y')
         prerecovery_declined = TRUE;
     return (boolean) (res == 'y');
+}
+
+boolean
+ask_restore_prerecovery_savefile(const char *problem, boolean to_main_screen)
+{
+    if (!open_special_view || !iflags.window_inited || iflags.debug_fuzzer
+        || check_prerecovery_savefile() != 1)
+        return FALSE;
+    return query_restore_prerecovery_savefile(problem, to_main_screen,
+                                              SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_Y);
+}
+
+/* For a panic during a load, when the windows are gone. Defaults to no because the GUI answers with
+   the default when it fast-forwards a game over. 1 if the pre-recovery save file was restored, 0 if
+   it was not and remains, -1 if there is none to offer. */
+int
+offer_prerecovery_savefile_after_panic(void)
+{
+    int res;
+
+    if (!open_special_view || iflags.debug_fuzzer || check_prerecovery_savefile() != 1)
+        return -1;
+    if (!query_restore_prerecovery_savefile("could not be loaded", FALSE,
+                                            SPECIAL_VIEW_GUI_YN_CONFIRMATION_DEFAULT_N))
+        return 0;
+    res = restore_prerecovery_savefile();
+    issue_breadcrumb2("offer_prerecovery_savefile_after_panic: restore returned", res);
+    return res ? 0 : 1;
 }
 
 /* Replaces a save file that failed to load: with the pre-recovery save file unless
@@ -2253,6 +2380,7 @@ delete_running_files(void)
 #endif
     for (lev = 0; lev < 256; lev++)
     {
+        delete_levelfile_temp(lev);
         fd = open_levelfile(lev, errbuf);
         if (fd >= 0) /* exists */
         {
@@ -5902,6 +6030,7 @@ recover_savefile(void)
     struct save_game_stats existing_stats;
     boolean have_existing = FALSE, kept_prerecovery = FALSE;
     int n_other_levels = 0;
+    long long state_at, state_bytes;
 
     recover_failure_reason = (const char *) 0;
 
@@ -6032,6 +6161,10 @@ recover_savefile(void)
                have_existing ? (unsigned long long) existing_version.incarnation : 0ULL,
                have_existing ? (long long) existing_stats.umoves : 0LL,
                have_existing ? (long long) existing_stats.time_stamp : 0LL);
+
+    state_at = (long long) lseek(gfd, (off_t) 0, SEEK_CUR);
+    state_bytes = (long long) lseek(gfd, (off_t) 0, SEEK_END) - state_at;
+    (void) lseek(gfd, (off_t) state_at, SEEK_SET);
 
     /* Add number of recoveries by one and update gamestats time_stamp so it can be used for new save file tracking */
     gamestats.num_recoveries++;
@@ -6269,9 +6402,10 @@ recover_savefile(void)
     nh_compress(fq_save);
 #endif
 
-    debugprint("recover_savefile: recovered, level=%d, other levels=%d, recoveries=%llu, replaced save kept=%d",
+    debugprint("recover_savefile: recovered, level=%d, other levels=%d, recoveries=%llu, "
+               "replaced save kept=%d, state bytes=%lld",
                savelev, n_other_levels, (unsigned long long) gamestats.num_recoveries,
-               (int) kept_prerecovery);
+               (int) kept_prerecovery, state_bytes);
     issue_breadcrumb2("recover_savefile: recovered", savelev);
 
     return TRUE;

@@ -7686,8 +7686,9 @@ currentlevel_rewrite(void)
      *  output (like "you fall through a trap door") */
     mark_synch();
 
-    fd = create_levelfile(ledger_no(&u.uz), whynot);
-    if (fd < 0) {
+    fd = create_levelfile_temp(ledger_no(&u.uz), whynot);
+    if (fd < 0)
+    {
         /*
          * This is not quite impossible: e.g., we may have
          * exceeded our quota. If that is the case then we
@@ -7715,21 +7716,26 @@ currentlevel_rewrite(void)
 void
 save_currentstate(void)
 {
-    int fd;
+    int fd, pending_ledger = 0;
     check_pointing = TRUE;
-    if (flags.ins_chkpt) {
+    if (flags.ins_chkpt)
+    {
         /* write out just-attained level, with pets and everything */
         fd = currentlevel_rewrite();
         if (fd < 0)
+        {
+            check_pointing = FALSE;
             return;
+        }
         debugprint("save_currentstate (fd=%d)", fd);
         bufon(fd);
         savelev(fd, ledger_no(&u.uz), WRITE_SAVE);
         bclose(fd);
+        pending_ledger = (int) ledger_no(&u.uz);
     }
 
-    /* write out non-level state */
-    savestateinlock();
+    /* write out non-level state, and move both into place */
+    savestateinlock(pending_ledger);
     check_pointing = FALSE;
 }
 #endif
@@ -7963,12 +7969,17 @@ goto_level(d_level *newlevel, uchar at_location, boolean falling, boolean inside
 
     if (cant_go_back)
     {
+        delete_levelfile_temp(ledger_no(&u.uz));
         /* discard unreachable levels; keep #0 */
         for (l_idx = maxledgerno(); l_idx > 0; --l_idx)
             delete_levelfile(l_idx);
         /* mark #overview data for all dungeon branches as uninteresting */
         for (l_idx = 0; l_idx < n_dgns; ++l_idx)
             remdun_mapseen(l_idx);
+    }
+    else
+    {
+        (void) commit_levelfile_temp(ledger_no(&u.uz));
     }
 
     /* Stop all long immediate sounds from the previous level (footsteps going down are still fine) */
