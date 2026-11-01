@@ -3930,6 +3930,7 @@ namespace GnollHackX
         {
             GamepadEnabled = Preferences.Get("GamepadEnabled", true);
             GamepadHideCommandBar = Preferences.Get("GamepadHideCommandBar", true);
+            MigrateGamepadDefaultCommands();
             foreach (GHGamepadButton grip in GamepadGrips)
                 SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));
             foreach (GHGamepadButton trigger in GamepadTriggers)
@@ -3940,6 +3941,29 @@ namespace GnollHackX
                 MigrateGamepadTriggerPreference(trigger);
                 SetGamepadTriggerCommand(trigger, Preferences.Get(GamepadTriggerPreferenceKey(trigger), DefaultGamepadTriggerCommand(trigger)));
             }
+        }
+
+        /* Once: a grip or Quick radial slot still saved at its old default takes the current one; other choices stay */
+        private static void MigrateGamepadDefaultCommands()
+        {
+            const string migratedKey = "GamepadDefaultCommandsMigrated";
+            if (Preferences.ContainsKey(migratedKey))
+                return;
+            RemoveGamepadPreferenceIfEqual(GamepadGripPreferenceKey(GHGamepadButton.L4), 'a');
+            RemoveGamepadPreferenceIfEqual(GamepadGripPreferenceKey(GHGamepadButton.L5), 'Z');
+            foreach (GHGamepadButton trigger in GamepadTriggers)
+            {
+                int slot;
+                for (slot = 0; slot < GamepadTriggerSlotCount; slot++)
+                    RemoveGamepadPreferenceIfEqual(GamepadTriggerSlotPreferenceKey(trigger, slot), OldDefaultGamepadTriggerSlotCommand(trigger, slot));
+            }
+            Preferences.Set(migratedKey, true);
+        }
+
+        private static void RemoveGamepadPreferenceIfEqual(string key, int value)
+        {
+            if (Preferences.ContainsKey(key) && Preferences.Get(key, 0) == value)
+                Preferences.Remove(key);
         }
 
         /* Earlier builds stored the quick-action slot a trigger ran; that slot's command becomes the trigger's own */
