@@ -186,6 +186,12 @@ namespace GnollHackX.Pages.MainScreen
             { "Client Data Access", ("Let Gnoll Overseer request full message history.", "When enabled (default), the Gnoll Overseer can request additional data from your game client, such as full message history. This data is sent to your AI provider for processing.") },
             { "Game Actions", ("Let Gnoll Overseer suggest and perform in-game actions.", "When enabled, the Gnoll Overseer can suggest and perform in-game actions on your behalf. All actions require your confirmation. (Unavailable in this version.)") },
             { "Data Consent", ("Manage AI data processing consent.", "Shows whether you have accepted the AI data processing disclosure. Press Reset to revoke your consent; the disclosure will appear again the next time you open Overseer.") },
+            { "Use Controller", ("Play with a game controller.", "Play with a game controller or the Steam Deck's built-in controls.\n**Off:** The game ignores the controller, and the keys F2 to F5 act as ordinary keys.") },
+            { "Hide Command Bar", ("Hide the command bar while playing with the controller.", "**On:** The command bar and the menus' OK and Cancel buttons are hidden while you play with the controller. Touch, the mouse or a key brings them back.\n**Off:** They stay, the controller hints show above the bar and can cover the lowest messages, and Settings also shows Bar Commands.") },
+            { "Back Grip L4", GamepadGripDescription("L4", "F2") },
+            { "Back Grip L5", GamepadGripDescription("L5", "F3") },
+            { "Back Grip R4", GamepadGripDescription("R4", "F4") },
+            { "Back Grip R5", GamepadGripDescription("R5", "F5") },
             { "R2 Action", ("What R2 does when pressed alone.", "The action R2 performs when pressed alone, chosen from R2's eight quick actions. R1 + R2 also chooses it during a game.") },
             { "L2 Action", ("What L2 does when pressed alone.", "The action L2 performs when pressed alone, chosen from L2's eight quick actions. L1 + L2 also chooses it during a game.") },
             { "R2 Quick Action 1", GamepadTriggerSlotDescription("R2", 1, "L1", "R1") },
@@ -205,6 +211,12 @@ namespace GnollHackX.Pages.MainScreen
             { "L2 Quick Action 7", GamepadTriggerSlotDescription("L2", 7, "R1", "L1") },
             { "L2 Quick Action 8", GamepadTriggerSlotDescription("L2", 8, "R1", "L1") },
         };
+
+        private static (string Tooltip, string Description) GamepadGripDescription(string grip, string key)
+        {
+            return ("The command of the " + grip + " back grip.",
+                "The command the " + grip + " back grip runs. The back grips need the GnollHack Steam Deck layout, or " + grip + " bound to the key " + key + ".");
+        }
 
         /* quickModifier opens the trigger's quick actions, chooseModifier chooses its action */
         private static (string Tooltip, string Description) GamepadTriggerSlotDescription(string trigger, int slot, string quickModifier, string chooseModifier)
@@ -239,6 +251,7 @@ namespace GnollHackX.Pages.MainScreen
 
             bool isDarkMode = GHApp.DarkMode;
             lblHeader.TextColor = isDarkMode ? GHColors.White : GHColors.Black;
+            GamepadInfoHintLabel.TextColor = isDarkMode ? GHColors.White : GHColors.Black;
             SetTournamentModeLabelColors(GHApp.TournamentMode);
             SetChildrenDarkModeTextColor(RootLayout, isDarkMode);
             if (isDarkMode)
@@ -2315,6 +2328,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             bool available = GHApp.IsGamepadAvailable;
             GamepadSettingsLayout.IsVisible = available;
+            GamepadInfoHintLabel.Text = "Press " + GHGamepadGlyphs.GetLabel(GHGamepadButton.X, GHGamepadService.Style) + " on a setting for its description.";
             GamepadGripLayout.IsVisible = available && GHGamepadService.Capabilities.HasGrips;
             GamepadEnabledSwitch.IsToggled = GHApp.GamepadEnabled;
             GamepadHideCommandBarSwitch.IsToggled = GHApp.GamepadHideCommandBar;
@@ -2342,12 +2356,13 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        /* Trigger Quick Actions while the Controller section is shown and Use Controller is on; Bar Commands otherwise,
-           and also while Hide Command Bar is off */
+        /* Trigger Quick Actions and the subtitle on the descriptions' button while the Controller section is shown and
+           Use Controller is on; Bar Commands otherwise, and also while Hide Command Bar is off */
         private void UpdateCommandSectionVisibility()
         {
             bool triggers = GamepadSettingsLayout.IsVisible && GamepadEnabledSwitch.IsToggled;
             GamepadTriggerLayout.IsVisible = triggers;
+            GamepadInfoHintLabel.IsVisible = triggers;
             BarCommandsLayout.IsVisible = !triggers || !GamepadHideCommandBarSwitch.IsToggled;
         }
 
@@ -3591,6 +3606,7 @@ namespace GnollHackX.Pages.MainScreen
                 SetDarkMode(e.Value);
                 bkgView.InvalidateSurface();
                 lblHeader.TextColor = e.Value ? GHColors.White : GHColors.Black;
+                GamepadInfoHintLabel.TextColor = e.Value ? GHColors.White : GHColors.Black;
                 SetChildrenDarkModeTextColor(RootLayout, e.Value);
                 if (e.Value)
                     PopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;

@@ -1171,3 +1171,43 @@ page's own value adds nothing at this level. Presented pages still use it throug
 
 Checks:
 - 2026-10-31 | Microsoft.Maui.Controls 10.0.120, iOS 27.2, workload ios 27.0.10722 | still-needed | Device test by the user: the battery meter shows without the override and is gone with it.
+
+## WA-MAUI-0031: ScrollView's load-time focus shows a focus rectangle around it
+
+- Status: active
+- Added: 2026-11-01
+- GnollHack version: 3.35 (435)
+- Component: .NET MAUI
+- Package: Microsoft.Maui.Controls
+- Defective version: Microsoft.Maui.Controls 10.0.120
+- Platforms: Windows (MAUI)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-01
+- Code: `win/win32/xpl/GnollHackM/Platforms/Windows/App.xaml` (`ScrollViewer` style)
+- Remove when: `ScrollViewHandler` no longer leaves its `ScrollViewer` focused after the load-time focus pass, in a Microsoft.Maui.Controls release GnollHack uses, and Verify removal passes.
+
+**Symptom.** On Windows, a black rectangle appears around a page's scroll area, such as the Game
+Menu's buttons, when the page opens. It was seen while playing with a controller, and went away
+after a few openings or switching apps.
+
+**Cause.** `ScrollViewHandler` (dotnet/maui#37428) makes the `ScrollViewer` a tab stop while it
+loads, so that WinUI's load-time focus does not land on an entry, and then restores the value. The
+`ScrollViewer` is left with focus. WinUI turns programmatic focus into keyboard focus, and draws
+the rectangle, when its last input device was a keyboard or a gamepad; after the mouse it draws
+none. XInput is not an input device to WinUI, so controller play leaves that state unchanged. This
+is read in MAUI's and WinUI's source and fits the report; which earlier input set the state was not
+traced.
+
+**Workaround.** An implicit style in the WinUI `App.xaml` sets `UseSystemFocusVisuals` to false on
+every `ScrollViewer`, as it already does on `Button`. Scroll areas are not otherwise focus targets,
+so nothing else loses a focus rectangle.
+
+**Verify removal.** Remove the `ScrollViewer` style from `App.xaml`. Then:
+- Build for Windows and run it. Press a key on the keyboard without moving the mouse afterward.
+- Open the Game Menu with a key or a controller button.
+- No rectangle may appear around its buttons.
+
+Checks:
+- 2026-11-01 | Microsoft.Maui.Controls 10.0.120 | unverified | Seen by the user on the Game Menu. The style has not yet been tested. One issue search found nothing.

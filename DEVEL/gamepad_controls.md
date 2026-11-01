@@ -44,6 +44,7 @@ The other pages work the same way, with these additions:
   switch, steps a picker to its next value (wrapping), or edits a text field. Left/Right step a
   picker or a volume slider (5 %, held to repeat), or move between two buttons in one row. L1/R1
   jump to the previous/next section. X shows the row's explanation, as tapping its label does.
+  A subtitle under the page's title says so, naming the button for the pad in use.
   B saves and closes, as Escape does; if a field is invalid, the focus goes to its row.
 - **Library, Oracle, Music, Snapshots, Achievements, Save Transfer:** the focus moves over the
   rows and the buttons below them; A opens a row.

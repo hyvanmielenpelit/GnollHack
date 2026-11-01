@@ -9,6 +9,10 @@
             <Style TargetType="Button">
                 <Setter Property="UseSystemFocusVisuals" Value="False"/>
             </Style>
+            <!-- WORKAROUND(WA-MAUI-0031): ScrollView's load-time focus shows a focus rectangle around it -->
+            <Style TargetType="ScrollViewer">
+                <Setter Property="UseSystemFocusVisuals" Value="False"/>
+            </Style>
         </ResourceDictionary>
     </maui:MauiWinUIApplication.Resources>
 </maui:MauiWinUIApplication>
