@@ -2849,6 +2849,10 @@ namespace GnollHackX
                     EventTitleLabel.TextColor = GHColors.TitleGoldColor;
                     EventOkButton.TextColor = GHColors.Yellow;
                     break;
+                case 2:
+                    EventTitleLabel.TextColor = GHColors.TitleGoldColor;
+                    EventOkButton.TextColor = GHColors.White;
+                    break;
                 default:
                     EventTitleLabel.TextColor = GHColors.White;
                     EventOkButton.TextColor = GHColors.White;
