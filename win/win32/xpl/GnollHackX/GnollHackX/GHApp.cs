@@ -3942,8 +3942,7 @@ namespace GnollHackX
             }
         }
 
-        /* Earlier builds stored the quick-action slot a trigger ran; that slot's command becomes the trigger's own.
-           The old default of slot 1 was the trigger's default. */
+        /* Earlier builds stored the quick-action slot a trigger ran; that slot's command becomes the trigger's own */
         private static void MigrateGamepadTriggerPreference(GHGamepadButton trigger)
         {
             string oldKey = "GamepadTrigger" + trigger.ToString() + "Assigned";
@@ -3953,10 +3952,17 @@ namespace GnollHackX
             string key = GamepadTriggerPreferenceKey(trigger);
             if (IsGamepadTriggerSlot(trigger, slot) && !Preferences.ContainsKey(key))
             {
-                int fallback = slot == 0 ? DefaultGamepadTriggerCommand(trigger) : DefaultGamepadTriggerSlotCommand(trigger, slot);
-                Preferences.Set(key, Preferences.Get(GamepadTriggerSlotPreferenceKey(trigger, slot), fallback));
+                Preferences.Set(key, Preferences.Get(GamepadTriggerSlotPreferenceKey(trigger, slot), OldDefaultGamepadTriggerSlotCommand(trigger, slot)));
             }
             Preferences.Remove(oldKey);
+        }
+
+        /* The slot's default in those builds; R2 differed only in slot 1, which was Fire */
+        private static int OldDefaultGamepadTriggerSlotCommand(GHGamepadButton trigger, int slot)
+        {
+            if (trigger == GHGamepadButton.LT)
+                return _oldDefaultGamepadLTSlots[slot];
+            return slot == 0 ? DefaultGamepadTriggerCommand(trigger) : DefaultGamepadTriggerSlotCommand(trigger, slot);
         }
 
         public static string GamepadGripPreferenceKey(GHGamepadButton grip)
@@ -3964,15 +3970,15 @@ namespace GnollHackX
             return "GamepadGrip" + grip.ToString() + "Command";
         }
 
-        /* L4 Apply, L5 Cast, R4 Quick Cast, R5 Quick Zap, as SelectableShortcutButton.GHCommand values */
+        /* L4 Pick-axe, L5 Polearm, R4 Quick Cast, R5 Quick Zap, as SelectableShortcutButton.GHCommand values */
         public static int DefaultGamepadGripCommand(GHGamepadButton grip)
         {
             switch (grip)
             {
                 case GHGamepadButton.L4:
-                    return 'a';
+                    return GHUtils.Meta('X');
                 case GHGamepadButton.L5:
-                    return 'Z';
+                    return GHUtils.Meta('P');
                 case GHGamepadButton.R4:
                     return GHUtils.Meta(26);
                 case GHGamepadButton.R5:
@@ -4029,10 +4035,12 @@ namespace GnollHackX
         public const int GamepadTriggerSlotCount = 8;
         public static readonly GHGamepadButton[] GamepadTriggers = { GHGamepadButton.LT, GHGamepadButton.RT };
 
-        /* L2's Quick radial: Eat, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm */
-        private static readonly int[] _defaultGamepadLTSlots = { 'e', '%', GHUtils.Meta('p'), GHUtils.Meta('y'), 'E', GHUtils.Ctrl('x'), GHUtils.Meta('X'), GHUtils.Meta('P') };
-        /* R2's Quick radial: Drink, Swap, Chat, Throw, Cast, Quick Cast, Zap, Quick Zap */
-        private static readonly int[] _defaultGamepadRTSlots = { 'q', 'x', 'C', 't', 'Z', GHUtils.Meta(26), 'z', GHUtils.Meta(27) };
+        /* L2's Quick radial: Apply, Drop Items, Drop Types, Pray, Yell, Engrave, Pick-axe, Polearm */
+        private static readonly int[] _defaultGamepadLTSlots = { 'a', '%', 'D', GHUtils.Meta('p'), GHUtils.Meta('y'), 'E', GHUtils.Meta('X'), GHUtils.Meta('P') };
+        /* L2's slots in the builds where a trigger ran one of them: Kick, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm */
+        private static readonly int[] _oldDefaultGamepadLTSlots = { GHUtils.Ctrl('d'), '%', GHUtils.Meta('p'), GHUtils.Meta('y'), 'E', GHUtils.Ctrl('x'), GHUtils.Meta('X'), GHUtils.Meta('P') };
+        /* R2's Quick radial: Two-Weapon, Swap, Chat, Throw, Cast, Quick Cast, Zap, Quick Zap */
+        private static readonly int[] _defaultGamepadRTSlots = { GHUtils.Ctrl('x'), 'x', 'C', 't', 'Z', GHUtils.Meta(26), 'z', GHUtils.Meta(27) };
         private static readonly int[] _gamepadTriggerSlotCommands = new int[2 * GamepadTriggerSlotCount];
         private static readonly int[] _gamepadTriggerCommands = new int[2];
 

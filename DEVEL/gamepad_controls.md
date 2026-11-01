@@ -109,7 +109,7 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | Right stick | Pan the map | | | |
 | L3 (also the left trackpad's click) | **Run**: the next direction, on the left stick or the D-pad, runs as the keyboard's `G` prefix does | -- | Center the map on the hero | -- |
 | R3 | Open the Toggles radial | | | |
-| L4, L5, R4, R5 (back grips) | Configurable; defaults Apply, Cast, Cast Quick, Zap Quick | | | |
+| L4, L5, R4, R5 (back grips) | Configurable; defaults Pick-axe, Polearm, Cast Quick, Zap Quick | | | |
 The grips are set in **Settings, Controller**. Their pickers appear only when the controller
 has grips, and they work only with the GnollHack Steam Input layout or another layout that binds
 them to the same keys (see below); with any other layout they do nothing or act as whatever button
@@ -127,8 +127,8 @@ with Hide Command Bar off.
 
 | Radial | Defaults, slots 1-8 |
 |---|---|
-| Right Quick | Drink, Swap, Chat, Throw, Cast, Cast Quick, Zap, Zap Quick |
-| Left Quick | Eat, Drop Items, Pray, Yell, Engrave, 2-Weapon, Pick-axe, Polearm |
+| Right Quick | 2-Weapon, Swap, Chat, Throw, Cast, Cast Quick, Zap, Zap Quick |
+| Left Quick | Apply, Drop Items, Drop Types, Pray, Yell, Engrave, Pick-axe, Polearm |
 
 **Direction radial.** When a trigger's command asks for a direction while that trigger is
 still held, within a second of the press and with no menu or dialog in between, the violet
