@@ -31,10 +31,12 @@ On the main menu the focus also reaches the Classic, Casual and Wizard Mode swit
 Exit and Play Game, and a popup's "do not show again" check box: their row is tinted while
 focused, and A flips them as a tap does. Right on a mode switch or Play Game goes to Exit, and
 Left on the buttons from Reset to Exit goes to Classic Mode. The main menu's shortcuts are X Play Game, Y About, Menu Settings and View Vault, each when its
-button is available. On every page, L2/R2 go to the first and last entry of the scrolling list
-(or of the page when it has none).
+button is available. On most pages, L2/R2 go to the first and last entry of the scrolling list
+(or of the page when it has none). The game menu has no L2/R2, and on Top Scores and Replays the
+list is one stop, so they go to the list and to the last button.
 
-On every page with a scrolling list, the right stick scrolls it, faster the further it is pushed.
+On pages with a scrolling list, the right stick scrolls it, faster the further it is pushed; Top
+Scores and Replays, whose list moves by selection instead, and the game menu have no right stick.
 When the list has been scrolled so that the focus is out of view (by the right stick, touch or the
 mouse), Up/Down and the press that brings the focus back put it on the topmost visible entry
 instead of scrolling back to it; with no focus, Up/Down do the same.
@@ -51,7 +53,8 @@ The other pages work the same way, with these additions:
 - **Top Scores and Replays:** Up/Down move the list's selection, and A opens the dumplog or plays
   the replay; past the list's ends the focus moves on to the buttons. Replays in multiple
   selection mode leave the list to touch.
-- **Text viewer:** the sticks and D-pad Up/Down scroll the text, L1/R1 page.
+- **Text viewer:** the sticks and D-pad Up/Down scroll the text, L1/R1 page, and L2/R2 go to its
+  start and end. The HTML view has only its buttons.
 - **Wiki and other web pages:** the controller moves between the page's links; see
   [In-App Browser (Wiki)](#in-app-browser-wiki).
 - **Name page:** the focus starts on the name field.
@@ -62,7 +65,9 @@ it and confirms, and B ends the edit. A getline prompt (wish, engrave, name) ope
 as soon as it appears, and Y reopens it. In Desktop Mode, or with `GNOLLHACK_STEAM_KEYBOARD=off`,
 A only focuses the field; Steam + X opens the keyboard by hand. `GNOLLHACK_STEAM_KEYBOARD=on`
 allows it on any Linux session, and `GNOLLHACK_STEAM_KEYBOARD_LAUNCH` (`xdg-open`, the default,
-`steam` or `launcher`) picks how the `steam://open/keyboard` link is opened.
+`steam` or `launcher`) picks how the `steam://open/keyboard` link is opened. Windows has no
+on-screen keyboard here. Where none is available, text is typed on a physical keyboard: A only
+focuses a page's field, and in a getline prompt A is OK and submits what has been typed.
 
 Pages that keep the keyboard adapter (the tombstone, and the developer-only editor and performance
 suite) receive A as Enter, B as Escape, directions as arrow keys and L1/R1 as Page Up and Page
@@ -97,7 +102,7 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | Right stick | Pan the map | | | |
 | L3 | Center the map on the hero | | | |
 | R3 | Open the Toggles radial | | | |
-| L4, L5, R4, R5 (back grips) | Configurable; defaults Apply, Cast, Quick Cast, Quick Zap | | | |
+| L4, L5, R4, R5 (back grips) | Configurable; defaults Apply, Cast, Cast Quick, Zap Quick | | | |
 The grips are set in **Settings, Controller**. Their pickers appear only when the controller
 has grips, and they work only with the GnollHack Steam Input layout or another layout that binds
 them to the same keys (see below); with any other layout they do nothing or act as whatever button
@@ -110,11 +115,12 @@ controller backend, or with Hide Command Bar off.
 
 | Trigger | Defaults, slots 1-8 | Assigned by default |
 |---|---|---|
-| R2 | Fire, Swap, Chat, Throw, Cast, Quick Cast, Zap, Quick Zap | Fire |
-| L2 | Kick, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm | Kick |
+| R2 | Fire, Swap, Chat, Throw, Cast, Cast Quick, Zap, Zap Quick | Fire |
+| L2 | Kick, Drop Items, Pray, Yell, Engrave, 2-Weapon, Pick-axe, Polearm | Kick |
 
 The modifier on the trigger's own side (R1 + R2, L1 + L2) opens the teal **Set** radial: choosing
-a slot makes it the trigger's action when pressed alone (the current one is marked NOW). The
+a slot makes it the trigger's action when pressed alone (the current one is marked NOW), as the
+section's R2 Action and L2 Action pickers do. The
 modifier on the other side (L1 + R2, R1 + L2) opens the gold **Right Quick** or **Left Quick**
 radial, which runs the chosen action at once. Pressing the trigger again closes either radial.
 
@@ -129,6 +135,8 @@ spot, L2/R2 to the previous/next monster, and Y puts the cursor on the hero.
 **Choosing a direction** (getdir): a D-pad press picks the direction at once (two directions
 pressed together pick the diagonal); or aim with the left stick and confirm with A. B cancels.
 L1 is up (`<`) and R1 is down (`>`).
+
+In both, L3 opens the Actions radial without its commands pages, and R3 the Toggles radial.
 
 **Hint badges.** The hints on the map, in menus and dialogs, and in the radials draw button
 badges: A, B, X and Y as white circles with a black letter (drawn symbols on PlayStation pads),
@@ -148,7 +156,8 @@ is on by default. With it off, the bar and the menus' OK and Cancel stay while t
 active and work at once, ending controller mode; the hint strip sits right above them and can cover
 the lowest messages, and Settings also shows Bar Commands.
 
-**Replays:** A pauses, L1/R1 change the speed, B quits.
+**Replays:** A pauses, L1/R1 and L2/R2 change the speed, D-pad Right steps forward, Y opens Go to
+Turn, B quits. In Go to Turn, A confirms and B cancels; the number itself takes no controller input.
 
 ### Radials
 
@@ -165,7 +174,8 @@ The radials stay open until an item is chosen or they are closed.
 - **Actions radial** (A with several context commands, or L1 + A for the commands pages):
   the context buttons plus Skills, Polearm and Wield Last/Unwield (eight slots per page, overflowing onto further pages), then the **commands pages**:
   Rest, Search 20 and Extended first, then every other command of the single commands page in
-  alphabetical order, eight per page with no gaps. The hub shows the page number above the page
+  alphabetical order, eight per page with no gaps. Back to Game, the count pad and, outside wizard
+  mode, the wizard commands are left out. The hub shows the page number above the page
   name.
   **X** switches between the context page and the first commands page; L1/R1 page.
 
@@ -190,8 +200,21 @@ menu follow the same rules:
 A y/n prompt starts with the focus on its default answer, or on the leftmost button when it
 has none; Y answers Yes and X answers No when the prompt offers them. In an inventory or
 equipment menu, Menu flips between the item list and the equipment view, like the flip button;
-on the equipment view B closes the menu. Touch, moving the mouse or pressing a keyboard key leaves controller mode until the
+on the equipment view B closes the menu, and no other button does anything. Touch, moving the mouse or pressing a keyboard key leaves controller mode until the
 controller is used again; tapping a menu row moves the focus there.
+
+The press that makes the controller the active input only reveals the focus and the hints on pages,
+in menus and in dialogs. On the map, in radials, getpos, getdir and replays, and through the keyboard
+adapter, it already acts, and the sticks act with no press at all. While a web page's text field is
+being edited, A, B, L1/R1 and L2/R2 act on that press too.
+
+Smaller in-game states:
+
+- **Tips:** A shows the next tip, B skips the rest.
+- **The touch More Commands canvas:** L1/R1 and D-pad Left/Right page, B closes it. No command can
+  be picked there; the Actions radial reaches the same commands.
+- **The number pad, and waits for a key the game has no controller context for:** only B, which
+  cancels.
 
 ### In-App Browser (Wiki)
 
@@ -263,8 +286,9 @@ a controller. After touch or the mouse, outside Game Mode, the system's dialog o
 `system` decides for testing. A message popup draws above the dialog and takes input first, and a second dialog opens when
 the first closes. `GNOLLHACK_FILE_DIALOG_TEST=1` makes both happen once, 3 seconds into a save dialog.
 
-On Windows the system's dialog opens after touch or the mouse, and the in-app one after a controller. On WinUI 3 the
-Overseer's `+` is intercepted through the DevTools protocol (`WA-WINUI-0009`). The Avalonia Windows build does not intercept
+On Windows the system's dialog opens after touch or the mouse, and the in-app one after a controller. On WinUI 3 a page's
+file input, such as the Overseer's `+`, is intercepted through the DevTools protocol while the controller is active
+(`WA-WINUI-0009`). The Avalonia Windows build does not intercept
 it, so there A on `+` opens Windows' dialog, which a controller cannot drive.
 
 | Control | Action |
@@ -277,11 +301,12 @@ it, so there A on `+` opens Windows' dialog, which a controller cannot drive.
 | L2 / R2 | First / last row |
 | Menu | Cancel |
 
-**Attaching and importing** read from named places only: Pictures, GnollHack Screenshots (Steam's folder for the game),
-Documents, Downloads and SD cards; importing also lists GnollHack Exports first. Hidden files, and anything a link would
+**Attaching and importing** read from named places only: Pictures, Documents and Downloads, and on Linux also GnollHack
+Screenshots (Steam's folder for the game, on a Steam launch) and removable media such as SD cards; importing also lists
+GnollHack Exports first. Hidden files, and anything a link would
 lead outside the place, are not listed. Attaching lists only the types the page accepts. The dialog cannot change a file.
 
-**Saving** goes to a `GnollHack` folder under Documents, Downloads or an SD card. It never overwrites: a second copy
+**Saving** goes to a `GnollHack` folder under Documents or Downloads, or on Linux on removable media. It never overwrites: a second copy
 becomes `name (2).ext`. The copy appears only when complete, and the dialog says where it went. Anything else is done in
 Desktop Mode, where the system's dialog also refuses GnollHack's own folders and the file being shared.
 
@@ -433,8 +458,9 @@ in the session.
 
 ## Diagnostics
 
-The **device log** is always on. It goes to standard error and the app log at startup and on
-every hot-plug, with lines starting `GAMEPAD`:
+The **device log** is always on in the Avalonia Linux build. It goes to standard error, and with
+debug logging on also to the app log, at startup and on every hot-plug, with lines starting
+`GAMEPAD`:
 
 | Line | Meaning |
 |------|---------|
@@ -447,6 +473,8 @@ every hot-plug, with lines starting `GAMEPAD`:
 
 The hints are written once, 10 s after the backend starts. A frame that throws is
 logged at most once every 10 s, and 30 failed frames in a row stop the gamepad for the session.
+
+The Windows builds log no devices, only failures.
 
 On the Deck's development shortcut, standard error goes to
 `~/gnollhack-dev/logs/latest.log`.
@@ -502,6 +530,9 @@ For the grips, set `GNOLLHACK_GAMEPAD_KEYS=on` and press F2-F5 on the keyboard.
 A controller works when plugged in, before or during the game, and the game plays with the mouse
 as usual without one. Under a Steam launch the virtual pad is read if Steam Input wraps the
 controller, and the controller itself if not. If nothing happens, look for `GAMEPAD dev` lines in
-the log: `open=EACCES` means this user may not read the device, which udev normally grants to the
-active session. WSL has no gamepad drivers and is not a test platform. The evdev decoding is covered by unit tests whose fixtures are the Deck's real
-capability bitmaps and raw dumps.
+standard error: `open=EACCES` means this user may not read the device, which udev normally grants to the
+active session. WSL has no gamepad drivers and is not a test platform. The evdev decoding is covered by unit tests whose fixtures are the capability
+bitmaps of Steam's virtual pad, measured on a Deck, and raw dumps.
+
+X and Y are swapped for Sony's vendor ID only. A Nintendo pad read directly has not been tested, and
+its X and Y may come out reversed: its top button should arrive as `BTN_NORTH`, which is `BTN_X`.
