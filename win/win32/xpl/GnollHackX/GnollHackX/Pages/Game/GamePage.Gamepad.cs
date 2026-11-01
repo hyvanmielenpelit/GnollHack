@@ -1988,14 +1988,14 @@ namespace GnollHackX.Pages.Game
             GamepadHintGrid.IsVisible = visible;
         }
 
-        /* While the gamepad is the active input outside replays, the bottom command bar's buttons and the menus' OK and
-           Cancel buttons are transparent and ignore input but keep their space, so the bar's height, and the messages
+        /* While the gamepad is the active input outside replays and Hide Command Bar is on, the bottom command bar's
+           buttons and the menus' OK and Cancel buttons are transparent and ignore input but keep their space, so the bar's height, and the messages
            and context buttons the map paint places above it, do not change between touch and controller; the hint
            strip draws its own backing, so the bar's dimmed background becomes transparent. A touch there lands on the
            bar's background, which swallows it, and ends controller mode, which brings everything back. */
         private void UpdateGamepadCommandBar()
         {
-            bool hide = GHGamepadService.IsActive && !PlayingReplay;
+            bool hide = GHGamepadService.IsActive && !PlayingReplay && GHApp.GamepadHideCommandBar;
             if (hide != _gamepadCommandBarHidden)
             {
                 _gamepadCommandBarHidden = hide;
@@ -2017,9 +2017,10 @@ namespace GnollHackX.Pages.Game
 
         /* With the command bar hidden, the strip's row area is centered vertically in the bar's area, spilling
            evenly above and below it when taller, but never below the page, and the paint centers the row on the
-           bar; otherwise the strip keeps its XAML margin and the row sits at its bottom. The canvas height is
-           fixed, so neither depends on the hints. The margin is set only when it changes by a whole DIP, and it
-           does not affect the bar's bounds. */
+           bar. With the bar shown while the gamepad is the active input outside replays, the strip sits on the
+           bar's top edge, over the map's lowest messages, and the row at its bottom. Otherwise the strip keeps its
+           XAML margin and the row sits at its bottom. The canvas height is fixed, so none depends on the hints.
+           The margin is set only when it changes by a whole DIP, and it does not affect the bar's bounds. */
         private void UpdateGamepadHintStripPosition()
         {
             if (!_gamepadHintDefaultMarginSaved)
@@ -2030,13 +2031,21 @@ namespace GnollHackX.Pages.Game
             }
             Thickness margin = _gamepadHintDefaultMargin;
             float rowCenter = 0f;
+            bool aboveBar = !_gamepadCommandBarHidden && GHGamepadService.IsActive && !PlayingReplay;
             double barBottomGap, barHeight;
-            if (_gamepadCommandBarHidden && TryGetGamepadCommandBarArea(out barBottomGap, out barHeight))
+            if ((_gamepadCommandBarHidden || aboveBar) && TryGetGamepadCommandBarArea(out barBottomGap, out barHeight))
             {
-                double barCenter = barBottomGap + barHeight * 0.5;
-                double areaHeight = GamepadHintCanvasHeightDips - GamepadHintExtraHeightDips;
-                margin.Bottom = Math.Max(0.0, Math.Round(barCenter - areaHeight * 0.5));
-                rowCenter = (float)(barCenter - margin.Bottom);
+                if (aboveBar)
+                {
+                    margin.Bottom = Math.Max(0.0, Math.Round(barBottomGap + barHeight));
+                }
+                else
+                {
+                    double barCenter = barBottomGap + barHeight * 0.5;
+                    double areaHeight = GamepadHintCanvasHeightDips - GamepadHintExtraHeightDips;
+                    margin.Bottom = Math.Max(0.0, Math.Round(barCenter - areaHeight * 0.5));
+                    rowCenter = (float)(barCenter - margin.Bottom);
+                }
             }
             Thickness current = GamepadHintGrid.Margin;
             if (Math.Abs(current.Bottom - margin.Bottom) >= 1.0 || Math.Abs(current.Top - margin.Top) >= 1.0

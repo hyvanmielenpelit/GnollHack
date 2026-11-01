@@ -346,6 +346,43 @@ SurfaceView layer ignores view opacity by design.
 Checks:
 - 2026-10-23 | Microsoft.WindowsAppSDK.WinUI 1.8.260528001 | unverified | Not re-tested; one issue search found nothing.
 
+## WA-WINUI-0009: WebView2 has no public API to replace its file dialog
+
+- Status: active
+- Added: 2026-11-01
+- GnollHack version: 3.35 (435)
+- Component: WinUI 3
+- Package: Microsoft.Web.WebView2
+- Defective version: Microsoft.Web.WebView2 1.0.4258.31
+- Platforms: Windows (MAUI)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-01
+- Code: `win/win32/xpl/GnollHackM/Platforms/Windows/GHWebView2FileChooser.cs` (`GHWebView2FileChooser`)
+- Remove when: WebView2 offers a public event to handle a page's file chooser, GnollHack uses that release, and Verify removal passes.
+
+**Symptom.** A page's file input opens Windows' own file dialog, which a controller cannot
+drive, so a controller player cannot attach a file in the Overseer.
+
+**Cause.** `CoreWebView2` has no event for a page's file chooser. The DevTools protocol is
+the only route to it.
+
+**Workaround.** Before each A press's activation, `GHWebView2FileChooser` turns on
+`Page.setInterceptFileChooserDialog` and grants a gesture with `Runtime.evaluate` and
+`userGesture`. On `Page.fileChooserOpened` it opens `FileDialogView`, and answers with
+`DOM.setFileInputFiles`. Interception goes off when the controller stops being the active
+input, so a mouse click gets Windows' dialog.
+
+**Verify removal.** On a WebView2 release that offers such an event:
+- Handle the chooser through that event, and remove the DevTools protocol calls.
+- Build for Windows, open the Overseer with an Xbox controller, and press A on its `+`.
+- `FileDialogView` must open, and a chosen file must appear as an attachment. A mouse click
+  on `+` must still open Windows' dialog.
+
+Checks:
+- 2026-11-01 | Microsoft.Web.WebView2 1.0.4258.31 | still-needed | The protocol route worked in a spike against WebView2 runtime 156 on 2026-10-30; the app's own use is not yet tested. One issue search found nothing.
+
 <!-- known-issues -->
 
 ## KI-WINUI-0001: TrackMemory forces blocking gen2 collections on the UI thread

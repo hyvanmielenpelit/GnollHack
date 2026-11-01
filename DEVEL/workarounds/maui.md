@@ -1010,14 +1010,14 @@ Checks:
 - GnollHack version: 3.28 (428)
 - Component: .NET MAUI
 - Package: Microsoft.Maui.Controls
-- Defective version: Microsoft.Maui.Controls 11.0.0-rc.2.26505.5
-- Platforms: Linux, Windows (Avalonia)
+- Defective version: Microsoft.Maui.Controls 11.0.0-rc.2.26505.5; Microsoft.Maui.Controls 10.0.120
+- Platforms: Linux, Windows (Avalonia), Windows (MAUI)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaOverseerHost.cs` (`NativeWebViewHost.InvokeScriptAsync`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/OverseerPage.xaml.cs` (`OverseerPage.SendToolResponse`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/OverseerPage.xaml.cs` (`OverseerPage.SendPickedFilesToJs`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaWebScriptHost.cs` (`GHAvaloniaWebScriptHost.EvaluateAsync`)
-- Remove when: `WebView.EvaluateJavaScriptAsync` runs scripts without `eval` in a Microsoft.Maui.Controls release GnollHack's Avalonia flavor uses, and Verify removal passes.
+- Last checked: 2026-11-01
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaOverseerHost.cs` (`NativeWebViewHost.InvokeScriptAsync`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/OverseerPage.xaml.cs` (`OverseerPage.SendToolResponse`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/OverseerPage.xaml.cs` (`OverseerPage.SendPickedFilesToJs`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaWebScriptHost.cs` (`GHAvaloniaWebScriptHost.EvaluateAsync`); `win/win32/xpl/GnollHackM/Platforms/Windows/GHWinUIWebScriptHost.cs` (`GHWinUIWebScriptHost.EvaluateAsync`)
+- Remove when: `WebView.EvaluateJavaScriptAsync` runs scripts without `eval` in Microsoft.Maui.Controls releases that GnollHack's Avalonia and WinUI 3 builds use, and Verify removal passes.
 
 **Symptom.** On the Avalonia flavor, tool responses and picked files sent to the Overseer
 page never arrive: WebKitGTK refuses the script under the page's Content Security Policy,
@@ -1030,7 +1030,9 @@ wrapper is unchanged on MAUI's main branch.
 
 **Workaround.** Under Avalonia, `OverseerPage` sends its scripts through
 `NativeWebViewHost.InvokeScriptAsync`, which calls Avalonia's `NativeWebView.InvokeScript`
-directly, without MAUI's wrapper. The MAUI flavors still use `EvaluateJavaScriptAsync`.
+directly, without MAUI's wrapper. The MAUI flavors still use `EvaluateJavaScriptAsync` for
+these. On WinUI 3, the in-app browser's controller script host avoids the wrapper too:
+`GHWinUIWebScriptHost` calls `CoreWebView2.ExecuteScriptAsync` directly.
 
 **Verify removal.** In `SendToolResponse` and `SendPickedFilesToJs`, use
 `DisplayWebView.EvaluateJavaScriptAsync` under Avalonia too. Then:
@@ -1041,9 +1043,12 @@ directly, without MAUI's wrapper. The MAUI flavors still use `EvaluateJavaScript
   too, and confirm the in-app browser's controller focus works on Linux with CEF and with
   `GNOLLHACK_WEBVIEW=native`, including on github.com, which has a strict Content Security
   Policy.
+- In `GHWinUIWebScriptHost.EvaluateAsync`, do the same, and confirm the focus ring on the
+  WinUI 3 build, on github.com too.
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 11.0.0-rc.2.26505.5 | still-needed | No upstream issue found; WebView.cs on main still wraps scripts in eval.
+- 2026-11-01 | Microsoft.Maui.Controls 10.0.120 | unverified | Extended to WinUI 3's controller script host on the strength of the same wrapper in MAUI's source; not run without the workaround.
 
 ## WA-MAUI-0028: FormattedText lines get uneven heights when spans mix fonts
 

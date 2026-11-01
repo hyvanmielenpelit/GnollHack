@@ -15,7 +15,7 @@ End-to-end build process for GnollHack, from compiling the C core engine to pack
 - **After any build, verify the expected artifacts exist.** MSBuild reports success even when a project was silently skipped. See [Verifying the Build](#verifying-the-build).
 - **Upgrading a dependency re-checks its workarounds and known issues.** Bumping a package in `GnollHackM.csproj`, an SDK in a `global.json`, a workload, FMOD, or sentry-native re-checks the `DEVEL/workarounds/` entries, workarounds and known issues alike, whose `Package` names it. For NuGet packages and sentry-native the lint's version-drift warning lists the upstream-fixed entries that matter; for the rest, search the `Package` fields. An upgrade that contains a known issue's fix is the moment to start its **Verify fix**. See `client_workarounds`.
 - **Native Sentry binaries.** `gnhsentry.dll` and `libsentry.so` are committed builds checked against `GnhSentryVersion` and the vendored `sentry.h` by `GnhSentryNative.targets`; a Sentry upgrade follows the runbook in `win/win32/xpl/gnhsentrywin/README.md`.
-- **Gamepad work needs the Linux package on a Steam Deck.** A change to what a controller does or shows is not verified by a Windows or Android build. See `client_gamepad_testing`.
+- **Gamepad work needs a device.** Shared controller code needs the Linux package on a Steam Deck; a change specific to another platform needs that platform's build, and a WinUI 3 build verifies WinUI-specific controller changes only. Android and iOS builds verify nothing about controllers. See `client_gamepad_testing`.
 
 ## Quick Path (clean clone → running Windows app)
 

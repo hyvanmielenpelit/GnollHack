@@ -1,6 +1,5 @@
 #if GNH_AVALONIA
 using System;
-using System.IO;
 using System.Threading.Tasks;
 using GnollHackX;
 
@@ -12,11 +11,6 @@ namespace GnollHackM
     internal sealed class GHAvaloniaWebScriptHost : IGHWebScriptHost, IDisposable
     {
         private const int EvaluateTimeoutMilliseconds = 2000;
-        private const string PageScriptResourceName = "GnollHackM.GamepadWeb.js";
-
-        /* The page script, read from the manifest resource on first use; null when it cannot be read */
-        private static string _pageScript;
-        private static bool _pageScriptLoaded;
 
         private readonly Microsoft.Maui.Controls.WebView _webView;
         private Avalonia.Controls.NativeWebView _nativeView;
@@ -67,7 +61,7 @@ namespace GnollHackM
 
         public string PageScript
         {
-            get { return LoadPageScript(); }
+            get { return GHWebPageScript.Load(); }
         }
 
         private Avalonia.Controls.Control PlatformControl
@@ -225,36 +219,6 @@ namespace GnollHackM
                 return;
             _failureLogged = true;
             GHApp.MaybeWriteGHLog("GHAvaloniaWebScriptHost: " + message);
-        }
-
-        private static string LoadPageScript()
-        {
-            if (_pageScriptLoaded)
-                return _pageScript;
-            _pageScriptLoaded = true;
-            try
-            {
-                System.Reflection.Assembly assembly = typeof(GHAvaloniaWebScriptHost).Assembly;
-                using (Stream stream = assembly.GetManifestResourceStream(PageScriptResourceName))
-                {
-                    if (stream == null)
-                    {
-                        GHApp.MaybeWriteGHLog("GHAvaloniaWebScriptHost: page script resource " + PageScriptResourceName
-                            + " not found");
-                        return null;
-                    }
-                    using (StreamReader reader = new StreamReader(stream))
-                    {
-                        _pageScript = reader.ReadToEnd();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                GHApp.MaybeWriteGHLog("GHAvaloniaWebScriptHost: cannot read the page script: " + ex.Message);
-                _pageScript = null;
-            }
-            return _pageScript;
         }
     }
 }

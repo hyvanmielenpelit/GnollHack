@@ -1227,6 +1227,9 @@ namespace GnollHackX
         private static bool _paintStallWarningEmitted = false;
         private static void CompositionTarget_Rendering(object sender, object e)
         {
+#if WINDOWS
+            GHWinUIGamepad.OnFrame(Stopwatch.GetTimestamp());
+#endif
             long counter = Interlocked.Increment(ref _renderingCounter);
             if (counter == long.MaxValue)
             {
@@ -3894,6 +3897,7 @@ namespace GnollHackX
         private static int _defaultVIKeys = 0;
         private static int _showKeyboardShortcuts = 0;
         private static int _gamepadEnabled = 1;
+        private static int _gamepadHideCommandBar = 1;
         private static int _gamepadGripL4Command = 0;
         private static int _gamepadGripL5Command = 0;
         private static int _gamepadGripR4Command = 0;
@@ -3914,15 +3918,18 @@ namespace GnollHackX
         public static bool ShowKeyboardShortcuts { get { return Interlocked.CompareExchange(ref _showKeyboardShortcuts, 0, 0) != 0; } set { Interlocked.Exchange(ref _showKeyboardShortcuts, value ? 1 : 0); } }
         /* The Use Controller setting; also applied to GHGamepadService */
         public static bool GamepadEnabled { get { return Interlocked.CompareExchange(ref _gamepadEnabled, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadEnabled, value ? 1 : 0); GHGamepadService.SetEnabled(value); } }
-        /* A gamepad backend started; independent of the setting */
+        /* The Hide Command Bar setting */
+        public static bool GamepadHideCommandBar { get { return Interlocked.CompareExchange(ref _gamepadHideCommandBar, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadHideCommandBar, value ? 1 : 0); } }
+        /* A controller can be used: see GHGamepadService.IsAvailable; independent of the setting */
         public static bool IsGamepadAvailable { get { return GHGamepadService.IsAvailable; } }
 
         public static readonly GHGamepadButton[] GamepadGrips = { GHGamepadButton.L4, GHGamepadButton.L5, GHGamepadButton.R4, GHGamepadButton.R5 };
 
-        /* Use Controller, the grips and the trigger quick actions from the preferences, each missing one at its default */
+        /* Use Controller, Hide Command Bar, the grips and the trigger quick actions from the preferences, each missing one at its default */
         public static void LoadGamepadSettings()
         {
             GamepadEnabled = Preferences.Get("GamepadEnabled", true);
+            GamepadHideCommandBar = Preferences.Get("GamepadHideCommandBar", true);
             foreach (GHGamepadButton grip in GamepadGrips)
                 SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));
             foreach (GHGamepadButton trigger in GamepadTriggers)

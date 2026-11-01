@@ -161,7 +161,7 @@ namespace GnollHackM
             if (OperatingSystem.IsWindows())
             {
                 string error;
-                if (!GHGamepadService.RegisterBackend(new GHXInputGamepadBackend(), out error))
+                if (!GHGamepadService.RegisterBackend(new GHXInputGamepadBackend(), true, out error))
                     WriteLog("GAMEPAD XInput backend not started: " + error);
             }
 #endif

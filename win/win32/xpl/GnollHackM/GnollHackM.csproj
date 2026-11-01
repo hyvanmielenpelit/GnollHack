@@ -1164,6 +1164,10 @@
     <EmbeddedResource Include="Platforms\Avalonia\Web\gamepad_web.js" LogicalName="GnollHackM.GamepadWeb.js" />
   </ItemGroup>
 
+  <ItemGroup Condition="$(TargetFramework.Contains('-windows')) And '$(GnhAvalonia)' != 'true'">
+    <EmbeddedResource Include="Platforms\Avalonia\Web\gamepad_web.js" LogicalName="GnollHackM.GamepadWeb.js" />
+  </ItemGroup>
+
   <ItemGroup Condition="'$(IsMonoRuntime)' == 'true'">
     <AndroidEnvironment Include="Platforms\Android\EnvironmentMono.txt" />
   </ItemGroup>

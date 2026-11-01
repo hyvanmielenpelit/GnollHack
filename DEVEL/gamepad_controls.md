@@ -1,8 +1,8 @@
 # Gamepad Controls
 
 GnollHack's native gamepad controls are built for the **Steam Deck**: the Avalonia Linux
-build, launched through Steam. They also work with an **Xbox controller** in the Avalonia
-Windows build, for development. The MAUI builds (Android, iOS, WinUI) have no gamepad
+build, launched through Steam. They also work with an **Xbox controller** in the WinUI 3
+build, and in the Avalonia Windows build, for development. Android and iOS have no gamepad
 support yet.
 
 Contents:
@@ -103,9 +103,9 @@ them to the same keys (see below); with any other layout they do nothing or act 
 they are bound to, which the game cannot detect.
 
 **Trigger quick actions.** L2 and R2 each have eight quick actions, set in **Settings, Trigger
-Quick Actions** (any command the bar buttons can hold, or None). The section sits just before
-Bar Commands and takes its place while Use Controller is on; with it off, or without a
-controller backend, the page shows Bar Commands instead.
+Quick Actions** (any command the bar buttons can hold, or None). The section sits between Controller
+and Bar Commands, after Behavior. The page shows Bar Commands with Use Controller off, without a
+controller backend, or with Hide Command Bar off.
 
 | Trigger | Defaults, slots 1-8 | Assigned by default |
 |---|---|---|
@@ -142,7 +142,10 @@ bar's buttons and its dimmed background are hidden but keep their space, so the 
 and the context buttons stay where they are, and the hint strip (with its own backing) is
 centered vertically in the bar's area. Menus likewise hide their OK and Cancel buttons, keeping
 the space; the hints show X OK and B Cancel. Touch, the mouse or a keyboard key brings the
-buttons back; the first touch on the bar only does that.
+buttons back; the first touch on the bar only does that. **Settings, Controller, Hide Command Bar**
+is on by default. With it off, the bar and the menus' OK and Cancel stay while the controller is
+active and work at once, ending controller mode; the hint strip sits right above them and can cover
+the lowest messages, and Settings also shows Bar Commands.
 
 **Replays:** A pauses, L1/R1 change the speed, B quits.
 
@@ -194,8 +197,8 @@ controller is used again; tapping a menu row moves the focus there.
 On desktop, every web link GnollHack opens (the wiki, About's links, the GnollHack Account page,
 Top Scores, popup links) opens in its in-app browser. The controller moves a gold focus ring
 between the links and controls of the page itself; the ring is drawn by a script the browser
-injects into each page. These controls exist only in the Avalonia flavor, and the Steam Deck's
-right trackpad stays a mouse.
+injects into each page. These controls exist in the Avalonia and WinUI 3 builds, and the Steam
+Deck's right trackpad stays a mouse.
 
 | Control | Action |
 |---------|--------|
@@ -258,6 +261,10 @@ FileChooser portal and GTK dialogs take no controller input (`WA-STEAM-0002`), a
 a controller. After touch or the mouse, outside Game Mode, the system's dialog opens. `GNOLLHACK_FILE_DIALOG=custom` or
 `system` decides for testing. A message popup draws above the dialog and takes input first, and a second dialog opens when
 the first closes. `GNOLLHACK_FILE_DIALOG_TEST=1` makes both happen once, 3 seconds into a save dialog.
+
+On Windows the system's dialog opens after touch or the mouse, and the in-app one after a controller. On WinUI 3 the
+Overseer's `+` is intercepted through the DevTools protocol (`WA-WINUI-0009`). The Avalonia Windows build does not intercept
+it, so there A on `+` opens Windows' dialog, which a controller cannot drive.
 
 | Control | Action |
 |---------|--------|
@@ -373,8 +380,9 @@ game code. Valve also no longer recommends the Workshop for official configurati
 - **Select it only after every live Linux branch's depot contains both files.** A branch without
   the layout would name a missing file. Note the previous template first: to undo the change,
   select it and publish, with no new build.
-- **The Windows depot does not carry the manifest.** The Steam Windows build is WinUI 3 and reads no
-  controller. When a shipping Windows build gains controller support, this needs revisiting.
+- **The Windows depot does not carry the manifest.** The Steam Windows build is WinUI 3, which reads
+  Xbox controllers through XInput. Whether it should carry the layout has not been decided, and
+  XInput under Steam Input on Windows has not been tested.
 - **Unanswered by Valve's documentation:** what happens with a depot that has no manifest, what
   happens with a controller type the manifest does not name, whether `legacy_set` works in a
   game that does not use the Steam Input API, and whether a bundled layout needs its `creator` or
@@ -395,7 +403,7 @@ A keyboard template produces no virtual pad, so keys behave as they always did.
 |---------|----------|-----------|
 | evdev | Avalonia Linux | `GNOLLHACK_GAMEPAD_EVDEV` allows it (below) |
 | Back-grip key bridge | Avalonia, any OS | `GNOLLHACK_GAMEPAD_KEYS` allows it (below) |
-| XInput | Avalonia Windows | Always; Xbox controllers through `xinput1_4.dll` |
+| XInput | Windows (WinUI 3 and Avalonia) | Always; available once a controller has been seen. Xbox controllers through `xinput1_4.dll` |
 
 A **Steam launch** is any of `SteamGameId`, `SteamAppId` (non-empty and not `0`),
 `SteamClientLaunch=1`, or `SDL_GAMECONTROLLER_ALLOW_STEAM_VIRTUAL_GAMEPAD`. Non-Steam shortcuts
@@ -418,7 +426,8 @@ It never grabs a device.
 
 The bridge only takes F2-F5 without modifiers. **Settings, Controller, Use Controller** turns
 the whole feature off: evdev and XInput input is discarded, and F2-F5 pass through to the game
-as keys. The Controller section is shown only when a backend is available.
+as keys. The Controller section is shown only when a backend is available: evdev and the key
+bridge from their start, XInput once a controller has been seen in the session.
 
 ## Diagnostics
 
@@ -442,8 +451,8 @@ On the Deck's development shortcut, standard error goes to
 
 ## Development
 
-A change to what a controller does or shows is tested on a Steam Deck in Game Mode before it counts
-as verified. The agent procedure is in the `client_gamepad_testing` skill
+A change to what a controller does or shows is tested on a device before it counts as verified: shared code on a Steam Deck
+in Game Mode, code specific to one platform on that platform. The agent procedure is in the `client_gamepad_testing` skill
 (`.agents/skills/client_gamepad_testing/SKILL.md`).
 
 ### Steam Deck
@@ -473,12 +482,16 @@ The build itself is described in the `build_pipeline` skill (`.agents/skills/bui
 
 ### Windows
 
-The Avalonia Windows flavor reads Xbox controllers through XInput, so the analog paths that ship
-on the Deck can be exercised on a PC. Connected controllers are polled every frame, empty slots
-every 2 s. A PlayStation controller works through Steam's XInput wrapping only.
-This build does not ship, so it is a backup for an unavailable Deck and an extra check, not a
-replacement for testing on the Deck: XInput is a different backend, with no Steam Input, Steam
-keyboard or Gaming Mode.
+Both Windows builds read Xbox controllers through XInput. Connected controllers are polled every
+frame, empty slots one at a time, every 0.5 s. A PlayStation controller works through Steam's
+XInput wrapping only.
+
+WinUI 3 is the shipping Windows build. Run it from Visual Studio, Debug x64, with the controller
+connected. There are no back grips: the key bridge is not registered, and F2-F5 stay ordinary keys.
+
+The Avalonia Windows flavor exercises on a PC the analog paths that ship on the Deck.
+This build does not ship. It tests its own code, and is a backup for an unavailable Deck and an extra check for shared code.
+XInput is a different backend, with no Steam Input, Steam keyboard or Gaming Mode, so it cannot speak for those.
 
 For the grips, set `GNOLLHACK_GAMEPAD_KEYS=on` and press F2-F5 on the keyboard.
 

@@ -79,6 +79,9 @@ public static class MauiProgram
         GHApp.Edge2Edge = Microsoft.Maui.Storage.Preferences.Get("Edge2Edge", false);
 
         var builder = MauiApp.CreateBuilder();
+#if WINDOWS
+        GHWinUIEssentials.Register(builder);
+#endif
 		builder
 			.UseMauiApp<App>()
             .UseSkiaSharp()
@@ -881,6 +884,17 @@ public class KeyboardHook
         GHApp.MaybeWriteLowLevelGHLog("HookCallback: " + nCode + ", " + wParam + ", " + lParam);
         if (nCode >= 0)
         {
+            /* A key ends the controller's input, but not a modifier or a VK_GAMEPAD_* key; the hook must return quickly */
+            if (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN)
+            {
+                int noteVkCode = Marshal.ReadInt32(lParam);
+                bool isModifier = noteVkCode == 0x10 || noteVkCode == 0x11 || noteVkCode == 0x12 || (noteVkCode >= 0xA0 && noteVkCode <= 0xA5)
+                    || noteVkCode == 0x5B || noteVkCode == 0x5C;
+                bool isGamepadKey = noteVkCode >= 0xC3 && noteVkCode <= 0xDA;
+                if (!isModifier && !isGamepadKey && ShouldHandleKeys())
+                    GHWinUIGamepad.NoteKeyDown();
+            }
+
             if (wParam == (IntPtr)WM_KEYUP)
             {
                 GHApp.MaybeWriteLowLevelGHLog("HookCallback: WM_KEYUP");

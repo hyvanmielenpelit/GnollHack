@@ -10,6 +10,11 @@ using GnollHackX;
 using Microsoft.Maui.Controls.PlatformConfiguration;
 using Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;
 using SkiaSharp.Views.Maui;
+#if GNH_AVALONIA
+using GHPlatformWebScriptHost = GnollHackM.GHAvaloniaWebScriptHost;
+#elif WINDOWS
+using GHPlatformWebScriptHost = GnollHackM.GHWinUIWebScriptHost;
+#endif
 
 namespace GnollHackM
 #else
@@ -35,8 +40,8 @@ namespace GnollHackX.Pages.Game
         private const int GamepadHintMinimumCount = 3;         /* hints kept when dropping ones that do not fit */
 
         private readonly GHWebGamepadNavigator _webNavigator;
-#if GNH_AVALONIA
-        private GHAvaloniaWebScriptHost _webScriptHost;
+#if GNH_AVALONIA || WINDOWS
+        private GHPlatformWebScriptHost _webScriptHost;
 #endif
         private GHGamepadHintRenderer _gamepadHintRenderer;
         private readonly List<GHGamepadHint> _gamepadPaintHints = new List<GHGamepadHint>();
@@ -67,8 +72,8 @@ namespace GnollHackX.Pages.Game
             _webNavigator.ClosePage = ClosePage;
             _webNavigator.CanGoForward = () => DisplayWebView.CanGoForward;
             _webNavigator.GoForward = GoForwardInHistory;
-#if GNH_AVALONIA
-            _webScriptHost = new GHAvaloniaWebScriptHost(DisplayWebView);
+#if GNH_AVALONIA || WINDOWS
+            _webScriptHost = new GHPlatformWebScriptHost(DisplayWebView);
             _webNavigator.Host = _webScriptHost;
 #endif
 #if GNH_MAUI && WINDOWS
@@ -248,10 +253,10 @@ namespace GnollHackX.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
-#if GNH_AVALONIA
+#if GNH_AVALONIA || WINDOWS
             if (_webScriptHost == null)
             {
-                _webScriptHost = new GHAvaloniaWebScriptHost(DisplayWebView);
+                _webScriptHost = new GHPlatformWebScriptHost(DisplayWebView);
                 _webNavigator.Host = _webScriptHost;
             }
 #endif
@@ -266,7 +271,7 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed -= BackButtonPressed;
             _webNavigator.HintsChanged -= WebNavigator_HintsChanged;
             _webNavigator.Detach();
-#if GNH_AVALONIA
+#if GNH_AVALONIA || WINDOWS
             _webNavigator.Host = null;
             if (_webScriptHost != null)
             {

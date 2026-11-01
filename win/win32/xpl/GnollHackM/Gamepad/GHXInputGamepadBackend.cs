@@ -1,4 +1,4 @@
-#if GNH_AVALONIA && !LINUX
+#if WINDOWS || (GNH_AVALONIA && !LINUX)
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -6,15 +6,15 @@ using GnollHackX;
 
 namespace GnollHackM
 {
-    /* Xbox controllers on the Avalonia Windows flavor through xinput1_4.dll, a part of Windows. Connected
-       slots are polled every Pump; empty slots are probed one at a time every 2 s, because polling an empty
-       slot is slow. Y is inverted (XInput has +Y up). Controller ids 101-104. UI thread only. */
+    /* Xbox controllers on the Windows builds through xinput1_4.dll, a part of Windows. Connected
+       slots are polled every Pump; empty slots are probed one at a time every 0.5 s. Y is inverted
+       (XInput has +Y up). Controller ids 101-104. UI thread only. */
     internal sealed class GHXInputGamepadBackend : IGHGamepadBackend
     {
         private const int SlotCount = 4;
         private const int FirstControllerId = 101;
         private const uint ErrorSuccess = 0;
-        private const double EmptySlotProbeSeconds = 2.0;
+        private const double EmptySlotProbeSeconds = 0.5;
         private const float InnerDeadzone = 0.24f;
 
         [StructLayout(LayoutKind.Sequential)]

@@ -42,7 +42,7 @@ namespace GnollHackX
         {
 #if GNH_AVALONIA && LINUX
             return new GHFreedesktopFilePlaces();
-#elif GNH_AVALONIA
+#elif GNH_AVALONIA || WINDOWS
             return new GHWindowsFilePlaces();
 #else
             return null;

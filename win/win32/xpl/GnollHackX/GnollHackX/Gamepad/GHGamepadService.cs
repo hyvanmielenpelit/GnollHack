@@ -126,7 +126,8 @@ namespace GnollHackX
         /* The last input came from a gamepad; any thread */
         public static bool IsActive { get { return Interlocked.CompareExchange(ref _isActive, 0, 0) != 0; } }
 
-        /* A backend started; independent of the Use Controller setting; any thread */
+        /* A controller can be used: a backend started, or one that waits for a controller has seen its first;
+           independent of the Use Controller setting; any thread */
         public static bool IsAvailable { get { return Interlocked.CompareExchange(ref _isAvailable, 0, 0) != 0; } }
 
         /* The Use Controller setting; any thread */
@@ -169,6 +170,13 @@ namespace GnollHackX
 
         public static bool RegisterBackend(IGHGamepadBackend backend, out string error)
         {
+            return RegisterBackend(backend, false, out error);
+        }
+
+        /* A backend that waits for a controller counts as available from its first controller, and stays so when it
+           is unplugged; the others from their start */
+        public static bool RegisterBackend(IGHGamepadBackend backend, bool waitForController, out string error)
+        {
             error = null;
             if (backend == null)
             {
@@ -180,9 +188,15 @@ namespace GnollHackX
             if (!backend.Start(_sink, out error))
                 return false;
             _backends.Add(backend);
+            if (!waitForController)
+                MarkAvailable();
+            return true;
+        }
+
+        private static void MarkAvailable()
+        {
             if (Interlocked.Exchange(ref _isAvailable, 1) == 0)
                 RaiseStateChanged();
-            return true;
         }
 
         /* Stops every backend and forgets the controllers; UI thread */
@@ -249,6 +263,10 @@ namespace GnollHackX
 
             foreach (IGHGamepadBackend backend in _backends)
                 backend.Pump(now);
+
+            /* Nothing to route before a controller exists, on a build where every PC runs a backend */
+            if (!IsAvailable)
+                return;
 
             if (_activeControllerRemoved)
             {
@@ -457,6 +475,7 @@ namespace GnollHackX
             _selector.Add(info);
             if (!info.IsAuxiliary)
                 _values[info.Id] = new ControllerValues();
+            MarkAvailable();
         }
 
         private static void OnControllerRemoved(int controllerId)

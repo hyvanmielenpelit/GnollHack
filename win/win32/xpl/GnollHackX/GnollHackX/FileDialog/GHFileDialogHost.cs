@@ -97,6 +97,8 @@ namespace GnollHackX
                 folders.Add(GHApp.GHPath);
 #if GNH_AVALONIA
                 folders.Add(GHAvaloniaPaths.AssetDirectory);
+#elif WINDOWS
+                folders.Add(AppContext.BaseDirectory);
 #endif
                 return folders;
             }

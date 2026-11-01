@@ -1,33 +1,84 @@
 ---
 name: client_gamepad_testing
 description: >-
-  How gamepad and game controller work in GnollHack is tested on a real device: the rule that it
-  must be, which devices are required (today the Steam Deck, through the Avalonia Linux build) and
-  which are a backup (an Xbox controller on the Avalonia Windows build), the packaging and
-  Deploy-SteamDeck.ps1 sequence, what to do when the Deck cannot be reached, what the user must
-  test, and how to read the Deck's logs afterward. Read whenever you plan, change or
-  review anything that alters what a controller does or shows: GHGamepad* or GHEvdev* code,
-  radial menus, hint strips, focus navigation on a page, controller settings, Steam Input layouts,
-  or the Steam keyboard. Read before reporting such work as finished.
+  How gamepad and game controller work in GnollHack is tested on real devices: which device a change
+  must be tested on, decided by whether it is shared controller code, tested on the Steam Deck as the
+  primary device through the Avalonia Linux build, or specific to one platform, tested there; the
+  Xbox controller on the Avalonia Windows build as a backup; the packaging and Deploy-SteamDeck.ps1
+  sequence, what to do when the Deck cannot be reached, what the user must test, and how to read the
+  Deck's logs afterward. Read whenever you plan, change or review anything that alters what a
+  controller does or shows: GHGamepad* or GHEvdev* code, GHXInput or GHWinUI code, radial menus, hint strips, focus navigation
+  on a page, controller settings, Steam Input layouts, or the Steam keyboard. Read before reporting
+  such work as finished.
 ---
 
 # Testing Gamepad Work on a Device
 
 ## The Rule
 
-Work that changes what a game controller does or shows is **built for, deployed to and tested on
-every shipping build that supports game controllers**. Until those tests have passed, the work is
-not verified, however green everything else is. The requirement follows what ships:
+Work that changes what a game controller does or shows is **tested on a real device** before it counts as verified,
+however green everything else is. Which device depends on where the change can behave differently:
+
+| The change is | Test on |
+|---------------|---------|
+| **Shared controller code** | The **primary device**, the Steam Deck, and nothing else |
+| **Specific to one platform** | **That platform's device**, and nothing else |
+| **Both**, as when a shared change also edits a platform's branch | The primary device for the whole change, and the platform's device for what is specific to it |
+
+The devices:
 
 | Device and controller | Build | Ships | Role | How it is run |
 |-----------------------|-------|-------|------|---------------|
-| Steam Deck | Avalonia Linux | Yes | **Required** | Through Steam, in Gaming Mode, from the Non-Steam Game shortcut to `run-gnollhack.sh` |
-| Windows PC, Xbox controller | Avalonia Windows | No | Backup and extra check | Directly, from the build output; see [Xbox Backup](#xbox-backup) |
+| Steam Deck | Avalonia Linux | Yes | **Primary** | Through Steam, in Gaming Mode, from the Non-Steam Game shortcut to `run-gnollhack.sh` |
+| Windows PC, Xbox controller | WinUI 3 | Yes | **Platform** | From Visual Studio, Debug x64; see [Xbox on WinUI 3](#xbox-on-winui-3) |
+| Windows PC, Xbox controller | Avalonia Windows | No | **Platform** for its own code; otherwise a backup and extra check | Directly, from the build output; see [Xbox on Avalonia Windows](#xbox-on-avalonia-windows) |
 
-WinUI 3, Android and iOS have no controller support yet. When a shipping build gains it, add a row
-here with the role **Required**, and write its procedure in this skill. The Xbox controller on WinUI 3
-then becomes a required test, not a backup. The current state of support is in the introduction and
-the Eligibility section of `DEVEL/gamepad_controls.md`.
+Android and iOS have no controller support yet. When a build gains it, add a row with the role **Platform**, and
+write its procedure in this skill. Its first implementation gets a full pass there; after that this rule applies.
+
+### Shared or Platform-Specific
+
+**Shared:** code that compiles for several platforms and does not depend on what differs between them. This is most of it:
+`GnollHackX/Gamepad/`, `Radial/`, `GamePage.Gamepad.cs`, `GamePage.GamepadDialogs.cs`, `GamePage.Radial.cs`, page
+navigation, hint strips, in-page popups, `FileDialogView`, controller settings, and `gamepad_web.js`.
+
+**Platform-specific:** code that runs only there, or a branch for that platform inside shared code:
+
+| Platform | Its code |
+|----------|----------|
+| Steam Deck | `GHEvdev*`, `GHAvaloniaSteamKeyboard`, `Platforms/Avalonia/Cef/`, `Platforms/Linux/Packaging/steam/input/`, `steamdeck/run-gnollhack.sh`, `#if LINUX` branches, the grip bridge |
+| Avalonia Windows | The Windows branches of Avalonia code (`#else` of `#if LINUX`, `#elif GNH_AVALONIA` after `GNH_AVALONIA && LINUX`), and the `NativeWebView` paths (`NativeWebViewHost`, `_nativeView` in `GHAvaloniaWebScriptHost`), which the Deck does not run because it uses CEF |
+| WinUI 3 | `Platforms/Windows/GHWinUI*`, `GHWebView2FileChooser`, `KeyboardHook`'s key note, `#if WINDOWS` branches in controller code |
+| Both Windows builds | `GnollHackM/Gamepad/GHXInputGamepadBackend.cs`. Test on WinUI 3 |
+
+Other code in `Platforms/Avalonia/`, such as `GHAvaloniaGamepad`, runs on the Deck too, so the Deck covers it.
+`Platforms/Avalonia/Web/gamepad_web.js` is shared, whatever its folder.
+
+**Ask one question of a shared change: does it alter how the code uses something a platform implements itself?** Compiling
+from the same source does not settle it. Such things are a native control's focus, `ScrollView`, a modal or native dialog,
+the frame loop or painting order, and a web view's API rather than the page script. Code that merely runs on them, as all
+page navigation does, stays shared: adding a row to a navigated page is shared, while a new way of scrolling to it is
+not. Name the platform and say why in the plan. When in doubt, ask the user rather than test everywhere.
+
+A change confined to one platform does not need the primary device. A Deck-only change needs no Xbox test, and an XInput
+change needs no Deck.
+
+### Before a Release
+
+Shared code is tested on the primary device only, so before releasing a build with a **Platform** row that ships, the user
+runs its smoke list, about 10 minutes, against the release candidate. This applies to WinUI 3, and also to the Avalonia
+Windows build if it starts to ship.
+
+1. No controller connected: Settings has no Controller section, and mouse and keyboard play is unchanged.
+2. Connect a controller and wait 3 s: A shows the focus on the main menu.
+3. Walk Settings to the bottom.
+4. Start a game: walk, open a radial, open the inventory and pick an item, answer a y/n prompt.
+5. Alt+Tab away, press buttons, return: nothing happened, and nothing is stuck.
+6. Move the mouse: focus and hints go. Press the pad: they return.
+7. Open the wiki: the ring moves, and A follows a link.
+8. Open the Overseer: Menu leaves.
+
+A failure there is a bug to fix before release, whichever code it is in.
 
 ## When This Applies
 
@@ -38,16 +89,15 @@ Anything that changes controller behavior, in any of these:
 - `win/win32/xpl/GnollHackM/Platforms/Avalonia/`: the gamepad and evdev backends
   (`GHAvaloniaGamepad*.cs`, `GHEvdev*.cs`), the Steam keyboard, key handling for the grip bridge,
   and controller input in the in-app browser (`Cef/GHCefInput.cs`, `GHAvaloniaWebScriptHost.cs`)
+- `win/win32/xpl/GnollHackM/Gamepad/` and the WinUI 3 glue: `Platforms/Windows/GHWinUI*.cs`,
+  `GHWebView2FileChooser.cs`, and `KeyboardHook`'s key note in `MauiProgram.cs`
 - `Platforms/Linux/Packaging/steam/input/` and `steamdeck/run-gnollhack.sh`
 - Any page with controller navigation, when a change adds, moves or removes a focusable control,
   changes the focus order, or changes a hint strip, an in-page popup or a list's selection
 - Settings: the Controller and Trigger Quick Actions sections
 - C core or bridge changes made for a controller command
 
-It does not apply to comment-only changes, changes that only touch unit tests, documentation-only
-changes, or code that never runs on Linux. A change confined to the XInput backend
-(`GHXInputGamepadBackend.cs`) is one of these: it runs only in the Avalonia Windows build, so test it
-there with an Xbox controller.
+It does not apply to comment-only changes, changes that only touch unit tests, or documentation-only changes.
 
 ## What Does Not Replace the Device
 
@@ -55,12 +105,15 @@ Run these too, but none of them satisfies the rule:
 
 - **Unit tests.** They cover decoding and routing, not what happens on the device.
 - **WSL.** It has no gamepad drivers.
-- **The MAUI builds.** They have no gamepad support. Shared code must still compile there, so the
-  usual verification builds still apply.
-- **The Deck's Desktop Mode.** Game Mode is the real target; `DEVEL/gamepad_controls.md` lists the
-  differences.
+- **A build without controller support.** Android and iOS only prove that shared code compiles, so the usual verification
+  builds still apply.
+- **The Deck's Desktop Mode.** Game Mode is the real target; `DEVEL/gamepad_controls.md` lists the differences.
+- **Another platform's device, for that platform's code.** Each row tests its own.
 
 ## Procedure
+
+Decide first, using the rule, which devices the change needs, and say so in the plan or the handoff. The steps below are the
+Deck's; a platform with its own row has its own section.
 
 Only the orchestrating agent does this, after every subagent has returned.
 
@@ -116,15 +169,25 @@ package was built, it was **not** deployed, and the Deck tests are outstanding. 
 command and the test list, and offer the Xbox backup below. Record the same in the plan's `task.md`
 and walkthrough. Never describe the work as verified.
 
-## Xbox Backup
+## Xbox on WinUI 3
 
-The Avalonia Windows build does not ship, so a test here never counts as the required test. Use it in
-two situations:
+Build from `win\win32\xpl\GnollHackM`, then the user runs it from Visual Studio, Debug x64, with the controller connected.
+There is no deploy step.
 
-- **As a backup,** when the Deck is unreachable or otherwise unavailable.
-- **As an extra check,** when something is unclear. For example, a bug that also appears here is
-  probably in the shared logic, and one that appears only on the Deck points at evdev, Steam Input or
-  Gaming Mode.
+```powershell
+dotnet build GnollHackM.csproj -c Debug -f net10.0-windows10.0.19041.0
+```
+
+Give the user numbered checks for the change, as for the Deck, and read `GAMEPAD` lines in the app log if anything goes wrong.
+
+## Xbox on Avalonia Windows
+
+The Avalonia Windows build does not ship. It has two uses:
+
+- **For its own code:** a change confined to its row in the platform table is tested here and needs no Deck.
+- **As a backup or an extra check for shared code**, when the Deck is unreachable or something is unclear. For example, a
+  bug that also appears here is probably in the shared logic, and one that appears only on the Deck points at evdev, Steam
+  Input or Gaming Mode.
 
 Build from `win\win32\xpl\GnollHackM\Platforms\Avalonia`, then have the user run the result with the
 controller connected. `gnollhackwin.dll` must be current if the C core or bridge changed; see "Windows
@@ -139,7 +202,8 @@ F2-F5 on the keyboard act as the back grips.
 
 **What it covers:** focus navigation, radial menus, hint strips, routing, and settings.
 **What it cannot cover:** evdev and device filtering, Steam Input and its layouts, the real grips, the
-Steam keyboard, Gaming Mode, and the Deck's screen size. If the change depends on any of these, say that
+Steam keyboard, Gaming Mode, the Deck's screen size, WinUI's own glue and WebView2 file chooser, and attaching
+with a controller, where A on `+` opens Windows' own dialog. If the change depends on any of these, say that
 the backup cannot speak for it.
 
 **Report it as what it is:** "tested with the Xbox backup on Avalonia Windows, Deck tests M1-Mn

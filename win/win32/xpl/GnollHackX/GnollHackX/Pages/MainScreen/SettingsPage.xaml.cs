@@ -2309,7 +2309,7 @@ namespace GnollHackX.Pages.MainScreen
 
         private bool _refreshingGamepadTriggerAssignedPicker = false;
 
-        /* The Controller section is shown whenever a gamepad backend runs, whatever the Use Controller setting,
+        /* The Controller section is shown whenever a controller can be used, whatever the Use Controller setting,
            so that the setting can always be turned back on; the grip pickers only when grips exist */
         private void SetGamepadInitialValues()
         {
@@ -2317,6 +2317,7 @@ namespace GnollHackX.Pages.MainScreen
             GamepadSettingsLayout.IsVisible = available;
             GamepadGripLayout.IsVisible = available && GHGamepadService.Capabilities.HasGrips;
             GamepadEnabledSwitch.IsToggled = GHApp.GamepadEnabled;
+            GamepadHideCommandBarSwitch.IsToggled = GHApp.GamepadHideCommandBar;
             UpdateCommandSectionVisibility();
 
             Picker[] pickers = GamepadGripPickers;
@@ -2341,15 +2342,21 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        /* Trigger Quick Actions while the Controller section is shown and Use Controller is on, else Bar Commands */
+        /* Trigger Quick Actions while the Controller section is shown and Use Controller is on; Bar Commands otherwise,
+           and also while Hide Command Bar is off */
         private void UpdateCommandSectionVisibility()
         {
             bool triggers = GamepadSettingsLayout.IsVisible && GamepadEnabledSwitch.IsToggled;
             GamepadTriggerLayout.IsVisible = triggers;
-            BarCommandsLayout.IsVisible = !triggers;
+            BarCommandsLayout.IsVisible = !triggers || !GamepadHideCommandBarSwitch.IsToggled;
         }
 
         private void GamepadEnabledSwitch_Toggled(object sender, ToggledEventArgs e)
+        {
+            UpdateCommandSectionVisibility();
+        }
+
+        private void GamepadHideCommandBarSwitch_Toggled(object sender, ToggledEventArgs e)
         {
             UpdateCommandSectionVisibility();
         }
@@ -2410,6 +2417,8 @@ namespace GnollHackX.Pages.MainScreen
         {
             GHApp.GamepadEnabled = GamepadEnabledSwitch.IsToggled;
             Preferences.Set("GamepadEnabled", GamepadEnabledSwitch.IsToggled);
+            GHApp.GamepadHideCommandBar = GamepadHideCommandBarSwitch.IsToggled;
+            Preferences.Set("GamepadHideCommandBar", GamepadHideCommandBarSwitch.IsToggled);
 
             Picker[] pickers = GamepadGripPickers;
             int i;

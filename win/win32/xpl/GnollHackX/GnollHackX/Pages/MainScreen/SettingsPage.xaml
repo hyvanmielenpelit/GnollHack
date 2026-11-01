@@ -591,106 +591,6 @@
                                 <Switch Grid.Column="1" x:Name="ShowKeyboardShortcutsSwitch" HorizontalOptions="End" VerticalOptions="Center" />
                             </Grid>
 
-                            <StackLayout x:Name="GamepadSettingsLayout" Spacing="6" IsVisible="False">
-                                <Label Text="Controller" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
-                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="Use Controller" x:Name="GamepadEnabledLabel"
-                                                FontFamily="Underwood" TextColor="Black"
-                                                FontSize="15"
-                                                VerticalOptions="Center"
-                                                HorizontalOptions="Start" />
-                                    <Switch Grid.Column="1" x:Name="GamepadEnabledSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="GamepadEnabledSwitch_Toggled" />
-                                </Grid>
-                                <Label x:Name="GamepadEnabledDescriptionLabel"
-                                            Text="Play with a game controller or the Steam Deck's built-in controls."
-                                            FontFamily="Underwood" TextColor="Black"
-                                            FontSize="13"
-                                            HorizontalOptions="Start" />
-                                <StackLayout x:Name="GamepadGripLayout" Spacing="6" IsVisible="False">
-                                    <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                        <Label Text="Back Grip L4" x:Name="GamepadGripL4Label"
-                                                    FontFamily="Underwood" TextColor="Black"
-                                                    FontSize="15"
-                                                    VerticalOptions="Center"
-                                                    HorizontalOptions="Start" />
-                                        <Picker Grid.Column="1" x:Name="GamepadGripL4Picker"
-                                                    Title="Select command"
-                                                    FontFamily="Underwood"
-                                                    FontSize="17"
-                                                    TextColor="Black"
-                                                    TitleColor="Black"
-                                                    HorizontalTextAlignment="End"
-                                                    BackgroundColor="Transparent"
-                                                    WidthRequest="200"
-                                                    VerticalOptions="Center"
-                                                    HorizontalOptions="End" >
-                                        </Picker>
-                                    </Grid>
-                                    <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                        <Label Text="Back Grip L5" x:Name="GamepadGripL5Label"
-                                                    FontFamily="Underwood" TextColor="Black"
-                                                    FontSize="15"
-                                                    VerticalOptions="Center"
-                                                    HorizontalOptions="Start" />
-                                        <Picker Grid.Column="1" x:Name="GamepadGripL5Picker"
-                                                    Title="Select command"
-                                                    FontFamily="Underwood"
-                                                    FontSize="17"
-                                                    TextColor="Black"
-                                                    TitleColor="Black"
-                                                    HorizontalTextAlignment="End"
-                                                    BackgroundColor="Transparent"
-                                                    WidthRequest="200"
-                                                    VerticalOptions="Center"
-                                                    HorizontalOptions="End" >
-                                        </Picker>
-                                    </Grid>
-                                    <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                        <Label Text="Back Grip R4" x:Name="GamepadGripR4Label"
-                                                    FontFamily="Underwood" TextColor="Black"
-                                                    FontSize="15"
-                                                    VerticalOptions="Center"
-                                                    HorizontalOptions="Start" />
-                                        <Picker Grid.Column="1" x:Name="GamepadGripR4Picker"
-                                                    Title="Select command"
-                                                    FontFamily="Underwood"
-                                                    FontSize="17"
-                                                    TextColor="Black"
-                                                    TitleColor="Black"
-                                                    HorizontalTextAlignment="End"
-                                                    BackgroundColor="Transparent"
-                                                    WidthRequest="200"
-                                                    VerticalOptions="Center"
-                                                    HorizontalOptions="End" >
-                                        </Picker>
-                                    </Grid>
-                                    <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                        <Label Text="Back Grip R5" x:Name="GamepadGripR5Label"
-                                                    FontFamily="Underwood" TextColor="Black"
-                                                    FontSize="15"
-                                                    VerticalOptions="Center"
-                                                    HorizontalOptions="Start" />
-                                        <Picker Grid.Column="1" x:Name="GamepadGripR5Picker"
-                                                    Title="Select command"
-                                                    FontFamily="Underwood"
-                                                    FontSize="17"
-                                                    TextColor="Black"
-                                                    TitleColor="Black"
-                                                    HorizontalTextAlignment="End"
-                                                    BackgroundColor="Transparent"
-                                                    WidthRequest="200"
-                                                    VerticalOptions="Center"
-                                                    HorizontalOptions="End" >
-                                        </Picker>
-                                    </Grid>
-                                    <Label x:Name="GamepadGripHelpLabel"
-                                                Text="The back grips need the GnollHack (Steam Deck) layout, or L4, L5, R4, R5 bound to the keys F2, F3, F4, F5."
-                                                FontFamily="Underwood" TextColor="Black"
-                                                FontSize="13"
-                                                HorizontalOptions="Start" />
-                                </StackLayout>
-                            </StackLayout>
-
                             <Label Text="Drawing" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                             <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                 <Label Text="Lighter Unlit Areas"
@@ -926,6 +826,119 @@
                                     </Picker.ItemsSource>
                                 </Picker>
                             </Grid>
+
+                            <StackLayout x:Name="GamepadSettingsLayout" Spacing="6" IsVisible="False">
+                                <Label Text="Controller" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Use Controller" x:Name="GamepadEnabledLabel"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start" />
+                                    <Switch Grid.Column="1" x:Name="GamepadEnabledSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="GamepadEnabledSwitch_Toggled" />
+                                </Grid>
+                                <Label x:Name="GamepadEnabledDescriptionLabel"
+                                            Text="Play with a game controller or the Steam Deck's built-in controls."
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="13"
+                                            HorizontalOptions="Start" />
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Hide Command Bar" x:Name="GamepadHideCommandBarLabel"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start" />
+                                    <Switch Grid.Column="1" x:Name="GamepadHideCommandBarSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="GamepadHideCommandBarSwitch_Toggled" />
+                                </Grid>
+                                <Label x:Name="GamepadHideCommandBarDescriptionLabel"
+                                            Text="Hide the command bar while playing with the controller. Turn this off to keep the bar, with the controller hints above it, and to set its commands below."
+                                            FontFamily="Underwood" TextColor="Black"
+                                            FontSize="13"
+                                            HorizontalOptions="Start" />
+                                <StackLayout x:Name="GamepadGripLayout" Spacing="6" IsVisible="False">
+                                    <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                        <Label Text="Back Grip L4" x:Name="GamepadGripL4Label"
+                                                    FontFamily="Underwood" TextColor="Black"
+                                                    FontSize="15"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="Start" />
+                                        <Picker Grid.Column="1" x:Name="GamepadGripL4Picker"
+                                                    Title="Select command"
+                                                    FontFamily="Underwood"
+                                                    FontSize="17"
+                                                    TextColor="Black"
+                                                    TitleColor="Black"
+                                                    HorizontalTextAlignment="End"
+                                                    BackgroundColor="Transparent"
+                                                    WidthRequest="200"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="End" >
+                                        </Picker>
+                                    </Grid>
+                                    <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                        <Label Text="Back Grip L5" x:Name="GamepadGripL5Label"
+                                                    FontFamily="Underwood" TextColor="Black"
+                                                    FontSize="15"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="Start" />
+                                        <Picker Grid.Column="1" x:Name="GamepadGripL5Picker"
+                                                    Title="Select command"
+                                                    FontFamily="Underwood"
+                                                    FontSize="17"
+                                                    TextColor="Black"
+                                                    TitleColor="Black"
+                                                    HorizontalTextAlignment="End"
+                                                    BackgroundColor="Transparent"
+                                                    WidthRequest="200"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="End" >
+                                        </Picker>
+                                    </Grid>
+                                    <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                        <Label Text="Back Grip R4" x:Name="GamepadGripR4Label"
+                                                    FontFamily="Underwood" TextColor="Black"
+                                                    FontSize="15"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="Start" />
+                                        <Picker Grid.Column="1" x:Name="GamepadGripR4Picker"
+                                                    Title="Select command"
+                                                    FontFamily="Underwood"
+                                                    FontSize="17"
+                                                    TextColor="Black"
+                                                    TitleColor="Black"
+                                                    HorizontalTextAlignment="End"
+                                                    BackgroundColor="Transparent"
+                                                    WidthRequest="200"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="End" >
+                                        </Picker>
+                                    </Grid>
+                                    <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                        <Label Text="Back Grip R5" x:Name="GamepadGripR5Label"
+                                                    FontFamily="Underwood" TextColor="Black"
+                                                    FontSize="15"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="Start" />
+                                        <Picker Grid.Column="1" x:Name="GamepadGripR5Picker"
+                                                    Title="Select command"
+                                                    FontFamily="Underwood"
+                                                    FontSize="17"
+                                                    TextColor="Black"
+                                                    TitleColor="Black"
+                                                    HorizontalTextAlignment="End"
+                                                    BackgroundColor="Transparent"
+                                                    WidthRequest="200"
+                                                    VerticalOptions="Center"
+                                                    HorizontalOptions="End" >
+                                        </Picker>
+                                    </Grid>
+                                    <Label x:Name="GamepadGripHelpLabel"
+                                                Text="The back grips need the GnollHack (Steam Deck) layout, or L4, L5, R4, R5 bound to the keys F2, F3, F4, F5."
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="13"
+                                                HorizontalOptions="Start" />
+                                </StackLayout>
+                            </StackLayout>
 
                             <StackLayout x:Name="GamepadTriggerLayout" Spacing="6" IsVisible="False">
                                 <Label Text="Trigger Quick Actions" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />

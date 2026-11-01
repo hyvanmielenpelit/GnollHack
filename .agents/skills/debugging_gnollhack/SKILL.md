@@ -57,7 +57,7 @@ When in wizard mode, special commands become available:
   ```
   > **Note:** The exact target framework moniker may change over time. Check `GnollHackM.csproj` for the current value.
 - The Avalonia port (Linux and Windows flavors) is built and run differently, from `Platforms/Avalonia` with `-p:GnhAvalonia=true`; see the Avalonia section of `build_pipeline`.
-- Gamepad work is tested on a Steam Deck, not on this machine; deployment, the Deck's logs and the `GAMEPAD` diagnostics are in `client_gamepad_testing`.
+- Shared gamepad work is tested on a Steam Deck, not on this machine; deployment, the Deck's logs and the `GAMEPAD` diagnostics are in `client_gamepad_testing`.
 - Use `Debug.WriteLine` in C# for console output.
 - For native C debug output, use `raw_printf` (only visible if the console is attached).
 
