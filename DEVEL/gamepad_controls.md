@@ -337,8 +337,8 @@ evdev (`/dev/input/event*`). Two consequences:
   controller does nothing in GnollHack** (touch still works). If the controls do nothing, open
   the Steam button menu in game, Controller Settings, and select the **"GnollHack (Steam Deck)"**
   layout from the official layouts. Steam's template **"Gamepad with Mouse Trackpad"** also
-  works, apart from the grips. Making the GnollHack layout the default in Steamworks is therefore
-  a release prerequisite.
+  works, apart from the grips and the right trackpad's click, which it sends as R3. Making the
+  GnollHack layout the default in Steamworks is therefore a release prerequisite.
 - **The back grips need key bindings.** The virtual pad has no paddle buttons, so the GnollHack
   layout sends the grips as **F2, F3, F4 and F5** (L4, L5, R4, R5), which the game turns back
   into grips (`WA-STEAM-0001` in `DEVEL/workarounds/steam.md`). With Steam's plain Gamepad
@@ -368,8 +368,10 @@ for them; the silent pad is what keeps the game from reacting.
 
 ### Content
 
-- Steam's **"Gamepad with Mouse Trackpad"** template, unchanged: sticks as joysticks, analog
-  triggers, D-pad, every button to the virtual pad, right trackpad as mouse.
+- Steam's **"Gamepad with Mouse Trackpad"** template: sticks as joysticks, analog triggers, D-pad,
+  every button to the virtual pad, right trackpad as mouse.
+- **Right trackpad click → left mouse button**: Soft Press, with the haptic tick of Valve's mouse
+  template. The plain template sends this click as R3; R3 stays on the right stick's click.
 - **L4 → F2, L5 → F3, R4 → F4, R5 → F5**: Regular Press, no extra activators, no turbo.
 - Gyro off.
 - Title "GnollHack (Steam Deck)".
@@ -383,7 +385,7 @@ The layout is authored on a Steam Deck, on the **GnollHack app installed from St
 bindings, so either one gives the same layout:
 
 1. Launch the game, open Controller Settings, and pick the "Gamepad with Mouse Trackpad" template.
-2. Bind the four grips as above and leave gyro off.
+2. Set the right trackpad's click and bind the four grips as above, and leave gyro off.
 3. In Steam, Settings, System, turn on developer mode, then "Steam Input Layout Dev Mode" under
    Developer.
 4. In the layout's gear menu, Export Layout, type Shareable Personal Save, with the title above.
@@ -396,8 +398,10 @@ bindings, so either one gives the same layout:
    first holds the author's Steam ID, and the second a local path with their account number. Valve's
    templates have neither line. Copy the file over SSH to
    `win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/steam/input/controller_neptune.vdf` and
-   commit it. It is both the record of the layout and the file the depot ships. It is not otherwise
-   edited by hand. Its localization block remains the template's; the title it shows is the
+   commit it. It is both the record of the layout and the file the depot ships. A small binding
+   change may be made by hand in the committed file, in the syntax of Valve's templates
+   (`controller_base/templates/` in a Steam install), raising `revision` by one; anything larger is
+   a new export. Its localization block remains the template's; the title it shows is the
    top-level `title`.
 
 The Non-Steam development shortcut (see [Development](#development)) keeps its own personal layout.
