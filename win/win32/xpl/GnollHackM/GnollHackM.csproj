@@ -384,6 +384,7 @@
     <None Remove="..\GnollHackX\GnollHackX\Controls\MessagePopupView.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\FileDialogView.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\LabeledImageButton.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Controls\OverlayCanvasView.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\RowImageButton.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\SimpleImageButton.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Controls\SwitchableCanvasView.xaml.cs" />
@@ -693,6 +694,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\Controls\MessagePopupView.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\FileDialogView.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\LabeledImageButton.xaml.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Controls\OverlayCanvasView.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\RowImageButton.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\SimpleImageButton.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Controls\SwitchableCanvasView.xaml.cs" />

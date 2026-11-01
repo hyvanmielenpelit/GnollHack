@@ -568,9 +568,13 @@ namespace GnollHackM
             return shown > 0 ? sb.ToString() : "unknown";
         }
 
-        /* The CanvasType of an enclosing SwitchableCanvasView, or the view's own type name */
+        /* The CanvasType of an OverlayCanvasView or of an enclosing SwitchableCanvasView, or the view's own type name */
         private static int ResolveOwner(Microsoft.Maui.IView view)
         {
+            OverlayCanvasView overlay = view as OverlayCanvasView;
+            if (overlay != null)
+                return GetOwnerIndex(CanvasTypeName(overlay.CanvasType));
+
             Microsoft.Maui.Controls.Element element = (view as Microsoft.Maui.Controls.Element)?.Parent;
             for (int level = 0; level < 4 && element != null; level++)
             {

@@ -18,7 +18,7 @@ namespace GnollHackM
        it reports: one PointerPoint, Properties only when a button can be involved, and
        Pointer only to capture it and when the capture ends. Hover moves are limited before
        anything is read.
-       Wheel events are not handled; SwitchableCanvasView raises MouseWheel itself. */
+       Wheel events are not handled; SwitchableCanvasView and OverlayCanvasView raise MouseWheel themselves. */
     internal sealed class WindowsTouchHandler
     {
         private static readonly long s_hoverMoveIntervalTicks = (long)(Stopwatch.Frequency / 120.0);

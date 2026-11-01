@@ -1833,15 +1833,11 @@ namespace GnollHackX.Pages.Game
             CommandCanvas._gamePage = this;
             MenuCanvas._gamePage = this;
             TextCanvas._gamePage = this;
-            TipView._gamePage = this;
-            RadialCanvas._gamePage = this;
 
             MainCanvasView._parentGrid = MainGrid;
             CommandCanvas._parentGrid = MoreCommandsGrid;
             MenuCanvas._parentGrid = MenuGrid;
             TextCanvas._parentGrid = TextGrid;
-            TipView._parentGrid = null;
-            RadialCanvas._parentGrid = null;
         }
 
         private async Task<bool> MaybeInitAuxCanvases()
@@ -23580,6 +23576,10 @@ namespace GnollHackX.Pages.Game
 
             canvas.Clear(SKColors.Transparent);
 
+            /* _tipTextPaint is disposed after the canvases shut down, and on Windows the handler stays connected */
+            if (CanvasViewsShutDown)
+                return;
+
             {
                 GHSkiaFontPaint textPaint = _tipTextPaint;
                 /* Owning thread only: applies a setting change and any requested clear */
@@ -25732,7 +25732,6 @@ namespace GnollHackX.Pages.Game
             TextCanvas.ShutDown();
             CommandCanvas.ShutDown();
             ShutDownRadial();
-            RadialCanvas.ShutDown();
         }
 
         private double _threadSafeWidth = 0;

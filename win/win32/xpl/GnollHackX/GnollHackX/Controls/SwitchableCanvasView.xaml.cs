@@ -24,7 +24,7 @@ using System.Threading;
 namespace GnollHackX.Controls
 #endif
 {
-    /* SwitchableCanvasView's inner views. On Windows they get WindowsSKCanvasViewHandler and
+    /* SwitchableCanvasView's inner views and OverlayCanvasView's base. On Windows they get WindowsSKCanvasViewHandler and
        WindowsSKGLViewHandler: no WheelChanged touch events, hover moves limited to 120 Hz. */
     public class SKTouchCanvasView : SKCanvasView
     {

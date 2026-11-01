@@ -405,18 +405,17 @@
                                    WidthRequest="120" Keyboard="Plain" HorizontalTextAlignment="Start" TextChanged="MoreCommandsFilterEntry_TextChanged" 
                                    HorizontalOptions="Start" VerticalOptions="End" Margin="5" />
             </gnh:MeasurableGrid>
-            <controls:SwitchableCanvasView x:Name="RadialCanvas" IsVisible="False" UseGL="False" CanvasType="RadialCanvas"
-                                           EnableTouchEvents="True" PaintSurface="RadialCanvas_PaintSurface" Touch="RadialCanvas_Touch"
-                                           MouseWheel="RadialCanvas_MouseWheel" MousePointer="RadialCanvas_MousePointer"
-                                           HorizontalOptions="Fill" VerticalOptions="Fill" />
-            <controls:SwitchableCanvasView x:Name="TipView" 
-                                           IsVisible="False"
-                                           UseGL="False"
-                                           CanvasType="TipCanvas"
-                                           EnableTouchEvents="True"
-                                           PaintSurface="TipView_PaintSurface" 
-                                           Touch="TipView_Touch"
-                                           HorizontalOptions="Fill" VerticalOptions="Fill" />
+            <controls:OverlayCanvasView x:Name="RadialCanvas" IsVisible="False" CanvasType="RadialCanvas"
+                                        EnableTouchEvents="True" PaintSurface="RadialCanvas_PaintSurface" Touch="RadialCanvas_Touch"
+                                        MouseWheel="RadialCanvas_MouseWheel" MousePointer="RadialCanvas_MousePointer"
+                                        HorizontalOptions="Fill" VerticalOptions="Fill" />
+            <controls:OverlayCanvasView x:Name="TipView" 
+                                        IsVisible="False"
+                                        CanvasType="TipCanvas"
+                                        EnableTouchEvents="True"
+                                        PaintSurface="TipView_PaintSurface" 
+                                        Touch="TipView_Touch"
+                                        HorizontalOptions="Fill" VerticalOptions="Fill" />
             <Grid x:Name="ReplayGrid" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent" InputTransparent="True" CascadeInputTransparent="False" IsVisible="False">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />

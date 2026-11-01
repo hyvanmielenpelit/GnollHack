@@ -244,7 +244,7 @@ Callback categories: window management, input handling, display/glyph rendering,
 AboutPage, AchievementsDisplayPage, AchievementsPage, DisplayFilePage, EditorPage, ImportExportPage, LibraryPage, MusicPage, NamePage, OraclePage, OutRipPage, OverseerPage, PerformanceSuitePage, ReplayPage, ResetPage, SaveTransferPage, SnapshotPage, TopScorePage, VaultPage, VersionPage, WikiPage.
 
 ### Custom Controls
-`SwitchableCanvasView`, `LabeledImageButton`, `SimpleImageButton`, `CustomImageButton`, `RowImageButton`, `MeasurableGrid`, `MeasurableStackLayout`, `CustomLabel`, `GHCachedImage`, `ImageCarousel`.
+`SwitchableCanvasView`, `OverlayCanvasView`, `LabeledImageButton`, `SimpleImageButton`, `CustomImageButton`, `RowImageButton`, `MeasurableGrid`, `MeasurableStackLayout`, `CustomLabel`, `GHCachedImage`, `ImageCarousel`.
 
 ---
 
