@@ -97,7 +97,7 @@ namespace GnollHackX.Pages.Game
         private bool _gamepadLeftModifierHeld = false;     /* L1: the layer of A, B, X, Y, Menu and the triggers */
         private bool _gamepadRightModifierHeld = false;    /* R1: the layer of the D-pad, the left stick, View and the triggers */
         private bool _gamepadViewWithRightModifier = false; /* R1 was held when View went down */
-        private bool _gamepadRunArmed = false;              /* L3 was pressed: the next direction rushes */
+        private bool _gamepadRunArmed = false;              /* L3 was pressed: the next direction runs */
         private int _gamepadDPadHeld = 0;                   /* walking D-pad directions pressed in Normal or Busy */
         private int _gamepadDPadPrevHeld = 0;               /* _gamepadDPadHeld at the previous UpdateGamepadDPadWalk */
         private int _gamepadDPadOwed = 0;                   /* walking D-pad directions pressed since the last D-pad step */
@@ -1002,7 +1002,7 @@ namespace GnollHackX.Pages.Game
                     SignalGamepadBusyInput(ctx);
                     if (_gamepadRunArmed)
                     {
-                        SubmitGamepadKeys(GHGamepadMapContext.Normal, now, MapK(nh_keyfunc.NHKF_RUSH), GamepadSectorDirections[paidSector]);
+                        SubmitGamepadKeys(GHGamepadMapContext.Normal, now, MapK(nh_keyfunc.NHKF_RUN), GamepadSectorDirections[paidSector]);
                         SetGamepadRunArmed(false);
                     }
                     else
@@ -1041,7 +1041,7 @@ namespace GnollHackX.Pages.Game
                 return;
             if (_gamepadRunArmed)
             {
-                if (TrySendGamepadKeyPair(GHGamepadMapContext.Normal, MapK(nh_keyfunc.NHKF_RUSH), GamepadSectorDirections[sector]))
+                if (TrySendGamepadKeyPair(GHGamepadMapContext.Normal, MapK(nh_keyfunc.NHKF_RUN), GamepadSectorDirections[sector]))
                 {
                     d.RunSent = true;
                     _gamepadDPadOwed = 0;
@@ -1442,8 +1442,8 @@ namespace GnollHackX.Pages.Game
                     /* A due step or run that the gate holds back signals the busy game */
                     if (_gamepadRightModifierHeld || _gamepadRunArmed)
                     {
-                        /* Run: once per engaged direction; the armed L3 is the keyboard's rush prefix */
-                        if (TrySendGamepadKeyPair(GHGamepadMapContext.Normal, MapK(_gamepadRunArmed ? nh_keyfunc.NHKF_RUSH : nh_keyfunc.NHKF_RUN), dir))
+                        /* Run: once per engaged direction */
+                        if (TrySendGamepadKeyPair(GHGamepadMapContext.Normal, MapK(nh_keyfunc.NHKF_RUN), dir))
                         {
                             d.RunSent = true;
                             SetGamepadRunArmed(false);

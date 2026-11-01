@@ -71,6 +71,12 @@ namespace GnollHackX
         IDispatcherTimer _generalTimer;
 #endif
 
+        private const string ClassicModeDescription = "Death is permanent.";
+        private const string CasualModeDescription = "Non-scoring mode with persistent saves.";
+        private const string WizardModeDescription = "Debug mode with immortality and special commands.";
+        /* Play Game's width less the padding of modeDescriptionBackground */
+        private const double ModeDescriptionMaxTextWidth = 284.0;
+
         public MainPage()
         {
             GHApp.MaybeWriteGHLog("MainPage constructor: " + GHApp.MainPageConstructorRunNumber, true, GHConstants.SentryGnollHackGeneralCategoryName);
@@ -129,14 +135,14 @@ namespace GnollHackX
                     pv.IsTabStop = false;
                 }
             };
-            UIUtils.SetStyledToolTip(classicModeLabel, "Death is permanent.");
-            UIUtils.SetStyledToolTip(casualModeLabel, "Non-scoring mode with persistent saves.");
-            UIUtils.SetStyledToolTip(wizardModeLabel, "Debug mode with immortality and special commands.",
+            UIUtils.SetStyledToolTip(classicModeLabel, ClassicModeDescription);
+            UIUtils.SetStyledToolTip(casualModeLabel, CasualModeDescription);
+            UIUtils.SetStyledToolTip(wizardModeLabel, WizardModeDescription,
                 new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 173, 216, 230)));
 #elif GNH_AVALONIA
-            UIUtils.SetStyledToolTip(classicModeLabel, "Death is permanent.");
-            UIUtils.SetStyledToolTip(casualModeLabel, "Non-scoring mode with persistent saves.");
-            UIUtils.SetStyledToolTip(wizardModeLabel, "Debug mode with immortality and special commands.",
+            UIUtils.SetStyledToolTip(classicModeLabel, ClassicModeDescription);
+            UIUtils.SetStyledToolTip(casualModeLabel, CasualModeDescription);
+            UIUtils.SetStyledToolTip(wizardModeLabel, WizardModeDescription,
                 new Avalonia.Media.Immutable.ImmutableSolidColorBrush(Avalonia.Media.Color.FromArgb(255, 173, 216, 230)));
 #endif
             Shell.SetNavBarIsVisible(this, false);
@@ -838,6 +844,7 @@ namespace GnollHackX
             OptionsButton.IsVisible = GHApp.DeveloperMode;
 
             UpdateMobileVersionLabel();
+            UpdateModeDescription();
         }
 
         private async Task<bool> BackButtonPressed(object sender, EventArgs e)
@@ -2666,7 +2673,7 @@ namespace GnollHackX
            it is shown, in the order the special-key handler checks them; B on a popup acts as Escape, on the main
            layer nothing. A switch or check box shows its focus as a tint on the row holding it and its label. Right on
            a mode switch or Play Game goes to Exit, Left on an upper button to Classic Mode, and X, Y, Menu and View
-           are shortcuts (HandleGamepadButton). */
+           are shortcuts (HandleGamepadButton). modeDescriptionLabel says what the focused mode switch does. */
         private readonly GHGamepadPageNavigator _gamepadNavigator = new GHGamepadPageNavigator();
 
         private void InitializeGamepadNavigation()
@@ -2674,6 +2681,12 @@ namespace GnollHackX
             _gamepadNavigator.IsBusy = () => WaitLayout.IsVisible;
 
             GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
+            modeDescriptionBackground.BackgroundColor = UIUtils.GamepadDescriptionBackgroundColor;
+            main.Focus.ShownFocusChanged = view =>
+            {
+                _gamepadShownFocus = view;
+                UpdateModeDescription();
+            };
             /* Left on an upper button goes to Classic Mode, or Play Game while that is hidden */
             GHGamepadFocusList.EntryOptions leftToModesOptions = new GHGamepadFocusList.EntryOptions();
             leftToModesOptions.Adjust = dir =>
@@ -2735,6 +2748,34 @@ namespace GnollHackX
             layer.Back = GamepadPopupBack;
 
             main.FocusInitial();
+        }
+
+        private View _gamepadShownFocus;
+
+        /* The text of the mode switch showing the gamepad focus; empty for anything else. The row is reserved
+           from when a controller can be used, so that the switches stay put as the text changes. */
+        private void UpdateModeDescription()
+        {
+            if (!modeDescriptionGrid.IsVisible && GHGamepadService.IsAvailable)
+                modeDescriptionGrid.IsVisible = true;
+
+            View view = _gamepadShownFocus;
+            string text = "";
+            if (view != null && GHGamepadPageNavigator.IsViewAvailable(view))
+            {
+                if (view == classicModeSwitch)
+                    text = ClassicModeDescription;
+                else if (view == casualModeSwitch)
+                    text = CasualModeDescription;
+                else if (view == wizardModeSwitch)
+                    text = WizardModeDescription;
+            }
+            modeDescriptionBackground.IsVisible = text.Length > 0;
+            if (text.Length == 0 || text == modeDescriptionLabel.Text)
+                return;
+            modeDescriptionLabel.TextColor = view == wizardModeSwitch ? GHColors.LightBlue : GHColors.White;
+            modeDescriptionLabel.Text = text;
+            modeDescriptionLabel.SizeToText(ModeDescriptionMaxTextWidth);
         }
 
         /* Escape through the special-key handler, which posts the asynchronous closes */

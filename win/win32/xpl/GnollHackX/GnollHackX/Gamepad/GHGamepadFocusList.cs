@@ -64,6 +64,9 @@ namespace GnollHackX.Controls
         /* Scrolled to keep the focused view visible, if set */
         public ScrollView ScrollView { get; set; }
 
+        /* After RefreshVisuals and ClearVisuals: the view showing the focus, or null when none does */
+        public Action<View> ShownFocusChanged { get; set; }
+
         /* The platform's own scroll-into-view, which scrolls the enclosing scroll view minimally; true when it
            handled the view. Set on Avalonia, where ScrollView.ScrollToAsync(element) computes no scroll. */
         public static Func<View, bool> PlatformBringIntoView;
@@ -349,6 +352,7 @@ namespace GnollHackX.Controls
             int i;
             for (i = 0; i < _entries.Count; i++)
                 SetEntryFocused(_entries[i], active && i == _index);
+            RaiseShownFocusChanged(active ? FocusedView : null);
 
             if (active && ScrollView != null)
             {
@@ -363,6 +367,22 @@ namespace GnollHackX.Controls
             int i;
             for (i = 0; i < _entries.Count; i++)
                 SetEntryFocused(_entries[i], false);
+            RaiseShownFocusChanged(null);
+        }
+
+        private void RaiseShownFocusChanged(View view)
+        {
+            Action<View> changed = ShownFocusChanged;
+            if (changed == null)
+                return;
+            try
+            {
+                changed(view);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
         private static void SetEntryFocused(Entry entry, bool focused)

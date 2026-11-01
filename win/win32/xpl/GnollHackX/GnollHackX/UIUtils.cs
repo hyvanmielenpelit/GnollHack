@@ -61,6 +61,7 @@ namespace GnollHackX
         public static readonly Color GamepadFocusTintColor = Color.FromRgba(1.0, (double)0xBB / 255.0, 0.0, (double)0x40 / 255.0);
         public static readonly Color GamepadFocusRingColor = Color.FromRgba(1.0, (double)0xD2 / 255.0, (double)0x4D / 255.0, (double)0xE6 / 255.0);
         public static readonly Color GamepadFocusBackgroundColor = Color.FromRgba(1.0, (double)0xBB / 255.0, 0.0, (double)0x55 / 255.0);
+        public static readonly Color GamepadDescriptionBackgroundColor = Color.FromRgba(0.0, 0.0, 0.0, 0.5);
 
         public static readonly SKColorFilter MapHighlightColorFilter = SKColorFilter.CreateLighting(new SKColor(255, 255, 255), new SKColor(10, 10, 10));
         public static readonly SKColorFilter LookHighlightColorFilter = SKColorFilter.CreateLighting(new SKColor(255, 245, 255), new SKColor(10, 0, 10));

@@ -331,7 +331,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-27
+- Last checked: 2026-11-01
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasViewHandler.cs` (`GHAvaloniaCanvasViewHandler.CreatePlatformView`)
 - Remove when: ACM's canvas view raises `PaintSurface` where a handler may change MAUI properties, as SkiaSharp's views do on other platforms, and Verify removal passes.
 - Related: WA-AVALONIA-0021
@@ -344,8 +344,9 @@ changes to the visual tree are not allowed.
 
 **Workaround.** `GHAvaloniaCanvasControl` paints into its own raster surface on the UI
 thread, in one coalesced dispatcher operation below layout priority, and `Render` only
-draws the last painted image. A request made inside the platform frame callback paints at
-once instead, which is also outside the render pass (WA-AVALONIA-0021).
+draws the last painted image, clipped to the control's bounds because an image painted
+before a resize can be larger than them. A request made inside the platform frame callback
+paints at once instead, which is also outside the render pass (WA-AVALONIA-0021).
 
 **Verify removal.** Make the canvas handler create ACM's own control. Build the Avalonia
 flavor, play a game and open menus, popups and the message window; nothing may throw or
@@ -354,6 +355,7 @@ log a paint failure, and every canvas must update.
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
 - 2026-10-27 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | Requests inside the platform frame callback paint at once, for WA-AVALONIA-0021.
+- 2026-11-01 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | `Render` clips the image to the control's bounds; a canvas that shrank left stale pixels outside them.
 
 ## WA-AVALONIA-0011: ACM font registrar misreads UTF-16 font names
 

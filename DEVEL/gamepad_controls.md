@@ -29,7 +29,8 @@ presses the focused button and B goes back (on the main menu B does nothing; its
 take A and B as well). The main menu starts on Play Game, and the Reset page starts on Close.
 On the main menu the focus also reaches the Classic, Casual and Wizard Mode switches, between
 Exit and Play Game, and a popup's "do not show again" check box: their row is tinted while
-focused, and A flips them as a tap does. Right on a mode switch or Play Game goes to Exit, and
+focused, and A flips them as a tap does. A centered line above the switches says what the focused
+switch does. Right on a mode switch or Play Game goes to Exit, and
 Left on the buttons from Reset to Exit goes to Classic Mode. The main menu's shortcuts are X Play Game, Y About, Menu Settings and View Vault, each when its
 button is available. On most pages, L2/R2 go to the first and last entry of the scrolling list
 (or of the page when it has none). The game menu has no L2/R2, and on Top Scores and Replays the
@@ -100,7 +101,7 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, one step per press and then continuously while held, Left toggles the minimap, Right returns to normal zoom | -- |
 | Left stick | Walk (8-way) | -- | Run in that direction | -- |
 | Right stick | Pan the map | | | |
-| L3 (also the left trackpad's click) | **Run**: the next direction, on the left stick or the D-pad, rushes as the keyboard's `g` prefix does | -- | Center the map on the hero | -- |
+| L3 (also the left trackpad's click) | **Run**: the next direction, on the left stick or the D-pad, runs as the keyboard's `G` prefix does | -- | Center the map on the hero | -- |
 | R3 | Open the Toggles radial | | | |
 | L4, L5, R4, R5 (back grips) | Configurable; defaults Apply, Cast, Cast Quick, Zap Quick | | | |
 The grips are set in **Settings, Controller**. Their pickers appear only when the controller
@@ -144,11 +145,10 @@ L1 is up (`<`) and R1 is down (`>`). A prompt raised by a held trigger opens the
 instead.
 
 **Running with L3.** L3 on the map arms a run: the hint strip shows it, and the next direction on the
-left stick or the D-pad sends the keyboard's rush prefix (`g`) with that direction, once. Clicking
+left stick or the D-pad sends the keyboard's run prefix (`G`) with that direction, once, as R1 + the left stick does. Clicking
 L3 while the stick is pushed runs at once. L3 again or B cancels it, and B then does nothing else; any
 other command button cancels it and does its own action. Only the direction reaches the game with the
-prefix, so a cancel never brings up the core's invalid direction help. R1 + the left stick still runs
-with the `G` prefix.
+prefix, so a cancel never brings up the core's invalid direction help.
 
 In both prompts, L3 opens the Actions radial without its commands pages, and R3 the Toggles radial.
 

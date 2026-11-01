@@ -388,6 +388,8 @@ namespace GnollHackM
                         GHGLResourceGraveyard.Drain(grContext);
 
                     canvas.Save();
+                    /* An image painted before a resize can be larger than the bounds */
+                    canvas.ClipRect(new SKRect(0, 0, (float)Bounds.Width, (float)Bounds.Height));
                     canvas.Scale(1.0f / (float)_scaling);
                     canvas.DrawImage(image, 0, 0, SKSamplingOptions.Default, null);
                     canvas.Restore();

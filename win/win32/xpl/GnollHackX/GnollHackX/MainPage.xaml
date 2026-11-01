@@ -60,6 +60,12 @@
             <StackLayout x:Name="StartButtonLayout" Spacing="6" Opacity="0" IsVisible="false"
               HorizontalOptions="Center" VerticalOptions="Center" AbsoluteLayout.LayoutBounds="0.5, 0.90, AutoSize, AutoSize"
               AbsoluteLayout.LayoutFlags="PositionProportional" WidthRequest="300" >
+                <Grid x:Name="modeDescriptionGrid" IsVisible="False" InputTransparent="True" WidthRequest="300" HeightRequest="50" Margin="0,0,0,4" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Grid x:Name="modeDescriptionBackground" IsVisible="False" Padding="8,4" HorizontalOptions="Center" VerticalOptions="End">
+                        <gnh:CustomLabel x:Name="modeDescriptionLabel" TextColor="White" FontSize="17" OutlineWidth="2" FontFamily="Underwood"
+                               HorizontalTextAlignment="Center" VerticalTextAlignment="Center" HorizontalOptions="Center" VerticalOptions="Center" />
+                    </Grid>
+                </Grid>
                 <Grid x:Name="classicModeGrid" RowSpacing="6" ColumnSpacing="12" IsVisible="True" Margin="0,0,0,10" HeightRequest="32" HorizontalOptions="Center" VerticalOptions="Center">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />

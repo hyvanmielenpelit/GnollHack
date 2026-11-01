@@ -798,6 +798,19 @@ namespace GnollHackX
             return (double)skwidth / scale;
         }
 
+        /* Requests the size of Text wrapped at maxWidth, with room for the outline and for layout rounding, which
+           could otherwise wrap the text once more at the arranged width */
+        public void SizeToText(double maxWidth)
+        {
+            float scale = GHApp.DisplayDensity;
+            if (scale <= 0)
+                return;
+            TextAreaSize textAreaSize = CalculateTextAreaSize((float)maxWidth * scale);
+            double slack = OutlineWidth + 2.0;
+            WidthRequest = Math.Min(maxWidth, Math.Ceiling(textAreaSize.Width / scale) + slack);
+            HeightRequest = Math.Ceiling(textAreaSize.Height / scale) + slack;
+        }
+
         private ConcurrentDictionary<long, TouchEntry> TouchDictionary = new ConcurrentDictionary<long, TouchEntry>();
 
         private float _interlockedTextScrollOffset = 0;
