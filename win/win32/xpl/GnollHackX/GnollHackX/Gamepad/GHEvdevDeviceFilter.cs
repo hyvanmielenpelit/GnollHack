@@ -143,7 +143,7 @@ namespace GnollHackX
     {
         Auto,   /* Steam's virtual pads, on a Steam Deck launched by Steam */
         Off,
-        Any     /* also physical pads, without the Steam Deck and Steam launch requirements */
+        Any     /* also Steam's virtual pad without a Steam launch, and physical pads on a Steam Deck */
     }
 
     /* The launch environment as the evdev backend sees it, read once */
@@ -249,7 +249,13 @@ namespace GnollHackX
             return GHEvdevMode.Auto;
         }
 
-        /* auto: a Steam launch on a Steam Deck; any: always; off: never */
+        /* Physical pads are read off a Steam Deck, where nothing else provides them, and on any device with any */
+        public bool AcceptsPhysicalPads
+        {
+            get { return Mode == GHEvdevMode.Any || (Mode == GHEvdevMode.Auto && !IsSteamDeck); }
+        }
+
+        /* auto: anywhere but a Steam Deck, and there a Steam launch; any: always; off: never */
         public bool IsEvdevEligible(out string reason)
         {
             switch (Mode)
@@ -261,14 +267,14 @@ namespace GnollHackX
                 reason = "mode=any";
                 return true;
             default:
-                if (!AllowSteamVirtual)
-                {
-                    reason = "no Steam launch";
-                    return false;
-                }
                 if (!IsSteamDeck)
                 {
                     reason = "not a Steam Deck";
+                    return true;
+                }
+                if (!AllowSteamVirtual)
+                {
+                    reason = "no Steam launch";
                     return false;
                 }
                 reason = "Steam launch on a Steam Deck";
@@ -331,7 +337,7 @@ namespace GnollHackX
                 return GHEvdevVerdict.NotAllowed;
             if (env.Ignore.Contains(vendor, product))
                 return GHEvdevVerdict.IgnoredBySteam;
-            if (env.Mode == GHEvdevMode.Auto)
+            if (!env.AcceptsPhysicalPads)
                 return GHEvdevVerdict.PhysicalUnderSteam;
             /* hid-steam's Steam Deck layout puts the triggers on ABS_HAT2X and ABS_HAT2Y */
             if (vendor == SteamVendorId)

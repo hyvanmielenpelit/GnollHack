@@ -31,6 +31,7 @@ The devices:
 |-----------------------|-------|-------|------|---------------|
 | Steam Deck | Avalonia Linux | Yes | **Primary** | Through Steam, in Gaming Mode, from the Non-Steam Game shortcut to `run-gnollhack.sh` |
 | Windows PC, Xbox controller | WinUI 3 | Yes | **Platform** | From Visual Studio, Debug x64; see [Xbox on WinUI 3](#xbox-on-winui-3) |
+| Linux PC, Xbox controller | Avalonia Linux | Yes | **Platform** | From the Linux package; see [Xbox on Desktop Linux](#xbox-on-desktop-linux) |
 | Windows PC, Xbox controller | Avalonia Windows | No | **Platform** for its own code; otherwise a backup and extra check | Directly, from the build output; see [Xbox on Avalonia Windows](#xbox-on-avalonia-windows) |
 
 Android and iOS have no controller support yet. When a build gains it, add a row with the role **Platform**, and
@@ -49,6 +50,7 @@ navigation, hint strips, in-page popups, `FileDialogView`, controller settings, 
 | Steam Deck | `GHEvdev*`, `GHAvaloniaSteamKeyboard`, `Platforms/Avalonia/Cef/`, `Platforms/Linux/Packaging/steam/input/`, `steamdeck/run-gnollhack.sh`, `#if LINUX` branches, the grip bridge |
 | Avalonia Windows | The Windows branches of Avalonia code (`#else` of `#if LINUX`, `#elif GNH_AVALONIA` after `GNH_AVALONIA && LINUX`), and the `NativeWebView` paths (`NativeWebViewHost`, `_nativeView` in `GHAvaloniaWebScriptHost`), which the Deck does not run because it uses CEF |
 | WinUI 3 | `Platforms/Windows/GHWinUI*`, `GHWebView2FileChooser`, `KeyboardHook`'s key note, `#if WINDOWS` branches in controller code |
+| Desktop Linux | The `!IsSteamDeck` branches of the evdev backend and `GHAvaloniaGamepad`, and physical pads in `GHEvdev*` |
 | Both Windows builds | `GnollHackM/Gamepad/GHXInputGamepadBackend.cs`. Test on WinUI 3 |
 
 Other code in `Platforms/Avalonia/`, such as `GHAvaloniaGamepad`, runs on the Deck too, so the Deck covers it.
@@ -168,6 +170,16 @@ Only the orchestrating agent does this, after every subagent has returned.
 package was built, it was **not** deployed, and the Deck tests are outstanding. Give the deploy
 command and the test list, and offer the Xbox backup below. Record the same in the plan's `task.md`
 and walkthrough. Never describe the work as verified.
+
+## Xbox on Desktop Linux
+
+Build the package from `win\win32\xpl\GnollHackM\Platforms\Linux\Packaging`, then the user runs the tar.gz from
+`GnollHackM\bin\LinuxPackages\<version>\` on the PC with the controller connected. There is no deploy step. The `GAMEPAD` lines
+in its log name each pad and verdict.
+
+```powershell
+.\Build-LinuxPackages.ps1 -Targets TarGz -NoSentryUpload
+```
 
 ## Xbox on WinUI 3
 

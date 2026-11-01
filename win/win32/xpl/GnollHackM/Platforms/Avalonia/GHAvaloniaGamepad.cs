@@ -154,7 +154,7 @@ namespace GnollHackM
             if (OperatingSystem.IsLinux())
             {
                 string error;
-                if (!GHGamepadService.RegisterBackend(new GHEvdevGamepadBackend(), out error))
+                if (!GHGamepadService.RegisterBackend(new GHEvdevGamepadBackend(), !GHApp.IsSteamDeck, out error))
                     WriteLog("GAMEPAD evdev backend not started: " + error);
             }
 #else

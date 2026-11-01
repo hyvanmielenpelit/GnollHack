@@ -99,13 +99,71 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
-        public void VirtualPad_IneligibleInAutoWhenNotADeck()
+        public void VirtualPad_AcceptedUnderSteamWhenNotADeck()
         {
             GHGamepadLaunchEnvironment env = LaunchEnvironment(DeckSteamLaunch(), false);
             string reason;
 
-            Assert.False(env.IsEvdevEligible(out reason));
+            Assert.True(env.IsEvdevEligible(out reason));
             Assert.Equal("not a Steam Deck", reason);
+            Assert.Equal(GHEvdevVerdict.AcceptSteamVirtual, ClassifyXpad(0x28de, 0x11ff, env));
+        }
+
+        [Fact]
+        public void VirtualPad_NotOursWithoutASteamLaunchWhenNotADeck()
+        {
+            GHGamepadLaunchEnvironment env = LaunchEnvironment(new Dictionary<string, string>(), false);
+
+            Assert.Equal(GHEvdevVerdict.SteamVirtualNotOurs, ClassifyXpad(0x28de, 0x11ff, env));
+        }
+
+        [Fact]
+        public void PhysicalPad_AcceptedInAutoWhenNotADeck()
+        {
+            GHGamepadLaunchEnvironment env = LaunchEnvironment(new Dictionary<string, string>(), false);
+            string reason;
+
+            Assert.True(env.IsEvdevEligible(out reason));
+            Assert.Equal(GHEvdevVerdict.AcceptPhysical, ClassifyXpad(0x045e, 0x0b13, env));
+        }
+
+        [Fact]
+        public void PhysicalPad_IgnoredWhenSteamWrapsIt()
+        {
+            GHGamepadLaunchEnvironment env = LaunchEnvironment(DeckSteamLaunch(), false);
+
+            Assert.Equal(GHEvdevVerdict.IgnoredBySteam, ClassifyXpad(0x045e, 0x0b13, env));
+            Assert.Equal(GHEvdevVerdict.AcceptSteamVirtual, ClassifyXpad(0x28de, 0x11ff, env));
+        }
+
+        [Fact]
+        public void PhysicalPad_AcceptedUnderSteamWhenNotListed()
+        {
+            Dictionary<string, string> variables = DeckSteamLaunch();
+            variables.Remove("SDL_GAMECONTROLLER_IGNORE_DEVICES");
+            GHGamepadLaunchEnvironment env = LaunchEnvironment(variables, false);
+
+            Assert.Equal(GHEvdevVerdict.AcceptPhysical, ClassifyXpad(0x045e, 0x0b13, env));
+        }
+
+        [Fact]
+        public void ValvePad_RejectedWhenNotADeck()
+        {
+            GHGamepadLaunchEnvironment env = LaunchEnvironment(new Dictionary<string, string>(), false);
+
+            Assert.Equal(GHEvdevVerdict.ValvePhysical, ClassifyXpad(0x28de, 0x1205, env));
+        }
+
+        [Fact]
+        public void Off_DisablesEverythingWhenNotADeck()
+        {
+            Dictionary<string, string> variables = new Dictionary<string, string>();
+            variables["GNOLLHACK_GAMEPAD_EVDEV"] = "off";
+            GHGamepadLaunchEnvironment env = LaunchEnvironment(variables, false);
+            string reason;
+
+            Assert.False(env.IsEvdevEligible(out reason));
+            Assert.Equal(GHEvdevVerdict.Disabled, ClassifyXpad(0x045e, 0x0b13, env));
         }
 
         [Fact]

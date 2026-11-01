@@ -2,7 +2,7 @@
 
 GnollHack's native gamepad controls are built for the **Steam Deck**: the Avalonia Linux
 build, launched through Steam. They also work with an **Xbox controller** in the WinUI 3
-build, and in the Avalonia Windows build, for development. Android and iOS have no gamepad
+build and on desktop Linux, and in the Avalonia Windows build, for development. Android and iOS have no gamepad
 support yet.
 
 Contents:
@@ -402,7 +402,7 @@ A keyboard template produces no virtual pad, so keys behave as they always did.
 
 | Backend | Platform | Used when |
 |---------|----------|-----------|
-| evdev | Avalonia Linux | `GNOLLHACK_GAMEPAD_EVDEV` allows it (below) |
+| evdev | Avalonia Linux | `GNOLLHACK_GAMEPAD_EVDEV` allows it (below); off a Steam Deck, available once a controller has been seen |
 | Back-grip key bridge | Avalonia, any OS | `GNOLLHACK_GAMEPAD_KEYS` allows it (below) |
 | XInput | Windows (WinUI 3 and Avalonia) | Always; available once a controller has been seen. Xbox controllers through `xinput1_4.dll` |
 
@@ -412,9 +412,9 @@ count too: Steam gives them a non-zero `SteamAppId`.
 
 | Variable | Values | Effect |
 |----------|--------|--------|
-| `GNOLLHACK_GAMEPAD_EVDEV` | `auto` (default) | evdev runs only on a Steam Deck launched by Steam, and reads only Steam's virtual pads. A terminal launch never reads the pad |
+| `GNOLLHACK_GAMEPAD_EVDEV` | `auto` (default) | On a Steam Deck, evdev runs when launched by Steam and reads only Steam's virtual pads; a terminal launch never reads the pad. Elsewhere it reads physical pads (never Valve's), plus Steam's virtual pads under a Steam launch |
 | | `off` | evdev does not run |
-| | `any` | Drops the Steam Deck and Steam-launch requirements, and also accepts physical Xbox-layout pads (never Valve's physical devices); for desktop Linux testing |
+| | `any` | Also runs on a Steam Deck without a Steam launch, with physical pads (never Valve's), and reads Steam's virtual pads without a Steam launch; for testing |
 | `GNOLLHACK_GAMEPAD_KEYS` | `auto` (default) | The key bridge runs on a Steam Deck launched by Steam |
 | | `on` | Always: F2-F5 act as the grips, so a PC developer can press them on a keyboard |
 | | `off` | Never; F2-F5 are ordinary keys |
@@ -427,8 +427,9 @@ It never grabs a device.
 
 The bridge only takes F2-F5 without modifiers. **Settings, Controller, Use Controller** turns
 the whole feature off: evdev and XInput input is discarded, and F2-F5 pass through to the game
-as keys. The Controller section is shown only when a backend is available: evdev and the key
-bridge from their start, XInput once a controller has been seen in the session.
+as keys. The Controller section is shown only when a backend is available: evdev on a Steam Deck
+and the key bridge from their start, evdev elsewhere and XInput once a controller has been seen
+in the session.
 
 ## Diagnostics
 
@@ -498,7 +499,9 @@ For the grips, set `GNOLLHACK_GAMEPAD_KEYS=on` and press F2-F5 on the keyboard.
 
 ### Linux Desktop
 
-WSL has no gamepad drivers and is not a test platform. On a Linux desktop with an Xbox pad, use
-`GNOLLHACK_GAMEPAD_EVDEV=any`, or launch through desktop Steam as a Non-Steam game to read its
-virtual pad. The evdev decoding is covered by unit tests whose fixtures are the Deck's real
+A controller works when plugged in, before or during the game, and the game plays with the mouse
+as usual without one. Under a Steam launch the virtual pad is read if Steam Input wraps the
+controller, and the controller itself if not. If nothing happens, look for `GAMEPAD dev` lines in
+the log: `open=EACCES` means this user may not read the device, which udev normally grants to the
+active session. WSL has no gamepad drivers and is not a test platform. The evdev decoding is covered by unit tests whose fixtures are the Deck's real
 capability bitmaps and raw dumps.

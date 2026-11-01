@@ -9,8 +9,8 @@ using GnollHackX;
 
 namespace GnollHackM
 {
-    /* Reads Steam Input's virtual gamepad from /dev/input/event* (with GNOLLHACK_GAMEPAD_EVDEV=any, also
-       physical Xbox-layout pads), with non-blocking reads on the UI thread. Candidates are pre-filtered
+    /* Reads game controllers from /dev/input/event*: Steam Input's virtual pad, and off a Steam Deck or with
+       GNOLLHACK_GAMEPAD_EVDEV=any also physical pads, with non-blocking reads on the UI thread. Candidates are pre-filtered
        through sysfs, then opened and classified by GHEvdevDeviceFilter; inotify on /dev/input reports
        hot-plug, and a node udev has not yet given its uaccess ACL is retried on a schedule. Each pad's events
        go through GHEvdevDecoder to the sink with kernel timestamps; a silent snapshot follows open and Resync.
@@ -56,6 +56,8 @@ namespace GnollHackM
 
         /* The Steam virtual pad does not rest at exactly 0 (Step 0: up to 4.7 % of full scale) */
         private const float InnerDeadzone = 0.15f;
+        /* As XInput's: a worn stick must not take over from the mouse */
+        private const float PhysicalInnerDeadzone = 0.24f;
 
         private sealed class DeniedNode
         {
@@ -639,7 +641,7 @@ namespace GnollHackM
             GHEvdevLayout layout = GHEvdevLayout.Create(_keyBits, _absBits, absInfos, id.Vendor);
             info.Capabilities = layout.Capabilities;
             info.IsAuxiliary = false;
-            info.InnerDeadzone = InnerDeadzone;
+            info.InnerDeadzone = verdict == GHEvdevVerdict.AcceptPhysical ? PhysicalInnerDeadzone : InnerDeadzone;
 
             OpenDevice dev = new OpenDevice();
             dev.Path = path;
@@ -689,7 +691,7 @@ namespace GnollHackM
         private void CheckHints()
         {
             _hintsChecked = true;
-            if (_env.AllowSteamVirtual && !_sawSteamVirtual)
+            if (_env.IsSteamDeck && _env.AllowSteamVirtual && !_sawSteamVirtual)
                 WriteDeviceLog("GAMEPAD hint: no Steam virtual gamepad (GnollHack's Steam Input layout is not a gamepad layout?)");
             if (_devices.Count == 0 && _sawValvePhysical)
                 WriteDeviceLog("GAMEPAD hint: only valve-physical device present (Steam Input off?)");
