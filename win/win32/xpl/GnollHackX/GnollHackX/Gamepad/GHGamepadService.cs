@@ -18,7 +18,8 @@ namespace GnollHackX
        the top modal page, else the game page, else the main page, in or out of a game. Routing: an open message popup gets the
        event (IGHGamepadPopupPage, else B Pressed as Escape and A ShortPressed as Enter); else an open file dialog; else an
        IGHGamepadHandlingPage; else the keyboard adapter.
-       Presses are captured per (top page, popup open). Every Poll ends with the game page's frame tick. */
+       Presses are captured per (top page, popup open). Every Poll ends with the game page's frame tick, and that of a
+       page showing a radial. */
     public static class GHGamepadService
     {
         private const double ErrorLogIntervalSeconds = 10.0;
@@ -230,6 +231,9 @@ namespace GnollHackX
             UpdateControllerState(true);
         }
 
+        /* A page whose radial shows and needs the frame tick; the page sets and clears it. UI thread only */
+        public static IGHGamepadFrameTickPage RadialTickPage { get; set; }
+
         /* Once per UI frame */
         public static void Poll(long nowTicks)
         {
@@ -244,6 +248,9 @@ namespace GnollHackX
                     IGHGamepadFrameTickPage tickPage = GHApp.CurrentGamePage as IGHGamepadFrameTickPage;
                     if (tickPage != null)
                         tickPage.GamepadFrameTick(nowTicks);
+                    IGHGamepadFrameTickPage radialPage = RadialTickPage;
+                    if (radialPage != null)
+                        radialPage.GamepadFrameTick(nowTicks);
                 }
                 catch (Exception ex)
                 {

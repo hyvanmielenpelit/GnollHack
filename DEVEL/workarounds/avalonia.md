@@ -724,8 +724,8 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-27
-- Code: `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.CompositionTarget_Rendering`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLControl.cs` (`GHAvaloniaGLControl.RequestPresent`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.RequestPaint`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.RequestPresent`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.FlushDeferredPaints`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/GamePage.Radial.cs` (`GamePage.InvalidateRadialCanvas`)
+- Last checked: 2026-11-02
+- Code: `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.CompositionTarget_Rendering`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLControl.cs` (`GHAvaloniaGLControl.RequestPresent`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.RequestPaint`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.RequestPresent`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.FlushDeferredPaints`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/GamePage.Radial.cs` (`GamePage.InvalidateRadialCanvas`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/MainScreen/SettingsPage.Pickers.cs` (`SettingsPage.GamepadFrameTick`)
 - Remove when: An animation frame that commits nothing is followed by one at the display's next refresh in a release GnollHack uses, and Verify removal passes.
 - Related: WA-AVALONIA-0010
 
@@ -753,6 +753,7 @@ workaround is still needed if the callback intervals after skipped ticks cluster
 
 Checks:
 - 2026-10-27 | Avalonia 12.1.4 | still-needed | Measured on a Steam Deck OLED in Desktop Mode, before the workaround: 15.75 ms median after skipped ticks. No upstream issue found.
+- 2026-11-02 | Avalonia 12.1.4 | unverified | SettingsPage's command radial repaints from the frame tick as GamePage's does.
 
 ## WA-AVALONIA-0022: FileResult.OpenReadAsync throws for ACM's file picker results
 

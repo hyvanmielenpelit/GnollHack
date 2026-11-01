@@ -15,9 +15,7 @@ namespace GnollHackX
          caches.
        - Controller buttons are drawn as badges by an owned GHGamepadHintRenderer, which takes
          this renderer's typefaces and text blob cache setting.
-       - The definition's Accent picks the gold, teal or violet border, highlight, glow and flash colors.
-         A teal radial assigns: its toggle items mark only the current choice, with a "NOW" pill,
-         and its hub shows no "Currently: On/Off" line.
+       - The definition's Accent picks the gold or violet border, highlight, glow and flash colors.
        - A SeeThrough definition gets nearly clear slices, a lighter hub, and no slice glow or vignette, to keep the
          map readable; the slice outlines carry the highlight.
        - Free of GHApp: the host supplies the typefaces, the icon lookup, the text blob cache
@@ -42,15 +40,10 @@ namespace GnollHackX
         public static readonly string OffText = "Off";
         public static readonly string PillOnText = "ON";
         public static readonly string PillOffText = "OFF";
-        public static readonly string PillNowText = "NOW";
 
         private static readonly SKColor Gold = new SKColor(0xD4, 0xA0, 0x17);
         private static readonly SKColor GoldHighlightFill = new SKColor(58, 46, 10, 0xE6);
         private static readonly SKColor GoldFlashFill = new SKColor(128, 102, 26, 0xF0);
-        private static readonly SKColor Teal = new SKColor(0x20, 0xB2, 0xAA);
-        private static readonly SKColor TealHighlightFill = new SKColor(10, 52, 50, 0xE6);
-        private static readonly SKColor TealFlashFill = new SKColor(16, 89, 85, 0xF0);
-        private static readonly SKColor TealTitle = new SKColor(0x9F, 0xE8, 0xE2);
         private static readonly SKColor Violet = new SKColor(0xA8, 0x7B, 0xFF);
         private static readonly SKColor VioletHighlightFill = new SKColor(44, 30, 74, 0xE6);
         private static readonly SKColor VioletFlashFill = new SKColor(84, 58, 140, 0xF0);
@@ -140,7 +133,6 @@ namespace GnollHackX
         private float _idleTextBaseSize;
         private float _pillOnWidth;
         private float _pillOffWidth;
-        private float _pillNowWidth;
         private float _currentlyWidth;
         private float _onWidth;
         private float _offWidth;
@@ -152,7 +144,6 @@ namespace GnollHackX
         private GHGamepadHintRenderer _badgeRenderer;   /* created by the first paint */
 
         /* The definition's accent colors, resolved at the top of each paint */
-        private bool _tealAccent;
         private SKColor _accent = Gold;
         private SKColor _accentHighlightFill = GoldHighlightFill;
         private SKColor _accentFlashFill = GoldFlashFill;
@@ -405,12 +396,11 @@ namespace GnollHackX
                 _textPaint.DrawTextOnCanvas(canvas, layout.Label, tx, ty, SKTextAlign.Center);
             }
 
-            /* A teal radial marks only the current choice */
-            if (isToggle && (isOn || !_tealAccent))
+            if (isToggle)
                 DrawPill(canvas, g, dirX, dirY, offset, isOn, snap);
         }
 
-        /* ON (green) or OFF (outline); in a teal radial, NOW (teal) */
+        /* ON (green) or OFF (outline) */
         private void DrawPill(SKCanvas canvas, GHRadialGeometry g, float dirX, float dirY, float offset, bool isOn, bool snap)
         {
             float r = g.OuterRadius + offset - (float)(GHRadialTuning.PillInset * g.OuterRadius);
@@ -418,13 +408,13 @@ namespace GnollHackX
             float py = g.CenterY + dirY * r;
             float fs = g.PillFontSize;
             float h = fs * 1.5f;
-            float textWidth = !isOn ? _pillOffWidth : _tealAccent ? _pillNowWidth : _pillOnWidth;
-            string text = !isOn ? PillOffText : _tealAccent ? PillNowText : PillOnText;
+            float textWidth = !isOn ? _pillOffWidth : _pillOnWidth;
+            string text = !isOn ? PillOffText : PillOnText;
             float w = textWidth + fs * 1.2f;
             SKRect rect = new SKRect(px - w / 2, py - h / 2, px + w / 2, py + h / 2);
             if (isOn)
             {
-                _plainFill.Color = _tealAccent ? Teal : OnGreen;
+                _plainFill.Color = OnGreen;
                 canvas.DrawRoundRect(rect, h / 2, h / 2, _plainFill);
             }
             else
@@ -485,8 +475,7 @@ namespace GnollHackX
 
         private void DrawHubItem(SKCanvas canvas, GHRadialMenuDefinition def, GHRadialGeometry g, GHRadialItem item, ItemLayout layout, bool snap)
         {
-            /* A teal radial's host states the current choice in its idle hub text instead */
-            bool showStatus = (item.IsToggle && !_tealAccent) || !item.IsEnabled;
+            bool showStatus = item.IsToggle || !item.IsEnabled;
             bool showShortcut = ShowKeyboardShortcuts && !string.IsNullOrEmpty(item.ShortcutText);
             float descSize = g.HubDescriptionFontSize;
 
@@ -769,15 +758,8 @@ namespace GnollHackX
 
         private void ResolveAccent(GHRadialAccent accent)
         {
-            _tealAccent = accent == GHRadialAccent.Teal;
             switch (accent)
             {
-            case GHRadialAccent.Teal:
-                _accent = Teal;
-                _accentHighlightFill = TealHighlightFill;
-                _accentFlashFill = TealFlashFill;
-                _accentTitle = TealTitle;
-                break;
             case GHRadialAccent.Violet:
                 _accent = Violet;
                 _accentHighlightFill = VioletHighlightFill;
@@ -902,7 +884,6 @@ namespace GnollHackX
             _textPaint.TextSize = g.PillFontSize;
             _pillOnWidth = _textPaint.MeasureText(PillOnText);
             _pillOffWidth = _textPaint.MeasureText(PillOffText);
-            _pillNowWidth = _textPaint.MeasureText(PillNowText);
 
             _statusSize = g.HubDescriptionFontSize;
             _textPaint.Typeface = LabelTypeface;

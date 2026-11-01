@@ -157,7 +157,6 @@ namespace GnollHackX
     public enum GHRadialAccent
     {
         Gold,
-        Teal,
         Violet,
     }
 
@@ -195,8 +194,8 @@ namespace GnollHackX
         public GHGamepadButton GroupButton = GHGamepadButton.LT;      /* shown as a pair with GroupButton2 */
         public GHGamepadButton GroupButton2 = GHGamepadButton.RT;
 
-        /* The highlight colors: Gold for radials that act, Teal for one that assigns (the trigger assign radial),
-           Violet for one that confirms on the trigger's release (the direction radial) */
+        /* The highlight colors: Gold for radials that act, Violet for one that confirms on the trigger's release (the
+           direction radial) */
         public GHRadialAccent Accent = GHRadialAccent.Gold;
 
         public bool ReleaseConfirms;                    /* the held ConfirmButton opened it: its release confirms the highlight, or cancels without one */

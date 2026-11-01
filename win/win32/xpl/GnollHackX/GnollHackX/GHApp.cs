@@ -3925,7 +3925,7 @@ namespace GnollHackX
 
         public static readonly GHGamepadButton[] GamepadGrips = { GHGamepadButton.L4, GHGamepadButton.L5, GHGamepadButton.R4, GHGamepadButton.R5 };
 
-        /* Use Controller, Hide Command Bar, the grips and the trigger quick actions from the preferences, each missing one at its default */
+        /* Use Controller, Hide Command Bar, the grips, the trigger commands and the Quick radial slots from the preferences, each missing one at its default */
         public static void LoadGamepadSettings()
         {
             GamepadEnabled = Preferences.Get("GamepadEnabled", true);
@@ -3937,8 +3937,26 @@ namespace GnollHackX
                 int slot;
                 for (slot = 0; slot < GamepadTriggerSlotCount; slot++)
                     SetGamepadTriggerSlotCommand(trigger, slot, Preferences.Get(GamepadTriggerSlotPreferenceKey(trigger, slot), DefaultGamepadTriggerSlotCommand(trigger, slot)));
-                SetGamepadTriggerAssignedSlot(trigger, Preferences.Get(GamepadTriggerAssignedPreferenceKey(trigger), DefaultGamepadTriggerAssignedSlot(trigger)));
+                MigrateGamepadTriggerPreference(trigger);
+                SetGamepadTriggerCommand(trigger, Preferences.Get(GamepadTriggerPreferenceKey(trigger), DefaultGamepadTriggerCommand(trigger)));
             }
+        }
+
+        /* Earlier builds stored the quick-action slot a trigger ran; that slot's command becomes the trigger's own.
+           The old default of slot 1 was the trigger's default. */
+        private static void MigrateGamepadTriggerPreference(GHGamepadButton trigger)
+        {
+            string oldKey = "GamepadTrigger" + trigger.ToString() + "Assigned";
+            if (!Preferences.ContainsKey(oldKey))
+                return;
+            int slot = Preferences.Get(oldKey, -1);
+            string key = GamepadTriggerPreferenceKey(trigger);
+            if (IsGamepadTriggerSlot(trigger, slot) && !Preferences.ContainsKey(key))
+            {
+                int fallback = slot == 0 ? DefaultGamepadTriggerCommand(trigger) : DefaultGamepadTriggerSlotCommand(trigger, slot);
+                Preferences.Set(key, Preferences.Get(GamepadTriggerSlotPreferenceKey(trigger, slot), fallback));
+            }
+            Preferences.Remove(oldKey);
         }
 
         public static string GamepadGripPreferenceKey(GHGamepadButton grip)
@@ -4006,17 +4024,17 @@ namespace GnollHackX
             }
         }
 
-        /* Trigger quick actions: L2 and R2 each have GamepadTriggerSlotCount slots of SelectableShortcutButton.GHCommand
-           values (0 is None) and an assigned slot, which the trigger runs when pressed alone */
+        /* L2 and R2 each run a SelectableShortcutButton.GHCommand (0 is None) when pressed alone, and open a Quick radial
+           of GamepadTriggerSlotCount slots of such commands */
         public const int GamepadTriggerSlotCount = 8;
         public static readonly GHGamepadButton[] GamepadTriggers = { GHGamepadButton.LT, GHGamepadButton.RT };
 
-        /* L2 Kick, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm */
-        private static readonly int[] _defaultGamepadLTSlots = { GHUtils.Ctrl('d'), '%', GHUtils.Meta('p'), GHUtils.Meta('y'), 'E', GHUtils.Ctrl('x'), GHUtils.Meta('X'), GHUtils.Meta('P') };
-        /* R2 Fire, Swap, Chat, Throw, Cast, Quick Cast, Zap, Quick Zap */
-        private static readonly int[] _defaultGamepadRTSlots = { 'f', 'x', 'C', 't', 'Z', GHUtils.Meta(26), 'z', GHUtils.Meta(27) };
+        /* L2's Quick radial: Eat, Drop Items, Pray, Yell, Engrave, Two-Weapon, Pick-axe, Polearm */
+        private static readonly int[] _defaultGamepadLTSlots = { 'e', '%', GHUtils.Meta('p'), GHUtils.Meta('y'), 'E', GHUtils.Ctrl('x'), GHUtils.Meta('X'), GHUtils.Meta('P') };
+        /* R2's Quick radial: Drink, Swap, Chat, Throw, Cast, Quick Cast, Zap, Quick Zap */
+        private static readonly int[] _defaultGamepadRTSlots = { 'q', 'x', 'C', 't', 'Z', GHUtils.Meta(26), 'z', GHUtils.Meta(27) };
         private static readonly int[] _gamepadTriggerSlotCommands = new int[2 * GamepadTriggerSlotCount];
-        private static readonly int[] _gamepadTriggerAssignedSlots = new int[2];
+        private static readonly int[] _gamepadTriggerCommands = new int[2];
 
         /* 0 L2, 1 R2, -1 other buttons */
         private static int GamepadTriggerIndex(GHGamepadButton trigger)
@@ -4035,9 +4053,9 @@ namespace GnollHackX
             return "GamepadTrigger" + trigger.ToString() + "Slot" + (slot + 1).ToString() + "Command";
         }
 
-        public static string GamepadTriggerAssignedPreferenceKey(GHGamepadButton trigger)
+        public static string GamepadTriggerPreferenceKey(GHGamepadButton trigger)
         {
-            return "GamepadTrigger" + trigger.ToString() + "Assigned";
+            return "GamepadTrigger" + trigger.ToString() + "Command";
         }
 
         public static int DefaultGamepadTriggerSlotCommand(GHGamepadButton trigger, int slot)
@@ -4047,10 +4065,18 @@ namespace GnollHackX
             return trigger == GHGamepadButton.LT ? _defaultGamepadLTSlots[slot] : _defaultGamepadRTSlots[slot];
         }
 
-        /* R2 Fire, L2 Kick (both slot 1) */
-        public static int DefaultGamepadTriggerAssignedSlot(GHGamepadButton trigger)
+        /* R2 Fire, L2 Kick */
+        public static int DefaultGamepadTriggerCommand(GHGamepadButton trigger)
         {
-            return 0;
+            switch (trigger)
+            {
+                case GHGamepadButton.LT:
+                    return GHUtils.Ctrl('d');
+                case GHGamepadButton.RT:
+                    return 'f';
+                default:
+                    return 0;
+            }
         }
 
         /* The GHCommand in a trigger slot; 0 is None */
@@ -4071,28 +4097,21 @@ namespace GnollHackX
                 GamepadGripCommandItems[index].GHCommand);
         }
 
-        /* 0-based */
-        public static int GetGamepadTriggerAssignedSlot(GHGamepadButton trigger)
+        /* The GHCommand a trigger runs when pressed alone; 0 is None */
+        public static int GetGamepadTriggerCommand(GHGamepadButton trigger)
         {
             int t = GamepadTriggerIndex(trigger);
-            return t < 0 ? 0 : Interlocked.CompareExchange(ref _gamepadTriggerAssignedSlots[t], 0, 0);
+            return t < 0 ? 0 : Interlocked.CompareExchange(ref _gamepadTriggerCommands[t], 0, 0);
         }
 
-        /* An out-of-range slot falls back to the trigger's default */
-        public static void SetGamepadTriggerAssignedSlot(GHGamepadButton trigger, int slot)
+        /* A command not in GamepadGripCommandItems falls back to the trigger's default */
+        public static void SetGamepadTriggerCommand(GHGamepadButton trigger, int command)
         {
             int t = GamepadTriggerIndex(trigger);
             if (t < 0)
                 return;
-            if (slot < 0 || slot >= GamepadTriggerSlotCount)
-                slot = DefaultGamepadTriggerAssignedSlot(trigger);
-            Interlocked.Exchange(ref _gamepadTriggerAssignedSlots[t], slot);
-        }
-
-        /* The GHCommand a trigger runs when pressed alone; 0 is None */
-        public static int GetGamepadTriggerCommand(GHGamepadButton trigger)
-        {
-            return GetGamepadTriggerSlotCommand(trigger, GetGamepadTriggerAssignedSlot(trigger));
+            int index = GamepadGripCommandIndexInList(command, DefaultGamepadTriggerCommand(trigger));
+            Interlocked.Exchange(ref _gamepadTriggerCommands[t], GamepadGripCommandItems[index].GHCommand);
         }
 
         /* The picker item for a command, for its name, label and icon; None when the command is 0 or unknown */

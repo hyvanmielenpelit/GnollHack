@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -392,6 +392,7 @@
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\PerformanceSuitePage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\ResetPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\SettingsPage.xaml.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\SettingsPage.Pickers.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />
@@ -702,6 +703,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\PerformanceSuitePage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\ResetPage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\SettingsPage.xaml.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\SettingsPage.Pickers.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\VaultPage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\TopScorePage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\MainScreen\LibraryPage.xaml.cs" />

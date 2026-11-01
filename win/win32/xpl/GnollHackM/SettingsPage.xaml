@@ -850,6 +850,44 @@
                                                 HorizontalOptions="Start" />
                                     <Switch Grid.Column="1" x:Name="GamepadHideCommandBarSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="GamepadHideCommandBarSwitch_Toggled" />
                                 </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="R2 Action" x:Name="GamepadTriggerRTLabel"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="GamepadTriggerRTPicker"
+                                                Title="Select command"
+                                                FontFamily="Underwood"
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="End" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="L2 Action" x:Name="GamepadTriggerLTLabel"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="GamepadTriggerLTPicker"
+                                                Title="Select command"
+                                                FontFamily="Underwood"
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="End" >
+                                    </Picker>
+                                </Grid>
                                 <StackLayout x:Name="GamepadGripLayout" Spacing="6" IsVisible="False">
                                     <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                         <Label Text="Back Grip L4" x:Name="GamepadGripL4Label"
@@ -931,47 +969,9 @@
                             </StackLayout>
 
                             <StackLayout x:Name="GamepadTriggerLayout" Spacing="6" IsVisible="False">
-                                <Label Text="Trigger Quick Actions" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
+                                <Label Text="Quick Radials" FontSize="23" FontAttributes="Bold" FontFamily="Immortal" TextColor="Black" Margin="0,18,0,2" />
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="R2 Action" x:Name="GamepadTriggerRTAssignedLabel"
-                                                FontFamily="Underwood" TextColor="Black"
-                                                FontSize="15"
-                                                VerticalOptions="Center"
-                                                HorizontalOptions="Start" />
-                                    <Picker Grid.Column="1" x:Name="GamepadTriggerRTAssignedPicker"
-                                                Title="Select command"
-                                                FontFamily="Underwood"
-                                                FontSize="17"
-                                                TextColor="Black"
-                                                TitleColor="Black"
-                                                HorizontalTextAlignment="End"
-                                                BackgroundColor="Transparent"
-                                                WidthRequest="200"
-                                                VerticalOptions="Center"
-                                                HorizontalOptions="End" >
-                                    </Picker>
-                                </Grid>
-                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="L2 Action" x:Name="GamepadTriggerLTAssignedLabel"
-                                                FontFamily="Underwood" TextColor="Black"
-                                                FontSize="15"
-                                                VerticalOptions="Center"
-                                                HorizontalOptions="Start" />
-                                    <Picker Grid.Column="1" x:Name="GamepadTriggerLTAssignedPicker"
-                                                Title="Select command"
-                                                FontFamily="Underwood"
-                                                FontSize="17"
-                                                TextColor="Black"
-                                                TitleColor="Black"
-                                                HorizontalTextAlignment="End"
-                                                BackgroundColor="Transparent"
-                                                WidthRequest="200"
-                                                VerticalOptions="Center"
-                                                HorizontalOptions="End" >
-                                    </Picker>
-                                </Grid>
-                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="R2 Quick Action 1" x:Name="GamepadTriggerRTSlot1Label"
+                                    <Label Text="Right Quick 1" x:Name="GamepadTriggerRTSlot1Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -990,7 +990,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="R2 Quick Action 2" x:Name="GamepadTriggerRTSlot2Label"
+                                    <Label Text="Right Quick 2" x:Name="GamepadTriggerRTSlot2Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1009,7 +1009,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="R2 Quick Action 3" x:Name="GamepadTriggerRTSlot3Label"
+                                    <Label Text="Right Quick 3" x:Name="GamepadTriggerRTSlot3Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1028,7 +1028,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="R2 Quick Action 4" x:Name="GamepadTriggerRTSlot4Label"
+                                    <Label Text="Right Quick 4" x:Name="GamepadTriggerRTSlot4Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1047,7 +1047,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="R2 Quick Action 5" x:Name="GamepadTriggerRTSlot5Label"
+                                    <Label Text="Right Quick 5" x:Name="GamepadTriggerRTSlot5Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1066,7 +1066,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="R2 Quick Action 6" x:Name="GamepadTriggerRTSlot6Label"
+                                    <Label Text="Right Quick 6" x:Name="GamepadTriggerRTSlot6Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1085,7 +1085,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="R2 Quick Action 7" x:Name="GamepadTriggerRTSlot7Label"
+                                    <Label Text="Right Quick 7" x:Name="GamepadTriggerRTSlot7Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1104,7 +1104,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="R2 Quick Action 8" x:Name="GamepadTriggerRTSlot8Label"
+                                    <Label Text="Right Quick 8" x:Name="GamepadTriggerRTSlot8Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1123,7 +1123,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="L2 Quick Action 1" x:Name="GamepadTriggerLTSlot1Label"
+                                    <Label Text="Left Quick 1" x:Name="GamepadTriggerLTSlot1Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1142,7 +1142,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="L2 Quick Action 2" x:Name="GamepadTriggerLTSlot2Label"
+                                    <Label Text="Left Quick 2" x:Name="GamepadTriggerLTSlot2Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1161,7 +1161,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="L2 Quick Action 3" x:Name="GamepadTriggerLTSlot3Label"
+                                    <Label Text="Left Quick 3" x:Name="GamepadTriggerLTSlot3Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1180,7 +1180,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="L2 Quick Action 4" x:Name="GamepadTriggerLTSlot4Label"
+                                    <Label Text="Left Quick 4" x:Name="GamepadTriggerLTSlot4Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1199,7 +1199,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="L2 Quick Action 5" x:Name="GamepadTriggerLTSlot5Label"
+                                    <Label Text="Left Quick 5" x:Name="GamepadTriggerLTSlot5Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1218,7 +1218,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="L2 Quick Action 6" x:Name="GamepadTriggerLTSlot6Label"
+                                    <Label Text="Left Quick 6" x:Name="GamepadTriggerLTSlot6Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1237,7 +1237,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="L2 Quick Action 7" x:Name="GamepadTriggerLTSlot7Label"
+                                    <Label Text="Left Quick 7" x:Name="GamepadTriggerLTSlot7Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -1256,7 +1256,7 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
-                                    <Label Text="L2 Quick Action 8" x:Name="GamepadTriggerLTSlot8Label"
+                                    <Label Text="Left Quick 8" x:Name="GamepadTriggerLTSlot8Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"
                                                 VerticalOptions="Center"
@@ -2418,6 +2418,23 @@
                 </Grid.GestureRecognizers>
             </Grid>
 
+            <Grid x:Name="PickerListGrid" HorizontalOptions="Fill" VerticalOptions="Fill"
+                         Padding="10" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
+                <Grid MaximumWidthRequest="440" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Border BackgroundColor="{x:Static gnh:GHColors.SemiTransparentDarkenedFrameBackgroundColor}" Stroke="Black" Padding="12,12" StrokeThickness="1" StrokeShape="RoundRectangle 10,10,10,10" HorizontalOptions="Fill" VerticalOptions="Center">
+                        <StackLayout Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
+                            <Label x:Name="PickerListCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White" />
+                            <ScrollView x:Name="PickerListScrollView" HorizontalOptions="Fill">
+                                <StackLayout x:Name="PickerListLayout" Spacing="2" HorizontalOptions="Fill" />
+                            </ScrollView>
+                        </StackLayout>
+                    </Border>
+                </Grid>
+                <Grid.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Grid.GestureRecognizers>
+            </Grid>
+
             <Grid x:Name="PopupGrid" HorizontalOptions="Fill" VerticalOptions="Fill" 
               BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" AbsoluteLayout.LayoutBounds="0,0,1,1"
               AbsoluteLayout.LayoutFlags="All"  IsVisible="False">
@@ -2446,6 +2463,10 @@
                     <TapGestureRecognizer />
                 </AbsoluteLayout.GestureRecognizers>
             </AbsoluteLayout>
+
+            <controls:OverlayCanvasView x:Name="PickerRadialCanvas" IsVisible="False" CanvasType="RadialCanvas"
+                                        EnableTouchEvents="True" PaintSurface="PickerRadialCanvas_PaintSurface" Touch="PickerRadialCanvas_Touch"
+                                        HorizontalOptions="Fill" VerticalOptions="Fill" />
 
             <!-- FileDialogView is inserted here at run time (GHFileDialogHost). Keep MessagePopupView the last child, so that a popup stays above it. -->
             <controls:MessagePopupView x:Name="MessagePopup" />

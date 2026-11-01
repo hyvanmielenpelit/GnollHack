@@ -142,9 +142,10 @@ namespace GnollHackX.Controls
                         SecondaryOptions(secondary));
             }
 
-            /* A selects the next item, wrapping; Left/Right the previous or next, stopping at the ends. Items is
-               filled from ItemsSource too. The dropdown is never opened. */
-            public void AddPicker(Picker picker, View highlight, Action secondary = null)
+            /* A runs activate, and when that returns false or there is none, selects the next item, wrapping; Left/Right
+               the previous or next, stopping at the ends. Items is filled from ItemsSource too. The dropdown is never
+               opened. */
+            public void AddPicker(Picker picker, View highlight, Action secondary = null, Func<bool> activate = null)
             {
                 if (picker == null)
                     return;
@@ -161,6 +162,8 @@ namespace GnollHackX.Controls
                 };
                 Add(picker, () =>
                 {
+                    if (activate != null && activate())
+                        return;
                     int count = picker.Items.Count;
                     if (count == 0)
                         return;

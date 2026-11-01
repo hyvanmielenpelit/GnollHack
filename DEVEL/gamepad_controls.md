@@ -44,7 +44,13 @@ instead of scrolling back to it; with no focus, Up/Down do the same.
 The other pages work the same way, with these additions:
 
 - **Settings:** the focus walks the rows in order, and the focused row is tinted. A flips a
-  switch, steps a picker to its next value (wrapping), or edits a text field. Left/Right step a
+  switch or edits a text field. On a picker, what A does depends on its list. A picker
+  of commands (R2 and L2 Action, the back grips, the Quick slots, Bar Commands) opens a radial of
+  its commands: eight per page, opening on the page with the current command, whose hub names it,
+  with L1/R1 changing the page, a stick or the D-pad selecting, A setting and B closing. A plain
+  list of three or more opens a scrolling list popup with the current value in green: Up/Down or
+  the left stick walk it, the right stick scrolls, L1/R1 page, L2/R2 go to the ends, A sets and B
+  closes. A two-way choice flips to its other value. Left/Right step a
   picker or a volume slider (5 %, held to repeat), or move between two buttons in one row. L1/R1
   jump to the previous/next section. X shows the row's explanation, as tapping its label does.
   A subtitle under the page's title says so, naming the button for the pad in use.
@@ -94,8 +100,8 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | B | **Search**; first closes an overlay, and interrupts running and other occupations instead | Search 20 times | -- | -- |
 | X | Pick up | Pick and Stash | -- | -- |
 | Y | **Repeat** | Wait | -- | Rest |
-| R2 | R2's **assigned action** (default Fire) | **Right Quick** radial (R2's quick actions) | **Set R2** radial | R2's assigned action |
-| L2 | L2's **assigned action** (default Kick) | **Set L2** radial | **Left Quick** radial (L2's quick actions) | L2's assigned action |
+| R2 | R2's **command** (default Fire) | **Right Quick** radial | -- | R2's command |
+| L2 | L2's **command** (default Kick) | -- | **Left Quick** radial | L2's command |
 | Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
 | View | Inventory | -- | Equipment (all equipment in use) | -- |
 | D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, one step per press and then continuously while held, Left toggles the minimap, Right returns to normal zoom | -- |
@@ -109,27 +115,28 @@ has grips, and they work only with the GnollHack Steam Input layout or another l
 them to the same keys (see below); with any other layout they do nothing or act as whatever button
 they are bound to, which the game cannot detect.
 
-**Trigger quick actions.** L2 and R2 each have eight quick actions, set in **Settings, Trigger
-Quick Actions** (any command the bar buttons can hold, or None). The section sits between Controller
-and Bar Commands, after Behavior. The page shows Bar Commands with Use Controller off, without a
-controller backend, or with Hide Command Bar off.
+**Trigger commands.** R2 Action and L2 Action in **Settings, Controller** take any command the bar
+buttons can hold, or None, by default Fire and Kick. They suit a command that asks for a direction.
 
-| Trigger | Defaults, slots 1-8 | Assigned by default |
-|---|---|---|
-| R2 | Fire, Swap, Chat, Throw, Cast, Cast Quick, Zap, Zap Quick | Fire |
-| L2 | Kick, Drop Items, Pray, Yell, Engrave, 2-Weapon, Pick-axe, Polearm | Kick |
+**Quick radials.** L1 + R2 opens the gold **Right Quick** radial and R1 + L2 the gold **Left Quick**
+radial, which run the chosen action at once, with the ordinary prompt if it asks for a direction.
+Pressing the trigger again closes them. Their eight slots are set in **Settings, Quick Radials** (any
+command the bar buttons can hold, or None). The section sits between Controller and Bar Commands,
+after Behavior. The page shows Bar Commands with Use Controller off, without a controller backend, or
+with Hide Command Bar off.
 
-The modifier on the trigger's own side (R1 + R2, L1 + L2) opens the teal **Set** radial: choosing
-a slot makes it the trigger's action when pressed alone (the current one is marked NOW), as the
-section's R2 Action and L2 Action pickers do. The
-modifier on the other side (L1 + R2, R1 + L2) opens the gold **Right Quick** or **Left Quick**
-radial, which runs the chosen action at once. Pressing the trigger again closes either radial.
+| Radial | Defaults, slots 1-8 |
+|---|---|
+| Right Quick | Drink, Swap, Chat, Throw, Cast, Cast Quick, Zap, Zap Quick |
+| Left Quick | Eat, Drop Items, Pray, Yell, Engrave, 2-Weapon, Pick-axe, Polearm |
 
-**Direction radial.** When a trigger's assigned action asks for a direction while that trigger is
+**Direction radial.** When a trigger's command asks for a direction while that trigger is
 still held, within a second of the press and with no menu or dialog in between, the violet
 **Direction** radial opens over the prompt (see [Radials](#radials)). This covers L2 or R2 alone and
 L1 + R1 + the trigger. Otherwise, and for commands run any other way (a grip, a Quick radial), the
-ordinary prompt appears, and releasing the trigger does nothing.
+ordinary prompt appears, and releasing the trigger does nothing. Force Fight on a trigger opens no
+radial, because it is a prefix: press a direction on the left stick or the D-pad next. Any other key,
+including B, gets the core's invalid direction help.
 
 **Map overlays.** While More Messages or the Status Screen (the extended status bar) is open
 (both from the Toggles radial), the right stick and D-pad Up/Down scroll it, B closes it, and the left stick
@@ -201,6 +208,9 @@ radial, which lasts only as long as its trigger is held.
   **L3** does nothing. **D-pad Up** answers `<`, **D-pad Down** `>` and **Y** self, at once. L3 is not
   self because aiming hard can click the stick. D-pad Left/Right step the highlight. Losing the window closes the radial and leaves the
   ordinary prompt up, with its arrows.
+
+- **Command radial** (A on a picker of commands in Settings): see Settings above. A stick still
+  pushed when it closes does nothing on the page until it returns to center.
 
 After a radial closes, both sticks stay disarmed until they return to center.
 
