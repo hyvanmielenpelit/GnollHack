@@ -199,7 +199,7 @@ namespace GnollHackX
            Violet for one that confirms on the trigger's release (the direction radial) */
         public GHRadialAccent Accent = GHRadialAccent.Gold;
 
-        public bool ReleaseConfirms;                    /* the held ConfirmButton opened it: its release confirms the highlight, or cancels without one; A does not confirm */
+        public bool ReleaseConfirms;                    /* the held ConfirmButton opened it: its release confirms the highlight, or cancels without one */
         public bool StickArmedAtOpen;                   /* a stick already pushed selects at once */
         public bool SeeThrough;                         /* lighter backdrop, slices and hub, to keep the map readable */
         public GHGamepadHint[] ExtraHints;              /* more hint bar entries after the cancel hint */

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using GnollHackX;
 using SkiaSharp;
 
@@ -126,7 +127,7 @@ namespace GnollHackX.Pages.Game
             switch (e.Button)
             {
             case GHGamepadButton.A:
-                hasInput = pressed && (def == null || !def.ReleaseConfirms);
+                hasInput = pressed;
                 input = GHRadialInput.Confirm;
                 break;
             case GHGamepadButton.B:
@@ -235,6 +236,7 @@ namespace GnollHackX.Pages.Game
         {
             _radialState.Reset();
             _radialTouchId = -1;
+            Interlocked.Exchange(ref _gamepadDirectionRadialShown, 0);
             GHRadialMenuRenderer renderer = _radialRenderer;
             _radialRenderer = null;
             if (renderer != null)
@@ -378,6 +380,7 @@ namespace GnollHackX.Pages.Game
         private void HideRadialCanvas()
         {
             _radialTouchId = -1;
+            Interlocked.Exchange(ref _gamepadDirectionRadialShown, 0);
             if (!_radialCanvasShown)
                 return;
             _radialCanvasShown = false;

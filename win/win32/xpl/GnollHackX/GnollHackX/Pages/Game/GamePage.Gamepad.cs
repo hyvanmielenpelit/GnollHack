@@ -140,6 +140,10 @@ namespace GnollHackX.Pages.Game
         /* Read by SetTargetClip on the game thread and by the paint thread */
         private int _gamepadPanHold = 0;
         private int _gamepadAimDir = 0;     /* getdir aim as a direction key (-1..-9), 0 for none */
+        private int _gamepadDirectionRadialShown = 0;   /* the direction radial is on the canvas, its closing fade included */
+
+        /* The direction radial replaces the map's direction arrows */
+        private bool GamepadDirectionRadialShown { get { return Interlocked.CompareExchange(ref _gamepadDirectionRadialShown, 0, 0) != 0; } }
 
         /* The right stick is panning: auto-center keeps the view where it is */
         private bool GamepadPanHold { get { return Interlocked.CompareExchange(ref _gamepadPanHold, 0, 0) != 0; } }
@@ -1767,6 +1771,7 @@ namespace GnollHackX.Pages.Game
             if (IsRadialMenuOpen)
             {
                 _gamepadButtonOwner[(int)trigger] = GHGamepadMapContext.Radial;
+                Interlocked.Exchange(ref _gamepadDirectionRadialShown, 1);
                 UpdateRadialSticks(_gamepadLastSticks, 0.0);
             }
         }
@@ -1806,7 +1811,7 @@ namespace GnollHackX.Pages.Game
             {
                 new GHGamepadHint(GHGamepadButton.DPadUp, "Upwards", false),
                 new GHGamepadHint(GHGamepadButton.DPadDown, "Downwards", false),
-                new GHGamepadHint(GHGamepadButton.L3, "Self", false),
+                new GHGamepadHint(GHGamepadButton.Y, "Self", false),
             };
             def.OnActivate = OnGamepadRadialActivate;
             def.OnClosed = OnGamepadDirectionRadialClosed;
@@ -1828,7 +1833,7 @@ namespace GnollHackX.Pages.Game
                 case GHGamepadButton.DPadDown:
                     key = (int)'>';
                     break;
-                case GHGamepadButton.L3:
+                case GHGamepadButton.Y:
                     key = MapK(nh_keyfunc.NHKF_GETDIR_SELF);
                     break;
                 default:

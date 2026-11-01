@@ -12758,7 +12758,11 @@ namespace GnollHackX.Pages.Game
                     _localCanvasButtonRect.Left = canvaswidth * (float)(0.2);
                 }
 
-                if (showDirections || (mapWalkMode && walkArrows))
+                if (showDirections && GamepadDirectionRadialShown)
+                {
+                    /* The direction radial replaces the arrows */
+                }
+                else if (showDirections || (mapWalkMode && walkArrows))
                 {
                     SKRect targetrect;
                     float buttonsize = showDirections ? GHConstants.ArrowButtonSize : GHConstants.MoveArrowButtonSize;

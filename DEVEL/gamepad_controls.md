@@ -100,7 +100,7 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, one step per press and then continuously while held, Left toggles the minimap, Right returns to normal zoom | -- |
 | Left stick | Walk (8-way) | -- | Run in that direction | -- |
 | Right stick | Pan the map | | | |
-| L3 | Center the map on the hero | | | |
+| L3 (also the left trackpad's click) | Center the map on the hero | | | |
 | R3 | Open the Toggles radial | | | |
 | L4, L5, R4, R5 (back grips) | Configurable; defaults Apply, Cast, Cast Quick, Zap Quick | | | |
 The grips are set in **Settings, Controller**. Their pickers appear only when the controller
@@ -187,12 +187,13 @@ radial, which lasts only as long as its trigger is held.
   name.
   **X** switches between the context page and the first commands page; L1/R1 page.
 - **Direction radial** (a trigger held through its action's direction prompt): violet and see-through,
-  so that the map stays readable, with the eight directions at their compass positions. Either stick
-  selects, and a stick already pushed when it opens counts at once. **Releasing the trigger** confirms
-  the highlighted direction; with nothing highlighted, it cancels the command. **A** does nothing and
-  **B** cancels the command. **D-pad Up** answers `<`, **D-pad Down** `>` and **L3** self, at once.
-  D-pad Left/Right step the highlight. Losing the window closes the radial and leaves the ordinary
-  prompt up.
+  so that the map stays readable, with the eight directions at their compass positions, in place of
+  the map's direction arrows. Either stick selects, and a stick already pushed when it opens counts at
+  once. **Releasing the trigger** confirms the highlighted direction; with nothing highlighted, it
+  cancels the command. **A** also confirms the highlighted direction, **B** cancels the command and
+  **L3** does nothing. **D-pad Up** answers `<`, **D-pad Down** `>` and **Y** self, at once. L3 is not
+  self because aiming hard can click the stick. D-pad Left/Right step the highlight. Losing the window closes the radial and leaves the
+  ordinary prompt up, with its arrows.
 
 After a radial closes, both sticks stay disarmed until they return to center.
 
@@ -372,6 +373,9 @@ for them; the silent pad is what keeps the game from reacting.
   every button to the virtual pad, right trackpad as mouse.
 - **Right trackpad click → left mouse button**: Soft Press, with the haptic tick of Valve's mouse
   template. The plain template sends this click as R3; R3 stays on the right stick's click.
+- **Left trackpad click → L3**: the left trackpad in Single Button mode, Soft Press, with the same
+  haptic tick. The plain template uses the left trackpad as a D-pad on click; L3 also stays on the left
+  stick's click.
 - **L4 → F2, L5 → F3, R4 → F4, R5 → F5**: Regular Press, no extra activators, no turbo.
 - Gyro off.
 - Title "GnollHack (Steam Deck)".
@@ -385,7 +389,7 @@ The layout is authored on a Steam Deck, on the **GnollHack app installed from St
 bindings, so either one gives the same layout:
 
 1. Launch the game, open Controller Settings, and pick the "Gamepad with Mouse Trackpad" template.
-2. Set the right trackpad's click and bind the four grips as above, and leave gyro off.
+2. Set both trackpads' clicks and bind the four grips as above, and leave gyro off.
 3. In Steam, Settings, System, turn on developer mode, then "Steam Input Layout Dev Mode" under
    Developer.
 4. In the layout's gear menu, Export Layout, type Shareable Personal Save, with the title above.

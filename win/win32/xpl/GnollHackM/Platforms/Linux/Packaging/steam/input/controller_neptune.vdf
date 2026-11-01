@@ -1,7 +1,7 @@
 "controller_mappings"
 {
 	"version"		"3"
-	"revision"		"6"
+	"revision"		"7"
 	"title"		"GnollHack (Steam Deck)"
 	"description"		"Gamepad layout with the back grips set for GnollHack"
 	"progenitor"		""
@@ -571,7 +571,11 @@
 					{
 						"bindings"
 						{
-							"binding"		"xinput_button SELECT, , "
+							"binding"		"xinput_button JOYSTICK_LEFT, , "
+						}
+						"settings"
+						{
+							"haptic_intensity"		"1"
 						}
 					}
 				}
@@ -899,8 +903,8 @@
 		{
 			"7"		"switch active"
 			"0"		"button_diamond active"
-			"1"		"left_trackpad active"
-			"11"		"left_trackpad inactive"
+			"1"		"left_trackpad inactive"
+			"11"		"left_trackpad active"
 			"17"		"left_trackpad inactive"
 			"2"		"right_trackpad inactive"
 			"6"		"right_trackpad inactive"
