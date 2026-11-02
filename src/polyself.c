@@ -2392,39 +2392,9 @@ dogaze(void)
     return 1;
 }
 
-/* The rays of your eyestalks, such as "bolt of cold, sleep ray and death ray"; empty when an eyestalk's ray is
-   chosen only after the direction */
-static void
-get_eyestalk_flash_names(char *buf)
-{
-    const char *names[NATTK];
-    int i, n = 0;
-
-    *buf = '\0';
-    for (i = 0; i < NATTK; i++)
-    {
-        const char *name;
-
-        if (youmonst.data->mattk[i].aatyp != AT_EYES)
-            continue;
-        name = get_eyestalk_flash_name((int) youmonst.data->mattk[i].adtyp);
-        if (!name)
-            return;
-        names[n++] = name;
-    }
-    for (i = 0; i < n; i++)
-    {
-        if (i > 0)
-            Strcat(buf, i == n - 1 ? " and " : ", ");
-        Strcat(buf, names[i]);
-    }
-}
-
 int
 doeyestalk(void)
 {
-    char raybuf[BUFSZ];
-
     if (Blind) {
         You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "see anything to gaze at.");
         return 0;
@@ -2439,20 +2409,6 @@ doeyestalk(void)
         You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "gaze at anything you can see.");
         return 0;
     }
-
-    get_eyestalk_flash_names(raybuf);
-    debugprint_pos();
-    if (!getdir((char*)0, "Eyestalk", *raybuf ? raybuf : (const char *) 0))
-        return 0;
-
-    if (!u.dx && !u.dy && !u.dz)
-    {
-        play_sfx_sound(SFX_GENERAL_CANNOT);
-        You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "gaze at yourself.");
-        return 0;
-    }
-
-    update_u_facing(TRUE);
 
     int attacksperformed = 0;
     int i;
@@ -2476,8 +2432,21 @@ doeyestalk(void)
         if (typ == -1)
             continue;
 
+        debugprint_pos();
+        if (!getdir((char*)0, "Eyestalk", get_eyestalk_flash_name(typ)))
+            continue;
+
+        if (!u.dx && !u.dy && !u.dz)
+        {
+            play_sfx_sound(SFX_GENERAL_CANNOT);
+            You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "gaze at yourself.");
+            continue;
+        }
+
         u.uen -= EYE_STALK_MANA_COST;
         context.botl = 1;
+
+        update_u_facing(TRUE);
 
         if ((typ >= AD_MAGM) && (typ <= AD_STON))
         {
@@ -2491,7 +2460,7 @@ doeyestalk(void)
 
     }
 
-    return 1;
+    return attacksperformed > 0;
 }
 
 int
