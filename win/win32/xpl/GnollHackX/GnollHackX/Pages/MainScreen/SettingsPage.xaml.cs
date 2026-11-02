@@ -1971,7 +1971,7 @@ namespace GnollHackX.Pages.MainScreen
                 WindowedModeLabel.TextColor = GHColors.Gray;
                 WindowedModeStackLayout.IsVisible = false;
             }
-            else /* Disabled until works on Android */
+            if (GHApp.IsDesktop) /* Disabled until works on Android */
             {
                 Edge2EdgeSwitch.IsEnabled = false;
                 Edge2EdgeLabel.IsEnabled = false;
