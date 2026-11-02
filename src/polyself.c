@@ -1773,7 +1773,7 @@ dobreathe(void)
         return 0;
 
     debugprint_pos();
-    if (!getdir((char*)0, "Breathe", (const char *) 0))
+    if (!getdir((char*)0, "Breathe", get_breath_weapon_flash_name(typ)))
         return 0;
 
     if (!u.dx && !u.dy && !u.dz)
@@ -1910,7 +1910,7 @@ dosteedbreathemon(struct monst *mon)
 
     /* Then the direction */
     debugprint_pos();
-    if (!getdir((char*)0, "Steed breath", (const char *) 0))
+    if (!getdir((char*)0, "Steed breath", get_breath_weapon_flash_name(typ)))
         return 0;
 
     if (!u.dx && !u.dy && !u.dz)
@@ -2392,9 +2392,39 @@ dogaze(void)
     return 1;
 }
 
+/* The rays of your eyestalks, such as "bolt of cold, sleep ray and death ray"; empty when an eyestalk's ray is
+   chosen only after the direction */
+static void
+get_eyestalk_flash_names(char *buf)
+{
+    const char *names[NATTK];
+    int i, n = 0;
+
+    *buf = '\0';
+    for (i = 0; i < NATTK; i++)
+    {
+        const char *name;
+
+        if (youmonst.data->mattk[i].aatyp != AT_EYES)
+            continue;
+        name = get_eyestalk_flash_name((int) youmonst.data->mattk[i].adtyp);
+        if (!name)
+            return;
+        names[n++] = name;
+    }
+    for (i = 0; i < n; i++)
+    {
+        if (i > 0)
+            Strcat(buf, i == n - 1 ? " and " : ", ");
+        Strcat(buf, names[i]);
+    }
+}
+
 int
 doeyestalk(void)
 {
+    char raybuf[BUFSZ];
+
     if (Blind) {
         You_cant_ex(ATR_NONE, CLR_MSG_FAIL, "see anything to gaze at.");
         return 0;
@@ -2410,8 +2440,9 @@ doeyestalk(void)
         return 0;
     }
 
+    get_eyestalk_flash_names(raybuf);
     debugprint_pos();
-    if (!getdir((char*)0, "Eyestalk", (const char *) 0))
+    if (!getdir((char*)0, "Eyestalk", *raybuf ? raybuf : (const char *) 0))
         return 0;
 
     if (!u.dx && !u.dy && !u.dz)

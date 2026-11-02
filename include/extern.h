@@ -4613,6 +4613,8 @@ E int otyp_ink_cost(int);
 
 /* ### zap.c ### */
 
+E const char *get_breath_weapon_flash_name(int);
+E const char *get_eyestalk_flash_name(int);
 E void learnwand(struct obj *);
 E int get_saving_throw_adjustment(struct obj*, struct monst*, struct monst*);
 E int get_spell_skill_level_saving_throw_adjustment(int);

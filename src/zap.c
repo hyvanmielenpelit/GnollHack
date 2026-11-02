@@ -87,6 +87,33 @@ const char *const flash_types[] =       /* also used in buzzmu(mcastu.c) */
 
 };
 
+/* flash_types[] entry for ray type zt; null for none or an empty name */
+static const char *
+get_flash_type_name(int zt)
+{
+    if (zt < 0 || zt >= SIZE(flash_types) || !*flash_types[zt])
+        return (const char *) 0;
+    return flash_types[zt];
+}
+
+/* Name of a breath weapon of damage type adtyp, such as "blast of fire"; null if it has none */
+const char *
+get_breath_weapon_flash_name(int adtyp)
+{
+    if (adtyp < AD_MAGM || adtyp > AD_STON)
+        return (const char *) 0;
+    return get_flash_type_name(ZT_BREATH(adtyp - 1));
+}
+
+/* Name of an eyestalk ray of damage type adtyp, such as "sleep ray"; null if it has none */
+const char *
+get_eyestalk_flash_name(int adtyp)
+{
+    if (adtyp < AD_MAGM || adtyp > AD_STON)
+        return (const char *) 0;
+    return get_flash_type_name(ZT_EYESTALK(adtyp - 1));
+}
+
 int
 get_maximum_applicable_spell_damage_level(int otyp, struct monst *origmonst)
 {
