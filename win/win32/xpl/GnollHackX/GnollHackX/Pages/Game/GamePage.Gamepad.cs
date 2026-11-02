@@ -104,6 +104,8 @@ namespace GnollHackX.Pages.Game
         private long _gamepadDPadZoomSinceTicks = 0;        /* when the last vertical one of them went down */
         private GHGamepadButton _gamepadDirectionRadialTrigger = GHGamepadButton.Count; /* the held trigger whose command may ask a direction; Count for none */
         private long _gamepadDirectionRadialArmedTicks = 0; /* when it went down */
+        private string _directionPromptVerb = null;         /* the command asking the shown direction prompt; null for none */
+        private string _directionPromptObject = null;       /* the object it uses; null for none */
         private GHGamepadSticks _gamepadLastSticks;         /* as of the last UpdateGamepadSticks */
         private readonly GamepadStickDirection _gamepadDPadDirection = new GamepadStickDirection();
         private int _gamepadHintContextCount = 0;           /* the context buttons as the hint strip last read them: 0, 1 or 2 for more */
@@ -1745,6 +1747,8 @@ namespace GnollHackX.Pages.Game
             def.ConfirmHint = held ? "Release to select" : "Select";
             def.CancelHint = "Cancel";
             def.NoHighlightStickText = "Tilt to aim";
+            def.PromptVerb = _directionPromptVerb;
+            def.PromptObject = _directionPromptObject;
             def.ExtraHints = new GHGamepadHint[]
             {
                 new GHGamepadHint(GHGamepadButton.DPadUp, "Upwards", false),

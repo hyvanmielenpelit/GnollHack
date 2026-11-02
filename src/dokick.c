@@ -1269,7 +1269,7 @@ dokick_indir(boolean has_dir)
     }
 
     debugprint_pos();
-    if (!has_dir && !getdir((char *) 0))
+    if (!has_dir && !getdir((char *) 0, "Kick", (const char *) 0))
         return 0;
     if (!u.dx && !u.dy)
         return 0;

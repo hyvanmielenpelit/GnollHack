@@ -42,7 +42,7 @@ use_saddle(struct obj *otmp)
 
     debugprint_pos();
     /* Select an animal */
-    if (u.uswallow || Underwater || !getdir((char *) 0)) {
+    if (u.uswallow || Underwater || !getdir((char *) 0, "Apply", getdir_objname(otmp))) {
         pline1(Never_mind);
         return 0;
     }
@@ -174,7 +174,7 @@ doride(void)
     else
     {
         debugprint_pos();
-        if (getdir((char*)0) && isok(u.ux + u.dx, u.uy + u.dy))
+        if (getdir((char*)0, "Ride", (const char *) 0) && isok(u.ux + u.dx, u.uy + u.dy))
         {
             update_u_facing(TRUE);
             return (int)mount_steed(m_at(u.ux + u.dx, u.uy + u.dy));

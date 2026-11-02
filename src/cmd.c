@@ -8626,10 +8626,11 @@ prefix_cmd(char c)
  * Returns non-zero if coordinates in cc are valid.
  */
 int
-get_adjacent_loc(const char *prompt, const char *emsg, xchar x, xchar y, coord *cc)
+get_adjacent_loc(const char *prompt, const char *emsg, xchar x, xchar y, coord *cc,
+                 const char *cmdname, const char *objname)
 {
     xchar new_x, new_y;
-    if (!getdir(prompt)) {
+    if (!getdir(prompt, cmdname, objname)) {
         pline1(Never_mind);
         return 0;
     }
@@ -8647,16 +8648,29 @@ get_adjacent_loc(const char *prompt, const char *emsg, xchar x, xchar y, coord *
 }
 
 int
-getdir(const char *s)
+getdir(const char *s, const char *cmdname, const char *objname)
 {
-    return getdir_ex(s, FALSE);
+    return getdir_ex(s, FALSE, cmdname, objname);
 }
 
 int
-getdir_ex(const char *s, boolean self_always_ok)
+getdir_ex(const char *s, boolean self_always_ok, const char *cmdname, const char *objname)
 {
     char dirsym;
     int is_mov;
+    char cmdbuf[BUFSZ], objbuf[BUFSZ];
+
+    cmdbuf[0] = objbuf[0] = '\0';
+    if (cmdname)
+    {
+        Strncpy(cmdbuf, cmdname, BUFSZ - 1);
+        cmdbuf[BUFSZ - 1] = '\0';
+    }
+    if (objname)
+    {
+        Strncpy(objbuf, objname, BUFSZ - 1);
+        objbuf[BUFSZ - 1] = '\0';
+    }
     debugprint_pos();
 
 retry:
@@ -8665,8 +8679,13 @@ retry:
     if (in_doagain || *readchar_queue)
         dirsym = readchar();
     else
-        dirsym = yn_function((s && *s != '^') ? s : "In what direction?",
-                             (char *) 0, '\0', (char*)0);
+    {
+        /* A direction prompt carries the command name as introline and the object name as resp_desc */
+        dirsym = yn_function_core(YN_STYLE_GENERAL, ATR_NONE, NO_COLOR, NO_GLYPH, (const char *) 0,
+                                  (s && *s != '^') ? s : "In what direction?", (char *) 0, '\0',
+                                  *objbuf ? objbuf : (const char *) 0,
+                                  *cmdbuf ? cmdbuf : (const char *) 0, 0UL);
+    }
     
     escape_sequence_key_start_allowed = 0;
     /* remove the prompt string so caller won't have to */
@@ -8722,6 +8741,17 @@ retry:
 
     create_context_menu(CREATE_CONTEXT_MENU_NORMAL);
     return 1;
+}
+
+/* One object of obj, as a message names it: "an elven arrow", "the Longbow of Diana" */
+char *
+getdir_objname(struct obj *obj)
+{
+    if (!obj)
+        return (char *) 0;
+    if (obj->oartifact && is_obj_aknown(obj))
+        return the(cxname_singular(obj));
+    return an(cxname_singular(obj));
 }
 
 /*
@@ -8987,7 +9017,7 @@ dotherecmdmenu(void)
     char ch;
 
     debugprint_pos();
-    if (!getdir((const char *) 0) || !isok(u.ux + u.dx, u.uy + u.dy))
+    if (!getdir((const char *) 0, (const char *) 0, (const char *) 0) || !isok(u.ux + u.dx, u.uy + u.dy))
         return 0;
 
     if (u.dx || u.dy)
@@ -10693,7 +10723,7 @@ dolight(void)
 
     /* Light in a direction */
     coord cc;
-    if (!get_adjacent_loc((char*)0, (char*)0, u.ux, u.uy, &cc))
+    if (!get_adjacent_loc((char*)0, (char*)0, u.ux, u.uy, &cc, "Light", (const char *) 0))
         return 0;
 
     if (get_location_light_range(cc.x, cc.y) != 0)

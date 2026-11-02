@@ -1527,9 +1527,9 @@ namespace GnollHackX
             {
                 GHApp.AddSentryBreadcrumb("YnFunction: ShowDirections Start", GHConstants.SentryGnollHackCallbackCategoryName);
                 if ((ynflags & 1UL) != 0)
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections)); //TODO: Show keyboard
+                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections, introline, descriptions)); //TODO: Show keyboard
                 else
-                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections));
+                    RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ShowDirections, introline, descriptions));
                 int res = GetCharCore(GHKeyWaitKind.Direction); /* Get direction / letter */
                 if ((ynflags & 1UL) != 0)
                     RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HideDirections)); //TODO: Hide keyboard

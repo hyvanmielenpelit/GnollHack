@@ -3013,7 +3013,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
             {
                 u.dx = u.dy = u.dz = 0;
             } 
-            else if (!getdir((char *) 0))
+            else if (!getdir((char *) 0, "Cast", spellname(spell)))
             {
                 /* getdir cancelled, re-use previous direction */
                 /*

@@ -88,7 +88,7 @@ use_salve(struct obj *obj, boolean drink_yourself)
     debugprint_pos();
     if (drink_yourself)
         u.dx = u.dy = u.dz = 0;
-    else if (!getdir_ex((char*)0, TRUE))
+    else if (!getdir_ex((char*)0, TRUE, "Apply", getdir_objname(obj)))
         return 0;
 
     update_u_facing(TRUE);
@@ -188,7 +188,7 @@ use_grail(struct obj *obj, boolean drink_yourself)
     debugprint_pos();
     if (drink_yourself)
         u.dx = u.dy = u.dz = 0;
-    else if (!getdir_ex((char*)0, TRUE))
+    else if (!getdir_ex((char*)0, TRUE, "Apply", getdir_objname(obj)))
         return 0;
 
     if ((!u.dx && !u.dy && !u.dz) && (is_undead(youmonst.data) || is_demon(youmonst.data)))
@@ -277,7 +277,7 @@ use_camera(struct obj *obj)
         return 0;
     }
     debugprint_pos();
-    if (!getdir((char *) 0))
+    if (!getdir((char *) 0, "Apply", getdir_objname(obj)))
         return 0;
 
     update_u_facing(TRUE);
@@ -685,7 +685,7 @@ use_stethoscope(struct obj *obj)
         return 0;
     }
     debugprint_pos();
-    if (!getdir((char *) 0))
+    if (!getdir((char *) 0, "Apply", getdir_objname(obj)))
         return 0;
 
     update_u_facing(TRUE);
@@ -1041,7 +1041,7 @@ use_leash(struct obj *obj)
         return 0;
     }
 
-    if (!get_adjacent_loc((char *) 0, (char *) 0, u.ux, u.uy, &cc))
+    if (!get_adjacent_loc((char *) 0, (char *) 0, u.ux, u.uy, &cc, "Apply", getdir_objname(obj)))
         return 0;
 
     if (cc.x == u.ux && cc.y == u.uy)
@@ -1304,7 +1304,7 @@ use_mirror(struct obj *obj)
     boolean vis, invis_mirror, useeit, monable;
 
     debugprint_pos();
-    if (!getdir((char *) 0))
+    if (!getdir((char *) 0, "Apply", getdir_objname(obj)))
         return 0;
     update_u_facing(TRUE);
     invis_mirror = Invis;
@@ -1542,7 +1542,7 @@ use_holysymbol(struct obj *obj)
         return 0;
 
     debugprint_pos();
-    if (!getdir((char*)0))
+    if (!getdir((char*)0, "Apply", getdir_objname(obj)))
         return 0;
 
     update_u_facing(TRUE);
@@ -3440,7 +3440,7 @@ use_unicorn_horn(struct obj *obj, boolean you_only)
     debugprint_pos();
     if (you_only)
         u.dx = u.dy = u.dz = 0;
-    else if (!getdir_ex((char*)0, TRUE))
+    else if (!getdir_ex((char*)0, TRUE, "Apply", getdir_objname(obj)))
     {
         pline1(Never_mind);
         return 0;
@@ -3904,7 +3904,7 @@ use_figurine(struct obj **optr)
             return;
     }
     debugprint_pos();
-    if (!getdir((char *) 0)) {
+    if (!getdir((char *) 0, "Apply", getdir_objname(obj))) {
         context.move = multi = 0;
         return;
     }
@@ -4834,7 +4834,7 @@ use_whip(struct obj *obj)
             res = 1;
     }
     debugprint_pos();
-    if (!getdir((char *) 0))
+    if (!getdir((char *) 0, "Apply", getdir_objname(obj)))
         return res;
 
     update_u_facing(TRUE);
@@ -6857,7 +6857,7 @@ use_golf_club(struct obj *obj)
     }
 
     debugprint_pos();
-    if (!getdir((char*)0))
+    if (!getdir((char*)0, "Apply", getdir_objname(obj)))
         return 0;
     if (!u.dx && !u.dy)
         return 0;

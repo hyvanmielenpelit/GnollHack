@@ -6645,7 +6645,7 @@ dozapcore(struct obj *obj, boolean *stop_readchar_ptr)
             *stop_readchar_ptr = TRUE;
         return taketurn;
     }
-    else if (!(objects[obj->otyp].oc_dir == NODIR) && !getdir((char*)0))
+    else if (!(objects[obj->otyp].oc_dir == NODIR) && !getdir((char*)0, "Zap", getdir_objname(obj)))
     {
         play_sfx_sound(SFX_WALL_GLOWS_THEN_FADES);
         if (!Blind)

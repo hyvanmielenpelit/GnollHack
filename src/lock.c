@@ -566,7 +566,7 @@ pick_lock(struct obj *pick)
         return PICKLOCK_DID_NOTHING;
     }
 
-    if (!get_adjacent_loc((char *) 0, "Invalid location!", u.ux, u.uy, &cc))
+    if (!get_adjacent_loc((char *) 0, "Invalid location!", u.ux, u.uy, &cc, "Apply", getdir_objname(pick)))
         return PICKLOCK_DID_NOTHING;
 
     update_u_action(ACTION_TILE_DOOR_USE);
@@ -990,7 +990,7 @@ doopen_indir(int x, int y)
     if (x > 0 && y > 0) {
         cc.x = x;
         cc.y = y;
-    } else if (!get_adjacent_loc((char *) 0, (char *) 0, u.ux, u.uy, &cc))
+    } else if (!get_adjacent_loc((char *) 0, (char *) 0, u.ux, u.uy, &cc, "Open", (const char *) 0))
         return 0;
 
     /* open at yourself/up/down */
@@ -1237,7 +1237,7 @@ doclose(void)
     }
 
     debugprint_pos();
-    if (!getdir((char *) 0))
+    if (!getdir((char *) 0, "Close", (const char *) 0))
         return 0;
 
     x = u.ux + u.dx;

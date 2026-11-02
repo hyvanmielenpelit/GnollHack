@@ -139,6 +139,12 @@ namespace GnollHackX
         private float _statusSize;
         private float _hubSecondaryBadgeWidth;
         private float _hubSecondaryLabelWidth;
+        private bool _hasPrompt;                        /* the definition has a PromptVerb: the hub is DrawHubPrompt's */
+        private string _promptVerb;
+        private float _promptVerbSize;
+        private float _promptTopSize;                   /* one size for every direction label and the idle texts */
+        private readonly string[] _promptObjectLines = new string[GHRadialTuning.HubPromptObjectMaxLines];
+        private int _promptObjectLineCount;
         private readonly HintBar _hintsMain = new HintBar();
         private readonly HintBar _hintsSwitched = new HintBar();
         private GHGamepadHintRenderer _badgeRenderer;   /* created by the first paint */
@@ -467,10 +473,64 @@ namespace GnollHackX
 
             GHRadialPage page = state.CurrentPage;
             GHRadialItem item = state.HighlightedItem;
-            if (item != null)
+            if (_hasPrompt)
+                DrawHubPrompt(canvas, state, def, g, snap);
+            else if (item != null)
                 DrawHubItem(canvas, def, g, item, GetItemLayout(item, page.SlotCount, g), snap);
             else
                 DrawHubIdle(canvas, state, def, g, page, snap);
+        }
+
+        /* A direction prompt's hub: the verb and the object centered as a block, and above them the highlighted
+           direction or the idle text, which does not move the block */
+        private void DrawHubPrompt(SKCanvas canvas, GHRadialMenuState state, GHRadialMenuDefinition def, GHRadialGeometry g, bool snap)
+        {
+            GHRadialItem item = state.HighlightedItem;
+            string top = item != null ? item.Label : state.IsPointerMode ? def.NoHighlightPointerText : def.NoHighlightStickText;
+            float cx = g.CenterX;
+            float verbBaseline, objectTop, topCenterY;
+            GetPromptPositions(g, out verbBaseline, out objectTop, out topCenterY);
+
+            _textPaint.Typeface = LabelTypeface;
+            _textPaint.TextSize = _promptTopSize;
+            _textPaint.Color = _accentTitle;
+            SKFontMetrics m = _textPaint.FontMetrics;
+            DrawCentered(canvas, top, cx, topCenterY - (m.Ascent + m.Descent) / 2, snap);
+
+            _textPaint.Typeface = TitleTypeface;
+            _textPaint.TextSize = _promptVerbSize;
+            _textPaint.Color = SKColors.White;
+            DrawCentered(canvas, _promptVerb, cx, verbBaseline, snap);
+
+            if (_promptObjectLineCount > 0)
+            {
+                int i;
+                float objectAscent;
+                float objectH = LineHeight(DescriptionTypeface, g.HubDescriptionFontSize, out objectAscent);
+                float y = objectTop;
+                _textPaint.Color = LighterGray;
+                for (i = 0; i < _promptObjectLineCount; i++)
+                {
+                    DrawCentered(canvas, _promptObjectLines[i], cx, y + objectAscent, snap);
+                    y += objectH;
+                }
+            }
+        }
+
+        /* The verb's baseline and the top of the object lines, the two centered as a block, and the center line of the
+           top text, halfway between the top of the hub and the top of the verb's capitals */
+        private void GetPromptPositions(GHRadialGeometry g, out float verbBaseline, out float objectTop, out float topCenterY)
+        {
+            float verbAscent;
+            float verbH = LineHeight(TitleTypeface, _promptVerbSize, out verbAscent);
+            float capHeight = _textPaint.FontMetrics.CapHeight;
+            if (!(capHeight > 0f))
+                capHeight = verbAscent;
+            float objectH = _promptObjectLineCount > 0 ? LineHeight(DescriptionTypeface, g.HubDescriptionFontSize, out _) : 0f;
+            float y = g.CenterY - (verbH + objectH * _promptObjectLineCount) / 2;
+            verbBaseline = y + verbAscent;
+            objectTop = y + verbH;
+            topCenterY = (g.CenterY - g.HubRadius + verbBaseline - capHeight) / 2;
         }
 
         private void DrawHubItem(SKCanvas canvas, GHRadialMenuDefinition def, GHRadialGeometry g, GHRadialItem item, ItemLayout layout, bool snap)
@@ -879,6 +939,7 @@ namespace GnollHackX
             }
             _stickTextSize = FitSize(def.NoHighlightStickText, LabelTypeface, _idleTextBaseSize, _idleTextBaseSize * 0.7f, hubWidth);
             _pointerTextSize = FitSize(def.NoHighlightPointerText, LabelTypeface, _idleTextBaseSize, _idleTextBaseSize * 0.7f, hubWidth);
+            EnsurePromptLayout(def, g, hubWidth, titleMin);
 
             _textPaint.Typeface = BoldTypeface;
             _textPaint.TextSize = g.PillFontSize;
@@ -898,6 +959,48 @@ namespace GnollHackX
 
             BuildHintBar(_hintsMain, def, g, false);
             BuildHintBar(_hintsSwitched, def, g, true);
+        }
+
+        /* The direction prompt's hub texts; the top line takes the smallest size any of its texts needs to fit the hub's
+           chord at its height */
+        private void EnsurePromptLayout(GHRadialMenuDefinition def, GHRadialGeometry g, float hubWidth, float titleMin)
+        {
+            _hasPrompt = !string.IsNullOrWhiteSpace(def.PromptVerb);
+            _promptObjectLineCount = 0;
+            if (!_hasPrompt)
+            {
+                _promptVerb = null;
+                return;
+            }
+
+            _promptVerbSize = FitSize(def.PromptVerb, TitleTypeface, g.HubTitleFontSize, titleMin, hubWidth);
+            _promptVerb = Ellipsize(def.PromptVerb, TitleTypeface, _promptVerbSize, hubWidth);
+
+            float descWidth = (float)(GHRadialTuning.HubDescriptionWidthOfHubDiameter * 2 * g.HubRadius);
+            if (!string.IsNullOrWhiteSpace(def.PromptObject))
+                _promptObjectLineCount = WrapText(def.PromptObject, DescriptionTypeface, g.HubDescriptionFontSize, descWidth, _promptObjectLines);
+
+            float verbBaseline, objectTop, topCenterY;
+            GetPromptPositions(g, out verbBaseline, out objectTop, out topCenterY);
+            float rise = g.CenterY - topCenterY;
+            float chord = 2 * (float)Math.Sqrt(Math.Max(0.0, (double)g.HubRadius * g.HubRadius - (double)rise * rise));
+            float topWidth = Math.Max(1f, Math.Min(hubWidth, (float)(GHRadialTuning.HubTitleWidthOfHubDiameter * chord)));
+
+            float topBase = g.HubDescriptionFontSize;
+            float topMin = topBase * 0.7f;
+            _promptTopSize = Math.Min(FitSize(def.NoHighlightStickText, LabelTypeface, topBase, topMin, topWidth),
+                FitSize(def.NoHighlightPointerText, LabelTypeface, topBase, topMin, topWidth));
+            GHRadialPage page = def.GetPage(0);
+            if (page != null)
+            {
+                int i;
+                for (i = 0; i < page.SlotCount; i++)
+                {
+                    GHRadialItem item = page.GetItem(i);
+                    if (item != null)
+                        _promptTopSize = Math.Min(_promptTopSize, FitSize(item.Label, LabelTypeface, topBase, topMin, topWidth));
+                }
+            }
         }
 
         private void BuildHintBar(HintBar bar, GHRadialMenuDefinition def, GHRadialGeometry g, bool switched)

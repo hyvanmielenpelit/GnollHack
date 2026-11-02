@@ -1773,7 +1773,7 @@ dobreathe(void)
         return 0;
 
     debugprint_pos();
-    if (!getdir((char*)0))
+    if (!getdir((char*)0, "Breathe", (const char *) 0))
         return 0;
 
     if (!u.dx && !u.dy && !u.dz)
@@ -1910,7 +1910,7 @@ dosteedbreathemon(struct monst *mon)
 
     /* Then the direction */
     debugprint_pos();
-    if (!getdir((char*)0))
+    if (!getdir((char*)0, "Steed breath", (const char *) 0))
         return 0;
 
     if (!u.dx && !u.dy && !u.dz)
@@ -1940,7 +1940,7 @@ dospit(void)
     struct attack *mattk;
 
     debugprint_pos();
-    if (!getdir((char *) 0))
+    if (!getdir((char *) 0, "Spit", (const char *) 0))
         return 0;
     mattk = attacktype_fordmg(youmonst.data, AT_SPIT, AD_ANY);
     if (!mattk) {
@@ -2163,7 +2163,7 @@ dogaze(void)
     }
 
     debugprint_pos();
-    if (!getdir((char*)0))
+    if (!getdir((char*)0, "Gaze", (const char *) 0))
         return 0;
 
     if (!u.dx && !u.dy && !u.dz)
@@ -2411,7 +2411,7 @@ doeyestalk(void)
     }
 
     debugprint_pos();
-    if (!getdir((char*)0))
+    if (!getdir((char*)0, "Eyestalk", (const char *) 0))
         return 0;
 
     if (!u.dx && !u.dy && !u.dz)

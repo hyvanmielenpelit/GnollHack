@@ -2784,7 +2784,7 @@ doloot_core(int applymode)
     if (c != 'y' /* && mon_beside(u.ux, u.uy) */)
     {
         if (!get_adjacent_loc("Loot in what direction?",
-            "Invalid loot location", u.ux, u.uy, &cc))
+            "Invalid loot location", u.ux, u.uy, &cc, "Loot", (const char *) 0))
         {
             return 0;
         }

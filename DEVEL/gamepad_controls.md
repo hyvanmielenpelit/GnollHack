@@ -205,7 +205,7 @@ radial while its trigger is held, which lasts as long as the trigger.
   **X** switches between the context page and the first commands page; L1/R1 page.
 - **Direction radial** (any direction prompt): violet and see-through,
   with no dimming of the map and slices only 8 % opaque, 16 % when selected, because it is used for
-  aiming. The eight directions sit at their compass positions, in place of the map's direction arrows. Either stick selects.
+  aiming. The eight directions sit at their compass positions, in place of the map's direction arrows. The hub names the command and what it uses, such as Fire and the quivered stack, with the highlighted direction above them, or Tilt to aim. A prompt that names no command shows Direction instead. Either stick selects.
   **A** confirms the highlighted direction, **B** cancels the command and
   **L3** does nothing. **D-pad Up** answers `<`, **D-pad Down** `>` and **Y** self, at once. L3 is not
   self because aiming hard can click the stick. D-pad Left/Right step the highlight. While a trigger is held through its own

@@ -2202,7 +2202,7 @@ dochat(void)
     boolean target_is_steed = FALSE;
 
     debugprint_pos();
-    if (!getdir("Talk to whom? (in what direction)"))
+    if (!getdir("Talk to whom? (in what direction)", "Chat", (const char *) 0))
     {
         /* decided not to chat */
         return 0;

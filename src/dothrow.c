@@ -45,7 +45,7 @@ throw_obj(struct obj *obj, int shotlimit, boolean firing)
 
     /* ask "in what direction?" */
     debugprint_pos();
-    if (!getdir((char *) 0)) {
+    if (!getdir((char *) 0, firing ? "Fire" : "Throw", getdir_objname(obj))) {
         /* No direction specified, so cancel the throw;
          * might need to undo an object split.
          * We used to use freeinv(obj),addinv(obj) here, but that can

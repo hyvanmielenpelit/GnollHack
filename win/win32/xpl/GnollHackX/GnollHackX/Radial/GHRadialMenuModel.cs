@@ -176,6 +176,8 @@ namespace GnollHackX
         public string NoHighlightStickText = "Tilt the stick to choose";
         public string NoHighlightPointerText = "Point to choose";
         public string UnavailableText = "Unavailable";
+        public string PromptVerb;                       /* the command asking for a direction; null for a plain hub */
+        public string PromptObject;                     /* what it uses, shown under the verb; null for none */
 
         /* Hint bar labels; a null label hides that hint */
         public string ConfirmHint = "Select";           /* "Toggle" for L3 */

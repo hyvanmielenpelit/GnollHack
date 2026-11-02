@@ -1187,7 +1187,7 @@ use_pick_axe(struct obj *obj)
         return 0;
 
     const char *sdp, *verb;
-    char *dsp, dirsyms[12], qbuf[BUFSZ];
+    char *dsp, dirsyms[12], qbuf[BUFSZ], vbuf[BUFSZ];
     boolean ispick, isaxe, issaw;
     int rx, ry, downok, res = 0;
 
@@ -1266,8 +1266,10 @@ use_pick_axe(struct obj *obj)
     }
     *dsp = 0;
     Sprintf(qbuf, "In what direction do you want to %s? [%s]", verb, dirsyms);
+    Strcpy(vbuf, verb);
+    *vbuf = highc(*vbuf);
     debugprint_pos();
-    if (!getdir(qbuf))
+    if (!getdir(qbuf, vbuf, getdir_objname(obj)))
         return res;
 
     update_u_facing(TRUE);

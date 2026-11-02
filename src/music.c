@@ -625,7 +625,7 @@ do_improvisation(struct obj *instr)
         consume_obj_charge(instr, TRUE);
 
         debugprint_pos();
-        if (!getdir((char *) 0)) {
+        if (!getdir((char *) 0, "Play", getdir_objname(instr))) {
             pline("%s.", Tobjnam(instr, "vibrate"));
             break;
         } else if (!u.dx && !u.dy && !u.dz) {

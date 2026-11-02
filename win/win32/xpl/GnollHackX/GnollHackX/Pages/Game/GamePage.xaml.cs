@@ -3363,6 +3363,8 @@ namespace GnollHackX.Pages.Game
                                 HideYnResponses();
                                 break;
                             case GHRequestType.ShowDirections:
+                                _directionPromptVerb = req.RequestString;
+                                _directionPromptObject = req.RequestString2;
                                 DoShowDirections();
                                 OpenGamepadDirectionRadialForPrompt();
                                 break;
@@ -4268,6 +4270,8 @@ namespace GnollHackX.Pages.Game
         {
             ShowDirections = false;
             ShowNumberPad = false;
+            _directionPromptVerb = null;
+            _directionPromptObject = null;
         }
         public void DoShowNumberPad()
         {

@@ -384,12 +384,13 @@ E int xytod(schar, schar);
 E void dtoxy(coord *, int);
 E int movecmd(char);
 E int dxdy_moveok(void);
-E int getdir(const char *);
-E int getdir_ex(const char*, boolean);
+E int getdir(const char *, const char *, const char *);
+E int getdir_ex(const char *, boolean, const char *, const char *);
+E char *getdir_objname(struct obj *);
 E void confdir(void);
 E const char *directionname(int);
 E int isok(int, int);
-E int get_adjacent_loc(const char *, const char *, xchar, xchar, coord *);
+E int get_adjacent_loc(const char *, const char *, xchar, xchar, coord *, const char *, const char *);
 E const char *click_to_cmd(int, int, int);
 E char get_count(char *, char, int64_t, int64_t *, boolean);
 #ifdef HANGUPHANDLING

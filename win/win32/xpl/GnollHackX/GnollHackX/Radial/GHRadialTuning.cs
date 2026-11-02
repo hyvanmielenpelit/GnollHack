@@ -97,6 +97,7 @@ namespace GnollHackX
         public static readonly double HubDescriptionFont = 0.052;
         public static readonly double HubDescriptionWidthOfHubDiameter = 0.8;
         public static readonly int HubDescriptionMaxLines = 3;
+        public static readonly int HubPromptObjectMaxLines = 3;        /* the object under a direction prompt's verb */
         public static readonly double HubBorderDip = 1.5;
         public static readonly double PageTitleFont = 0.07;
         public static readonly double PageTitleOffset = 0.12;           /* title baseline above the ring */

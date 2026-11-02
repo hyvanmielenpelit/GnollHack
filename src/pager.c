@@ -1981,7 +1981,7 @@ doidtrap(void)
     int x, y, tt, glyph;
 
     debugprint_pos();
-    if (!getdir("^"))
+    if (!getdir("^", "Identify trap", (const char *) 0))
         return 0;
     x = u.ux + u.dx;
     y = u.uy + u.dy;
