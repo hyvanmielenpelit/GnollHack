@@ -51,7 +51,7 @@ navigation, hint strips, in-page popups, `FileDialogView`, controller settings, 
 | Avalonia Windows | The Windows branches of Avalonia code (`#else` of `#if LINUX`, `#elif GNH_AVALONIA` after `GNH_AVALONIA && LINUX`), and the `NativeWebView` paths (`NativeWebViewHost`, `_nativeView` in `GHAvaloniaWebScriptHost`), which the Deck does not run because it uses CEF |
 | WinUI 3 | `Platforms/Windows/GHWinUI*`, `GHWebView2FileChooser`, `KeyboardHook`'s key note, `#if WINDOWS` branches in controller code |
 | Desktop Linux | The `!IsSteamDeck` branches of the evdev backend and `GHAvaloniaGamepad`, and physical pads in `GHEvdev*` |
-| Both Windows builds | `GnollHackM/Gamepad/GHXInputGamepadBackend.cs`. Test on WinUI 3 |
+| Both Windows builds | `GnollHackM/GHXInputGamepadBackend.cs`. Test on WinUI 3 |
 
 Other code in `Platforms/Avalonia/`, such as `GHAvaloniaGamepad`, runs on the Deck too, so the Deck covers it.
 `Platforms/Avalonia/Web/gamepad_web.js` is shared, whatever its folder.
@@ -91,8 +91,8 @@ Anything that changes controller behavior, in any of these:
 - `win/win32/xpl/GnollHackM/Platforms/Avalonia/`: the gamepad and evdev backends
   (`GHAvaloniaGamepad*.cs`, `GHEvdev*.cs`), the Steam keyboard, key handling for the grip bridge,
   and controller input in the in-app browser (`Cef/GHCefInput.cs`, `GHAvaloniaWebScriptHost.cs`)
-- `win/win32/xpl/GnollHackM/Gamepad/` and the WinUI 3 glue: `Platforms/Windows/GHWinUI*.cs`,
-  `GHWebView2FileChooser.cs`, and `KeyboardHook`'s key note in `MauiProgram.cs`
+- `win/win32/xpl/GnollHackM/GHXInputGamepadBackend.cs`, `GHWebPageScript.cs`, and the WinUI 3 glue:
+  `Platforms/Windows/GHWinUI*.cs`, `GHWebView2FileChooser.cs`, and `KeyboardHook`'s key note in `MauiProgram.cs`
 - `Platforms/Linux/Packaging/steam/input/` and `steamdeck/run-gnollhack.sh`
 - Any page with controller navigation, when a change adds, moves or removes a focusable control,
   changes the focus order, or changes a hint strip, an in-page popup or a list's selection
