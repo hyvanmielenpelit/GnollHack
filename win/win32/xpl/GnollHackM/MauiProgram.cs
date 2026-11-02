@@ -62,6 +62,7 @@ public static class MauiProgram
         GHAvaloniaLayoutInput.Register();
         GHAvaloniaMargin.Register();
         GHAvaloniaControlTheming.Register();
+        GHAvaloniaPickerTheming.Register();
         GHAvaloniaAlignment.Register();
         GHAvaloniaWebView.Register();
         GHAvaloniaSteamKeyboard.Register();

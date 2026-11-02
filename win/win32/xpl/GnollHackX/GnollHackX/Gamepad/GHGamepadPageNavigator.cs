@@ -29,6 +29,7 @@ namespace GnollHackX.Controls
        and last entry inside the layer's ScrollView (of the whole layer when none is inside).
        The right stick scrolls the shown layer's ScrollView in proportion to its push, through UpdateSticks.
        An overlay gets its initial focus each time it becomes active; the main layer keeps its focus.
+       A press while a picker's own dropdown list is open only closes the list and focuses its picker.
        UI thread only. */
     public sealed class GHGamepadPageNavigator
     {
@@ -48,6 +49,7 @@ namespace GnollHackX.Controls
             private readonly List<View> _highlights = new List<View>();
             private readonly List<View> _initialViews = new List<View>();
             private readonly List<Entry> _textEntries = new List<Entry>();
+            private readonly List<Picker> _pickers = new List<Picker>();
             private readonly List<SectionStop> _stops = new List<SectionStop>();
             private bool _pendingStop = false;
             private View _pendingStopHeading;
@@ -82,6 +84,9 @@ namespace GnollHackX.Controls
             public Func<int> GridColumns { get; set; }
 
             public int Count { get { return _views.Count; } }
+
+            /* The layer's pickers, in the order added */
+            internal List<Picker> Pickers { get { return _pickers; } }
 
             /* isAvailable null: the view and its ancestors are visible, enabled and not transparent */
             public void Add(View view, Action activate, Func<bool> isAvailable)
@@ -149,6 +154,7 @@ namespace GnollHackX.Controls
             {
                 if (picker == null)
                     return;
+                _pickers.Add(picker);
                 GHGamepadFocusList.EntryOptions options = new GHGamepadFocusList.EntryOptions();
                 options.Secondary = secondary;
                 options.Adjust = (dir) =>
@@ -282,6 +288,7 @@ namespace GnollHackX.Controls
                     entry.Unfocused -= TextEntry_Unfocused;
                 }
                 _textEntries.Clear();
+                _pickers.Clear();
                 _stops.Clear();
                 _pendingStop = false;
                 _pendingStopHeading = null;
@@ -697,6 +704,11 @@ namespace GnollHackX.Controls
         private int _aPressId = 0;
         private bool _xArmed = false;
         private int _xPressId = 0;
+        /* The press that closed a picker's dropdown list: its later events, D-pad and LB/RB repeats included, do
+           nothing */
+        private bool _dropDownClosingPress = false;
+        private GHGamepadButton _dropDownClosingButton;
+        private int _dropDownClosingPressId = 0;
         /* Right-stick scrolling below one DIP not yet applied, for _stickScrollLayer */
         private double _stickScrollRemainder = 0.0;
         private Layer _stickScrollLayer;
@@ -729,6 +741,7 @@ namespace GnollHackX.Controls
             }
             _aArmed = false;
             _xArmed = false;
+            _dropDownClosingPress = false;
             RefreshVisuals();
         }
 
@@ -742,6 +755,7 @@ namespace GnollHackX.Controls
             }
             _aArmed = false;
             _xArmed = false;
+            _dropDownClosingPress = false;
         }
 
         public void RefreshVisuals()
@@ -780,6 +794,20 @@ namespace GnollHackX.Controls
                 {
                     _aArmed = false;
                     _xArmed = false;
+                    return true;
+                }
+
+                if (_dropDownClosingPress && e.Button == _dropDownClosingButton && e.PressId == _dropDownClosingPressId)
+                {
+                    if (e.Kind == GHGamepadButtonEventKind.Released)
+                        _dropDownClosingPress = false;
+                    return true;
+                }
+                if (CloseOpenPickerDropDown())
+                {
+                    _dropDownClosingPress = e.Kind != GHGamepadButtonEventKind.Released;
+                    _dropDownClosingButton = e.Button;
+                    _dropDownClosingPressId = e.PressId;
                     return true;
                 }
 
@@ -924,6 +952,11 @@ namespace GnollHackX.Controls
                 }
                 if (dtSeconds <= 0.0)
                     return;
+                if (CloseOpenPickerDropDown())
+                {
+                    _stickScrollRemainder = 0.0;
+                    return;
+                }
 
                 Layer layer = FindShownLayer();
                 if (!ReferenceEquals(layer, _stickScrollLayer))
@@ -948,6 +981,36 @@ namespace GnollHackX.Controls
                 Debug.WriteLine(ex);
                 _stickScrollRemainder = 0.0;
             }
+        }
+
+        /* A controller press while a picker's own dropdown list is open closes the list and moves the focus to the
+           picker; the press does nothing else */
+        private bool CloseOpenPickerDropDown()
+        {
+            if (CloseOpenPickerDropDown(_main))
+                return true;
+            foreach (Layer overlay in _overlays)
+            {
+                if (CloseOpenPickerDropDown(overlay))
+                    return true;
+            }
+            return false;
+        }
+
+        private bool CloseOpenPickerDropDown(Layer layer)
+        {
+            foreach (Picker picker in layer.Pickers)
+            {
+                if (!UIUtils.ClosePickerDropDown(picker))
+                    continue;
+                _aArmed = false;
+                _xArmed = false;
+                layer.Focus.SetFocus(picker);
+                layer.Focus.RefreshVisuals();
+                ScrollFocusIntoView(layer);
+                return true;
+            }
+            return false;
         }
 
         /* Wraps only on a fresh press, so a held direction stops at the end */

@@ -41,6 +41,8 @@ Scores and Replays, whose list moves by selection instead, and the game menu hav
 When the list has been scrolled so that the focus is out of view (by the right stick, touch or the
 mouse), Up/Down and the press that brings the focus back put it on the topmost visible entry
 instead of scrolling back to it; with no focus, Up/Down do the same.
+A picker's own dropdown list, opened with the mouse or a tap, closes at the next controller press,
+which only focuses its picker.
 The other pages work the same way, with these additions:
 
 - **Settings:** the focus walks the rows in order, and the focused row is tinted. A flips a
@@ -48,9 +50,10 @@ The other pages work the same way, with these additions:
   of commands (R2 and L2 Action, the back grips, the Quick slots, Bar Commands) opens a radial of
   its commands: eight per page, opening on the page with the current command, whose hub names it,
   with L1/R1 changing the page, a stick or the D-pad selecting, A setting and B closing. A plain
-  list of three or more opens a scrolling list popup with the current value in green: Up/Down or
-  the left stick walk it, the right stick scrolls, L1/R1 page, L2/R2 go to the ends, A sets and B
-  closes. A two-way choice flips to its other value. Left/Right step a
+  list of two or more opens a scrolling list popup, at most eight and a half rows tall, with the
+  current value in green and marked with a dot: Up/Down or the left stick walk it, the right stick
+  scrolls, L1/R1 page, L2/R2 go to the ends, A sets and B closes. A tap or click on a row sets it,
+  and one outside the list closes it. Left/Right step a
   picker or a volume slider (5 %, held to repeat), or move between two buttons in one row. L1/R1
   jump to the previous/next section. X shows the row's explanation, as tapping its label does.
   A subtitle under the page's title says so, naming the button for the pad in use.

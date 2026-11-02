@@ -256,6 +256,7 @@ namespace GnollHackX.Pages.MainScreen
             if (isDarkMode)
             {
                 PopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
+                PickerListFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
             }
 
             RefreshRatePicker.ItemsSource = BuildMapRefreshRateItems(GHApp.RoundedReconciledRefreshRate, GHApp.UsePlatformRenderLoop);
@@ -3565,9 +3566,15 @@ namespace GnollHackX.Pages.MainScreen
                 GamepadInfoHintLabel.TextColor = e.Value ? GHColors.White : GHColors.Black;
                 SetChildrenDarkModeTextColor(RootLayout, e.Value);
                 if (e.Value)
+                {
                     PopupFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
+                    PickerListFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
+                }
                 else
+                {
                     PopupFrame.BackgroundColor = GHColors.MsgBoxLightModeBkgColor;
+                    PickerListFrame.BackgroundColor = GHColors.MsgBoxLightModeBkgColor;
+                }
 
                 if (_gameMenuPage != null)
                 {

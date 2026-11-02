@@ -111,7 +111,7 @@ namespace GnollHackM
             }
         }
 
-        private static Avalonia.Media.IBrush ToBrush(Color color)
+        internal static Avalonia.Media.IBrush ToBrush(Color color)
         {
             color.ToRgba(out byte r, out byte g, out byte b, out byte a);
             return new Avalonia.Media.SolidColorBrush(Avalonia.Media.Color.FromArgb(a, r, g, b));

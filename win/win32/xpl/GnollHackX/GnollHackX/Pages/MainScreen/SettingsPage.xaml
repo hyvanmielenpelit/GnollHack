@@ -2419,11 +2419,16 @@
             </Grid>
 
             <Grid x:Name="PickerListGrid" HorizontalOptions="Fill" VerticalOptions="Fill"
-                         Padding="10" BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
-                <Grid WidthRequest  ="440" HorizontalOptions="Center" VerticalOptions="Center">
-                    <Frame BackgroundColor="{x:Static gnh:GHColors.SemiTransparentDarkenedFrameBackgroundColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
+                         BackgroundColor="{x:Static gnh:GHColors.GeneralPageOverlayColor}" IsVisible="False">
+                <Grid x:Name="PickerListBackdrop" BackgroundColor="Transparent" HorizontalOptions="Fill" VerticalOptions="Fill">
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="PickerListBackdrop_Tapped" />
+                    </Grid.GestureRecognizers>
+                </Grid>
+                <Grid WidthRequest  ="440" Margin="10" HorizontalOptions="Center" VerticalOptions="Center">
+                    <Frame x:Name="PickerListFrame" BackgroundColor="{x:Static gnh:GHColors.MsgBoxLightModeBkgColor}" BorderColor="Black" CornerRadius="10" HorizontalOptions="Fill" VerticalOptions="Center">
                         <StackLayout Spacing="6" HorizontalOptions="Fill" VerticalOptions="Center">
-                            <Label x:Name="PickerListCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="White" />
+                            <Label x:Name="PickerListCaption" Text="" FontFamily="Immortal" FontSize="20" HorizontalOptions="Center" TextColor="{x:Static gnh:GHColors.TitleGoldColor}" />
                             <ScrollView x:Name="PickerListScrollView" HorizontalOptions="Fill">
                                 <StackLayout x:Name="PickerListLayout" Spacing="2" HorizontalOptions="Fill" />
                             </ScrollView>

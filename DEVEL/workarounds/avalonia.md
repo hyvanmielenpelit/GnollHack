@@ -828,3 +828,38 @@ upstream issue must print only "Exited".
 
 Checks:
 - 2026-10-31 | Avalonia 12.1.4 | still-needed | Fix merged to main in pull request 22594, labeled for a 12.1.x backport; 12.1.4 is the newest release and does not contain it.
+
+## WA-AVALONIA-0024: ACM raises a tap when the pointer goes down
+
+- Status: active
+- Added: 2026-11-02
+- GnollHack version: 3.35 (435)
+- Component: Avalonia.Controls.Maui
+- Package: Avalonia.Controls.Maui
+- Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
+- Platforms: Linux, Windows (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-02
+- Code: `win/win32/xpl/GnollHackX/GnollHackX/Pages/MainScreen/SettingsPage.Pickers.cs` (`SettingsPage.OpenPickerList`)
+- Remove when: ACM raises a single tap when the pointer comes up, as MAUI's other platforms do, in a release GnollHack uses, and Verify removal passes.
+
+**Symptom.** In the controller's list popup on Settings, putting a finger on a row to scroll
+the list chooses that row at once and closes the list.
+
+**Cause.** `AvaloniaGesturePlatformManager.OnPointerPressed` raises `Tapped` for a
+single-tap `TapGestureRecognizer` from the pointer-pressed event, and marks the event handled.
+MAUI's Android, iOS and WinUI handlers raise it after the pointer comes up.
+
+**Workaround.** On Avalonia the list rows use a `PointerGestureRecognizer` and choose a row
+when the pointer comes up over the row it went down on, within 12 DIP. A touch that scrolls the
+list is captured by the `ScrollViewer`, so its release never reaches the row.
+
+**Verify removal.** In `SettingsPage.OpenPickerList`, use the `TapGestureRecognizer` branch on
+Avalonia too. Package the Linux build and deploy it to the Steam Deck. In Settings, open Grid
+Opacity's list with the controller's A, then drag the list with a finger starting on a row: the
+list must scroll, and nothing may be chosen. A tap on a row must still choose it.
+
+Checks:
+- 2026-11-02 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | still-needed | Read in the decompiled `AvaloniaGesturePlatformManager.OnPointerPressed`. No upstream issue found: searched AvaloniaUI/Avalonia.Controls.Maui for TapGestureRecognizer.

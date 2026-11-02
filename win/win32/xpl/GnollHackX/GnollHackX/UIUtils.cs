@@ -1609,6 +1609,26 @@ namespace GnollHackX
             label.FormattedText = formattedString;
         }
 
+        /* Closes the picker's own dropdown list if it is open; true if it was. WinUI and Avalonia only */
+        public static bool ClosePickerDropDown(Picker picker)
+        {
+#if GNH_AVALONIA
+            Avalonia.Controls.ComboBox comboBox = picker?.Handler?.PlatformView as Avalonia.Controls.ComboBox;
+            if (comboBox == null || !comboBox.IsDropDownOpen)
+                return false;
+            comboBox.IsDropDownOpen = false;
+            return true;
+#elif WINDOWS
+            Microsoft.UI.Xaml.Controls.ComboBox comboBox = picker?.Handler?.PlatformView as Microsoft.UI.Xaml.Controls.ComboBox;
+            if (comboBox == null || !comboBox.IsDropDownOpen)
+                return false;
+            comboBox.IsDropDownOpen = false;
+            return true;
+#else
+            return false;
+#endif
+        }
+
         public static void SetPageTheme(Page page, bool isDarkTheme)
         {
 #if WINDOWS

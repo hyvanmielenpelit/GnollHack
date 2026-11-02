@@ -24,8 +24,9 @@ namespace GnollHackX.Pages.MainScreen
        steps. Everything runs on the UI thread. */
     public partial class SettingsPage : IGHGamepadFrameTickPage
     {
-        private const int GamepadPickerListMinItems = 3;
+        private const int GamepadPickerListMinItems = 2;
         private const double PickerListRowHeight = 36.0;
+        private const double PickerListMaxVisibleRows = 8.5;        /* half a row shows at an edge, so a longer list plainly scrolls */
         private const double PickerListVerticalMargin = 140.0;      /* of the page, for the caption, frame and padding */
         private const int PickerListLayoutWaitMilliseconds = 40;
         private const int PickerListMaxLayoutWaits = 10;
@@ -94,14 +95,32 @@ namespace GnollHackX.Pages.MainScreen
                 text.FontSize = 17;
                 text.TextColor = i == selected ? GHColors.LightGreen : GHColors.White;
                 text.VerticalOptions = LayoutOptions.Center;
-                text.Margin = new Thickness(8, 0);
+                text.Margin = new Thickness(24, 0, 8, 0);
                 Grid row = new Grid();
                 row.HeightRequest = PickerListRowHeight;
+                row.BackgroundColor = GHColors.Transparent;     /* hit-tested across the row, not only on its text */
+                if (i == selected)
+                {
+                    Label marker = new Label();
+                    marker.Text = ((char)0x2022).ToString();
+                    marker.FontFamily = "LatoRegular";
+                    marker.FontSize = 17;
+                    marker.TextColor = GHColors.LightGreen;
+                    marker.HorizontalOptions = LayoutOptions.Start;
+                    marker.VerticalOptions = LayoutOptions.Center;
+                    marker.Margin = new Thickness(8, 0, 0, 0);
+                    row.Children.Add(marker);
+                }
                 row.Children.Add(text);
                 Action choose = () => ChoosePickerListItem(picker, index);
+#if GNH_AVALONIA
+                // WORKAROUND(WA-AVALONIA-0024): ACM raises a tap when the pointer goes down
+                AddPickerListRowPointer(row, choose);
+#else
                 TapGestureRecognizer tap = new TapGestureRecognizer();
                 tap.Tapped += (s, e) => choose();
                 row.GestureRecognizers.Add(tap);
+#endif
                 PickerListLayout.Children.Add(row);
                 _pickerListLayer.Add(row, choose, null);
                 if (i == selected)
@@ -109,8 +128,9 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             PickerListCaption.Text = title ?? "";
+            double rowPitch = PickerListRowHeight + PickerListLayout.Spacing;
             double available = RootGrid.Height > PickerListVerticalMargin ? RootGrid.Height - PickerListVerticalMargin : PickerListRowHeight;
-            PickerListScrollView.HeightRequest = Math.Min(available, count * (PickerListRowHeight + PickerListLayout.Spacing));
+            PickerListScrollView.HeightRequest = Math.Min(available, Math.Min(count, PickerListMaxVisibleRows) * rowPitch);
             _pickerListLayer.SetInitialFocus(selectedRow);
             PickerListGrid.IsVisible = true;
             GHApp.PlayMenuSelectSound();
@@ -152,9 +172,52 @@ namespace GnollHackX.Pages.MainScreen
             PickerListGrid.IsVisible = false;
             _pickerListLayer.Clear();
             PickerListLayout.Children.Clear();
+#if GNH_AVALONIA
+            _pickerListPressedRow = null;
+#endif
             _gamepadPickerLeftStickDisarmed = true;
             _gamepadPickerRightStickDisarmed = true;
         }
+
+        /* A tap or click outside the list closes it, leaving the value as it was */
+        private void PickerListBackdrop_Tapped(object sender, EventArgs e)
+        {
+            ClosePickerList();
+        }
+
+#if GNH_AVALONIA
+        private const double PickerListTapSlopDips = 12.0;  /* a pointer that moves farther is a scroll */
+
+        /* The list row a pointer went down on, and where in it */
+        private View _pickerListPressedRow;
+        private Point _pickerListPressPoint;
+
+        /* Chooses when the pointer comes up over the row it went down on, within the slop, so that a touch that
+           scrolls the list chooses nothing */
+        private void AddPickerListRowPointer(View row, Action choose)
+        {
+            PointerGestureRecognizer pointer = new PointerGestureRecognizer();
+            pointer.PointerPressed += (s, e) =>
+            {
+                Point? p = e.GetPosition(row);
+                _pickerListPressedRow = p.HasValue ? row : null;
+                _pickerListPressPoint = p ?? default(Point);
+            };
+            pointer.PointerReleased += (s, e) =>
+            {
+                Point? p = e.GetPosition(row);
+                bool pressedHere = ReferenceEquals(_pickerListPressedRow, row);
+                _pickerListPressedRow = null;
+                if (!pressedHere || !p.HasValue)
+                    return;
+                double dx = p.Value.X - _pickerListPressPoint.X;
+                double dy = p.Value.Y - _pickerListPressPoint.Y;
+                if (dx * dx + dy * dy <= PickerListTapSlopDips * PickerListTapSlopDips)
+                    choose();
+            };
+            row.GestureRecognizers.Add(pointer);
+        }
+#endif
 
         private void OpenPickerRadial(Picker picker, IList<SelectableShortcutButton> commands, string title)
         {
