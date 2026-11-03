@@ -17039,7 +17039,9 @@ namespace GnollHackX.Pages.Game
                                     long elapsedms = (DateTime.Now.Ticks - entry.PressTime.Ticks) / TimeSpan.TicksPerMillisecond;
                                     if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_touchMoved)
                                     {
-                                        ToggleMessageNumberButton_Clicked(sender, e);
+                                        object touchSender = sender;
+                                        SKTouchEventArgs touchArgs = e;
+                                        RunAfterInputEvent(() => ToggleMessageNumberButton_Clicked(touchSender, touchArgs));
                                     }
                                     else if (TouchDictionary.Count == 1) /* Not removed yet */
                                     {
@@ -20644,8 +20646,16 @@ namespace GnollHackX.Pages.Game
                             {
                                 if (e.MouseButton == SKMouseButton.Right)
                                 {
-                                    if(MenuCanvas.AllowLongTap)
-                                        MenuCanvas_LongTap(sender, e);
+                                    if (MenuCanvas.AllowLongTap)
+                                    {
+                                        /* The count dialog sets _menuTouchMoved for a held press; restore the end-of-release state */
+                                        RunAfterInputEvent(() =>
+                                        {
+                                            MenuCanvas_LongTap(sender, e);
+                                            if (MenuTouchDictionary.Count == 0)
+                                                _menuTouchMoved = false;
+                                        });
+                                    }
                                 }
                                 else
                                 {
@@ -20660,7 +20670,7 @@ namespace GnollHackX.Pages.Game
                                             timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
                                         {
                                             MenuCanvas.InvalidateSurface();
-                                            PressMenuOKButton();
+                                            RunAfterInputEvent(PressMenuOKButton);
                                             _menuPreviousReleaseClick = false;
                                             _menuPreviousReleaseClickIndex = -1;
                                             _savedPreviousMenuReleaseTimeStamp = new DateTime();
@@ -20973,7 +20983,7 @@ namespace GnollHackX.Pages.Game
                                     if (clickRes.MenuItemClickIndex == -2 && MenuCancelButton.IsEnabled)
                                     {
                                         MenuCanvas.InvalidateSurface();
-                                        RequestSwapWeaponAndCloseMenu();
+                                        RunAfterInputEvent(RequestSwapWeaponAndCloseMenu);
                                         _menuPreviousReleaseClick = false;
                                         _menuPreviousReleaseClickIndex = -1;
                                         _savedPreviousMenuReleaseTimeStamp = new DateTime();
@@ -20987,7 +20997,7 @@ namespace GnollHackX.Pages.Game
                                             timeSincePreviousReleaseInMs <= GHConstants.DoubleClickTimeThreshold)
                                         {
                                             MenuCanvas.InvalidateSurface();
-                                            PressMenuOKButton();
+                                            RunAfterInputEvent(PressMenuOKButton);
                                             _menuPreviousReleaseClick = false;
                                             _menuPreviousReleaseClickIndex = -1;
                                             _savedPreviousMenuReleaseTimeStamp = new DateTime();
@@ -21382,7 +21392,7 @@ namespace GnollHackX.Pages.Game
             if (okClicked)
             {
                 MenuCanvas.InvalidateSurface();
-                PressMenuOKButton();
+                RunAfterInputEvent(PressMenuOKButton);
             }
             return new MenuClickResult(okClicked, clickIdx, identifier);
         }
@@ -21449,7 +21459,7 @@ namespace GnollHackX.Pages.Game
             if (okClicked)
             {
                 MenuCanvas.InvalidateSurface();
-                PressMenuOKButton();
+                RunAfterInputEvent(PressMenuOKButton);
             }
             return new MenuClickResult(okClicked, clickIdx, identifier);
         }
@@ -21671,6 +21681,19 @@ namespace GnollHackX.Pages.Game
                 return;
             await MenuOKButtonPressedAsync();
         }
+
+        // WORKAROUND(WA-IOS-0006): Mac iPad app loses all button clicks after a click closes an overlay
+        /* Runs the action once the current input event has been delivered */
+        private void RunAfterInputEvent(Action action)
+        {
+#if GNH_MAUI
+            if (Dispatcher == null || !Dispatcher.Dispatch(action))
+                action();
+#else
+            Device.BeginInvokeOnMainThread(action);
+#endif
+        }
+
         private void PressMenuOKButton()
         {
             try
@@ -21694,6 +21717,9 @@ namespace GnollHackX.Pages.Game
         }
         private async Task MenuOKButtonPressedAsync()
         {
+            /* Cancel is disabled only once the menu has started closing */
+            if (!MenuCancelButton.IsEnabled)
+                return;
             MenuOKButton.IsEnabled = false;
             MenuCancelButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -21803,6 +21829,9 @@ namespace GnollHackX.Pages.Game
         }
         private async Task CloseMenu(int responseIntValue) // 1 = request weapon swap
         {
+            /* Cancel is disabled only once the menu has started closing */
+            if (!MenuCancelButton.IsEnabled)
+                return;
             MenuOKButton.IsEnabled = false;
             MenuCancelButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -22654,7 +22683,7 @@ namespace GnollHackX.Pages.Game
                                 if (elapsedms <= GHConstants.MoveOrPressTimeThreshold && !_textTouchMoved)
                                 {
                                     /* Normal click -- Hide the canvas */
-                                    TextCanvasPressed();
+                                    RunAfterInputEvent(TextCanvasPressed);
                                 }
                                 if (TextTouchDictionary.ContainsKey(e.Id))
                                 {
@@ -23378,13 +23407,19 @@ namespace GnollHackX.Pages.Game
 
                                     if (cbi != null)
                                     {
-                                        if (cbi_cmd >= 0)
-                                            GenericButton_Clicked(CommandCanvas, e, cbi_cmd);
-                                        else
-                                            ExecuteCommandButtonCommand(cbi_cmd);
+                                        int selectedCmd = cbi_cmd;
+                                        object touchSender = sender;
+                                        SKTouchEventArgs touchArgs = e;
+                                        RunAfterInputEvent(() =>
+                                        {
+                                            if (selectedCmd >= 0)
+                                                GenericButton_Clicked(CommandCanvas, touchArgs, selectedCmd);
+                                            else
+                                                ExecuteCommandButtonCommand(selectedCmd);
 
-                                        /* Hide the canvas */
-                                        CommandCanvas_Pressed(sender, e);
+                                            /* Hide the canvas */
+                                            CommandCanvas_Pressed(touchSender, touchArgs);
+                                        });
                                     }
                                 }
                                 else if (elapsedms <= GHConstants.SwipeTimeThreshold && Math.Abs(origdiffX) > swipelengththreshold)
@@ -23829,7 +23864,6 @@ namespace GnollHackX.Pages.Game
                     TipView.InvalidateSurface();
                     if (ShownTip >= 17 - (_blockingTipView ? 0 : 1))
                     {
-                        TipView.IsVisible = false;
                         ShownTip = -1;
                         GHApp.GUITipsShown = true;
                         try
@@ -23840,11 +23874,16 @@ namespace GnollHackX.Pages.Game
                         {
                             Debug.WriteLine(ex);
                         }
-                        if (_blockingTipView)
+                        bool blockingTipView = _blockingTipView;
+                        RunAfterInputEvent(() =>
                         {
-                            GHGame curGame = GHApp.CurrentGHGame;
-                            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowGUITips));
-                        }
+                            TipView.IsVisible = false;
+                            if (blockingTipView)
+                            {
+                                GHGame curGame = GHApp.CurrentGHGame;
+                                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowGUITips));
+                            }
+                        });
                     }
                     e.Handled = true;
                     break;
