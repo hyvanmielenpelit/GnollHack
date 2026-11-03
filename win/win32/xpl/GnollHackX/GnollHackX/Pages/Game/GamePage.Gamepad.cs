@@ -1225,7 +1225,7 @@ namespace GnollHackX.Pages.Game
         {
             _gamepadDirectionRadialTrigger = trigger;
             _gamepadDirectionRadialArmedTicks = now;
-            ExecuteGamepadBoundCommand(ctx, GHApp.GetGamepadTriggerCommand(trigger));
+            ExecuteGamepadBoundCommand(ctx, GHApp.ResolveGamepadCommand(GHApp.GetGamepadTriggerCommand(trigger)));
         }
 
         /* Game input in Busy, which the gate holds back: animations and output delays end early and running and
@@ -2032,9 +2032,9 @@ namespace GnollHackX.Pages.Game
                     if (contextCount >= 0)
                         _gamepadHintContextCount = Math.Min(contextCount, 2);
                 }
-                /* Settings changes the triggers' commands */
-                int ltCommand = GHApp.GetGamepadTriggerCommand(GHGamepadButton.LT);
-                int rtCommand = GHApp.GetGamepadTriggerCommand(GHGamepadButton.RT);
+                /* Settings, the game's role and its quick spell change the triggers' commands */
+                int ltCommand = GHApp.ResolveGamepadCommand(GHApp.GetGamepadTriggerCommand(GHGamepadButton.LT));
+                int rtCommand = GHApp.ResolveGamepadCommand(GHApp.GetGamepadTriggerCommand(GHGamepadButton.RT));
                 if (ltCommand != _gamepadHintLTCommand || rtCommand != _gamepadHintRTCommand)
                 {
                     _gamepadHintLTCommand = ltCommand;

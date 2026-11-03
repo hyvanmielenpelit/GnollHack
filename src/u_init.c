@@ -1371,6 +1371,9 @@ u_init(void)
     /* Sort spells */
     sortspells();
 
+    /* Quick spell by role */
+    set_role_quick_spell();
+
     /* Check if any skill can be advanced */
     update_can_advance_any_skill();
 

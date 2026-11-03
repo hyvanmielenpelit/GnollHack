@@ -8310,11 +8310,14 @@ rhack(char *cmd)
         return;
     case NHKF_CLICKPOLE:
     {
+        struct obj* pole;
+
         if (!(uwep && is_appliable_pole_type_weapon(uwep)) && (uswapwep && is_appliable_pole_type_weapon(uswapwep)))
             (void)doswapweapon();
-        if (uwep && is_appliable_pole_type_weapon(uwep))
+        pole = uwep && is_appliable_pole_type_weapon(uwep) ? uwep : carried_pole_type_weapon();
+        if (pole)
         {
-            if (!use_pole2(uwep, &clickpole_cc))
+            if (!use_pole2(pole, &clickpole_cc))
             {
                 context.move = FALSE;
                 readchar_queue = ""; //Prevent movement if using polearm failed.

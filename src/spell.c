@@ -1664,6 +1664,40 @@ dosetquickspell_core(int spell_no)
     return 0;
 }
 
+/* Once per game: the role's first attack or healing spell as the quick spell, if it knows it and none is set */
+void
+set_role_quick_spell(void)
+{
+    int otyp, i;
+
+    if (context.quick_cast_spell_set)
+        return;
+
+    switch (Role_switch)
+    {
+    case PM_WIZARD:
+        otyp = SPE_MAGIC_ARROW;
+        break;
+    case PM_HEALER:
+    case PM_MONK:
+    case PM_PRIEST:
+        otyp = SPE_MINOR_HEALING;
+        break;
+    default:
+        return;
+    }
+
+    for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+    {
+        if (spellid(i) == otyp)
+        {
+            context.quick_cast_spell_set = TRUE;
+            context.quick_cast_spell_no = i;
+            return;
+        }
+    }
+}
+
 const char *
 spelltypemnemonic(int skill)
 {

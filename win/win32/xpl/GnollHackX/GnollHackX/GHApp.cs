@@ -3939,6 +3939,8 @@ namespace GnollHackX
                 for (slot = 0; slot < GamepadTriggerSlotCount; slot++)
                     SetGamepadTriggerSlotCommand(trigger, slot, Preferences.Get(GamepadTriggerSlotPreferenceKey(trigger, slot), DefaultGamepadTriggerSlotCommand(trigger, slot)));
                 MigrateGamepadTriggerPreference(trigger);
+                if (trigger == GHGamepadButton.RT)
+                    MigrateGamepadRightTriggerByRole();
                 SetGamepadTriggerCommand(trigger, Preferences.Get(GamepadTriggerPreferenceKey(trigger), DefaultGamepadTriggerCommand(trigger)));
             }
         }
@@ -3981,12 +3983,22 @@ namespace GnollHackX
             Preferences.Remove(oldKey);
         }
 
+        /* Once: R2 still saved as Fire, its earlier default, takes By Role */
+        private static void MigrateGamepadRightTriggerByRole()
+        {
+            const string migratedKey = "GamepadTriggerRTByRoleMigrated";
+            if (Preferences.ContainsKey(migratedKey))
+                return;
+            RemoveGamepadPreferenceIfEqual(GamepadTriggerPreferenceKey(GHGamepadButton.RT), 'f');
+            Preferences.Set(migratedKey, true);
+        }
+
         /* The slot's default in those builds; R2 differed only in slot 1, which was Fire */
         private static int OldDefaultGamepadTriggerSlotCommand(GHGamepadButton trigger, int slot)
         {
             if (trigger == GHGamepadButton.LT)
                 return _oldDefaultGamepadLTSlots[slot];
-            return slot == 0 ? DefaultGamepadTriggerCommand(trigger) : DefaultGamepadTriggerSlotCommand(trigger, slot);
+            return slot == 0 ? 'f' : DefaultGamepadTriggerSlotCommand(trigger, slot);
         }
 
         public static string GamepadGripPreferenceKey(GHGamepadButton grip)
@@ -4054,8 +4066,8 @@ namespace GnollHackX
             }
         }
 
-        /* L2 and R2 each run a SelectableShortcutButton.GHCommand (0 is None) when pressed alone, and open a Quick radial
-           of GamepadTriggerSlotCount slots of such commands */
+        /* L2 and R2 each run a SelectableShortcutButton.GHCommand (0 is None, GamepadByRoleCommand is By Role) when
+           pressed alone, and open a Quick radial of GamepadTriggerSlotCount slots of such commands */
         public const int GamepadTriggerSlotCount = 8;
         public static readonly GHGamepadButton[] GamepadTriggers = { GHGamepadButton.LT, GHGamepadButton.RT };
 
@@ -4097,7 +4109,7 @@ namespace GnollHackX
             return trigger == GHGamepadButton.LT ? _defaultGamepadLTSlots[slot] : _defaultGamepadRTSlots[slot];
         }
 
-        /* R2 Fire, L2 Kick */
+        /* R2 By Role, L2 Kick */
         public static int DefaultGamepadTriggerCommand(GHGamepadButton trigger)
         {
             switch (trigger)
@@ -4105,7 +4117,7 @@ namespace GnollHackX
                 case GHGamepadButton.LT:
                     return GHUtils.Ctrl('d');
                 case GHGamepadButton.RT:
-                    return 'f';
+                    return GamepadByRoleCommand;
                 default:
                     return 0;
             }
@@ -4129,21 +4141,41 @@ namespace GnollHackX
                 GamepadGripCommandItems[index].GHCommand);
         }
 
-        /* The GHCommand a trigger runs when pressed alone; 0 is None */
+        /* The command a trigger runs when pressed alone, as stored: 0 is None, GamepadByRoleCommand is By Role */
         public static int GetGamepadTriggerCommand(GHGamepadButton trigger)
         {
             int t = GamepadTriggerIndex(trigger);
             return t < 0 ? 0 : Interlocked.CompareExchange(ref _gamepadTriggerCommands[t], 0, 0);
         }
 
-        /* A command not in GamepadGripCommandItems falls back to the trigger's default */
+        /* A command not in GamepadTriggerCommandItems falls back to the trigger's default */
         public static void SetGamepadTriggerCommand(GHGamepadButton trigger, int command)
         {
             int t = GamepadTriggerIndex(trigger);
             if (t < 0)
                 return;
-            int index = GamepadGripCommandIndexInList(command, DefaultGamepadTriggerCommand(trigger));
-            Interlocked.Exchange(ref _gamepadTriggerCommands[t], GamepadGripCommandItems[index].GHCommand);
+            int index = GamepadTriggerCommandIndexInList(command, DefaultGamepadTriggerCommand(trigger));
+            Interlocked.Exchange(ref _gamepadTriggerCommands[t], GamepadTriggerCommandItems[index].GHCommand);
+        }
+
+        /* A trigger's command with By Role replaced by the current game's: Cast Quick (Cast while no quick spell is set),
+           Polearm, else Fire */
+        public static int ResolveGamepadCommand(int command)
+        {
+            if (command != GamepadByRoleCommand)
+                return command;
+            GHGame game = CurrentGHGame;
+            if (game == null)
+                return 'f';
+            switch (game.RoleRightClickCommand)
+            {
+                case (int)NhGetPosMods.ClickCast:
+                    return game.HasQuickCastSpell ? GHUtils.Meta(26) : 'Z';
+                case (int)NhGetPosMods.ClickPole:
+                    return GHUtils.Meta('P');
+                default:
+                    return 'f';
+            }
         }
 
         /* The picker item for a command, for its name, label and icon; None when the command is 0 or unknown */
@@ -6212,6 +6244,36 @@ namespace GnollHackX
             for (i = 0; i < GamepadGripCommandItems.Count; i++)
             {
                 if (GamepadGripCommandItems[i].GHCommand == defcmd)
+                    return i;
+            }
+            return 0;
+        }
+
+        /* By Role in a trigger picker; ResolveGamepadCommand replaces it before anything runs */
+        public const int GamepadByRoleCommand = -106;
+
+        /* The trigger pickers' items: None, By Role, then SelectableShortcutButtons */
+        public static readonly List<SelectableShortcutButton> GamepadTriggerCommandItems = CreateGamepadTriggerCommandItems();
+
+        private static List<SelectableShortcutButton> CreateGamepadTriggerCommandItems()
+        {
+            List<SelectableShortcutButton> items = new List<SelectableShortcutButton>(GamepadGripCommandItems);
+            items.Insert(1, new SelectableShortcutButton("By Role", "By Role", '\0', false, false, GamepadByRoleCommand, AppResourceName + ".Assets.UI.you.png"));
+            return items;
+        }
+
+        /* The index of cmd in GamepadTriggerCommandItems, else of defcmd, else 0 (None) */
+        public static int GamepadTriggerCommandIndexInList(int cmd, int defcmd)
+        {
+            int i;
+            for (i = 0; i < GamepadTriggerCommandItems.Count; i++)
+            {
+                if (GamepadTriggerCommandItems[i].GHCommand == cmd)
+                    return i;
+            }
+            for (i = 0; i < GamepadTriggerCommandItems.Count; i++)
+            {
+                if (GamepadTriggerCommandItems[i].GHCommand == defcmd)
                     return i;
             }
             return 0;

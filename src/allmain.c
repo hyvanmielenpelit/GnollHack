@@ -1447,59 +1447,47 @@ choose_game_difficulty(void)
 }
 #undef QUIT_DUMMY
 
+/* The command the right mouse button runs by role: CLICK_CAST, CLICK_POLE or CLICK_FIRE */
+int
+get_role_right_click_command(void)
+{
+    switch (Role_switch)
+    {
+    case PM_HEALER:
+    case PM_MONK:
+    case PM_PRIEST:
+    case PM_WIZARD:
+        return CLICK_CAST;
+    case PM_KNIGHT:
+        return CLICK_POLE;
+    default:
+        return CLICK_FIRE;
+    }
+}
+
+/* The command the middle mouse button runs by role: CLICK_ZAP or CLICK_LOOK */
+int
+get_role_middle_click_command(void)
+{
+    switch (Role_switch)
+    {
+    case PM_HEALER:
+    case PM_MONK:
+    case PM_PRIEST:
+    case PM_WIZARD:
+        return CLICK_ZAP;
+    default:
+        return CLICK_LOOK;
+    }
+}
+
 void
 set_mouse_buttons(void)
 {
     if (flags.right_click_command == DEFCLICK_ROLE)
-    {
-        switch (Role_switch)
-        {
-        default:
-        case PM_ARCHAEOLOGIST:
-        case PM_BARBARIAN:
-        case PM_CAVEMAN:
-        case PM_RANGER:
-        case PM_ROGUE:
-        case PM_SAMURAI:
-        case PM_TOURIST:
-        case PM_VALKYRIE:
-            flags.right_click_command = CLICK_FIRE;
-            break;
-        case PM_KNIGHT:
-            flags.right_click_command = CLICK_POLE;
-            break;
-        case PM_MONK:
-        case PM_HEALER:
-        case PM_PRIEST:
-        case PM_WIZARD:
-            flags.right_click_command = CLICK_CAST;
-            break;
-        }
-    }
+        flags.right_click_command = (uchar)get_role_right_click_command();
     if (flags.middle_click_command == DEFCLICK_ROLE)
-    {
-        switch (Role_switch)
-        {
-        default:
-        case PM_ARCHAEOLOGIST:
-        case PM_BARBARIAN:
-        case PM_CAVEMAN:
-        case PM_KNIGHT:
-        case PM_RANGER:
-        case PM_ROGUE:
-        case PM_SAMURAI:
-        case PM_TOURIST:
-        case PM_VALKYRIE:
-            flags.middle_click_command = CLICK_LOOK;
-            break;
-        case PM_MONK:
-        case PM_HEALER:
-        case PM_PRIEST:
-        case PM_WIZARD:
-            flags.middle_click_command = CLICK_ZAP;
-            break;
-        }
-    }
+        flags.middle_click_command = (uchar)get_role_middle_click_command();
 }
 
 void

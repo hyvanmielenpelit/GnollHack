@@ -4180,6 +4180,10 @@ namespace GnollHackX
                     else
                         GHApp.MirroredRightMouseCommand = cmd_param;
                     break;
+                case (int)gui_command_types.GUI_CMD_REPORT_ROLE_CLICK_COMMAND:
+                    Interlocked.Exchange(ref _roleRightClickCommand, cmd_param);
+                    Interlocked.Exchange(ref _roleMiddleClickCommand, cmd_param2);
+                    break;
                 case (int)gui_command_types.GUI_CMD_REPORT_ENGRAVE_QUICK_TEXT:
                     GHApp.MirroredEngraveQuickText = cmd_str != null ? cmd_str : "";
                     MainThread.BeginInvokeOnMainThread(() =>
@@ -4547,6 +4551,13 @@ namespace GnollHackX
         public int _quickSpellGlyph = 0;
         public int _quickSpellOtyp = 0;
         public string _quickSpellName = "";
+        private int _roleRightClickCommand;
+        private int _roleMiddleClickCommand;
+        /* The mouse buttons' By Role commands for this game's role (NhGetPosMods); 0 until reported */
+        public int RoleRightClickCommand { get { return Interlocked.CompareExchange(ref _roleRightClickCommand, 0, 0); } }
+        public int RoleMiddleClickCommand { get { return Interlocked.CompareExchange(ref _roleMiddleClickCommand, 0, 0); } }
+        /* A quick spell is set, as the game last reported */
+        public bool HasQuickCastSpell { get { lock (_quickLock) { return _quickSpellOtyp > 0; } } }
         public void SetQuickZapWand(int glyph, int exceptionality, string name)
         {
             lock (_quickLock)

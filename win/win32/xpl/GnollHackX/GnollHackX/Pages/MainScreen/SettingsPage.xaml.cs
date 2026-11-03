@@ -192,8 +192,8 @@ namespace GnollHackX.Pages.MainScreen
             { "Back Grip L5", GamepadGripDescription("L5", "F3") },
             { "Back Grip R4", GamepadGripDescription("R4", "F4") },
             { "Back Grip R5", GamepadGripDescription("R5", "F5") },
-            { "R2 Action", ("What R2 does when pressed alone.", "The command R2 runs when pressed alone. If the command asks for a direction, keep R2 held to choose it in a radial, and release R2 to confirm. After a menu or a release, the same radial stays until you confirm with A.") },
-            { "L2 Action", ("What L2 does when pressed alone.", "The command L2 runs when pressed alone. If the command asks for a direction, keep L2 held to choose it in a radial, and release L2 to confirm. After a menu or a release, the same radial stays until you confirm with A.") },
+            { "R2 Action", ("What R2 does when pressed alone.", "The command R2 runs when pressed alone. If the command asks for a direction, keep R2 held to choose it in a radial, and release R2 to confirm. After a menu or a release, the same radial stays until you confirm with A. By Role picks the command from your character's role: Cast Quick for Healers, Monks, Priests and Wizards, or Cast while no quick spell is set; Polearm for Knights; and Fire for the others.") },
+            { "L2 Action", ("What L2 does when pressed alone.", "The command L2 runs when pressed alone. If the command asks for a direction, keep L2 held to choose it in a radial, and release L2 to confirm. After a menu or a release, the same radial stays until you confirm with A. By Role picks the command from your character's role: Cast Quick for Healers, Monks, Priests and Wizards, or Cast while no quick spell is set; Polearm for Knights; and Fire for the others.") },
             { "Right Quick 1", GamepadQuickSlotDescription("Right Quick", 1, "L1 + R2") },
             { "Right Quick 2", GamepadQuickSlotDescription("Right Quick", 2, "L1 + R2") },
             { "Right Quick 3", GamepadQuickSlotDescription("Right Quick", 3, "L1 + R2") },
@@ -366,7 +366,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             foreach (Picker triggerPicker in GamepadTriggerPickers)
             {
-                triggerPicker.ItemsSource = GHApp.GamepadGripCommandItems;
+                triggerPicker.ItemsSource = GHApp.GamepadTriggerCommandItems;
                 triggerPicker.ItemDisplayBinding = new Binding("Name");
             }
             foreach (Picker[] slotPickers in GamepadTriggerSlotPickers)
@@ -2355,7 +2355,7 @@ namespace GnollHackX.Pages.MainScreen
                     slotPickers[t][slot].SelectedIndex = GHApp.GamepadGripCommandIndexInList(
                         GHApp.GetGamepadTriggerSlotCommand(trigger, slot), GHApp.DefaultGamepadTriggerSlotCommand(trigger, slot));
                 }
-                triggerPickers[t].SelectedIndex = GHApp.GamepadGripCommandIndexInList(
+                triggerPickers[t].SelectedIndex = GHApp.GamepadTriggerCommandIndexInList(
                     GHApp.GetGamepadTriggerCommand(trigger), GHApp.DefaultGamepadTriggerCommand(trigger));
             }
         }
@@ -2418,9 +2418,9 @@ namespace GnollHackX.Pages.MainScreen
                 }
 
                 int triggerIndex = triggerPickers[t].SelectedIndex;
-                if (triggerIndex >= 0 && triggerIndex < GHApp.GamepadGripCommandItems.Count)
+                if (triggerIndex >= 0 && triggerIndex < GHApp.GamepadTriggerCommandItems.Count)
                 {
-                    int triggerCommand = GHApp.GamepadGripCommandItems[triggerIndex].GHCommand;
+                    int triggerCommand = GHApp.GamepadTriggerCommandItems[triggerIndex].GHCommand;
                     GHApp.SetGamepadTriggerCommand(trigger, triggerCommand);
                     Preferences.Set(GHApp.GamepadTriggerPreferenceKey(trigger), triggerCommand);
                 }

@@ -103,7 +103,7 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | B | **Search**; first closes an overlay, and interrupts running and other occupations instead | Search 20 times | -- | -- |
 | X | Pick up | Pick and Stash | -- | -- |
 | Y | **Repeat** | Wait | -- | Rest |
-| R2 | R2's **command** (default Fire) | **Right Quick** radial | -- | R2's command |
+| R2 | R2's **command** (default By Role: Cast Quick, Polearm or Fire) | **Right Quick** radial | -- | R2's command |
 | L2 | L2's **command** (default Kick) | -- | **Left Quick** radial | L2's command |
 | Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
 | View | Inventory | -- | Equipment (all equipment in use) | -- |
@@ -119,7 +119,10 @@ them to the same keys (see below); with any other layout they do nothing or act 
 they are bound to, which the game cannot detect.
 
 **Trigger commands.** R2 Action and L2 Action in **Settings, Controller** take any command the bar
-buttons can hold, or None, by default Fire and Kick. They suit a command that asks for a direction.
+buttons can hold, None, or By Role, by default By Role and Kick. By Role runs Cast Quick for Healers,
+Monks, Priests and Wizards (Cast while no quick spell is set), Polearm for Knights, and Fire for the
+others, from the role the game reports at its start (GUI_CMD_REPORT_ROLE_CLICK_COMMAND). They suit a
+command that asks for a direction.
 
 **Quick radials.** L1 + R2 opens the gold **Right Quick** radial and R1 + L2 the gold **Left Quick**
 radial, which run the chosen action at once, with the direction radial if it asks for a direction.

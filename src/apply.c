@@ -5335,9 +5335,25 @@ get_pole_type_weapon_min_max_distances(struct obj *obj, struct monst *mon, int *
 //unsigned saved_poletarget_mid = 0;
 coord saved_poletarget_coord = { 0 };
 
+/* The first pole-type weapon in the inventory that is not wielded, readied, worn or quivered */
+struct obj*
+carried_pole_type_weapon(void)
+{
+    struct obj* otmp;
+
+    for (otmp = invent; otmp; otmp = otmp->nobj)
+    {
+        if (is_appliable_pole_type_weapon(otmp) && !otmp->owornmask)
+            return otmp;
+    }
+    return (struct obj*)0;
+}
+
 int
 dopolearm(void)
 {
+    struct obj* pole;
+
     if (!(uwep && is_appliable_pole_type_weapon(uwep)) && (uswapwep && is_appliable_pole_type_weapon(uswapwep)))
         (void)doswapweapon();
     if (uwep && is_appliable_pole_type_weapon(uwep))
@@ -5363,6 +5379,11 @@ dopolearm(void)
             saved_poletarget_coord = zerocoord;
             return use_pole(uwep);
         }
+    }
+    else if ((pole = carried_pole_type_weapon()) != 0)
+    {
+        saved_poletarget_coord = zerocoord;
+        return use_pole(pole);
     }
     else
     {
