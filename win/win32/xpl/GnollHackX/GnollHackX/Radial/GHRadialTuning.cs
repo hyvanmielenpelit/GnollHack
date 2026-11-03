@@ -56,7 +56,7 @@ namespace GnollHackX
         public static readonly double West = 270.0;
         public static readonly double NorthWest = 315.0;
 
-        /* R3 left-side buttons */
+        /* The fixed items' directions in the slot assigner tests */
         public static readonly double SkillsAngle = 270.0;
         public static readonly double PolearmAngle = 315.0;
         public static readonly double WieldLastAngle = 225.0;

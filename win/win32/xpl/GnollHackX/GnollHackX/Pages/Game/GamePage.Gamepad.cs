@@ -812,7 +812,7 @@ namespace GnollHackX.Pages.Game
                 OpenRadialMenu(BuildGamepadActionsRadial(ctx, false));
         }
 
-        /* The core's context buttons, without the left-side ones, and the first one's command; -1 when tryOnly
+        /* The core's context buttons and the first one's command; -1 when tryOnly
            finds the lock taken */
         private static int CountGamepadContextCommands(GHGame game, bool tryOnly, out int firstCommand)
         {
@@ -1795,9 +1795,9 @@ namespace GnollHackX.Pages.Game
                 SubmitGamepadKeys(GHGamepadMapContext.GetDir, Stopwatch.GetTimestamp(), GHConstants.CancelChar);
         }
 
-        /* The Actions radial: the context buttons with the left-side buttons, then the commands pages (Normal and Busy
-           only: in getpos their letters would be misread). openOnCommands opens it on the first commands
-           page when there is one. */
+        /* The Actions radial: the context buttons, then the Quick Commands page and the alphabetical commands pages
+           (Normal and Busy only: in getpos their letters would be misread). openOnCommands opens it on the Quick
+           Commands page. */
         private GHRadialMenuDefinition BuildGamepadActionsRadial(GHGamepadMapContext ctx, bool openOnCommands)
         {
             GHGamepadMapContext openedIn = ctx == GHGamepadMapContext.GetPos ? ctx : GHGamepadMapContext.Normal;
@@ -1805,7 +1805,6 @@ namespace GnollHackX.Pages.Game
             bool withCommands = openedIn == GHGamepadMapContext.Normal;
             GHGame game = GHApp.CurrentGHGame;
 
-            List<GHRadialItem> fixedItems = new List<GHRadialItem>(3);
             List<GHRadialItem> contextItems = new List<GHRadialItem>();
             if (game != null)
             {
@@ -1828,15 +1827,13 @@ namespace GnollHackX.Pages.Game
                         contextItems.Add(GHRadialSlotAssigner.CreateCommandItem(source));
                     }
                 }
-                if (withCommands)
-                    AddGamepadLeftSideItems(game, fixedItems);
             }
 
             string title = openedIn == GHGamepadMapContext.GetPos ? "Targeting" : "Context";
             GHRadialMenuDefinition def = new GHRadialMenuDefinition();
             def.MenuId = "L3";
             def.OwningStick = 0;
-            def.Pages.AddRange(GHRadialSlotAssigner.AssignContextPages(title, 0, fixedItems, contextItems, GetGamepadSlotMemory(game)));
+            def.Pages.AddRange(GHRadialSlotAssigner.AssignContextPages(title, 0, null, contextItems, GetGamepadSlotMemory(game)));
             if (def.Pages.Count > 0 && def.Pages[0].FilledCount == 0)
                 def.Pages[0].EmptyText = "Nothing to do here";
 
@@ -1844,8 +1841,9 @@ namespace GnollHackX.Pages.Game
             {
                 bool wizardMode = EnableWizardMode;
                 List<GHRadialSourceItem> commands = new List<GHRadialSourceItem>();
-                /* Rest, Search 20 and Extended, which the list keeps at its end, come first in this order */
-                GHRadialSourceItem[] leading = new GHRadialSourceItem[GamepadLeadingCommands.Length];
+                /* The Quick Commands page: Rest, Search 20 and Extended, which the list keeps at its end, then Skills,
+                   Polearm and Wield Last, each in its own slot whether or not the others are shown */
+                GHRadialSourceItem[] quick = new GHRadialSourceItem[GHRadialTuning.CommandPageSlotCount];
                 lock (GHApp._moreBtnLock)
                 {
                     int i;
@@ -1869,19 +1867,27 @@ namespace GnollHackX.Pages.Game
                         int lead = Array.IndexOf(GamepadLeadingCommands, cbi.GHCommand);
                         if (lead < 0)
                             commands.Add(source);
-                        else if (leading[lead] == null)
-                            leading[lead] = source;
+                        else if (quick[lead] == null)
+                            quick[lead] = source;
                     }
                 }
-                int insertAt = 0;
-                foreach (GHRadialSourceItem source in leading)
+                if (game != null)
+                    AddGamepadLeftSideItems(game, quick, GamepadLeadingCommands.Length);
+
+                /* Group index 1 only tells the commands pages from the context pages, since the radial host sends no
+                   group inputs */
+                List<GHRadialPage> commandPages = new List<GHRadialPage>();
+                GHRadialPage quickPage = new GHRadialPage("Quick Commands", quick.Length);
+                quickPage.GroupIndex = 1;
+                int slot;
+                for (slot = 0; slot < quick.Length; slot++)
                 {
-                    if (source != null)
-                        commands.Insert(insertAt++, source);
+                    if (quick[slot] != null)
+                        quickPage.Slots[slot] = GHRadialSlotAssigner.CreateCommandItem(quick[slot]);
                 }
-                /* The single commands page's list with the leading three moved first; group index 1 only tells the
-                   pages from the context pages, since the radial host sends no group inputs */
-                List<GHRadialPage> commandPages = GHRadialSlotAssigner.BuildPackedPages(commands, "Commands", GHRadialTuning.CommandPageSlotCount, 1);
+                if (quickPage.FilledCount > 0)
+                    commandPages.Add(quickPage);
+                commandPages.AddRange(GHRadialSlotAssigner.BuildPackedPages(commands, "Commands", GHRadialTuning.CommandPageSlotCount, 1));
                 if (commandPages.Count > 0)
                 {
                     def.SwitchSetPageIndex = def.Pages.Count;
@@ -1912,8 +1918,9 @@ namespace GnollHackX.Pages.Game
             return description;
         }
 
-        /* Skills, Polearm and Wield Last / Unwield, visible when their on-screen buttons would be */
-        private static void AddGamepadLeftSideItems(GHGame game, List<GHRadialItem> items)
+        /* Skills, Polearm and Wield Last / Unwield in slots firstSlot, firstSlot + 1 and firstSlot + 2, each set when its
+           on-screen button would be visible */
+        private static void AddGamepadLeftSideItems(GHGame game, GHRadialSourceItem[] slots, int firstSlot)
         {
             bool skillsAvailable;
             lock (game.StatusFieldLock)
@@ -1922,7 +1929,7 @@ namespace GnollHackX.Pages.Game
                 skillsAvailable = skillText != null && skillText == "Skill";
             }
             if (skillsAvailable && GHApp.ShowSkillContextButton)
-                items.Add(CreateGamepadFixedCommandItem("left:skills", "Skills", "View and advance your skills", "skill.png", 'S', GHRadialTuning.SkillsAngle));
+                slots[firstSlot] = CreateGamepadLeftSideSource("left:skills", "Skills", "View and advance your skills", "skill.png", 'S');
 
             ObjectDataItem weapon;
             lock (game._weaponStyleObjDataItemLock)
@@ -1932,18 +1939,18 @@ namespace GnollHackX.Pages.Game
             if (weapon == null)
                 return;
             if (weapon.IsAppliablePolearm && GHApp.ShowPolearmContextButton)
-                items.Add(CreateGamepadFixedCommandItem("left:polearm", "Polearm", "Apply your polearm at a target", "polearm.png", GHUtils.Meta('P'), GHRadialTuning.PolearmAngle));
+                slots[firstSlot + 1] = CreateGamepadLeftSideSource("left:polearm", "Polearm", "Apply your polearm at a target", "polearm.png", GHUtils.Meta('P'));
             if (weapon.PreviousWeaponFound || weapon.PreviousUnwield)
             {
                 bool unwield = weapon.PreviousUnwield;
-                items.Add(CreateGamepadFixedCommandItem("left:wieldlast", unwield ? "Unwield" : "Wield Last",
+                slots[firstSlot + 2] = CreateGamepadLeftSideSource("left:wieldlast", unwield ? "Unwield" : "Wield Last",
                     unwield ? "Empty your hands" : "Wield your previous weapon", unwield ? "unwield.png" : "wield.png",
-                    GHUtils.Meta('W'), GHRadialTuning.WieldLastAngle));
+                    GHUtils.Meta('W'));
             }
         }
 
-        /* A command item with a fixed direction; the command is sent as the touch button sends it */
-        private static GHRadialItem CreateGamepadFixedCommandItem(string id, string label, string description, string iconFile, int command, double angle)
+        /* A left-side button's command; it is sent as the touch button sends it */
+        private static GHRadialSourceItem CreateGamepadLeftSideSource(string id, string label, string description, string iconFile, int command)
         {
             GHRadialSourceItem source = new GHRadialSourceItem();
             source.Id = id;
@@ -1955,9 +1962,7 @@ namespace GnollHackX.Pages.Game
             source.Column = -1;
             source.Row = -1;
             source.ShortcutText = GHUtils.ConstructShortcutText(command);
-            GHRadialItem item = GHRadialSlotAssigner.CreateCommandItem(source);
-            item.PreferredAngle = angle;
-            return item;
+            return source;
         }
 
         /* One slot memory per game session */

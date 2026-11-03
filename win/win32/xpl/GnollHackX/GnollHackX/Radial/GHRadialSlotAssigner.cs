@@ -45,7 +45,7 @@ namespace GnollHackX
        - Fixed pages (the Toggles radial): every item has a compass direction and takes the slot
          nearest it; the slot count is the smaller of 8 and 12 that gives every item its own slot.
        - Context pages (the Actions radial's first pages): ContextSlotCount slots, or
-         CrowdedSlotCount when more items are present, overflow onto further context pages. Fixed items (the left-side buttons) take the slot nearest their
+         CrowdedSlotCount when more items are present, overflow onto further context pages. Fixed items take the slot nearest their
          direction; context items keep their remembered slot when it is free, else take E, NE,
          SE, N, S, then the free slot nearest east.
        - More Commands pages: each 4x6 matrix page becomes two 12-slot pages, rows 0-2 and rows
@@ -167,7 +167,7 @@ namespace GnollHackX
             return page;
         }
 
-        /* The Actions radial's context pages. Fixed items (left-side buttons, with directions) and
+        /* The Actions radial's context pages. Fixed items (with directions) and
            context items (in the core's rank order) share the first page: ContextSlotCount slots
            for up to that many items, else CrowdedSlotCount; at most CrowdedSlotCount fixed items
            are kept. Context items that do not fit go on further pages titled "<title> 2",
