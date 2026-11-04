@@ -74,20 +74,23 @@ Building this solution: compiles build utilities → runs data pipeline → comp
 | Platform | Native libs | Win data | WSL pipeline + `makedefsdroid` | Needs |
 |---|---|---|---|---|
 | `MauiAndroid` | `gnollhackwin.dll`, `.so` (arm64-v8a + x86_64) | ✓ | ✓ | WSL |
-| `MauiAll` | above + `libgnollhackios.a` | ✓ | ✓ | WSL + Mac |
+| `MauiAll` | above + `libgnollhackios.a` (Debug only; Release does not build it) | ✓ | ✓ | WSL; Mac for Debug |
 | `Android+Windows` | `gnollhackwin.dll`, `.so` (both ABIs) | ✓ | ✓ | WSL |
 | `ARM64` | `.so` (both ABIs) | ✓ | ✓ | WSL |
 | `x64` | `gnollhackwin.dll` | ✓ | **✗** | — |
 | `Linux` | `libgnollhacklinux.so` | ✗ | ✓ | WSL |
+| `macOS` | `libgnollhackmac.dylib` | ✗ | ✓ | WSL + Mac |
 | `iPhone` | `libgnollhackios.a` | ✗ | ✓ | WSL + Mac |
 
 **For MAUI work, prefer `MauiAndroid` or `MauiAll`.** `x64` is the only WSL-free platform but does **not** run `makedefsdroid` — no XAML translation, tileset staging, or sound-bank staging.
 
 `Linux` builds `gnollhacklinux` and its dependencies — `makedefs`, `levcomp`, `dgncomp` and the four `*droid` data tools — and nothing else, for the Avalonia Linux flavor. It needs no Android C++ workload.
 
+`macOS` builds `gnollhackmac` and the same data tools as `Linux`, and nothing else. It needs WSL for the data pipeline and the Mac for the library; see [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh).
+
 `Android+Windows` and `ARM64` also build the legacy Xamarin projects `GnollHackX.Android` and `GnollHackX.Android.Bindings` (`iPhone` builds `GnollHackX.iOS`). Visual Studio 2026 has no Xamarin, so they need Visual Studio 2022, or Visual Studio 2026 with those projects unloaded. Unloading is IDE state that a command-line build ignores, and `vswhere -latest` returns VS 2026's MSBuild whenever VS 2026 is installed. `MauiAndroid` builds everything else `Android+Windows` does.
 
-The solution defines five further platforms — `Android x64`, `iPhoneSimulator`, `Win32`, `ARM`, and `Any CPU` — which are legacy or niche; avoid them unless you specifically need one. `Any CPU` in particular is not a safe default: it builds the legacy ASCII/GUI targets and the Xamarin projects as well.
+The solution defines five further platforms — `Android x64`, `iPhoneSimulator`, `Win32`, `ARM`, and `Any CPU` — which are legacy or niche; avoid them unless you specifically need one. `Any CPU` in particular is not a safe default: it builds the legacy ASCII/GUI targets and the Xamarin projects as well. `iPhoneSimulator` and `Any CPU` build `gnollhackios`, so they need the Mac; `ARM` and `Win32` do not build it.
 
 Use the 64-bit MSBuild, as Visual Studio does. `-find MSBuild\**\Bin\MSBuild.exe` returns the 32-bit host, which fail-fasts with no output on Visual Studio's Linux projects (`gnollhacklinux` and the `*droid` data tools). Those projects set `AddSyntheticProjectReferencesForSolutionDependencies` to `false` (`WA-BUILD-0003`): otherwise a command-line solution build stops with `MSB4057` for `GetRecipeFile` on `makedefs.vcxproj`.
 
@@ -161,18 +164,31 @@ Run: `dlb.exe cIf dat/dlb.lst bin/$(Configuration)/$(Platform)/nhdat` from `dat/
 |----------|---------|-------------|--------------|
 | Windows | `gnollhackwin.dll` | `GnollHackM/Platforms/Windows/libs/` | MSVC v143 (`gnollhackwin.vcxproj`, `OutDir` → MAUI directly) |
 | Android | `libgnollhackdroid.so` | `GnollHackX.Android/libs/$(TargetArchAbi)/` | Clang via WSL SSH (`gnollhackdroid` = arm64-v8a, `gnollhackdroid2` = x86_64) |
-| iOS | `libgnollhackios.a` | `GnollHackX.iOS/Native References/` | Xcode via vcremote on Mac (`gnollhackios.vcxproj`) |
+| iOS | `libgnollhackios.a` (arm64) | `GnollHackM/Platforms/iOS/libs/` and `GnollHackX.iOS/Native References/` | clang over SSH on the Mac (`gnollhackios.vcxproj`, `Build-AppleEngine.ps1`) |
+| macOS | `libgnollhackmac.dylib` (arm64 + x86_64) | `GnollHackM/Platforms/MacOS/libs/` | clang over SSH on the Mac (`gnollhackmac.vcxproj`, `Build-AppleEngine.ps1`) |
 
 Post-build `.proj` files copy libraries and assets to `GnollHackM/Platforms/`:
 - `aftergnollhackdll.proj` — FMOD DLLs + gnh data files → Windows
 - `recoverwin.vcxproj` — `util/recover.c` with `GNH_MOBILE;GNH_WIN` (the engine's save layout, unlike `recover.vcxproj`'s tty build), built from `gnollhackwin.vcxproj`'s `AfterBuild` → `Platforms/Windows/gnh/recover.exe`
 - `afterdroidutils.proj` — mobile `nhdat` + data from `C:\wsl-out\` → Android/iOS
 - `aftergnollhackdroid.proj` — Android `.so` → MAUI Android
-- `aftergnollhackios.proj` — iOS `.a` from `C:\mac-out\` → MAUI iOS
+- `aftergnollhackios.proj` — `libgnollhackios.a` from `gnollhackios.vcxproj`'s output (property `GnhiOSLib`) → `Platforms/iOS/libs/` and `GnollHackX.iOS/Native References/`
+- `CopyToMauiMacLibs` (target in `gnollhackmac.vcxproj`) — `libgnollhackmac.dylib` → `Platforms/MacOS/libs/` (gitignored)
 
 ### Android prerequisites: WSL with SSH, VS Connection Manager (127.0.0.1:22).
 
-### iOS prerequisites: WSL + vcremote on Mac + Pair to Mac + PuTTY/PSCP for downloading `libgnollhackios.a`. See wiki pages for setup.
+### iOS prerequisites: WSL + key-based SSH to the Mac (wiki page *Set Up SSH Access to the Mac for Native Libraries*) + Xcode on the Mac + Pair to Mac for the .NET MAUI app.
+
+### Apple engine libraries over SSH
+
+`gnollhackios.vcxproj` and `gnollhackmac.vcxproj` are Makefile-type projects with `x64` configurations. Both import `win/win32/vs/gnollhackapple.props`, which holds the shared engine source list and the build, rebuild and clean command lines, and run `win/win32/xpl/gnollhackapple/Build-AppleEngine.ps1`. The script packs the listed sources and the headers into a tar file, copies it to the Mac with Windows' OpenSSH `scp`, unpacks a fresh tree in `~/gnollhack-build/<ios|macos>-<Configuration>/tree`, runs `make -f engine.mk` there (`win/win32/xpl/gnollhackapple/engine.mk`) with Xcode's clang through `xcrun`, and copies the library back to the project's output folder. The objects stay on the Mac between runs.
+
+- **Source list:** `gnollhackapple.props` lists the same engine sources as `gnollhacklinux.vcxproj`. Adding an engine source means adding it to both.
+- **Mac host:** an OpenSSH host alias with key-based login: the script's `-SshHost`, else the environment variable `GNOLLHACK_MAC_SSH_HOST`, else `gnollhack-mac`. From MSBuild: `/p:GnhAppleExtraArgs="-SshHost <alias>"`. Every connection uses `BatchMode`, so a missing key or an unknown host key fails at once instead of prompting. The setup is on the wiki page *Set Up SSH Access to the Mac for Native Libraries*.
+- **Recompiling:** make recompiles a source only when it or a header is newer than its object, but every WSL data pipeline run rewrites `date_unix.h`, so a solution build usually recompiles everything. `Rebuild` (`-Clean`) always does. `Clean` (`-CleanOnly`) deletes the local library and the objects and library on the Mac.
+- **Deployment targets:** `GHiOSDeploymentTarget` in `gnollhackios.vcxproj` and `GHMacDeploymentTarget` in `gnollhackmac.vcxproj` are the source of truth.
+- **Errors:** the script prints canonical MSBuild errors: `GNHAB001` `ssh`, `scp` or `tar` missing (Windows' OpenSSH Client), `GNHAB002` the platform's `date_unix.h` missing, `GNHAB003` the source list missing or naming a file outside the repository, `GNHAB004` an invalid host alias or remote folder, `GNHAB005` packing failed, `GNHAB006` the Mac unreachable, `GNHAB007` the SDK unavailable (Xcode not selected or its license not accepted), `GNHAB008` preparing or cleaning the remote folder failed, `GNHAB009` copying or unpacking the sources failed, `GNHAB010` the build on the Mac failed (the compiler output is above it), `GNHAB011` copying the library back failed; warning `GNHAB012` means a clean could not reach the Mac.
+- **No `vcremote`, no PSCP:** the C++ build needs neither `vcremote` on the Mac nor download scripts. Pair to Mac is still needed for the .NET MAUI iOS app (`GnollHackM.csproj`).
 
 ## The `makedefsdroid` Project
 
@@ -279,12 +295,14 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 |---|---|
 | `GnollHackM/Platforms/Windows/libs/gnollhackwin.dll` | `gnollhackwin.vcxproj` |
 | `GnollHackM/Platforms/Android/libs/{arm64-v8a,x86_64}/libgnollhackdroid.so` | `aftergnollhackdroid.proj` |
-| `GnollHackM/Platforms/iOS/libs/libgnollhackios.a` | `aftergnollhackios.proj` |
+| `GnollHackM/Platforms/iOS/libs/libgnollhackios.a` | `gnollhackios.vcxproj` on the Mac, copied by `aftergnollhackios.proj` (`iPhone`, `iPhoneSimulator`, `Debug\|MauiAll`, `Any CPU`) |
+| `GnollHackM/Platforms/MacOS/libs/libgnollhackmac.dylib` | `gnollhackmac.vcxproj` on the Mac, copied by `CopyToMauiMacLibs` (`macOS` platform; the last configuration built) |
 | `GnollHackM/Platforms/{Windows,Android,iOS}/gnh/nhdat` | `afterdlb.proj` / `afterdroidutils.proj` |
 | `GnollHackM/Platforms/Windows/gnh/recover.exe` | `recoverwin.vcxproj` (from `gnollhackwin.vcxproj`) |
 | `GnollHackM/Platforms/Linux/gnh/recover` (committed) | `Build-LinuxRecover.ps1` (manual) |
 | `GnollHackM/Platforms/Linux/libs/libgnollhacklinux.so` | `gnollhacklinux.vcxproj` (`Linux` platform; the last configuration built) |
 | `win/win32/xpl/gnollhacklinux/date_unix.h` | `afterdroidutils.proj` (WSL pipeline) |
+| `win/win32/xpl/gnollhackmac/date_unix.h` | `afterdroidutils.proj` (WSL pipeline) |
 | `GnollHackM/Platforms/*/tileset/*.ghpng` (3 each; WinUI 3, Android, iOS — the Avalonia port reads `win/win32/tileset`) | `copytilesetdroid.proj` |
 | `GnollHackM/Platforms/*/banks/*.bank` (6 each; WinUI 3, Android, iOS — the Avalonia port reads `win/win32/bank/Desktop`) | `update-wsl-in-*.bat` |
 | 32 generated `.xaml` in `GnollHackM/` | `makedefsdroid` `InitialBuild` |
@@ -309,6 +327,9 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 | `... needs GLIBC_2.xx, above the ... floor` | A Linux binary was built without the sysroot; run `Install-LinuxSysroot.ps1` in the distribution that built it, then rebuild. |
 | `error: the glibc 2.27 sysroot is missing` | Run `Install-LinuxSysroot.ps1` in the distribution the Connection Manager points to. |
 | `undefined reference to '...'` linking a Linux binary | `-z defs` caught a function glibc 2.27 lacks (or keeps in `libdl`/`librt`); avoid it or link its library. |
+| `error GNHAB006: Cannot connect to the Mac` | The Mac is asleep or unreachable, Remote Login is off, or `ssh gnollhack-mac` (or the alias in use) does not log in without a password. See [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh). |
+| `error GNHAB007: The ... SDK is not available on the Mac` | Xcode is missing, not selected, or its license is not accepted: on the Mac, `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` and `sudo xcodebuild -license accept`. |
+| `error GNHAB002: ...date_unix.h is missing` | The WSL data pipeline has not run: build `GnollHack.sln` with the `macOS` or `iPhone` platform, which builds the `*droid` tools first. |
 
 More troubleshooting on the GnollHack Wiki page *Troubleshooting Building GnollHack with .NET MAUI*.
 

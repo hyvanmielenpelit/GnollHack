@@ -205,6 +205,7 @@ The entire game dungeon is rendered using **SkiaSharp** via custom canvas views 
 | iOS | `__Internal` | `gnollhackios` | Static linking (`.a` archive) |
 | Android | `libgnollhackdroid.so` | `gnollhackdroid` | Dynamic loading via `JavaSystem.LoadLibrary()` |
 | Windows | `gnollhackwin.dll` | `gnollhackwin` | Dynamic loading (MauiAsset) |
+| Avalonia Linux | `libgnollhacklinux.so` | `gnollhacklinux` | Dynamic loading from the application directory |
 
 Defined in the `PlatformConstants` class of [GnollHackService.cs](../../../win/win32/xpl/GnollHackX/GnollHackX.Common/GnollHackService.cs).
 

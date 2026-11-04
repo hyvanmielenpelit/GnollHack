@@ -12,7 +12,7 @@ issues at the end of the file. Never renumber or reuse an ID.
 
 ## WA-BUILD-0001: Xcode project generator hardcodes IPHONEOS_DEPLOYMENT_TARGET 8.1
 
-- Status: active
+- Status: removed
 - Added: 2026-09-26 (from git history)
 - GnollHack version: 3.21 (421)
 - Component: Visual Studio
@@ -22,9 +22,10 @@ issues at the end of the file. Never renumber or reuse an ID.
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-04
 - Code: `win/win32/vs/gnollhackios.vcxproj` (`GHSetXcodeDeploymentTarget`)
 - Remove when: Visual Studio's Xcode project generator writes the deployment target from `AdditionalBuildSettings` into the generated project, and Verify removal passes.
+- Removed: 2026-11-04, 3.37 (437)
 
 **Symptom.** The Xcode project that Visual Studio generates for `gnollhackios` sets
 `IPHONEOS_DEPLOYMENT_TARGET` to 8.1, so the native library is built for iOS 8.1 rather
@@ -46,6 +47,7 @@ project then holds.
 
 Checks:
 - 2026-10-23 | Visual Studio 2026 18.11.1 | unverified | Not re-tested; no upstream report.
+- 2026-11-04 | Visual Studio 2026 18.11.3 | removed | gnollhackios no longer uses the Visual Studio C++ iOS project type: engine.mk passes the deployment target to clang (-target arm64-apple-ios15.0). Verify removal was not run, because the generated Xcode project it inspects no longer exists.
 
 ## WA-BUILD-0002: Visual Studio's Android Archive sets no archive or publish property
 

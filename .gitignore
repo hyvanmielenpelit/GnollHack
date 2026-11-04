@@ -63,6 +63,7 @@ libgnollhackdroid.so*
 win/win32/xpl/GnollHackM/Platforms/Linux/libs/libgnollhacklinux.so
 libgnollhackios.a
 libgnollhacklinux.so*
+libgnollhackmac.dylib
 gnollhackwin.dll
 gnollhackwin.lib
 gnollhackwin.exp
@@ -106,6 +107,7 @@ win/win32/xpl/GnollHackM/Platforms/Windows/gnh/recover.exe
 dat/dlb.lst
 win/win32/xpl/gnollhackdroid/date*.h
 win/win32/xpl/gnollhacklinux/date_unix.h
+win/win32/xpl/gnollhackmac/date_unix.h
 win/win32/xpl/gnollhackios/date*.h
 win/win32/xpl/gnollhackios/download*.bat
 win/win32/xpl/gnollhacklinux/date*.h
@@ -129,6 +131,7 @@ _Isincrementalbuild
 !DEVEL/workarounds/*.ps1
 !win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/*.ps1
 !win/win32/xpl/gnhsentrywin/*.ps1
+!win/win32/xpl/gnollhackapple/*.ps1
 
 # User-specific files
 *.suo

@@ -28,7 +28,7 @@ regularize(char *s)    /* normalize file name - we don't like .'s, /'s, spaces *
         *lp = '_';
 }
 
-#if defined(GNH_LINUX)
+#if defined(GNH_LINUX) || defined(GNH_MAC)
 #include <sys/file.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -137,7 +137,7 @@ game_instance_lock_state(void)
 {
     return GAME_INSTANCE_LOCK_UNSUPPORTED;
 }
-#endif /* GNH_LINUX */
+#endif /* GNH_LINUX || GNH_MAC */
 
 static int
 eraseoldlocks(void)

@@ -24,6 +24,7 @@
     <WinCursesDir>$(RootDir)win\curses\</WinCursesDir>
     <LibDroidDir>$(RootDir)win\win32\xpl\gnollhackdroid\</LibDroidDir>
     <LibLinuxDir>$(RootDir)win\win32\xpl\gnollhacklinux\</LibLinuxDir>
+    <LibMacDir>$(RootDir)win\win32\xpl\gnollhackmac\</LibMacDir>
     <LibiOSDir>$(RootDir)win\win32\xpl\gnollhackios\</LibiOSDir>
     <LibWinDir>$(RootDir)win\win32\xpl\gnollhackwin\</LibWinDir>
     <LibShareDir>$(RootDir)win\win32\xpl\libshare\</LibShareDir>
@@ -39,6 +40,7 @@
     <MauiiOSNativeReferencesDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\iOS\libs\</MauiiOSNativeReferencesDir>
     <MauiWindowsLibsDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Windows\libs\</MauiWindowsLibsDir>
     <MauiLinuxLibsDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\Linux\libs\</MauiLinuxLibsDir>
+    <MauiMacLibsDir>$(RootDir)win\win32\xpl\GnollHackM\Platforms\MacOS\libs\</MauiMacLibsDir>
     
     <XamarinAssetsDir>$(RootDir)win\win32\xpl\GnollHackX\GnollHackX\Assets\</XamarinAssetsDir>
     <MauiAssetsDir>$(RootDir)win\win32\xpl\GnollHackM\Assets\</MauiAssetsDir>
@@ -67,7 +69,6 @@
     <OutDir>$(ToolsDir)</OutDir>
     <WslInDir>C:\wsl-in\</WslInDir>
     <WslOutDir>C:\wsl-out\</WslOutDir>
-    <MacOutDir>C:\mac-out\</MacOutDir>
   <IntDir>$(ObjDir)</IntDir>
   <WinCursDir>$(RootDir)win\curses\</WinCursDir>
   </PropertyGroup>
