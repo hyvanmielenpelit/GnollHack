@@ -4700,6 +4700,12 @@ namespace GnollHackX
 #else
             false;
 #endif
+        public static readonly bool IsMacOS =
+#if GNH_AVALONIA && MACOS
+            true;
+#else
+            false;
+#endif
         public static readonly bool IsMaui = true;
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
 #if GNH_AVALONIA
@@ -4719,6 +4725,7 @@ namespace GnollHackX
         public static readonly bool IsMaui = false;
         public static readonly bool IsDesktop = false;
         public static readonly bool IsLinux = false;
+        public static readonly bool IsMacOS = false;
         public static readonly string RuntimePlatform = Device.RuntimePlatform;
         public static readonly bool IsPackaged = true;
 #endif
@@ -8683,6 +8690,15 @@ namespace GnollHackX
                 else
                     return "unpackaged";
             }
+            else if (IsMacOS)
+            {
+                if (IsPlaytest)
+                    return "steam-playtest";
+                else if (IsSteam)
+                    return "steam";
+                else
+                    return "unpackaged";
+            }
             return "unknown";
         }
 
@@ -9654,6 +9670,15 @@ namespace GnollHackX
                     platid += "s";
                 else if (IsAppImage)
                     platid += "p";
+                else
+                    platid += "u";
+            }
+            else if (IsMacOS)
+            {
+                if (IsPlaytest)
+                    platid += "t";
+                else if (IsSteam)
+                    platid += "s";
                 else
                     platid += "u";
             }

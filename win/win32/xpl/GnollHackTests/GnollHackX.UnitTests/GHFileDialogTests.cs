@@ -159,7 +159,8 @@ namespace GnollHackX.UnitTests
             string root = Path.Combine(_dir, "Case");
             string other = Path.Combine(_dir, "CASE", "x");
 
-            Assert.Equal(RuntimeInformation.IsOSPlatform(OSPlatform.Windows), GHFileDialogLogic.IsInside(root, other));
+            Assert.Equal(RuntimeInformation.IsOSPlatform(OSPlatform.Windows) || RuntimeInformation.IsOSPlatform(OSPlatform.OSX),
+                GHFileDialogLogic.IsInside(root, other));
         }
 
         [Fact]

@@ -68,7 +68,9 @@ namespace GnollHackX
         private const int MaxReserveAttempts = 1000;
         private const int MaxLinkDepth = 40;
 
-        private static readonly bool IsWindows = RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        /* Windows and macOS volumes are case-insensitive by default; a case-sensitive macOS volume is treated the same */
+        private static readonly bool IgnoresPathCase = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            || RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
         private static readonly char[] AnySeparator = { '/', '\\' };
         private static readonly char[] SystemSeparators = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
         private static readonly string[] SizeUnits = { "KB", "MB", "GB", "TB" };
@@ -249,7 +251,7 @@ namespace GnollHackX
                 return false;
             }
 
-            StringComparison comparison = IsWindows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+            StringComparison comparison = IgnoresPathCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             if (string.Equals(fullRoot, fullPath, comparison))
             {
                 return true;
