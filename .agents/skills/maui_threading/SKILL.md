@@ -1,6 +1,6 @@
 ---
 name: maui_threading
-description: Multi-threaded programming patterns in GnollHack's .NET MAUI frontend. Covers thread architecture, lock strategies (Monitor.TryEnter, lock, Interlocked), the IThreadSafeView pattern, and ConcurrentQueue-based inter-thread communication.
+description: Multi-threaded programming patterns in GnollHack's .NET MAUI frontend. Covers thread architecture, lock strategies (Monitor.TryEnter, lock, Interlocked), the IThreadSafeView pattern, ConcurrentQueue-based inter-thread communication, and the guard every async void entry point needs.
 ---
 
 # MAUI Threading
@@ -21,6 +21,19 @@ description: Multi-threaded programming patterns in GnollHack's .NET MAUI fronte
 - **Input**: The UI thread enqueues onto `ConcurrentQueue<GHRequest>`; the game thread dequeues. Replies travel back on `ConcurrentQueue<GHResponse>`, and `ConcurrentQueue<GHPost>` carries posts. (`GHApp.AchievementQueue` is a `ConcurrentQueue<int>`, and `FmodService` queues sound work on its own `ConcurrentQueue<GHSoundTask>`.)
 - **State Updates**: Game thread modifies shared `MapData` under a `lock`.
 - **Rendering**: Render thread attempts `Monitor.TryEnter(syncObject, 0)`. If it gets the lock, it copies `MapData`. If not, it re-renders the old frame to avoid stuttering.
+
+## `async void` Entry Points
+
+An exception that escapes an `async void` method, or an async lambda passed to `BeginInvokeOnMainThread`,
+`+=` or an `Action`, is re-thrown on the UI thread and crashes the app on every platform.
+
+- Give every such entry point a top-level `try`/`catch (Exception ex)` that first calls
+  `GHApp.ReportCaughtException(ex)`, then undoes what the normal path undoes on its way out (re-enabled
+  controls, hidden wait overlays). Where no state is safe to restore, rethrow after the report.
+- Put the guard inside the lambda: a `try` around `BeginInvokeOnMainThread` catches nothing the lambda throws.
+- Keep handlers thin; long bodies go in a `private async Task <HandlerName>Async` the handler awaits.
+- A helper that only fires and forgets stays `async void` with the guard; `async Task` with a discarded
+  result would hide the exception instead.
 
 ## `IThreadSafeView`
 - UI components implement this interface so they can be updated safely from a

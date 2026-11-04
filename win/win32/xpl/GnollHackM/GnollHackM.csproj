@@ -253,6 +253,7 @@
     <None Remove="..\GnollHackX\GnollHackX\GHApp.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHButton.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHCachedImage.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHCaughtExceptionPolicy.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHColors.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHConstants.cs" />
@@ -560,6 +561,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\GHApp.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHButton.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHCachedImage.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHCaughtExceptionPolicy.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHColors.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />

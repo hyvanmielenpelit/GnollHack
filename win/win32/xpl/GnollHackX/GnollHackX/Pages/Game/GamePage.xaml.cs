@@ -1152,13 +1152,20 @@ namespace GnollHackX.Pages.Game
 #if WINDOWS
             Loaded += async (s, e) => 
             {
-                UpdateMoreNextPrevButtonVisibility(true, true);
-                await Task.Delay(50);
-                CommandCanvas.InvalidateSurface();
-                await Task.Delay(50);
-                MenuCanvas.InvalidateSurface();
-                await Task.Delay(50);
-                TextCanvas.InvalidateSurface();
+                try
+                {
+                    UpdateMoreNextPrevButtonVisibility(true, true);
+                    await Task.Delay(50);
+                    CommandCanvas.InvalidateSurface();
+                    await Task.Delay(50);
+                    MenuCanvas.InvalidateSurface();
+                    await Task.Delay(50);
+                    TextCanvas.InvalidateSurface();
+                }
+                catch (Exception ex)
+                {
+                    GHApp.ReportCaughtException(ex);
+                }
             };
 #endif
 
@@ -1387,15 +1394,22 @@ namespace GnollHackX.Pages.Game
 
         private async void NextLabelHandler_PointerEntered(object sender, EventArgs e)
         {
-            if (!MoreNextButton.IsVisible)
+            try
             {
-                MoreNextButton.Opacity = 0;
-                MoreNextButton.IsVisible = true;
+                if (!MoreNextButton.IsVisible)
+                {
+                    MoreNextButton.Opacity = 0;
+                    MoreNextButton.IsVisible = true;
 #if GNH_MAUI
-                await MoreNextButton.FadeToAsync(1.0);
+                    await MoreNextButton.FadeToAsync(1.0);
 #else
-                await MoreNextButton.FadeTo(1.0);
+                    await MoreNextButton.FadeTo(1.0);
 #endif
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
             }
         }
 
@@ -1406,15 +1420,22 @@ namespace GnollHackX.Pages.Game
 
         private async void PreviousLabelHandler_PointerEntered(object sender, EventArgs e)
         {
-            if (!MorePreviousButton.IsVisible)
+            try
             {
-                MorePreviousButton.Opacity = 0;
-                MorePreviousButton.IsVisible = true;
+                if (!MorePreviousButton.IsVisible)
+                {
+                    MorePreviousButton.Opacity = 0;
+                    MorePreviousButton.IsVisible = true;
 #if GNH_MAUI
-                await MorePreviousButton.FadeToAsync(1.0);
+                    await MorePreviousButton.FadeToAsync(1.0);
 #else
-                await MorePreviousButton.FadeTo(1.0);
+                    await MorePreviousButton.FadeTo(1.0);
 #endif
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
             }
         }
 
@@ -2904,7 +2925,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -3214,9 +3235,16 @@ namespace GnollHackX.Pages.Game
 #endif
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    IsGameOn = false;
-                    await GHApp.DisplayMessageBox(this, "Fatal Error",
-                        "Game engine thread crashed: " + ex.Message, "OK");
+                    try
+                    {
+                        IsGameOn = false;
+                        await GHApp.DisplayMessageBox(this, "Fatal Error",
+                            "Game engine thread crashed: " + ex.Message, "OK");
+                    }
+                    catch (Exception displayEx)
+                    {
+                        GHApp.ReportCaughtException(displayEx);
+                    }
                 });
             }
         }
@@ -3239,9 +3267,16 @@ namespace GnollHackX.Pages.Game
 #endif
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    IsGameOn = false;
-                    await GHApp.DisplayMessageBox(this, "Fatal Error",
-                        "Game engine thread crashed: " + ex.Message, "OK");
+                    try
+                    {
+                        IsGameOn = false;
+                        await GHApp.DisplayMessageBox(this, "Fatal Error",
+                            "Game engine thread crashed: " + ex.Message, "OK");
+                    }
+                    catch (Exception displayEx)
+                    {
+                        GHApp.ReportCaughtException(displayEx);
+                    }
                 });
             }
         }
@@ -3264,8 +3299,15 @@ namespace GnollHackX.Pages.Game
 #endif
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    await GHApp.DisplayMessageBox(this, "Fatal Error",
-                        "Replay engine crashed: " + ex.Message, "OK");
+                    try
+                    {
+                        await GHApp.DisplayMessageBox(this, "Fatal Error",
+                            "Replay engine crashed: " + ex.Message, "OK");
+                    }
+                    catch (Exception displayEx)
+                    {
+                        GHApp.ReportCaughtException(displayEx);
+                    }
                 });
             }
         }
@@ -4049,7 +4091,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -18547,9 +18589,17 @@ namespace GnollHackX.Pages.Game
 
         private async void GameMenuButton_Clicked(object sender, EventArgs e)
         {
-            if (PlayingReplay)
-                return;
-            await OpenGameMenuAsync();
+            try
+            {
+                if (PlayingReplay)
+                    return;
+                await OpenGameMenuAsync();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                GameMenuButton.IsEnabled = true;
+            }
         }
 
         private async Task OpenGameMenuAsync()
@@ -18582,7 +18632,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -18605,7 +18655,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -21677,9 +21727,16 @@ namespace GnollHackX.Pages.Game
 
         private async void MenuOKButton_Clicked(object sender, EventArgs e)
         {
-            if (PlayingReplay)
-                return;
-            await MenuOKButtonPressedAsync();
+            try
+            {
+                if (PlayingReplay)
+                    return;
+                await MenuOKButtonPressedAsync();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         // WORKAROUND(WA-IOS-0006): Mac iPad app loses all button clicks after a click closes an overlay
@@ -21706,7 +21763,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -21798,9 +21855,16 @@ namespace GnollHackX.Pages.Game
 
         private async void MenuCancelButton_Clicked(object sender, EventArgs e)
         {
-            if (PlayingReplay)
-                return;
-            await MenuCancelButtonPressedAsync();
+            try
+            {
+                if (PlayingReplay)
+                    return;
+                await MenuCancelButtonPressedAsync();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
         private void PressMenuCancelButton()
         {
@@ -21814,7 +21878,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -21891,7 +21955,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -22178,9 +22242,17 @@ namespace GnollHackX.Pages.Game
 
         private async void MenuFlipButton_Clicked(object sender, EventArgs e)
         {
-            if (PlayingReplay)
-                return;
-            await FlipMenuCanvasAsync();
+            try
+            {
+                if (PlayingReplay)
+                    return;
+                await FlipMenuCanvasAsync();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                MenuFlipButton.IsEnabled = true;
+            }
         }
 
         private void MenuCountOkButton_Clicked(object sender, EventArgs e)
@@ -22787,7 +22859,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -24971,6 +25043,23 @@ namespace GnollHackX.Pages.Game
         private async void GetLineCaptionTapGestureRecognizer_Tapped(object sender, EventArgs e)
 #endif
         {
+            try
+            {
+                await GetLineCaptionTapGestureRecognizer_TappedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                GetLineCaption.IsEnabled = true;
+            }
+        }
+
+#if GNH_MAUI
+        private async Task GetLineCaptionTapGestureRecognizer_TappedAsync(object sender, TappedEventArgs e)
+#else
+        private async Task GetLineCaptionTapGestureRecognizer_TappedAsync(object sender, EventArgs e)
+#endif
+        {
             if (PlayingReplay)
                 return;
             switch (_getLineStyle)
@@ -24995,13 +25084,21 @@ namespace GnollHackX.Pages.Game
 
         private async void GetLineMenuButton_BtnClicked(object sender, EventArgs e)
         {
-            if (PlayingReplay)
-                return;
-            GetLineMenuButton.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            var menuPage = new GameMenuPage(this, true);
-            await GHApp.PushModalPageAsync(menuPage);
-            GetLineMenuButton.IsEnabled = true;
+            try
+            {
+                if (PlayingReplay)
+                    return;
+                GetLineMenuButton.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                var menuPage = new GameMenuPage(this, true);
+                await GHApp.PushModalPageAsync(menuPage);
+                GetLineMenuButton.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                GetLineMenuButton.IsEnabled = true;
+            }
         }
 
         public void SendEnterPressed()

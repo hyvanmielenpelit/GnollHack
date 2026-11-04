@@ -280,7 +280,7 @@ namespace GnollHackX.Controls
             }
             catch (Exception ex)
             {
-                GHApp.MaybeWriteGHLog("FileDialogView: scrolling to a row failed: " + ex.Message);
+                GHApp.ReportCaughtException(ex);
             }
         }
 
@@ -382,7 +382,7 @@ namespace GnollHackX.Controls
             }
             catch (Exception ex)
             {
-                GHApp.MaybeWriteGHLog("FileDialogView: " + ex.Message);
+                GHApp.ReportCaughtException(ex);
             }
         }
 

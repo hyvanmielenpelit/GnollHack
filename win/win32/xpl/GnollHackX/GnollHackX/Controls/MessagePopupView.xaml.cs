@@ -638,7 +638,7 @@ namespace GnollHackX.Controls
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex);
+                    GHApp.ReportCaughtException(ex);
                 }
                 finally
                 {

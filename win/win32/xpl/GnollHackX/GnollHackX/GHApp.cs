@@ -1839,7 +1839,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                MaybeWriteGHLog(ex.Message);
+                ReportCaughtException(ex);
             }
         }
 
@@ -1854,7 +1854,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                MaybeWriteGHLog(ex.Message);
+                ReportCaughtException(ex);
             }
             finally
             {
@@ -1872,7 +1872,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-                MaybeWriteGHLog(ex.Message);
+                ReportCaughtException(ex);
             }
         }
 
@@ -3512,7 +3512,7 @@ namespace GnollHackX
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        ReportCaughtException(ex);
                     }
                 };
                 timer.Start();
@@ -3731,6 +3731,37 @@ namespace GnollHackX
                 Debug.WriteLine(ex.Message);
             }
 #endif
+        }
+
+        private static readonly GHCaughtExceptionPolicy _caughtExceptionPolicy = new GHCaughtExceptionPolicy();
+
+        /* For the top-level catch of an async void method or lambda. Logs and leaves a breadcrumb; sends the
+           first exception of each type from each source to Sentry as a handled warning, except cancellations.
+           Never throws. */
+        public static void ReportCaughtException(Exception ex, [CallerMemberName] string memberName = "", [CallerFilePath] string callerFilePath = "")
+        {
+            if (ex == null)
+                return;
+            try
+            {
+                string source = GHCaughtExceptionPolicy.FormatSource(callerFilePath, memberName);
+                MaybeWriteGHLog(source + ": " + ex.GetType().Name + ": " + ex.Message, true, GHConstants.SentryGnollHackCaughtExceptionCategoryName);
+                if (GHCaughtExceptionPolicy.IsCancellation(ex))
+                    return;
+                if (!_caughtExceptionPolicy.TryClaimReport(source, ex))
+                    return;
+#if SENTRY
+                SentrySdk.CaptureException(ex, scope =>
+                {
+                    scope.Level = SentryLevel.Warning;
+                    scope.SetTag(GHConstants.SentryTagCaughtIn, source);
+                });
+#endif
+            }
+            catch (Exception reportEx)
+            {
+                Debug.WriteLine(reportEx.Message);
+            }
         }
 
 #if SENTRY
@@ -7652,7 +7683,7 @@ namespace GnollHackX
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        ReportCaughtException(ex);
                     }
                 });
             }
@@ -11785,7 +11816,14 @@ namespace GnollHackX
             var tapGestureRecognizer = new TapGestureRecognizer();
             tapGestureRecognizer.Tapped += async (s, e) =>
             {
-                await open();
+                try
+                {
+                    await open();
+                }
+                catch (Exception ex)
+                {
+                    ReportCaughtException(ex);
+                }
             };
             linkSpan.GestureRecognizers.Add(tapGestureRecognizer);
             return new MessagePopupView.PopupLink { Span = linkSpan, Open = open };

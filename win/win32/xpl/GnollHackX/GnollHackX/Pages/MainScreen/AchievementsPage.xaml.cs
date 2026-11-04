@@ -55,7 +55,14 @@ namespace GnollHackX.Pages.MainScreen
         }
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task ClosePageAsync(bool playClickedSound)
@@ -80,7 +87,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });
@@ -199,10 +206,18 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void AchievementButton_Clicked(object sender, EventArgs e)
         {
-            RowImageButton rib = sender as RowImageButton;
-            if (rib != null)
+            try
             {
-                await OpenAchievementDetailsPage(rib.BtnCommand);
+                RowImageButton rib = sender as RowImageButton;
+                if (rib != null)
+                {
+                    await OpenAchievementDetailsPage(rib.BtnCommand);
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AchievementLayout.IsEnabled = true;
             }
         }
 
@@ -272,7 +287,7 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine(ex);
+                            GHApp.ReportCaughtException(ex);
                         }
                     });
                 }

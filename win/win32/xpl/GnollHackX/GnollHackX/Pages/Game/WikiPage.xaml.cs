@@ -162,7 +162,14 @@ namespace GnollHackX.Pages.Game
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task ClosePageAsync(bool playClickSound)
@@ -187,7 +194,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });

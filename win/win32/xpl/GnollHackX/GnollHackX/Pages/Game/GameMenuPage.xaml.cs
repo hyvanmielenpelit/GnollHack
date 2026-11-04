@@ -103,7 +103,14 @@ namespace GnollHackX.Pages.Game
 
         private async void btnSave_Clicked(object sender, EventArgs e)
         {
-            await CloseAndSaveGame();
+            try
+            {
+                await CloseAndSaveGame();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task CloseAndSaveGame()
@@ -119,7 +126,14 @@ namespace GnollHackX.Pages.Game
 
         private async void btnQuit_Clicked(object sender, EventArgs e)
         {
-            await CloseAndQuitGame();
+            try
+            {
+                await CloseAndQuitGame();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task CloseAndQuitGame()
@@ -139,8 +153,15 @@ namespace GnollHackX.Pages.Game
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
                 {
-                    if (MainLayout.IsEnabled)
-                        await BackToGame();
+                    try
+                    {
+                        if (MainLayout.IsEnabled)
+                            await BackToGame();
+                    }
+                    catch (Exception ex)
+                    {
+                        GHApp.ReportCaughtException(ex);
+                    }
                 });
             }
             catch (Exception ex)
@@ -151,7 +172,14 @@ namespace GnollHackX.Pages.Game
 
         private async void btnBackToGame_Clicked(object sender, EventArgs e)
         {
-            await BackToGame();
+            try
+            {
+                await BackToGame();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task BackToGame()
@@ -168,7 +196,14 @@ namespace GnollHackX.Pages.Game
 
         private async void btnOptions_Clicked(object sender, EventArgs e)
         {
-            await CloseAndShowOptions();
+            try
+            {
+                await CloseAndShowOptions();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task CloseAndShowOptions()
@@ -185,7 +220,14 @@ namespace GnollHackX.Pages.Game
 
         private async void btnSnapshot_Clicked(object sender, EventArgs e)
         {
-            await TakeSnapshot();
+            try
+            {
+                await TakeSnapshot();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task TakeSnapshot()
@@ -200,7 +242,15 @@ namespace GnollHackX.Pages.Game
 
         private async void btnSettings_Clicked(object sender, EventArgs e)
         {
-            await OpenSettingsPage();
+            try
+            {
+                await OpenSettingsPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                MainLayout.IsEnabled = true;
+            }
         }
 
         private async Task OpenSettingsPage()
@@ -214,7 +264,15 @@ namespace GnollHackX.Pages.Game
 
         private async void btnLibrary_Clicked(object sender, EventArgs e)
         {
-            await OpenLibraryPage();
+            try
+            {
+                await OpenLibraryPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                MainLayout.IsEnabled = true;
+            }
         }
 
         private async Task OpenLibraryPage()
@@ -229,7 +287,15 @@ namespace GnollHackX.Pages.Game
 
         private async void btnDelphi_Clicked(object sender, EventArgs e)
         {
-            await OpenOraclePage();
+            try
+            {
+                await OpenOraclePage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                MainLayout.IsEnabled = true;
+            }
         }
 
         private async Task OpenOraclePage()
@@ -329,7 +395,14 @@ namespace GnollHackX.Pages.Game
 
         private async void btnTips_Clicked(object sender, EventArgs e)
         {
-            await CloseAndShowGUITips();
+            try
+            {
+                await CloseAndShowGUITips();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task CloseAndShowGUITips()
@@ -359,7 +432,15 @@ namespace GnollHackX.Pages.Game
 
         private async void btnVersion_Clicked(object sender, EventArgs e)
         {
-            await OpenVersionPage();
+            try
+            {
+                await OpenVersionPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                MainLayout.IsEnabled = true;
+            }
         }
 
         private async Task OpenVersionPage()
@@ -372,6 +453,19 @@ namespace GnollHackX.Pages.Game
         }
 
         private async void btnMessages_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnMessages_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                DeveloperPopupGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnMessages_ClickedAsync(object sender, EventArgs e)
         {
             DeveloperPopupGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -424,6 +518,19 @@ namespace GnollHackX.Pages.Game
         }
 
         private async void btnDumpFrameLog_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnDumpFrameLog_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                DeveloperPopupGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDumpFrameLog_ClickedAsync(object sender, EventArgs e)
         {
             DeveloperPopupGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -511,6 +618,19 @@ namespace GnollHackX.Pages.Game
 
         private async void btnAnalyzeHitches_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnAnalyzeHitches_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                DeveloperPopupGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnAnalyzeHitches_ClickedAsync(object sender, EventArgs e)
+        {
             DeveloperPopupGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
@@ -549,6 +669,19 @@ namespace GnollHackX.Pages.Game
 
         private async void btnTestPerformance_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnTestPerformance_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                DeveloperPopupGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnTestPerformance_ClickedAsync(object sender, EventArgs e)
+        {
             DeveloperPopupGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
@@ -566,6 +699,19 @@ namespace GnollHackX.Pages.Game
         }
 
         private async void btnAiSnapshot_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnAiSnapshot_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                DeveloperPopupGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnAiSnapshot_ClickedAsync(object sender, EventArgs e)
         {
             DeveloperPopupGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -597,7 +743,15 @@ namespace GnollHackX.Pages.Game
 
         private async void btnWiki_Clicked(object sender, EventArgs e)
         {
-            await OpenWikiPage();
+            try
+            {
+                await OpenWikiPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                MainLayout.IsEnabled = true;
+            }
         }
 
         private async Task OpenWikiPage()
@@ -628,7 +782,16 @@ namespace GnollHackX.Pages.Game
 
         private async void btnOverseer_Clicked(object sender, EventArgs e)
         {
-            await OpenOverseerPage();
+            try
+            {
+                await OpenOverseerPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                MessagePopup.IsVisible = false;
+                MainLayout.IsEnabled = true;
+            }
         }
 
         private async Task OpenOverseerPage()
@@ -873,7 +1036,7 @@ namespace GnollHackX.Pages.Game
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine(ex);
+                            GHApp.ReportCaughtException(ex);
                         }
                     });
                 }
@@ -936,7 +1099,7 @@ namespace GnollHackX.Pages.Game
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine(ex);
+                            GHApp.ReportCaughtException(ex);
                         }
                     });
                 }
@@ -1027,7 +1190,7 @@ namespace GnollHackX.Pages.Game
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex);
+                    GHApp.ReportCaughtException(ex);
                 }
             });
         }

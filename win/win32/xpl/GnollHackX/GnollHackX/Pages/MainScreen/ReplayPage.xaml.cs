@@ -87,7 +87,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void ReplayPage_Appearing(object sender, EventArgs e)
         {
-            await UpdateRecordings();
+            try
+            {
+                await UpdateRecordings();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task UpdateRecordings()
@@ -512,6 +519,21 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void ShareButton_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await ShareButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                CloudLoadingGrid.IsVisible = false;
+                PopupCancelButton.IsEnabled = true;
+                ShareButton.IsEnabled = true;
+            }
+        }
+
+        private async Task ShareButton_ClickedAsync(object sender, EventArgs e)
+        {
             ShareButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
@@ -812,6 +834,21 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void SelectButton_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await SelectButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                UploadDownloadGrid.IsVisible = false;
+                UploadButton.IsEnabled = true;
+                SelectButton.IsEnabled = true;
+            }
+        }
+
+        private async Task SelectButton_ClickedAsync(object sender, EventArgs e)
+        {
             GHRecordedGameFile rgf = null;
             if (!IsMultiSelect && ReplayCollectionView.SelectedItem != null)
             {
@@ -883,7 +920,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task ClosePageAsync(bool playClickedSound)
@@ -1267,6 +1311,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void DeleteButton_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await DeleteButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                DeleteButton.IsEnabled = true;
+            }
+        }
+
+        private async Task DeleteButton_ClickedAsync(object sender, EventArgs e)
+        {
             DeleteButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
@@ -1635,6 +1692,20 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void UploadButton_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await UploadButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                UploadDownloadGrid.IsVisible = false;
+                UploadButton.IsEnabled = true;
+            }
+        }
+
+        private async Task UploadButton_ClickedAsync(object sender, EventArgs e)
+        {
             UploadButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 
@@ -1903,7 +1974,17 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void DownloadButton_Clicked(object sender, EventArgs e)
         {
-            await DoDownload();
+            try
+            {
+                await DoDownload();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                UploadDownloadGrid.IsVisible = false;
+                UploadButton.IsEnabled = true;
+                SelectButton.IsEnabled = true;
+            }
         }
 
         private async Task DoDownload()
@@ -2107,13 +2188,20 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void ServerButton_Clicked(object sender, EventArgs e)
         {
-            BlobServiceClient client = GHApp.GetBlobServiceClient();
-            if (client == null)
-                return;
-            BlobContainerClient containerClient = client.GetBlobContainerClient(GHApp.GetAzureBlobStorageReplayContainerName());
-            if (containerClient == null)
-                return;
-            await GHApp.ListBlobsHierarchicalListing(containerClient, null, null);
+            try
+            {
+                BlobServiceClient client = GHApp.GetBlobServiceClient();
+                if (client == null)
+                    return;
+                BlobContainerClient containerClient = client.GetBlobContainerClient(GHApp.GetAzureBlobStorageReplayContainerName());
+                if (containerClient == null)
+                    return;
+                await GHApp.ListBlobsHierarchicalListing(containerClient, null, null);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private void PopupCancelButton_Clicked(object sender, EventArgs e)
@@ -2149,14 +2237,28 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void ServerSwitch_Toggled(object sender, ToggledEventArgs e)
         {
-            await UpdateLocalOrServerRecordings(e.Value);
-            UpdateButtons();
+            try
+            {
+                await UpdateLocalOrServerRecordings(e.Value);
+                UpdateButtons();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async void FolderPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            await UpdateLocalOrServerRecordings(IsCloud);
-            UpdateButtons();
+            try
+            {
+                await UpdateLocalOrServerRecordings(IsCloud);
+                UpdateButtons();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         public void ClosePage()
@@ -2193,7 +2295,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });

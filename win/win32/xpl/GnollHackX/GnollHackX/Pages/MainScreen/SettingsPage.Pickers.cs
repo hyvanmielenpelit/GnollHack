@@ -154,7 +154,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                GHApp.MaybeWriteGHLog("SettingsPage: scrolling the picker list failed: " + ex.Message);
+                GHApp.ReportCaughtException(ex);
             }
         }
 

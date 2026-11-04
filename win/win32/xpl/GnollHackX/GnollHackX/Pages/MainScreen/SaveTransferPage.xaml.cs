@@ -166,8 +166,16 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void TransferModePicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!_appeared) return;
-            await RefreshListAsync();
+            try
+            {
+                if (!_appeared) return;
+                await RefreshListAsync();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                SavesLayout.IsEnabled = true;
+            }
         }
 
 
@@ -269,7 +277,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -621,6 +629,21 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void ActionButton_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await ActionButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                PopupGrid.IsVisible = false;
+                PopupCancelButton.IsEnabled = true;
+                ActionButton.IsEnabled = true;
+            }
+        }
+
+        private async Task ActionButton_ClickedAsync(object sender, EventArgs e)
+        {
             var selected = _selectedSave;
             if (selected == null || _isProcessing) return;
 
@@ -720,8 +743,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            CancelCurrentProcess();
-            await ClosePageAsync(true);
+            try
+            {
+                CancelCurrentProcess();
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private void PopupCancelButton_Clicked(object sender, EventArgs e)

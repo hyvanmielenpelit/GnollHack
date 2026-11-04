@@ -92,7 +92,16 @@ namespace GnollHackX.Pages.Game
 
         private async void btnOK_Clicked(object sender, EventArgs e)
         {
-            await DoPressOk();
+            try
+            {
+                await DoPressOk();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                btnOK.IsEnabled = true;
+                btnCancel.IsEnabled = true;
+            }
         }
 
         private async Task DoPressOk()
@@ -214,7 +223,14 @@ namespace GnollHackX.Pages.Game
 
         private async void btnCancel_Clicked(object sender, EventArgs e)
         {
-            await DoPressCancel();
+            try
+            {
+                await DoPressCancel();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         public void PressCancel()
@@ -229,7 +245,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -269,7 +285,7 @@ namespace GnollHackX.Pages.Game
                             }
                             catch (Exception ex)
                             {
-                                System.Diagnostics.Debug.WriteLine(ex);
+                                GHApp.ReportCaughtException(ex);
                             }
                         });
                     }
@@ -287,7 +303,7 @@ namespace GnollHackX.Pages.Game
                             }
                             catch (Exception ex)
                             {
-                                System.Diagnostics.Debug.WriteLine(ex);
+                                GHApp.ReportCaughtException(ex);
                             }
                         });
                     }
@@ -307,9 +323,18 @@ namespace GnollHackX.Pages.Game
 
         private async void eName_Completed(object sender, EventArgs e)
         {
-            if (btnOK.IsEnabled)
+            try
             {
-                await DoPressOk();
+                if (btnOK.IsEnabled)
+                {
+                    await DoPressOk();
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                btnOK.IsEnabled = true;
+                btnCancel.IsEnabled = true;
             }
         }
 

@@ -2434,6 +2434,18 @@ namespace GnollHackX.Pages.MainScreen
         /* Adds or removes the AppImage's menu entry at once; on failure the switch returns to its previous state */
         private async void ApplicationMenuEntrySwitch_Toggled(object sender, ToggledEventArgs e)
         {
+            try
+            {
+                await ApplicationMenuEntrySwitch_ToggledAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
+        }
+
+        private async Task ApplicationMenuEntrySwitch_ToggledAsync(object sender, ToggledEventArgs e)
+        {
 #if GNH_AVALONIA && LINUX
             if (_settingApplicationMenuEntrySwitch)
                 return;
@@ -2719,7 +2731,17 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                CloseButton.IsEnabled = true;
+                PopupGrid.IsVisible = false;
+                WaitLayout.IsVisible = false;
+            }
         }
 
         private async Task ClosePageAsync(bool playClickedSound)
@@ -2898,7 +2920,7 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine(ex);
+                            GHApp.ReportCaughtException(ex);
                         }
                     });
                 }
@@ -3134,11 +3156,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void XlogAccountButton_Clicked(object sender, EventArgs e)
         {
-            XlogAccountButton.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
-            await GHApp.OpenBrowser(this, "GnollHack Account", new Uri(GHApp.XlogAccountAddress));
-            XlogAccountButton.IsEnabled = true;
+            try
+            {
+                XlogAccountButton.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
+                await GHApp.OpenBrowser(this, "GnollHack Account", new Uri(GHApp.XlogAccountAddress));
+                XlogAccountButton.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                XlogAccountButton.IsEnabled = true;
+            }
         }
 
         private string _customXlogAccountLink = "";
@@ -3176,6 +3206,19 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void XlogTestButton_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await XlogTestButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                XlogTestButton.IsEnabled = true;
+            }
+        }
+
+        private async Task XlogTestButton_ClickedAsync(object sender, EventArgs e)
         {
             XlogTestButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -4008,7 +4051,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex);
+                    GHApp.ReportCaughtException(ex);
                 }
             });
             return true;

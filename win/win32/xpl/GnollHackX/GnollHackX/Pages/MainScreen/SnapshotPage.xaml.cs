@@ -155,6 +155,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void SnapshotButton_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await SnapshotButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                SnapshotLayout.IsEnabled = true;
+            }
+        }
+
+        private async Task SnapshotButton_ClickedAsync(object sender, EventArgs e)
+        {
             SnapshotLayout.IsEnabled = false;
             RowImageButton ghbutton = sender as RowImageButton;
             if (ghbutton != null)
@@ -189,7 +202,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task ClosePageAsync(bool playClickedSound)
@@ -216,7 +236,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });

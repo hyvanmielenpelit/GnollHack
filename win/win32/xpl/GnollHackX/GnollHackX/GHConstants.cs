@@ -491,6 +491,7 @@ namespace GnollHackX
         public const string SentryGnollHackLibraryCategoryName = "GnollHack Library";
         public const string SentryGnollHackCallbackCategoryName = "GnollHack Callback";
         public const string SentryGnollHackButtonClickCategoryName = "Button Clicked";
+        public const string SentryGnollHackCaughtExceptionCategoryName = "Caught Exception";
         /* Sentry extra data keys. The same keys are used both for the per-event extras
            attached to impossible() and panic() events and for the periodic scope
            snapshot posted from rhack(). Event-level extras win over scope-level ones
@@ -521,6 +522,7 @@ namespace GnollHackX
         public const string SentryTagLinuxContainer = "linux.container";
         public const string SentryTagLinuxSession = "linux.session";
         public const string SentryTagLinuxGlibc = "linux.glibc";
+        public const string SentryTagCaughtIn = "caught.in";
         public const string SentryContextProcessMemory = "Process Memory";
         /* Handles above the startup baseline that trigger one handle growth warning per process */
         public const int HandleGrowthWarningThreshold = 5000;

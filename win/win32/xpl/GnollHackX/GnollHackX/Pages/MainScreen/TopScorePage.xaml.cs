@@ -85,7 +85,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task ClosePageAsync(bool playClickSound)
@@ -112,7 +119,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });
@@ -336,12 +343,20 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            Label btn = sender as Label;
-            GHTopScoreItem tsi = null;
-            if (btn != null)
-                tsi = btn.BindingContext as GHTopScoreItem;
+            try
+            {
+                Label btn = sender as Label;
+                GHTopScoreItem tsi = null;
+                if (btn != null)
+                    tsi = btn.BindingContext as GHTopScoreItem;
 
-            await OpenDumplogAsync(tsi);
+                await OpenDumplogAsync(tsi);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ScoresView.IsEnabled = true;
+            }
         }
 
         /* Shows the dumplog of tsi, the HTML one if preferred and present */
@@ -424,10 +439,18 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void ServerButton_Clicked(object sender, EventArgs e)
         {
-            ServerButton.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            await GHApp.OpenBrowser(this, "Top Scores", new Uri(GHApp.XlogTopScoreAddress));
-            ServerButton.IsEnabled = true;
+            try
+            {
+                ServerButton.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                await GHApp.OpenBrowser(this, "Top Scores", new Uri(GHApp.XlogTopScoreAddress));
+                ServerButton.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ServerButton.IsEnabled = true;
+            }
         }
 
         private bool _backPressed = false;
@@ -490,7 +513,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                GHApp.ReportCaughtException(ex);
             }
         }
 

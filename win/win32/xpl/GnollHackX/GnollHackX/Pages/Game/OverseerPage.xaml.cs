@@ -160,6 +160,18 @@ namespace GnollHackX.Pages.Game
 
         private async void ContentPage_Appearing(object sender, EventArgs e)
         {
+            try
+            {
+                await ContentPage_AppearingAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
+        }
+
+        private async Task ContentPage_AppearingAsync(object sender, EventArgs e)
+        {
             GHApp.BackButtonPressed += BackButtonPressed;
             GHApp.SetPlatformResizeAdjustment(true);
             _overlayNavigator.Attach();
@@ -623,19 +635,34 @@ namespace GnollHackX.Pages.Game
             }
             catch (Exception ex)
             {
+                GHApp.ReportCaughtException(ex);
                 GHApp.WriteGHLog("Unhandled exception in OverseerPage retry: " + ex.Message);
             }
         }
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
-            _connectCts?.Cancel();
-            await ClosePageAsync(true);
+            try
+            {
+                _connectCts?.Cancel();
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(false);
+            try
+            {
+                await ClosePageAsync(false);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
@@ -923,6 +950,18 @@ namespace GnollHackX.Pages.Game
 
         private async void CloseArea_Tapped(object sender, EventArgs e)
         {
+            try
+            {
+                await CloseArea_TappedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
+        }
+
+        private async Task CloseArea_TappedAsync(object sender, EventArgs e)
+        {
             if (_backPressed)
                 return;
 
@@ -972,7 +1011,7 @@ namespace GnollHackX.Pages.Game
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });
@@ -1023,7 +1062,7 @@ namespace GnollHackX.Pages.Game
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine(ex);
+                            GHApp.ReportCaughtException(ex);
                         }
                     });
                 }
@@ -2745,6 +2784,7 @@ namespace GnollHackX.Pages.Game
             }
             catch (Exception ex)
             {
+                GHApp.ReportCaughtException(ex);
                 GHApp.WriteGHLog("SendToolResponse failed: " + ex.Message);
             }
         }
@@ -3078,6 +3118,7 @@ namespace GnollHackX.Pages.Game
             }
             catch (Exception ex)
             {
+                GHApp.ReportCaughtException(ex);
                 GHApp.WriteGHLog("SendPickedFilesToJs failed: " + ex.Message);
             }
         }

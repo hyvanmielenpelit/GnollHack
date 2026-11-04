@@ -214,11 +214,18 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void InfoLabel_Tapped(object sender, EventArgs e)
         {
-            Label label = sender as Label;
-            string explanation;
-            if (label == null || !_labelExplanations.TryGetValue(label, out explanation))
-                return;
-            await GHApp.DisplayMessageBox(this, label.Text, explanation, "OK");
+            try
+            {
+                Label label = sender as Label;
+                string explanation;
+                if (label == null || !_labelExplanations.TryGetValue(label, out explanation))
+                    return;
+                await GHApp.DisplayMessageBox(this, label.Text, explanation, "OK");
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private void InitializePickers()
@@ -535,6 +542,20 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnRunSuite_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnRunSuite_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                WaitPopupGrid.IsVisible = false;
+                SetupLayout.IsEnabled = true;
+            }
+        }
+
+        private async Task btnRunSuite_ClickedAsync(object sender, EventArgs e)
+        {
             GHApp.PlayButtonClickedSound();
 
             ReplayItem replay = ReplayPicker.SelectedItem as ReplayItem;
@@ -732,14 +753,22 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void WaitCancelButton_Clicked(object sender, EventArgs e)
         {
-            GHApp.PlayButtonClickedSound();
-            WaitCancelButton.IsEnabled = false;
-            bool cancel = await GHApp.DisplayMessageBox(this, "Cancel Performance Suite",
-                "Cancel the performance suite? Its finished runs are kept.", "Yes", "No");
-            if (cancel)
-                GHPerformanceSuiteRunner.CancelSuite();
-            else
+            try
+            {
+                GHApp.PlayButtonClickedSound();
+                WaitCancelButton.IsEnabled = false;
+                bool cancel = await GHApp.DisplayMessageBox(this, "Cancel Performance Suite",
+                    "Cancel the performance suite? Its finished runs are kept.", "Yes", "No");
+                if (cancel)
+                    GHPerformanceSuiteRunner.CancelSuite();
+                else
+                    WaitCancelButton.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
                 WaitCancelButton.IsEnabled = true;
+            }
         }
 
         private void UpdateRunButtonState()
@@ -910,6 +939,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnViewReport_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnViewReport_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResultButtonsLayout.IsEnabled = true;
+            }
+        }
+
+        private async Task btnViewReport_ClickedAsync(object sender, EventArgs e)
+        {
             PerformanceSuiteListItem item = SelectedSingleItem();
             if (item == null)
                 return;
@@ -940,6 +982,19 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void btnSetBaseline_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnSetBaseline_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResultButtonsLayout.IsEnabled = true;
+            }
+        }
+
+        private async Task btnSetBaseline_ClickedAsync(object sender, EventArgs e)
         {
             PerformanceSuiteListItem item = SelectedSingleItem();
             if (item == null)
@@ -976,6 +1031,19 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void btnCompareBaseline_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnCompareBaseline_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResultButtonsLayout.IsEnabled = true;
+            }
+        }
+
+        private async Task btnCompareBaseline_ClickedAsync(object sender, EventArgs e)
         {
             PerformanceSuiteListItem item = SelectedSingleItem();
             if (item == null)
@@ -1019,6 +1087,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnShare_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnShare_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResultButtonsLayout.IsEnabled = true;
+            }
+        }
+
+        private async Task btnShare_ClickedAsync(object sender, EventArgs e)
+        {
             List<string> ids = SelectedSuiteIds();
             if (ids.Count == 0)
                 return;
@@ -1046,6 +1127,19 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void btnDelete_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnDelete_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResultButtonsLayout.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDelete_ClickedAsync(object sender, EventArgs e)
         {
             List<string> ids = SelectedSuiteIds();
             if (ids.Count == 0)
@@ -1077,6 +1171,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnImportResults_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnImportResults_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResultButtonsLayout.IsEnabled = true;
+            }
+        }
+
+        private async Task btnImportResults_ClickedAsync(object sender, EventArgs e)
+        {
             ResultButtonsLayout.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             await GHApp.CheckAndRequestWritePermission(this);
@@ -1107,7 +1214,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         public void ClosePage()
@@ -1123,7 +1237,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });

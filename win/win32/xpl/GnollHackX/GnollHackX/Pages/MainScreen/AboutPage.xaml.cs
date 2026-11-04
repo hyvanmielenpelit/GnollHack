@@ -49,7 +49,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnCreditsX_Clicked(object sender, EventArgs e)
         {
-            await OpenCreditsPage();
+            try
+            {
+                await OpenCreditsPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenCreditsPage()
@@ -90,7 +98,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnLicense_Clicked(object sender, EventArgs e)
         {
-            await OpenLicensePage();
+            try
+            {
+                await OpenLicensePage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenLicensePage()
@@ -113,7 +129,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnLegal_Clicked(object sender, EventArgs e)
         {
-            await OpenLegalPopup();
+            try
+            {
+                await OpenLegalPopup();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenLegalPopup()
@@ -126,7 +150,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnGitHub_Clicked(object sender, EventArgs e)
         {
-            await OpenGitHubPage();
+            try
+            {
+                await OpenGitHubPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenGitHubPage()
@@ -139,7 +171,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnWebPage_Clicked(object sender, EventArgs e)
         {
-            await OpenWebPage();
+            try
+            {
+                await OpenWebPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenWebPage()
@@ -152,7 +192,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnWiki_Clicked(object sender, EventArgs e)
         {
-            await OpenWikiPage();
+            try
+            {
+                await OpenWikiPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenWikiPage()
@@ -165,7 +213,16 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnOverseer_Clicked(object sender, EventArgs e)
         {
-            await OpenOverseerPage();
+            try
+            {
+                await OpenOverseerPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                MessagePopup.IsVisible = false;
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenOverseerPage()
@@ -253,7 +310,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnSponsor_Clicked(object sender, EventArgs e)
         {
-            await OpenSponsorPage();
+            try
+            {
+                await OpenSponsorPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenSponsorPage()
@@ -266,7 +331,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         public void ClosePage()
@@ -282,7 +354,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });
@@ -334,7 +406,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnCrashReport_Clicked(object sender, EventArgs e)
         {
-            await DoCrashReport();
+            try
+            {
+                await DoCrashReport();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task DoCrashReport()
@@ -359,7 +439,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnViewPanicLog_Clicked(object sender, EventArgs e)
         {
-            await OpenPanicLog();
+            try
+            {
+                await OpenPanicLog();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenPanicLog()
@@ -386,7 +474,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnViewGHLog_Clicked(object sender, EventArgs e)
         {
-            await OpenAppLog();
+            try
+            {
+                await OpenAppLog();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenAppLog()
@@ -429,7 +525,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnVersion_Clicked(object sender, EventArgs e)
         {
-            await OpenVersionPage();
+            try
+            {
+                await OpenVersionPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenVersionPage()
@@ -443,7 +547,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnImportExport_Clicked(object sender, EventArgs e)
         {
-            await OpenImportExportPage();
+            try
+            {
+                await OpenImportExportPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenImportExportPage()
@@ -459,7 +571,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnPerformanceSuite_Clicked(object sender, EventArgs e)
         {
-            await OpenPerformanceSuitePage();
+            try
+            {
+                await OpenPerformanceSuitePage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                AboutGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenPerformanceSuitePage()
@@ -568,7 +688,7 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine(ex);
+                            GHApp.ReportCaughtException(ex);
                         }
                     });
                 }

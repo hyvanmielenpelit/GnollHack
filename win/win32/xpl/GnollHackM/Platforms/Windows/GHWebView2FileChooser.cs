@@ -122,7 +122,7 @@ namespace GnollHackM
             }
             catch (Exception ex)
             {
-                GHApp.MaybeWriteGHLog("GHWebView2FileChooser: the file dialog failed: " + ex.Message);
+                GHApp.ReportCaughtException(ex);
             }
         }
 
@@ -175,6 +175,18 @@ namespace GnollHackM
         }
 
         private async void Operation_StateChanged(CoreWebView2DownloadOperation operation, string path)
+        {
+            try
+            {
+                await Operation_StateChangedAsync(operation, path);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
+        }
+
+        private async Task Operation_StateChangedAsync(CoreWebView2DownloadOperation operation, string path)
         {
             if (operation.State == CoreWebView2DownloadState.InProgress)
                 return;

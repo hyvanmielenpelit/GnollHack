@@ -65,6 +65,21 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void OKButton_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await OKButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                OKButton.IsEnabled = true;
+                CancelButton.IsEnabled = true;
+                ResetButton.IsEnabled = true;
+            }
+        }
+
+        private async Task OKButton_ClickedAsync(object sender, EventArgs e)
+        {
             OKButton.IsEnabled = false;
             CancelButton.IsEnabled = false;
             ResetButton.IsEnabled = false;
@@ -116,7 +131,17 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CancelButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                OKButton.IsEnabled = true;
+                CancelButton.IsEnabled = true;
+                ResetButton.IsEnabled = true;
+            }
         }
 
         public void ClosePage()
@@ -134,7 +159,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });
@@ -207,6 +232,21 @@ namespace GnollHackX.Pages.MainScreen
 
 
         private async void ResetButton_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await ResetButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                OKButton.IsEnabled = true;
+                CancelButton.IsEnabled = true;
+                ResetButton.IsEnabled = true;
+            }
+        }
+
+        private async Task ResetButton_ClickedAsync(object sender, EventArgs e)
         {
             OKButton.IsEnabled = false;
             CancelButton.IsEnabled = false;

@@ -54,6 +54,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteFiles_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnDeleteFiles_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDeleteFiles_ClickedAsync(object sender, EventArgs e)
+        {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             bool answer = await ShowMessagePopupAsync("Delete GnollHack Core Files?", "Are you sure to delete GnollHack core files?", "Yes", "No");
@@ -69,19 +82,40 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteSavedGames_Clicked(object sender, EventArgs e)
         {
-            ResetGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            bool answer = await ShowMessagePopupAsync("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
-            if (answer)
+            try
             {
-                GHApp.ClearSavedGames();
-                btnDeleteSavedGames.Text = "Done";
-                btnDeleteSavedGames.TextColor = GHColors.Red;
+                ResetGrid.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                bool answer = await ShowMessagePopupAsync("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
+                if (answer)
+                {
+                    GHApp.ClearSavedGames();
+                    btnDeleteSavedGames.Text = "Done";
+                    btnDeleteSavedGames.TextColor = GHColors.Red;
+                }
+                ResetGrid.IsEnabled = true;
             }
-            ResetGrid.IsEnabled = true;
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
         }
 
         private async void btnDeleteDumplogs_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnDeleteDumplogs_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDeleteDumplogs_ClickedAsync(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -98,47 +132,84 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteBones_Clicked(object sender, EventArgs e)
         {
-            ResetGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            bool answer = await ShowMessagePopupAsync("Delete Bones Files?", "Are you sure to delete all bones files?", "Yes", "No");
-            if (answer)
+            try
             {
-                GHApp.ClearBones();
-                btnDeleteBones.Text = "Done";
-                btnDeleteBones.TextColor = GHColors.Red;
+                ResetGrid.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                bool answer = await ShowMessagePopupAsync("Delete Bones Files?", "Are you sure to delete all bones files?", "Yes", "No");
+                if (answer)
+                {
+                    GHApp.ClearBones();
+                    btnDeleteBones.Text = "Done";
+                    btnDeleteBones.TextColor = GHColors.Red;
+                }
+                ResetGrid.IsEnabled = true;
             }
-            ResetGrid.IsEnabled = true;
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
         }
 
         private async void btnDeleteAllMainFiles_Clicked(object sender, EventArgs e)
         {
-            ResetGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            bool answer = await ShowMessagePopupAsync("Delete All Main Files?", "Are you sure to delete all files in the main directory?", "Yes", "No");
-            if (answer)
+            try
             {
-                GHApp.ClearAllFilesInMainDirectory();
-                btnDeleteAllMainFiles.Text = "Done";
-                btnDeleteAllMainFiles.TextColor = GHColors.Red;
+                ResetGrid.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                bool answer = await ShowMessagePopupAsync("Delete All Main Files?", "Are you sure to delete all files in the main directory?", "Yes", "No");
+                if (answer)
+                {
+                    GHApp.ClearAllFilesInMainDirectory();
+                    btnDeleteAllMainFiles.Text = "Done";
+                    btnDeleteAllMainFiles.TextColor = GHColors.Red;
+                }
+                ResetGrid.IsEnabled = true;
             }
-            ResetGrid.IsEnabled = true;
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
         }
 
         private async void btnDeleteDownloads_Clicked(object sender, EventArgs e)
         {
-            ResetGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            bool answer = await ShowMessagePopupAsync("Delete Downloaded Files?", "Are you sure to delete all downloaded files on restart?", "Yes", "No");
-            if (answer)
+            try
             {
-                Preferences.Set("ResetExternalFiles", true);
-                btnDeleteDownloads.Text = "Deletion on restart";
-                btnDeleteDownloads.TextColor = GHColors.Red;
+                ResetGrid.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                bool answer = await ShowMessagePopupAsync("Delete Downloaded Files?", "Are you sure to delete all downloaded files on restart?", "Yes", "No");
+                if (answer)
+                {
+                    Preferences.Set("ResetExternalFiles", true);
+                    btnDeleteDownloads.Text = "Deletion on restart";
+                    btnDeleteDownloads.TextColor = GHColors.Red;
+                }
+                ResetGrid.IsEnabled = true;
             }
-            ResetGrid.IsEnabled = true;
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
         }
 
         private async void btnDeletePreferences_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnDeletePreferences_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDeletePreferences_ClickedAsync(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -218,6 +289,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteUserData_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnDeleteUserData_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDeleteUserData_ClickedAsync(object sender, EventArgs e)
+        {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             bool answer = await ShowMessagePopupAsync("Delete All User Data?", "Are you sure to delete all files in the " + GHConstants.UserDataDirectory + " directory?", "Yes", "No");
@@ -246,7 +330,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         public void ClosePage()
@@ -266,7 +357,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });
@@ -334,6 +425,19 @@ namespace GnollHackX.Pages.MainScreen
         CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 
         private async void btnDownloadTestFiles_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnDownloadTestFiles_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDownloadTestFiles_ClickedAsync(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -469,6 +573,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnImportTestFiles_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnImportTestFiles_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnImportTestFiles_ClickedAsync(object sender, EventArgs e)
+        {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
 #if DEBUG
@@ -596,6 +713,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeletePostQueues_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnDeletePostQueues_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDeletePostQueues_ClickedAsync(object sender, EventArgs e)
+        {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             string directory1 = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
@@ -677,6 +807,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteAppLog_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnDeleteAppLog_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDeleteAppLog_ClickedAsync(object sender, EventArgs e)
+        {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             bool answer = await ShowMessagePopupAsync("Delete App Log?", "Are you sure to delete all files in the " + GHConstants.AppLogDirectory + " directory?", "Yes", "No");
@@ -701,6 +844,19 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void btnDeletePerformanceData_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnDeletePerformanceData_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDeletePerformanceData_ClickedAsync(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -735,6 +891,19 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void btnDeleteTransferFiles_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnDeleteTransferFiles_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ResetGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDeleteTransferFiles_ClickedAsync(object sender, EventArgs e)
         {
             ResetGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();

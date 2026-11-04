@@ -48,7 +48,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnExportSavedGames_Clicked(object sender, EventArgs e)
         {
-            await RunFileOperationAsync(ExportSavedGamesAsync);
+            try
+            {
+                await RunFileOperationAsync(ExportSavedGamesAsync);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
         }
 
         private async Task ExportSavedGamesAsync()
@@ -84,7 +92,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnImportSavedGames_Clicked(object sender, EventArgs e)
         {
-            await RunFileOperationAsync(ImportSavedGamesAsync);
+            try
+            {
+                await RunFileOperationAsync(ImportSavedGamesAsync);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
         }
 
         private async Task ImportSavedGamesAsync()
@@ -213,7 +229,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnExportReplays_Clicked(object sender, EventArgs e)
         {
-            await RunFileOperationAsync(ExportReplaysAsync);
+            try
+            {
+                await RunFileOperationAsync(ExportReplaysAsync);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
         }
 
         private async Task ExportReplaysAsync()
@@ -250,7 +274,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnImportReplays_Clicked(object sender, EventArgs e)
         {
-            await RunFileOperationAsync(ImportReplaysAsync);
+            try
+            {
+                await RunFileOperationAsync(ImportReplaysAsync);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
         }
 
         private async Task ImportReplaysAsync()
@@ -388,7 +420,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnExportDumplogs_Clicked(object sender, EventArgs e)
         {
-            await RunFileOperationAsync(ExportDumplogsAsync);
+            try
+            {
+                await RunFileOperationAsync(ExportDumplogsAsync);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
         }
 
         private async Task ExportDumplogsAsync()
@@ -424,7 +464,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task ClosePageAsync(bool playClickedSound)
@@ -453,7 +500,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });
@@ -527,19 +574,40 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteSavedGames_Clicked(object sender, EventArgs e)
         {
-            ImportExportGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            bool answer = await ShowMessagePopupAsync("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
-            if (answer)
+            try
             {
-                GHApp.ClearSavedGames();
-                btnDeleteSavedGames.Text = "Done";
-                btnDeleteSavedGames.TextColor = GHColors.Red;
+                ImportExportGrid.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                bool answer = await ShowMessagePopupAsync("Delete Saved Games?", "Are you sure to delete all saved games?", "Yes", "No");
+                if (answer)
+                {
+                    GHApp.ClearSavedGames();
+                    btnDeleteSavedGames.Text = "Done";
+                    btnDeleteSavedGames.TextColor = GHColors.Red;
+                }
+                ImportExportGrid.IsEnabled = true;
             }
-            ImportExportGrid.IsEnabled = true;
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
         }
 
         private async void btnDeleteReplays_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnDeleteReplays_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnDeleteReplays_ClickedAsync(object sender, EventArgs e)
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -643,33 +711,62 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnDeleteDumplogs_Clicked(object sender, EventArgs e)
         {
-            ImportExportGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            bool answer = await ShowMessagePopupAsync("Delete Dumplogs?", "Are you sure to delete all dumplogs?", "Yes", "No");
-            if (answer)
+            try
             {
-                GHApp.ClearDumplogs();
-                btnDeleteDumplogs.Text = "Done";
-                btnDeleteDumplogs.TextColor = GHColors.Red;
+                ImportExportGrid.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                bool answer = await ShowMessagePopupAsync("Delete Dumplogs?", "Are you sure to delete all dumplogs?", "Yes", "No");
+                if (answer)
+                {
+                    GHApp.ClearDumplogs();
+                    btnDeleteDumplogs.Text = "Done";
+                    btnDeleteDumplogs.TextColor = GHColors.Red;
+                }
+                ImportExportGrid.IsEnabled = true;
             }
-            ImportExportGrid.IsEnabled = true;
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
         }
 
         private async void btnDeleteSnapshots_Clicked(object sender, EventArgs e)
         {
-            ImportExportGrid.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            bool answer = await ShowMessagePopupAsync("Delete Snapshots?", "Are you sure to delete all snapshots?", "Yes", "No");
-            if (answer)
+            try
             {
-                GHApp.ClearSnapshots();
-                btnDeleteSnapshots.Text = "Done";
-                btnDeleteSnapshots.TextColor = GHColors.Red;
+                ImportExportGrid.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                bool answer = await ShowMessagePopupAsync("Delete Snapshots?", "Are you sure to delete all snapshots?", "Yes", "No");
+                if (answer)
+                {
+                    GHApp.ClearSnapshots();
+                    btnDeleteSnapshots.Text = "Done";
+                    btnDeleteSnapshots.TextColor = GHColors.Red;
+                }
+                ImportExportGrid.IsEnabled = true;
             }
-            ImportExportGrid.IsEnabled = true;
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
         }
 
         private async void btnClearPendingTasks_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnClearPendingTasks_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnClearPendingTasks_ClickedAsync(object sender, EventArgs e)
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
@@ -759,6 +856,19 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void btnConvertSavedGames_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await btnConvertSavedGames_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ImportExportGrid.IsEnabled = true;
+            }
+        }
+
+        private async Task btnConvertSavedGames_ClickedAsync(object sender, EventArgs e)
         {
             ImportExportGrid.IsEnabled = false;
             GHApp.PlayButtonClickedSound();

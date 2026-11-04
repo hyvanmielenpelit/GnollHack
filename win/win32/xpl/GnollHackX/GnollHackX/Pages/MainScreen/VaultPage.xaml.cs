@@ -213,7 +213,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         public void ClosePage()
@@ -229,7 +236,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });
@@ -462,7 +469,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnTopScores_Clicked(object sender, EventArgs e)
         {
-            await OpenTopScorePage();
+            try
+            {
+                await OpenTopScorePage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                VaultGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenTopScorePage()
@@ -495,7 +510,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnLibrary_Clicked(object sender, EventArgs e)
         {
-            await OpenLibraryPage();
+            try
+            {
+                await OpenLibraryPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                VaultGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenLibraryPage()
@@ -510,7 +533,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnAchievements_Clicked(object sender, EventArgs e)
         {
-            await OpenAchievementsPage();
+            try
+            {
+                await OpenAchievementsPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                VaultGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenAchievementsPage()
@@ -526,7 +557,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnOracle_Clicked(object sender, EventArgs e)
         {
-            await OpenOraclePage();
+            try
+            {
+                await OpenOraclePage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                VaultGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenOraclePage()
@@ -541,7 +580,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnSoundTracks_Clicked(object sender, EventArgs e)
         {
-            await OpenMusicPage();
+            try
+            {
+                await OpenMusicPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                VaultGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenMusicPage()
@@ -555,7 +602,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnSnapshots_Clicked(object sender, EventArgs e)
         {
-            await OpenSnapshotPage();
+            try
+            {
+                await OpenSnapshotPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                VaultGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenSnapshotPage()
@@ -570,7 +625,15 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnReplays_Clicked(object sender, EventArgs e)
         {
-            await OpenReplayPage();
+            try
+            {
+                await OpenReplayPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                VaultGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenReplayPage()
@@ -584,7 +647,16 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void btnSaveTransfer_Clicked(object sender, EventArgs e)
         {
-            await OpenSaveTransferPage();
+            try
+            {
+                await OpenSaveTransferPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                MessagePopup.IsVisible = false;
+                VaultGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenSaveTransferPage()
@@ -686,7 +758,7 @@ namespace GnollHackX.Pages.MainScreen
                         }
                         catch (Exception ex)
                         {
-                            System.Diagnostics.Debug.WriteLine(ex);
+                            GHApp.ReportCaughtException(ex);
                         }
                     });
                 }

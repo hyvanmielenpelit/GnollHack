@@ -86,7 +86,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task ClosePageAsync(bool playClickSound)
@@ -113,7 +120,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });
@@ -155,6 +162,18 @@ namespace GnollHackX.Pages.MainScreen
            source is assigned only on success. */
         private async void DisplayWebView_Loaded(object sender, EventArgs e)
         {
+            try
+            {
+                await DisplayWebView_LoadedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
+        }
+
+        private async Task DisplayWebView_LoadedAsync(object sender, EventArgs e)
+        {
             HtmlWebViewSource source = _pendingHtmlSource;
             if (source == null)
                 return;
@@ -194,7 +213,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine(ex);
+                GHApp.ReportCaughtException(ex);
             }
         }
 
@@ -341,6 +360,19 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void ShareButton_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await ShareButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                ShareButton.IsEnabled = true;
+            }
+        }
+
+        private async Task ShareButton_ClickedAsync(object sender, EventArgs e)
+        {
             ShareButton.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             try
@@ -398,7 +430,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }

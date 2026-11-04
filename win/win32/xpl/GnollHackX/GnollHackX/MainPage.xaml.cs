@@ -237,7 +237,7 @@ namespace GnollHackX
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
                 });
             }
@@ -549,7 +549,7 @@ namespace GnollHackX
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine(ex);
+                            GHApp.ReportCaughtException(ex);
                         }
                     });
                 }
@@ -725,7 +725,14 @@ namespace GnollHackX
 
         private async void StartLocalGameButton_Clicked(object sender, EventArgs e)
         {
-            await StartLocalGame();
+            try
+            {
+                await StartLocalGame();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         public async Task StartLocalGame()
@@ -889,6 +896,19 @@ namespace GnollHackX
         }
 
         private async void ContentPage_Appearing(object sender, EventArgs e)
+        {
+            try
+            {
+                await ContentPage_AppearingAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                throw;
+            }
+        }
+
+        private async Task ContentPage_AppearingAsync(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
             _gamepadNavigator.Attach();
@@ -1807,8 +1827,16 @@ namespace GnollHackX
 
         private async void ExitAppButton_Clicked(object sender, EventArgs e)
         {
-            GHApp.AddSentryBreadcrumb("Exit button clicked.", GHConstants.SentryGnollHackGeneralCategoryName);
-            await ExitApp();
+            try
+            {
+                GHApp.AddSentryBreadcrumb("Exit button clicked.", GHConstants.SentryGnollHackGeneralCategoryName);
+                await ExitApp();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                throw;
+            }
         }
 
         private async Task ExitApp(bool allowAlerts = true)
@@ -2019,7 +2047,15 @@ namespace GnollHackX
 
         private async void ResetButton_Clicked(object sender, EventArgs e)
         {
-            await OpenResetPage();
+            try
+            {
+                await OpenResetPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                UpperButtonGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenResetPage()
@@ -2038,7 +2074,15 @@ namespace GnollHackX
 
         private async void SettingsButton_Clicked(object sender, EventArgs e)
         {
-            await OpenSettingsPage();
+            try
+            {
+                await OpenSettingsPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                UpperButtonGrid.IsEnabled = true;
+            }
         }
 
         public async Task OpenSettingsPage()
@@ -2054,7 +2098,15 @@ namespace GnollHackX
 
         private async void OptionsButton_Clicked(object sender, EventArgs e)
         {
-            await OpenOptionsPage();
+            try
+            {
+                await OpenOptionsPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                UpperButtonGrid.IsEnabled = true;
+            }
         }
 
         public async Task OpenOptionsPage()
@@ -2079,7 +2131,15 @@ namespace GnollHackX
 
         private async void CreditsButton_Clicked(object sender, EventArgs e)
         {
-            await OpenAboutPage();
+            try
+            {
+                await OpenAboutPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                UpperButtonGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenAboutPage()
@@ -2134,7 +2194,15 @@ namespace GnollHackX
 
         private async void VaultButton_Clicked(object sender, EventArgs e)
         {
-            await OpenVaultPage();
+            try
+            {
+                await OpenVaultPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                UpperButtonGrid.IsEnabled = true;
+            }
         }
 
         private async Task OpenVaultPage()
@@ -2206,7 +2274,16 @@ namespace GnollHackX
         private popup_style _popupStyle = popup_style.GeneralDialog;
         private async void PopupOkButton_Clicked(object sender, EventArgs e)
         {
-            await ClosePopup();
+            try
+            {
+                await ClosePopup();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                PopupOkButton.IsEnabled = true;
+                PopupOkButton2.IsEnabled = true;
+            }
         }
 
         private async Task ClosePopup()
@@ -2308,7 +2385,17 @@ namespace GnollHackX
 
         private async void PendingTasksOkButton_Clicked(object sender, EventArgs e)
         {
-            await PendingTasksOk();
+            try
+            {
+                await PendingTasksOk();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                PendingTasksGrid.IsVisible = false;
+                ExitButton.IsEnabled = true;
+                UpperButtonGrid.IsEnabled = true;
+            }
         }
 
         private async Task PendingTasksOk()
@@ -2350,13 +2437,33 @@ namespace GnollHackX
 
         private async void PopupViewButton_Clicked(object sender, EventArgs e)
         {
-            if (!string.IsNullOrWhiteSpace(_popupViewUrl) && Uri.IsWellFormedUriString(_popupViewUrl, UriKind.Absolute))
-                await GHApp.OpenBrowser(this, _popupViewTitle, new Uri(_popupViewUrl));
-            else
-                DisplayAlertGrid("Malformed URL", "The URL was malformed: " + _popupViewUrl, "OK", GHColors.Orange);
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(_popupViewUrl) && Uri.IsWellFormedUriString(_popupViewUrl, UriKind.Absolute))
+                    await GHApp.OpenBrowser(this, _popupViewTitle, new Uri(_popupViewUrl));
+                else
+                    DisplayAlertGrid("Malformed URL", "The URL was malformed: " + _popupViewUrl, "OK", GHColors.Orange);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async void AlertOkButton_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await AlertOkButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                throw;
+            }
+        }
+
+        private async Task AlertOkButton_ClickedAsync(object sender, EventArgs e)
         {
             AlertOkButton.IsEnabled = false;
             AlertOkButton2.IsEnabled = false;
@@ -2396,11 +2503,19 @@ namespace GnollHackX
 
         private async void AlertExitButton_Clicked(object sender, EventArgs e)
         {
-            AlertOkButton.IsEnabled = false;
-            AlertOkButton2.IsEnabled = false;
-            AlertExitButton.IsEnabled = false;
-            GHApp.PlayButtonClickedSound();
-            await ShowWaitAndCloseApp();
+            try
+            {
+                AlertOkButton.IsEnabled = false;
+                AlertOkButton2.IsEnabled = false;
+                AlertExitButton.IsEnabled = false;
+                GHApp.PlayButtonClickedSound();
+                await ShowWaitAndCloseApp();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                throw;
+            }
         }
 
         private async Task ShowWaitAndCloseApp()
@@ -2564,7 +2679,7 @@ namespace GnollHackX
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine(ex);
+                            GHApp.ReportCaughtException(ex);
                         }
                     });
                 }
@@ -2657,7 +2772,7 @@ namespace GnollHackX
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine(ex);
+                            GHApp.ReportCaughtException(ex);
                         }
                     });
                 }
@@ -2848,6 +2963,18 @@ namespace GnollHackX
         }
 
         private async void EventOkButton_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await EventOkButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
+        }
+
+        private async Task EventOkButton_ClickedAsync(object sender, EventArgs e)
         {
             GHApp.PlayButtonClickedSound();
             EventButtonGrid.IsEnabled = false;

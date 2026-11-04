@@ -48,7 +48,14 @@ namespace GnollHackX.Pages.MainScreen
 
         private async void Button_Clicked(object sender, EventArgs e)
         {
-            await ClosePageAsync(true);
+            try
+            {
+                await ClosePageAsync(true);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
         }
 
         private async Task ClosePageAsync(bool playClickedSound)
@@ -75,7 +82,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine(ex);
+                        GHApp.ReportCaughtException(ex);
                     }
 
                 });
@@ -163,6 +170,19 @@ namespace GnollHackX.Pages.MainScreen
         }
 
         private async void OracleButton_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                await OracleButton_ClickedAsync(sender, e);
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                OracleLayout.IsEnabled = true;
+            }
+        }
+
+        private async Task OracleButton_ClickedAsync(object sender, EventArgs e)
         {
             OracleLayout.IsEnabled = false;
             RowImageButton ghbutton = sender as RowImageButton;
