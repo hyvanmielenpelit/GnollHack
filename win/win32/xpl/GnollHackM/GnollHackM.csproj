@@ -52,6 +52,7 @@
     <DefineConstants>GNH_MAUI;GNH_AVALONIA;USE_SPAN_FOR_SUBSTRING;CORECLR</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);LINUX</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);SENTRY</DefineConstants>
+    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('osx'))">$(DefineConstants);MACOS</DefineConstants>
     <MauiActiveBackend>avalonia</MauiActiveBackend>
     <AvaloniaControlsMauiGenerateDesktopProgram>false</AvaloniaControlsMauiGenerateDesktopProgram>
     <InvariantGlobalization>true</InvariantGlobalization>
@@ -1155,9 +1156,15 @@
     <Content Include="Resources\AppIcon\appicon.png" Link="gnollhack.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(GnhAvalonia)' == 'true' And !$(RuntimeIdentifier.StartsWith('linux'))">
+  <ItemGroup Condition="'$(GnhAvalonia)' == 'true' And !$(RuntimeIdentifier.StartsWith('linux')) And !$(RuntimeIdentifier.StartsWith('osx'))">
     <Content Include="Platforms\Windows\libs\*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Platforms\Windows\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('osx'))">
+    <!-- The engine and FMOD's core and Studio libraries, which AvaloniaDesktopProgram loads from the application directory -->
+    <Content Include="Platforms\MacOS\libs\*.dylib" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Platforms\Android\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- Banks and tile sets from their install folders, so no native build has to stage them; the WinUI 3 items above
@@ -1777,11 +1784,13 @@
     <PropertyGroup>
       <_GnhNativeSolutionRemedy>Build win\win32\vs\GnollHack.sln with the x64 solution platform.</_GnhNativeSolutionRemedy>
       <_GnhNativeSolutionRemedy Condition="$(RuntimeIdentifier.StartsWith('linux'))">Build win\win32\vs\GnollHack.sln with the Linux solution platform in Release.</_GnhNativeSolutionRemedy>
+      <_GnhNativeSolutionRemedy Condition="$(RuntimeIdentifier.StartsWith('osx'))">Build win\win32\vs\GnollHack.sln with the macOS solution platform in Release.</_GnhNativeSolutionRemedy>
       <_GnhAssetRemedy>See the GnollHack wiki page Development/Install Tile Sets and FMOD Sound Banks.</_GnhAssetRemedy>
     </PropertyGroup>
     <ItemGroup>
-      <_GnhNativeInput Include="Platforms\Windows\libs\gnollhackwin.dll;Platforms\Windows\gnh\nhdat" Condition="!$(RuntimeIdentifier.StartsWith('linux'))" Code="GNHNI001" Remedy="$(_GnhNativeSolutionRemedy)" />
+      <_GnhNativeInput Include="Platforms\Windows\libs\gnollhackwin.dll;Platforms\Windows\gnh\nhdat" Condition="!$(RuntimeIdentifier.StartsWith('linux')) And !$(RuntimeIdentifier.StartsWith('osx'))" Code="GNHNI001" Remedy="$(_GnhNativeSolutionRemedy)" />
       <_GnhNativeInput Include="Platforms\Linux\libs\libgnollhacklinux.so;Platforms\Android\gnh\nhdat" Condition="$(RuntimeIdentifier.StartsWith('linux'))" Code="GNHNI001" Remedy="$(_GnhNativeSolutionRemedy)" />
+      <_GnhNativeInput Include="Platforms\MacOS\libs\libgnollhackmac.dylib;Platforms\Android\gnh\nhdat" Condition="$(RuntimeIdentifier.StartsWith('osx'))" Code="GNHNI001" Remedy="$(_GnhNativeSolutionRemedy)" />
       <_GnhNativeInput Include="..\..\bank\Desktop\Auxiliary.bank;..\..\bank\Desktop\Intro.bank;..\..\bank\Desktop\Master.bank;..\..\bank\Desktop\Master.strings.bank;..\..\bank\Desktop\Music.bank;..\..\bank\Desktop\Preliminary.bank" Code="GNHNI002" Remedy="Install the Desktop sound banks in win\win32\bank\Desktop. $(_GnhAssetRemedy)" />
       <_GnhNativeInput Include="..\..\tileset\gnollhack_64x96_transparent_32bits.png;..\..\tileset\gnollhack_64x96_transparent_32bits-2.png;..\..\tileset\gnollhack_64x96_transparent_32bits-3.png" Code="GNHNI003" Remedy="Install the tile sets in win\win32\tileset. $(_GnhAssetRemedy)" />
       <_GnhMissingNativeInput Include="@(_GnhNativeInput)" Condition="!Exists('%(FullPath)')" />

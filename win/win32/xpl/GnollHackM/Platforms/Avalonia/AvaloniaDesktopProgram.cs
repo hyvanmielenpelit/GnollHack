@@ -29,6 +29,8 @@ internal static class AvaloniaDesktopProgram
 #endif
         if (OperatingSystem.IsLinux())
             NativeLibrary.SetDllImportResolver(typeof(AvaloniaDesktopProgram).Assembly, ResolveLinuxLibrary);
+        else if (OperatingSystem.IsMacOS())
+            NativeLibrary.SetDllImportResolver(typeof(AvaloniaDesktopProgram).Assembly, ResolveMacLibrary);
         int exitCode = BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         /* The lifetime can end with a game running, for example when the desktop session ends */
         GHAvaloniaShutdown.SaveGameBeforeExit();
@@ -41,7 +43,8 @@ internal static class AvaloniaDesktopProgram
     }
 
     /* X11: GLX with a software fallback, no Vulkan; popups drawn inside the window; WM_CLASS "GnollHack", which
-       a desktop entry matches with StartupWMClass. 1 GiB GPU resource budget. */
+       a desktop entry matches with StartupWMClass. macOS: GetMacRenderingModes; popups drawn inside the window.
+       1 GiB GPU resource budget. */
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<AvaloniaApp>()
             .UsePlatformDetect()
@@ -52,6 +55,11 @@ internal static class AvaloniaDesktopProgram
                 RenderingMode = new[] { X11RenderingMode.Glx, X11RenderingMode.Software },
                 OverlayPopups = true,
                 WmClass = "GnollHack",
+            })
+            .With(new AvaloniaNativePlatformOptions
+            {
+                RenderingMode = GetMacRenderingModes(),
+                OverlayPopups = true,
             })
             .With(new SkiaOptions { MaxGpuResourceSizeBytes = 1024L * 1024 * 1024 });
 
@@ -74,6 +82,34 @@ internal static class AvaloniaDesktopProgram
             return IntPtr.Zero;
 
         return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, fileName));
+    }
+
+    /* macOS: Metal, then OpenGL, then software. GNOLLHACK_MAC_RENDERING=opengl starts at OpenGL, =software uses only
+       software rendering. */
+    private static AvaloniaNativeRenderingMode[] GetMacRenderingModes()
+    {
+        string mode = Environment.GetEnvironmentVariable("GNOLLHACK_MAC_RENDERING");
+        if (string.Equals(mode, "opengl", StringComparison.OrdinalIgnoreCase))
+            return new[] { AvaloniaNativeRenderingMode.OpenGl, AvaloniaNativeRenderingMode.Software };
+        if (string.Equals(mode, "software", StringComparison.OrdinalIgnoreCase))
+            return new[] { AvaloniaNativeRenderingMode.Software };
+        return new[] { AvaloniaNativeRenderingMode.Metal, AvaloniaNativeRenderingMode.OpenGl, AvaloniaNativeRenderingMode.Software };
+    }
+
+    /* The FMOD wrappers import "fmod" and "fmodstudio". libfmodstudio.dylib refers to its core library by install
+       name; libfmod.dylib is loaded from the application directory first, so that the dynamic loader uses that
+       image rather than searching for one. */
+    private static IntPtr ResolveMacLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    {
+        string core = Path.Combine(AppContext.BaseDirectory, "libfmod.dylib");
+        if (libraryName == "fmod")
+            return NativeLibrary.Load(core);
+        if (libraryName == "fmodstudio")
+        {
+            NativeLibrary.Load(core);
+            return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, "libfmodstudio.dylib"));
+        }
+        return IntPtr.Zero;
     }
 
 #if LINUX

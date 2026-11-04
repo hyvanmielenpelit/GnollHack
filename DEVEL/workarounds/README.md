@@ -139,7 +139,7 @@ first blank line. All are required unless marked otherwise.
 | `Component` | The human name of the component, matching the file. |
 | `Package` | The NuGet package ID, or the SDK, workload, OS or library name, such as `workload ios`, `iOS` or `FMOD`. Several are separated by `, `. `none` only for a component with no versioned artifact. The lint's version-drift warning keys on this field. |
 | `Defective version` | The version GnollHack used when the defect was seen, with the package name: `Microsoft.Maui.Controls 10.0.120`, `FMOD 2.03.14`, `iOS 27.0`. Add the affected range if upstream states one. |
-| `Platforms` | Comma-separated tokens from `Android`, `iOS`, `Mac (iPad app)`, `Windows`, `Linux`, or `all`. A token may take a ` (Avalonia)` or ` (MAUI)` suffix when only one flavor is affected; the suffix applies to that token only, as in `Linux, Windows (Avalonia)`. |
+| `Platforms` | Comma-separated tokens from `Android`, `iOS`, `Mac (iPad app)`, `macOS`, `Windows`, `Linux`, or `all`. A token may take a ` (Avalonia)` or ` (MAUI)` suffix when only one flavor is affected; the suffix applies to that token only, as in `Linux, Windows (Avalonia)`. |
 | `Upstream issue` | One or more URLs separated by `, `, or `none`, or `none (report drafted, not filed)`. |
 | `Upstream status when added` | The upstream status when the workaround landed. **Never edited later.** |
 | `Upstream status` | The current upstream status, as of `Last checked`. |

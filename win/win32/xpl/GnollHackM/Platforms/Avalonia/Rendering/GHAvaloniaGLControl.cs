@@ -527,6 +527,9 @@ namespace GnollHackM
 
             _reportedContext = grContext;
             _reportedContextAction = action;
+            string backendText = "Avalonia GL: GPU context backend " + grContext.Backend.ToString();
+            GHApp.MaybeWriteGHLog(backendText);
+            Console.Error.WriteLine("GnollHack: " + backendText);
             action?.Invoke(grContext);
         }
 

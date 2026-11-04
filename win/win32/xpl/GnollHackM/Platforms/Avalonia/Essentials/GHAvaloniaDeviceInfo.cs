@@ -5,7 +5,7 @@ using Microsoft.Maui.Devices;
 
 namespace GnollHackM
 {
-    /* IDeviceInfo for the Avalonia desktop target. The platform is "Linux" on Linux builds and
+    /* IDeviceInfo for the Avalonia desktop target. The platform is "Linux" on Linux builds, macOS on macOS builds and
        "WindowsAvalonia" otherwise, so that GHApp.IsWindows stays false for the Avalonia Win32 build.
        On Linux, model and manufacturer come from DMI (a Steam Deck reports Jupiter or Galileo, and
        Valve) and the version from /etc/os-release. */
@@ -26,6 +26,11 @@ namespace GnollHackM
             _model = ReadFirstLine("/sys/class/dmi/id/product_name") ?? _name;
             _manufacturer = ReadFirstLine("/sys/class/dmi/id/sys_vendor") ?? "Unknown";
             _versionString = ReadOsReleaseVersionId() ?? Environment.OSVersion.Version.ToString();
+#elif MACOS
+            _platform = DevicePlatform.macOS;
+            _model = _name;
+            _manufacturer = "Apple";
+            _versionString = Environment.OSVersion.Version.ToString();
 #else
             _platform = DevicePlatform.Create("WindowsAvalonia");
             _model = _name;

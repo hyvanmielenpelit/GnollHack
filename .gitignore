@@ -131,7 +131,7 @@ _Isincrementalbuild
 !DEVEL/workarounds/*.ps1
 !win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/*.ps1
 !win/win32/xpl/gnhsentrywin/*.ps1
-!win/win32/xpl/gnollhackapple/*.ps1
+!win/win32/xpl/libapple/*.ps1
 
 # User-specific files
 *.suo

@@ -181,7 +181,7 @@ Post-build `.proj` files copy libraries and assets to `GnollHackM/Platforms/`:
 
 ### Apple engine libraries over SSH
 
-`gnollhackios.vcxproj` and `gnollhackmac.vcxproj` are Makefile-type projects with `x64` configurations. Both import `win/win32/vs/gnollhackapple.props`, which holds the shared engine source list and the build, rebuild and clean command lines, and run `win/win32/xpl/gnollhackapple/Build-AppleEngine.ps1`. The script packs the listed sources and the headers into a tar file, copies it to the Mac with Windows' OpenSSH `scp`, unpacks a fresh tree in `~/gnollhack-build/<ios|macos>-<Configuration>/tree`, runs `make -f engine.mk` there (`win/win32/xpl/gnollhackapple/engine.mk`) with Xcode's clang through `xcrun`, and copies the library back to the project's output folder. The objects stay on the Mac between runs.
+`gnollhackios.vcxproj` and `gnollhackmac.vcxproj` are Makefile-type projects with `x64` configurations. Both import `win/win32/vs/gnollhackapple.props`, which holds the shared engine source list and the build, rebuild and clean command lines, and run `win/win32/xpl/libapple/Build-AppleEngine.ps1`. The script packs the listed sources and the headers into a tar file, copies it to the Mac with Windows' OpenSSH `scp`, unpacks a fresh tree in `~/gnollhack-build/<ios|macos>-<Configuration>/tree`, runs `make -f engine.mk` there (`win/win32/xpl/libapple/engine.mk`) with Xcode's clang through `xcrun`, and copies the library back to the project's output folder. The objects stay on the Mac between runs.
 
 - **Source list:** `gnollhackapple.props` lists the same engine sources as `gnollhacklinux.vcxproj`. Adding an engine source means adding it to both.
 - **Mac host:** an OpenSSH host alias with key-based login: the script's `-SshHost`, else the environment variable `GNOLLHACK_MAC_SSH_HOST`, else `gnollhack-mac`. From MSBuild: `/p:GnhAppleExtraArgs="-SshHost <alias>"`. Every connection uses `BatchMode`, so a missing key or an unknown host key fails at once instead of prompting. The setup is on the wiki page *Set Up SSH Access to the Mac for Native Libraries*.
@@ -224,9 +224,9 @@ dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-ios 
 
 > Check `GnollHackM.csproj` for current target framework monikers — they change over time.
 
-## Avalonia Port (Linux and Windows)
+## Avalonia Port (Linux, Windows and macOS)
 
-`GnollHackM.csproj` with `-p:GnhAvalonia=true` targets `net11.0` on Avalonia.Controls.Maui instead of the platform backends. The runtime identifier defaults to the host's, so a build on Windows is the `win-x64` flavor (development and testing only, not shipped; `Platforms/Windows` libs and `gnh`, data in `%LOCALAPPDATA%\GnollHack-Avalonia`), and `-r linux-x64` is the shipped Linux flavor (`LINUX` and `SENTRY` defined). Both take the tilesets from `win/win32/tileset` and the Desktop banks from `win/win32/bank/Desktop` directly, so neither needs staged assets. Human-facing walkthroughs: wiki pages `Development/Avalonia Port`, `Development/Build Instructions for Avalonia Linux Version on Windows`, `Development/Build Instructions for Avalonia Windows Version on Windows`.
+`GnollHackM.csproj` with `-p:GnhAvalonia=true` targets `net11.0` on Avalonia.Controls.Maui instead of the platform backends. The runtime identifier defaults to the host's, so a build on Windows is the `win-x64` flavor (development and testing only, not shipped; `Platforms/Windows` libs and `gnh`, data in `%LOCALAPPDATA%\GnollHack-Avalonia`), `-r linux-x64` is the shipped Linux flavor (`LINUX` and `SENTRY` defined), and `-r osx-arm64` is the macOS flavor (`MACOS` defined, development only; see [macOS flavor](#macos-flavor)). All take the tilesets from `win/win32/tileset` and the Desktop banks from `win/win32/bank/Desktop` directly, so neither needs staged assets. Human-facing walkthroughs: wiki pages `Development/Avalonia Port`, `Development/Build Instructions for Avalonia Linux Version on Windows`, `Development/Build Instructions for Avalonia Windows Version on Windows`.
 
 - **Always run `dotnet` from `GnollHackM/Platforms/Avalonia`.** Its `global.json` pins the SDK and workload set; from the repository root or `GnollHackM` another SDK is chosen. First install the SDK named by `sdk.version` in that file (it may be a preview or release candidate), then run `dotnet workload install maui` in that folder, so that the pinned `workloadVersion` is installed.
 - **No `-t:Compile`** for this flavor (MSB4057); verify with a full build, about 30 s.
@@ -247,6 +247,18 @@ Publish needs `-f net11.0`. A Release publish uploads Sentry symbols when the ma
 3. **Run** `GnollHackM/bin/Debug/net11.0/win-x64/GnollHackM.exe`. To debug, attach Visual Studio to it (Managed .NET Core); starting `GnollHackM.sln` runs the WinUI 3 app instead.
 
 `GnhCheckAvaloniaNativeInputs` in `GnollHackM.csproj` stops either flavor's build with `GNHNI001` (engine or `nhdat`), `GNHNI002` (banks) or `GNHNI003` (tilesets), naming each missing file. `-p:GnhAllowMissingNativeInputs=true` makes them warnings, for a compile check on a machine without them.
+
+### macOS flavor
+
+`-r osx-arm64` (Apple Silicon) and `-r osx-x64` (Intel) build the macOS flavor, with the `MACOS` define. It is for development only: not shipped, not packaged as an `.app` and not signed for distribution, and it has no Sentry, gamepad backend, app menu or instance lock yet.
+
+1. **Native solution**: build `GnollHack.sln` with the `macOS` platform in Release (WSL and the Mac; see [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh)). `CopyToMauiMacLibs` puts `libgnollhackmac.dylib` in `Platforms/MacOS/libs/`, beside FMOD's committed `libfmod.dylib` and `libfmodstudio.dylib`; the game data is the Android-format `Platforms/Android/gnh`, as for Linux.
+2. **Publish** from `Platforms/Avalonia`: `dotnet publish ..\..\GnollHackM.csproj -p:GnhAvalonia=true -r osx-arm64 -f net11.0 -c Release --self-contained true -p:GnhSentryUpload=false`. The publish runs on Windows; the .NET SDK signs the apphost ad hoc.
+3. **Run** on the Mac from Terminal, unbundled: copy the `publish` folder over (a tar file made on Windows loses the executable bits, so `chmod +x GnollHackM` there), ad-hoc sign `libgnollhackmac.dylib` (`codesign --force --sign -`: the linker signs only its arm64 slice), and start `./GnollHackM`. Data goes to `~/Library/Application Support/GnollHack`.
+
+- **Rendering**: Metal, then OpenGL, then software. `GNOLLHACK_MAC_RENDERING=opengl` starts at OpenGL, `=software` uses software only. The GPU control prints `GnollHack: Avalonia GL: GPU context backend <Metal|OpenGL>` on standard error when its context changes; no such line means the map is not on the GPU.
+- **FMOD**: `libfmodstudio.dylib` refers to its core as `@rpath/libfmod.dylib` and has no run paths, so `AvaloniaDesktopProgram.ResolveMacLibrary` loads `libfmod.dylib` from the application directory first.
+- **Web view**: Avalonia's `NativeWebView` with the WKWebView adapter, part of the system.
 
 ### Native prerequisites of the Linux flavor
 

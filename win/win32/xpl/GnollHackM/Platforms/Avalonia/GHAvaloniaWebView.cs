@@ -12,7 +12,7 @@ using AcmWebViewHandler = Avalonia.Controls.Maui.Handlers.WebViewHandler;
 namespace GnollHackM
 {
     /* Avalonia's NativeWebView, which ACM uses for a MAUI WebView unless CEF is used on Linux: WebView2 on Windows,
-       WebKitGTK on Linux */
+       WebKitGTK on Linux, WKWebView on macOS */
     internal static class GHAvaloniaWebView
     {
         private static readonly Lazy<bool> _isAvailable = new Lazy<bool>(CheckAvailable);
@@ -20,7 +20,8 @@ namespace GnollHackM
         private static readonly ConditionalWeakTable<Avalonia.Controls.NativeWebView, object> _configuredViews = new ConditionalWeakTable<Avalonia.Controls.NativeWebView, object>();
 
         /* Whether the pinned adapter can show pages, from Avalonia's adapter information. On Linux WebKitGTK (4.1 or 4.0)
-           must be installed, which not every system has; on Windows the WebView2 runtime, as for WinUI. */
+           must be installed, which not every system has; on Windows the WebView2 runtime, as for WinUI. On macOS
+           WKWebView, which is part of the system. */
         public static bool IsAvailable
         {
             get { return _isAvailable.Value; }
@@ -28,7 +29,14 @@ namespace GnollHackM
 
         private static Avalonia.Platform.WebViewAdapterType PinnedAdapter
         {
-            get { return OperatingSystem.IsLinux() ? Avalonia.Platform.WebViewAdapterType.WebKitGtk : Avalonia.Platform.WebViewAdapterType.WebView2; }
+            get
+            {
+                if (OperatingSystem.IsLinux())
+                    return Avalonia.Platform.WebViewAdapterType.WebKitGtk;
+                if (OperatingSystem.IsMacOS())
+                    return Avalonia.Platform.WebViewAdapterType.WkWebView;
+                return Avalonia.Platform.WebViewAdapterType.WebView2;
+            }
         }
 
         /* Before any handler is created */

@@ -12,8 +12,8 @@ namespace GnollHackM
         /* Read-only game assets (gnh, banks, tileset, native libraries): the application directory */
         public static string AssetDirectory => AppContext.BaseDirectory;
 
-        /* Writable game data: ~/.local/share/GnollHack on Linux, %LOCALAPPDATA%\GnollHack-Avalonia
-           elsewhere. Created on first use. */
+        /* Writable game data: ~/.local/share/GnollHack on Linux, ~/Library/Application Support/GnollHack on macOS,
+           %LOCALAPPDATA%\GnollHack-Avalonia on Windows. Created on first use. */
         public static string DataDirectory
         {
             get
@@ -22,7 +22,7 @@ namespace GnollHackM
                 {
                     if (_dataDirectory == null)
                     {
-#if LINUX
+#if LINUX || MACOS
                         string folderName = "GnollHack";
 #else
                         string folderName = "GnollHack-Avalonia";

@@ -138,7 +138,7 @@
     <ClInclude Include="$(LibShareDir)*.h" />
   </ItemGroup>
   <PropertyGroup>
-    <GnhAppleScript>$(RootDir)win\win32\xpl\gnollhackapple\Build-AppleEngine.ps1</GnhAppleScript>
+    <GnhAppleScript>$(RootDir)win\win32\xpl\libapple\Build-AppleEngine.ps1</GnhAppleScript>
     <GnhAppleSourceList>$(IntDir)gnh-sources.txt</GnhAppleSourceList>
     <GnhAppleCommand>powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "$(GnhAppleScript)" -Platform $(GnhApplePlatform) -Configuration $(Configuration) -MinOS $(GnhAppleMinOS) -SourceList "$(GnhAppleSourceList)" -IntDir "$(IntDir.TrimEnd('\'))" -OutDir "$(OutDir.TrimEnd('\'))" $(GnhAppleExtraArgs)</GnhAppleCommand>
     <NMakeBuildCommandLine>$(GnhAppleCommand)</NMakeBuildCommandLine>

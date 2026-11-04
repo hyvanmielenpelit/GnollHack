@@ -863,3 +863,42 @@ list must scroll, and nothing may be chosen. A tap on a row must still choose it
 
 Checks:
 - 2026-11-02 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | still-needed | Read in the decompiled `AvaloniaGesturePlatformManager.OnPointerPressed`. No upstream issue found: searched AvaloniaUI/Avalonia.Controls.Maui for TapGestureRecognizer.
+
+## WA-AVALONIA-0025: Avalonia.Native reports every macOS screen at scaling 1, in points
+
+- Status: active
+- Added: 2026-11-04
+- GnollHack version: 3.37 (437)
+- Component: Avalonia
+- Package: Avalonia.Native
+- Defective version: Avalonia.Native 12.1.4 (via Avalonia.Controls.Maui 11.0.0-rc.2.26287.618)
+- Platforms: macOS (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-04
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaDeviceDisplay.cs` (`GHAvaloniaDeviceDisplay.UpdateFromWindow`)
+- Remove when: Avalonia.Native reports a macOS screen's backing scale factor as its scaling and its bounds in pixels, in a release GnollHack uses, and Verify removal passes.
+
+**Symptom.** On a Retina Mac, everything the game draws with SkiaSharp at a size scaled by
+`GHApp.DisplayDensity` is half as large as it should be: CustomLabel texts, and the texts on
+the map, which also sit off their tiles. Text drawn by XAML controls is the right size.
+
+**Cause.** `Screens::GetScreen` in `native/Avalonia.Native/src/OSX/Screens.mm` sets
+`ret->Scaling = 1` for every screen and takes the bounds and working area from the `NSScreen`'s
+`frame` and `visibleFrame`, which are in points. `AvnScreen.Refresh` passes both through, so
+`Screen.Scaling` is 1 and `Screen.Bounds` is in points. `TopLevel.RenderScaling` is the window's
+backing scale factor, 2 on Retina, and the canvases size their surfaces from it, so the
+surfaces are in pixels while `DisplayDensity` stays 1.
+
+**Workaround.** On macOS, `UpdateFromWindow` takes the density from `window.RenderScaling` and
+multiplies the screen's width and height by it. `window.ScalingChanged` already calls
+`UpdateFromWindow`, so moving the window to a display with another scale factor is followed.
+
+**Verify removal.** Remove the `#if MACOS` block in `UpdateFromWindow`, publish `osx-arm64` and
+run it on a Retina Mac: the game's labels on the main screen and the texts on the map must be
+the same size relative to the window as in the Windows app, and the map texts must sit on
+their tiles.
+
+Checks:
+- 2026-11-04 | Avalonia.Native 12.1.4 | still-needed | Read `Screens.mm` and `ScreenImpl.cs` at commit 2d79ba55fae1b1e71c69f93a668080c9029e6a31 (the shipped `Avalonia.Native.dll`'s product version). No upstream issue found: searched AvaloniaUI/Avalonia for macOS Screen Scaling and Screen.Scaling.

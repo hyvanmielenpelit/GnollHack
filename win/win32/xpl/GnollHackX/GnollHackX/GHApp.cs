@@ -4695,7 +4695,7 @@ namespace GnollHackX
         public static readonly bool IsMaui = true;
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
 #if GNH_AVALONIA
-        public static readonly string PlatformDisplayName = IsLinux ? "Linux Avalonia" : "Windows Avalonia";
+        public static readonly string PlatformDisplayName = IsLinux ? "Linux Avalonia" : OperatingSystem.IsMacOS() ? "macOS Avalonia" : "Windows Avalonia";
 #endif
         public static readonly bool IsPackaged = (Microsoft.Maui.ApplicationModel.AppInfo.Current?.PackagingModel ?? AppPackagingModel.Unpackaged) == AppPackagingModel.Packaged;
 #else
