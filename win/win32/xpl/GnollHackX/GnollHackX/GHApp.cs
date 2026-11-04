@@ -2500,6 +2500,14 @@ namespace GnollHackX
         /* MAUI iOS with a Metal device; set once in Initialize */
         public static bool IsMetalAvailable { get { return Interlocked.CompareExchange(ref _isMetalAvailable, 0, 0) != 0; } }
         public static bool IsUseMetalDefault { get { return IsMetalAvailable && GHConstants.DefaultUseMetalRendering; } }
+        /* macOS Avalonia: the Metal Rendering setting chooses Avalonia.Native's rendering backend when the process starts;
+           a change applies after a restart */
+        public static readonly bool IsMetalRenderingStartupSetting =
+#if GNH_AVALONIA && MACOS
+            true;
+#else
+            false;
+#endif
         private static int _useMetal = 0;
         /* The GPU canvases draw with Metal instead of OpenGL ES. Read when a GamePage is constructed; see SwitchableCanvasView.CreateGLView */
         public static bool UseMetal { get { return IsMetalAvailable && Interlocked.CompareExchange(ref _useMetal, 0, 0) != 0; } set { Interlocked.Exchange(ref _useMetal, value ? 1 : 0); } }

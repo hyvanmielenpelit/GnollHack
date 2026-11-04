@@ -466,6 +466,8 @@ namespace GnollHackX
         public const int MinSurfaceViewAndroidApiLevel = 31;
         /* Default for the iOS Metal Rendering setting; OpenGL ES otherwise */
         public const bool DefaultUseMetalRendering = false;
+        /* Default for the macOS Metal Rendering setting, read when the game starts */
+        public const bool DefaultUseMetalRenderingMac = true;
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultDiceAsRanges = true;
         public const bool DefaultDamageFormula = false;

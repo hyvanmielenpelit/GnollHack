@@ -256,7 +256,7 @@ Publish needs `-f net11.0`. A Release publish uploads Sentry symbols when the ma
 2. **Publish** from `Platforms/Avalonia`: `dotnet publish ..\..\GnollHackM.csproj -p:GnhAvalonia=true -r osx-arm64 -f net11.0 -c Release --self-contained true -p:GnhSentryUpload=false`. The publish runs on Windows; the .NET SDK signs the apphost ad hoc.
 3. **Run** on the Mac from Terminal, unbundled: copy the `publish` folder over (a tar file made on Windows loses the executable bits, so `chmod +x GnollHackM` there), ad-hoc sign `libgnollhackmac.dylib` (`codesign --force --sign -`: the linker signs only its arm64 slice), and start `./GnollHackM`. Data goes to `~/Library/Application Support/GnollHack`.
 
-- **Rendering**: Metal, then OpenGL, then software. `GNOLLHACK_MAC_RENDERING=opengl` starts at OpenGL, `=software` uses software only. The GPU control prints `GnollHack: Avalonia GL: GPU context backend <Metal|OpenGL>` on standard error when its context changes; no such line means the map is not on the GPU.
+- **Rendering**: Metal, then OpenGL, then software, unless the Metal Rendering setting is off (OpenGL, then software; read at startup, so a change applies after a restart). `GNOLLHACK_MAC_RENDERING=metal`, `=opengl` or `=software` overrides the setting for one run. The GPU control prints `GnollHack: Avalonia GL: GPU context backend <Metal|OpenGL>` on standard error when its context changes; no such line means the map is not on the GPU.
 - **FMOD**: `libfmodstudio.dylib` refers to its core as `@rpath/libfmod.dylib` and has no run paths, so `AvaloniaDesktopProgram.ResolveMacLibrary` loads `libfmod.dylib` from the application directory first.
 - **Web view**: Avalonia's `NativeWebView` with the WKWebView adapter, part of the system.
 

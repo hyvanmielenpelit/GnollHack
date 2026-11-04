@@ -51,7 +51,8 @@ internal static class AvaloniaDesktopProgram
     }
 
     /* X11: GLX with a software fallback, no Vulkan; popups drawn inside the window; WM_CLASS "GnollHack", which
-       a desktop entry matches with StartupWMClass. macOS: GetMacRenderingModes; popups drawn inside the window.
+       a desktop entry matches with StartupWMClass. macOS: GetMacRenderingModes, from the Metal Rendering setting;
+       popups drawn inside the window.
        1 GiB GPU resource budget. */
     public static AppBuilder BuildAvaloniaApp()
         => AppBuilder.Configure<AvaloniaApp>()
@@ -92,16 +93,35 @@ internal static class AvaloniaDesktopProgram
         return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, fileName));
     }
 
-    /* macOS: Metal, then OpenGL, then software. GNOLLHACK_MAC_RENDERING=opengl starts at OpenGL, =software uses only
-       software rendering. */
+    /* macOS: Metal, then OpenGL, then software; OpenGL, then software when the Metal Rendering setting is off.
+       GNOLLHACK_MAC_RENDERING overrides the setting: =metal starts at Metal, =opengl at OpenGL, =software uses only
+       software rendering. Essentials are installed here, before Avalonia starts, to read the setting. */
     private static AvaloniaNativeRenderingMode[] GetMacRenderingModes()
     {
+        AvaloniaNativeRenderingMode[] metalFirst = { AvaloniaNativeRenderingMode.Metal, AvaloniaNativeRenderingMode.OpenGl, AvaloniaNativeRenderingMode.Software };
+        AvaloniaNativeRenderingMode[] openGlFirst = { AvaloniaNativeRenderingMode.OpenGl, AvaloniaNativeRenderingMode.Software };
+
         string mode = Environment.GetEnvironmentVariable("GNOLLHACK_MAC_RENDERING");
+        if (string.Equals(mode, "metal", StringComparison.OrdinalIgnoreCase))
+            return metalFirst;
         if (string.Equals(mode, "opengl", StringComparison.OrdinalIgnoreCase))
-            return new[] { AvaloniaNativeRenderingMode.OpenGl, AvaloniaNativeRenderingMode.Software };
+            return openGlFirst;
         if (string.Equals(mode, "software", StringComparison.OrdinalIgnoreCase))
             return new[] { AvaloniaNativeRenderingMode.Software };
-        return new[] { AvaloniaNativeRenderingMode.Metal, AvaloniaNativeRenderingMode.OpenGl, AvaloniaNativeRenderingMode.Software };
+
+        if (!OperatingSystem.IsMacOS())
+            return metalFirst;
+        try
+        {
+            GHAvaloniaEssentials.InstallEarly();
+            bool metal = Microsoft.Maui.Storage.Preferences.Default.Get("UseMetal", GHConstants.DefaultUseMetalRenderingMac);
+            return metal ? metalFirst : openGlFirst;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("GnollHack: reading Metal Rendering failed: " + ex.Message);
+            return metalFirst;
+        }
     }
 
     /* The FMOD wrappers import "fmod" and "fmodstudio". libfmodstudio.dylib refers to its core library by install
