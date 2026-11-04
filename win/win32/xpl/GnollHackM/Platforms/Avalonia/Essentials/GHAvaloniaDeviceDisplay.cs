@@ -17,7 +17,7 @@ namespace GnollHackM
        it follows the window's screen (pixel bounds, scaling, orientation; on macOS, the density is the
        window's render scaling and the bounds are converted from points to pixels), and the refresh rate is the
        frame loop's estimate, since Avalonia does not report one; the estimate snaps to the monitor's
-       display-mode rate where that is known (Windows and Linux). MainDisplayInfoChanged is
+       display-mode rate where that is known (Windows, Linux and macOS). MainDisplayInfoChanged is
        raised on the Avalonia UI thread whenever any value changes, the refresh rate included. */
     public sealed class GHAvaloniaDeviceDisplay : IDeviceDisplay
     {

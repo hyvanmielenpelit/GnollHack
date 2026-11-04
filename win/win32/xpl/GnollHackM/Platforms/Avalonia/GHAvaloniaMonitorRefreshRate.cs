@@ -8,7 +8,8 @@ namespace GnollHackM
 {
     // WORKAROUND(WA-AVALONIA-0015): Avalonia's Screen reports no refresh rate
     /* The refresh rate of a monitor's current display mode, since Avalonia's Screen does not report one.
-       Windows: user32; Linux: X11 RandR; elsewhere every call returns 0. UI thread. */
+       Windows: user32; Linux: X11 RandR; macOS: CoreGraphics' display mode of the screen's CGDirectDisplayID, or
+       CoreVideo's nominal rate when the mode reports none; elsewhere every call returns 0. UI thread. */
     public static class GHAvaloniaMonitorRefreshRate
     {
         private const uint MONITOR_DEFAULTTONEAREST = 2;
@@ -85,6 +86,40 @@ namespace GnollHackM
             public uint dmPanningHeight;
         }
 
+#if MACOS
+        private const string CoreGraphicsLibrary = "/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics";
+        private const string CoreVideoLibrary = "/System/Library/Frameworks/CoreVideo.framework/CoreVideo";
+        private const string CGDirectDisplayIDDescriptor = "CGDirectDisplayID";
+        private const int kCVReturnSuccess = 0;
+        private const int kCVTimeIsIndefinite = 1;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct CVTime
+        {
+            public long timeValue;
+            public int timeScale;
+            public int flags;
+        }
+
+        [DllImport(CoreGraphicsLibrary)]
+        private static extern IntPtr CGDisplayCopyDisplayMode(uint display);
+
+        [DllImport(CoreGraphicsLibrary)]
+        private static extern double CGDisplayModeGetRefreshRate(IntPtr mode);
+
+        [DllImport(CoreGraphicsLibrary)]
+        private static extern void CGDisplayModeRelease(IntPtr mode);
+
+        [DllImport(CoreVideoLibrary)]
+        private static extern int CVDisplayLinkCreateWithCGDisplay(uint displayId, out IntPtr displayLinkOut);
+
+        [DllImport(CoreVideoLibrary)]
+        private static extern CVTime CVDisplayLinkGetNominalOutputVideoRefreshPeriod(IntPtr displayLink);
+
+        [DllImport(CoreVideoLibrary)]
+        private static extern void CVDisplayLinkRelease(IntPtr displayLink);
+#endif
+
         [DllImport("user32.dll", ExactSpelling = true)]
         private static extern IntPtr MonitorFromWindow(IntPtr hwnd, uint dwFlags);
 
@@ -97,7 +132,7 @@ namespace GnollHackM
         private static extern bool EnumDisplaySettingsW(string lpszDeviceName, int iModeNum, ref DEVMODEW lpDevMode);
 
         /* The monitor nearest to the window; IntPtr.Zero when unknown. On Linux, the RandR CRTC at the center
-           of the window's screen. */
+           of the window's screen; on macOS, the CGDirectDisplayID of the window's screen. */
         public static IntPtr GetMonitor(Avalonia.Controls.TopLevel topLevel)
         {
             if (topLevel == null)
@@ -106,6 +141,10 @@ namespace GnollHackM
 #if LINUX
             if (OperatingSystem.IsLinux())
                 return GetLinuxMonitor(topLevel);
+#endif
+#if MACOS
+            if (OperatingSystem.IsMacOS())
+                return GetMacMonitor(topLevel);
 #endif
             if (!OperatingSystem.IsWindows())
                 return IntPtr.Zero;
@@ -136,6 +175,20 @@ namespace GnollHackM
                 try
                 {
                     return GHRandr.GetRefreshRate(monitor);
+                }
+                catch (Exception ex)
+                {
+                    LogFailureOnce(ex);
+                    return 0;
+                }
+            }
+#endif
+#if MACOS
+            if (OperatingSystem.IsMacOS())
+            {
+                try
+                {
+                    return GetMacRefreshRate((uint)monitor.ToInt64());
                 }
                 catch (Exception ex)
                 {
@@ -199,6 +252,68 @@ namespace GnollHackM
                 LogFailureOnce(ex);
                 return IntPtr.Zero;
             }
+        }
+#endif
+
+#if MACOS
+        private static IntPtr GetMacMonitor(Avalonia.Controls.TopLevel topLevel)
+        {
+            try
+            {
+                Avalonia.Controls.Window window = topLevel as Avalonia.Controls.Window;
+                if (window == null)
+                    return IntPtr.Zero;
+
+                Avalonia.Controls.Screens screens = window.Screens;
+                Avalonia.Platform.Screen screen = screens == null ? null : (screens.ScreenFromWindow(window) ?? screens.Primary);
+                Avalonia.Platform.IPlatformHandle handle = screen?.TryGetPlatformHandle();
+                if (handle == null || handle.HandleDescriptor != CGDirectDisplayIDDescriptor)
+                    return IntPtr.Zero;
+                return handle.Handle;
+            }
+            catch (Exception ex)
+            {
+                LogFailureOnce(ex);
+                return IntPtr.Zero;
+            }
+        }
+
+        /* Rounded to whole Hz; 0 when neither CoreGraphics nor CoreVideo reports a rate */
+        private static int GetMacRefreshRate(uint displayId)
+        {
+            double hz = 0.0;
+            IntPtr mode = CGDisplayCopyDisplayMode(displayId);
+            if (mode != IntPtr.Zero)
+            {
+                try
+                {
+                    hz = CGDisplayModeGetRefreshRate(mode);
+                }
+                finally
+                {
+                    CGDisplayModeRelease(mode);
+                }
+            }
+
+            if (!(hz > 0.0))
+            {
+                IntPtr link;
+                if (CVDisplayLinkCreateWithCGDisplay(displayId, out link) == kCVReturnSuccess && link != IntPtr.Zero)
+                {
+                    try
+                    {
+                        CVTime period = CVDisplayLinkGetNominalOutputVideoRefreshPeriod(link);
+                        if ((period.flags & kCVTimeIsIndefinite) == 0 && period.timeValue > 0)
+                            hz = (double)period.timeScale / period.timeValue;
+                    }
+                    finally
+                    {
+                        CVDisplayLinkRelease(link);
+                    }
+                }
+            }
+
+            return hz > 0.0 ? (int)Math.Round(hz) : 0;
         }
 #endif
 

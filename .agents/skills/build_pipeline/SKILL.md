@@ -250,7 +250,7 @@ Publish needs `-f net11.0`. A Release publish uploads Sentry symbols when the ma
 
 ### macOS flavor
 
-`-r osx-arm64` (Apple Silicon) and `-r osx-x64` (Intel) build the macOS flavor, with the `MACOS` define. It is for development only: not shipped, not packaged as an `.app` and not signed for distribution, and it has no Sentry, gamepad backend, app menu or instance lock yet.
+`-r osx-arm64` (Apple Silicon) and `-r osx-x64` (Intel) build the macOS flavor, with the `MACOS` define. It is for development only: not shipped, not packaged as an `.app` and not signed for distribution, and it has no Sentry, gamepad backend or app menu yet.
 
 1. **Native solution**: build `GnollHack.sln` with the `macOS` platform in Release (WSL and the Mac; see [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh)). `CopyToMauiMacLibs` puts `libgnollhackmac.dylib` in `Platforms/MacOS/libs/`, beside FMOD's committed `libfmod.dylib` and `libfmodstudio.dylib`; the game data is the Android-format `Platforms/Android/gnh`, as for Linux.
 2. **Publish** from `Platforms/Avalonia`: `dotnet publish ..\..\GnollHackM.csproj -p:GnhAvalonia=true -r osx-arm64 -f net11.0 -c Release --self-contained true -p:GnhSentryUpload=false`. The publish runs on Windows; the .NET SDK signs the apphost ad hoc.

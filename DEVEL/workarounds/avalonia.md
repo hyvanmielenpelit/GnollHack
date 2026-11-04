@@ -502,11 +502,11 @@ Checks:
 - Component: Avalonia
 - Package: Avalonia
 - Defective version: Avalonia 12.1.4 (via Avalonia.Controls.Maui 11.0.0-rc.2.26287.618)
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-27
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaMonitorRefreshRate.cs` (`GHAvaloniaMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaDeviceDisplay.cs` (`GHAvaloniaDeviceDisplay.UpdateMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHRandr.cs` (`GHRandr`)
 - Remove when: Avalonia's `Screen` reports the display mode's refresh rate in a release GnollHack uses, and Verify removal passes.
 
@@ -520,16 +520,20 @@ rates internally, for its render timer, but does not expose them.
 **Workaround.** On Windows the rate of the window's monitor is read with
 `MonitorFromWindow`, `GetMonitorInfoW` and `EnumDisplaySettingsW`; on Linux, `GHRandr`
 reads the mode of the X11 RandR CRTC under the window's screen on its own display
-connection. The frame loop's estimate snaps to that rate.
+connection; on macOS, CoreGraphics' display mode of the screen's `CGDirectDisplayID` (from
+`Screen.TryGetPlatformHandle`), with CoreVideo's nominal rate when the mode reports none. The
+frame loop's estimate snaps to that rate.
 
 **Verify removal.** Replace the user32 and RandR reads with Avalonia's rate. Build the
 Avalonia flavor for Windows, move the window between monitors of different rates, and check
 that DeviceDisplay reports each monitor's rate. Build the Linux flavor, start it with debug
-log messages on, and check that the log shows the monitor rate read from RandR.
+log messages on, and check that the log shows the monitor rate read from RandR. Do the same
+with the macOS flavor on a Mac.
 
 Checks:
 - 2026-10-23 | Avalonia 12.1.4 | unverified | No upstream issue found.
 - 2026-10-27 | Avalonia 12.1.4 | unverified | Extended to Linux through X11 RandR.
+- 2026-11-05 | Avalonia 12.1.4 | still-needed | Extended to macOS. Decompiled `Avalonia.Controls.dll`: `Screen` has no refresh rate; Avalonia.Native's `AvnScreen` reports only the display id. Without a monitor rate the Mac's estimate read 60.66 Hz on a 60.000 Hz panel.
 
 ## WA-AVALONIA-0016: NativeControlHost ignores render transform changes
 

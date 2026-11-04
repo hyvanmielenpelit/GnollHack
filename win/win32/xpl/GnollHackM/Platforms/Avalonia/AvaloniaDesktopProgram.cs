@@ -27,6 +27,14 @@ internal static class AvaloniaDesktopProgram
         GHAvaloniaShutdown.RegisterSignals();
         GHAvaloniaFontConfig.Install();
 #endif
+#if MACOS
+        if (!GHAvaloniaInstanceLock.TryAcquire())
+        {
+            GHAvaloniaInstanceLock.ReportAlreadyRunning();
+            return 0;
+        }
+        GHAvaloniaShutdown.RegisterSignals();
+#endif
         if (OperatingSystem.IsLinux())
             NativeLibrary.SetDllImportResolver(typeof(AvaloniaDesktopProgram).Assembly, ResolveLinuxLibrary);
         else if (OperatingSystem.IsMacOS())
