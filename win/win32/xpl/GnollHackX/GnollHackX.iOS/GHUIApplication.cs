@@ -1,3 +1,4 @@
+using CoreGraphics;
 using Foundation;
 using ObjCRuntime;
 using System;
@@ -41,7 +42,144 @@ namespace GnollHackX.iOS
         public override void SendEvent(UIEvent uievent)
         {
             FlexGestureSuppressor.BeforeEvent(uievent);
+            bool trace = IsMacTouchTraceOn;
+            if (trace)
+                TraceTouches(uievent, "before");
             base.SendEvent(uievent);
+            if (trace)
+                TraceTouches(uievent, "after");
+        }
+
+        private static readonly bool _isiOSAppOnMac = GetIsiOSAppOnMac();
+
+        private static bool GetIsiOSAppOnMac()
+        {
+            try
+            {
+                return NSProcessInfo.ProcessInfo?.IsiOSApplicationOnMac ?? false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /* Pointer diagnostics for the iPad app on a Mac, written to the App Log while low-level logging is on */
+        private static bool IsMacTouchTraceOn { get { return _isiOSAppOnMac && GHApp.IsDebugLowLevelLoggingOn; } }
+
+        /* Logs each touch's began, ended and cancelled phases: the hit view, its button state, its ancestors,
+           and the gesture recognizers that receive it */
+        private static void TraceTouches(UIEvent uievent, string stage)
+        {
+            try
+            {
+                if (uievent == null || uievent.Type != UIEventType.Touches)
+                    return;
+                NSSet allTouches = uievent.AllTouches;
+                if (allTouches == null)
+                    return;
+
+                foreach (UITouch touch in allTouches.ToArray<UITouch>())
+                {
+                    if (touch == null || touch.Phase == UITouchPhase.Moved || touch.Phase == UITouchPhase.Stationary)
+                        continue;
+
+                    UIWindow window = touch.Window;
+                    CGPoint location = touch.LocationInView(window);
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("MacTouch ").Append(stage)
+                        .Append(" t=").Append(uievent.Timestamp.ToString("0.000"))
+                        .Append(" id=").Append(((IntPtr)touch.Handle).ToInt64().ToString("X"))
+                        .Append(" phase=").Append(touch.Phase)
+                        .Append(" type=").Append(touch.Type)
+                        .Append(" taps=").Append(touch.TapCount)
+                        .Append(" buttons=").Append(uievent.ButtonMask)
+                        .Append(" at=").Append(location.X.ToString("0")).Append(",").Append(location.Y.ToString("0"))
+                        .Append(" touches=").Append(allTouches.Count)
+                        .Append(" windowKey=").Append(window != null && window.IsKeyWindow);
+                    sb.Append(" | view=").Append(DescribeView(touch.View));
+
+                    if (stage == "before" && touch.Phase == UITouchPhase.Began)
+                    {
+                        UIView hitView = window?.HitTest(location, uievent);
+                        if (hitView != touch.View)
+                            sb.Append(" | hitTest=").Append(DescribeView(hitView));
+                        sb.Append(" | ancestors=").Append(DescribeAncestors(touch.View));
+                    }
+
+                    UIGestureRecognizer[] recognizers = touch.GestureRecognizers;
+                    sb.Append(" | recognizers=");
+                    if (recognizers == null || recognizers.Length == 0)
+                    {
+                        sb.Append("none");
+                    }
+                    else
+                    {
+                        int i;
+                        for (i = 0; i < recognizers.Length; i++)
+                        {
+                            UIGestureRecognizer r = recognizers[i];
+                            if (r == null)
+                                continue;
+                            if (i > 0)
+                                sb.Append("; ");
+                            sb.Append(r.Class.Name).Append(":").Append(r.State);
+                            if (!r.Enabled)
+                                sb.Append(":disabled");
+                            sb.Append("@").Append(r.View != null ? r.View.Class.Name : "null");
+                        }
+                    }
+                    GHApp.MaybeWriteLowLevelGHLog(sb.ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteLowLevelGHLog("MacTouch: " + ex.GetType().Name + ": " + ex.Message);
+            }
+        }
+
+        private static string DescribeView(UIView view)
+        {
+            if (view == null)
+                return "null";
+            StringBuilder sb = new StringBuilder();
+            sb.Append(view.Class.Name);
+            UIButton button = view as UIButton;
+            if (button != null)
+            {
+                sb.Append(" title='").Append(button.CurrentTitle ?? "").Append("'")
+                    .Append(" enabled=").Append(button.Enabled)
+                    .Append(" tracking=").Append(button.Tracking)
+                    .Append(" highlighted=").Append(button.Highlighted);
+            }
+            CGRect frame = view.ConvertRectToView(view.Bounds, null);
+            sb.Append(" frame=").Append(frame.X.ToString("0")).Append(",").Append(frame.Y.ToString("0"))
+                .Append(",").Append(frame.Width.ToString("0")).Append("x").Append(frame.Height.ToString("0"))
+                .Append(" hidden=").Append(view.Hidden)
+                .Append(" alpha=").Append(view.Alpha.ToString("0.##"))
+                .Append(" interaction=").Append(view.UserInteractionEnabled);
+            return sb.ToString();
+        }
+
+        /* Superview classes up to the window, nearest first; a hidden one is marked with (h) */
+        private static string DescribeAncestors(UIView view)
+        {
+            StringBuilder sb = new StringBuilder();
+            UIView v = view?.Superview;
+            int depth = 0;
+            while (v != null && depth < 12)
+            {
+                if (depth > 0)
+                    sb.Append(" > ");
+                sb.Append(v.Class.Name);
+                if (v.Hidden)
+                    sb.Append("(h)");
+                if (v.GestureRecognizers != null && v.GestureRecognizers.Length > 0)
+                    sb.Append("[gr=").Append(v.GestureRecognizers.Length).Append("]");
+                v = v.Superview;
+                depth++;
+            }
+            return sb.ToString();
         }
 #endif
 

@@ -58,19 +58,16 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-04
+- Last checked: 2026-10-23
 - Code: `win/win32/xpl/GnollHackX/GnollHackX.iOS/PlatformServiceiOS.cs` (`PlatformService.EnsureWindowFocus`)
 - Remove when: Buttons respond after modal navigation on a Mac running the iPad app without the reactivation, and Verify removal passes.
-- Related: WA-IOS-0006
 
 **Symptom.** On a Mac running the iPad app ("Designed for iPad"), the window can lose
 active status after a modal page is pushed, and buttons stop responding to clicks.
 
 **Cause.** Not established. The window loses its key status at the UIKit level and the app
 its activation at the macOS level; it is not known whether MAUI's modal presentation or
-the iPad-app hosting on macOS is at fault. Possibly the same defect as WA-IOS-0006: the
-reported cases may have started a modal push, or closed an overlay, inside a canvas touch
-callback. Not verified.
+the iPad-app hosting on macOS is at fault.
 
 **Workaround.** After each modal push, `GHApp.PushModalPageAsync` calls
 `EnsureWindowFocus`. On a Mac it makes the key window key and visible again and calls
@@ -84,7 +81,6 @@ iPhone and iPad.
 
 Checks:
 - 2026-10-23 | macOS (not re-tested), workload ios 27.0.10722, Microsoft.Maui.Controls 10.0.120 | unverified | Seeded from git history; no upstream report found.
-- 2026-11-04 | macOS 26 | unverified | Cause may be WA-IOS-0006's; re-test after round A of mac_ipad_overlay_clicks.
 
 ## WA-IOS-0004: Incremental builds ignore Info.plist edits
 
@@ -157,49 +153,3 @@ same output directory, and deletes the zips.
 
 Checks:
 - 2026-10-23 | workload ios 27.0.10722 | still-needed | `CopyDSYMFromMac` on dotnet/macios main still requires `BuildIpa` or `CopyAppBundle`.
-
-## WA-IOS-0006: Mac iPad app loses all button clicks after a click closes an overlay
-
-- Status: active
-- Added: 2026-11-04
-- GnollHack version: 3.36 (436)
-- Component: iPad apps on Mac
-- Package: macOS
-- Defective version: macOS 26
-- Platforms: Mac (iPad app)
-- Upstream issue: none
-- Upstream status when added: unreported
-- Upstream status: unreported
-- Last checked: 2026-11-04
-- Code: `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/GamePage.xaml.cs` (`GamePage.RunAfterInputEvent`)
-- Remove when: A macOS release on which Verify removal passes.
-- Related: WA-IOS-0003
-
-**Symptom.** On a Mac running the iPad app ("Designed for iPad"), after a mouse click on a
-menu item that closes the menu by itself, such as the start menu or the `+` menu, every
-native button in the window ignores clicks until the window is deactivated, for example by
-clicking its title bar. The SkiaSharp canvases keep responding. Choosing the same item
-with the keyboard does not trigger it, and iPhone and iPad are not affected.
-
-**Cause.** The menu closed synchronously inside the SkiaSharp touch recognizer's
-`TouchesEnded`: `PressMenuOKButton` used `MainThread.BeginInvokeOnMainThread`, which runs
-inline on the UI thread. It disabled the menu's buttons and started the fade-out while
-UIKit was still delivering the click. UIKit on macOS then stops tracking `UIControl`
-touches; why is unknown. SkiaSharp #2367
-(https://github.com/mono/SkiaSharp/issues/2367) and CommunityToolkit.Maui #1853 report the
-same split and recovery, and SkiaSharp PR #4913 describes a related recognizer-state fix.
-
-**Workaround.** Canvas touch handlers post overlay closes, modal navigation and similar
-view changes through `RunAfterInputEvent`, which uses `Dispatcher.Dispatch`, so they run
-after UIKit has delivered the click. Keyboard and gamepad paths call the same functions
-directly.
-
-**Verify removal.** Make `RunAfterInputEvent` call `action()` directly. Then:
-- Build for iOS and run the app on an Apple silicon Mac.
-- Start a game by clicking "Continue Playing" on the start screen, press `i`, and click
-  Cancel.
-- In a game, press `+`, click the first entry, press `Esc`, press `i`, and click Cancel.
-- The workaround can go if both Cancels respond without a click on the title bar.
-
-Checks:
-- 2026-11-04 | macOS 26, SkiaSharp.Views.Maui.Controls 4.154.0 | still-needed | Reproduced on an Apple silicon Mac (runbook v3 M3, M5); fix verification pending (runbook A).
