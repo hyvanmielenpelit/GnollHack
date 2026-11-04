@@ -888,6 +888,44 @@
                                                 HorizontalOptions="End" >
                                     </Picker>
                                 </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Quick Command 1" x:Name="GamepadQuickCommand1Label"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="GamepadQuickCommand1Picker"
+                                                Title="Select command"
+                                                FontFamily="Underwood"
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="End" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Quick Command 2" x:Name="GamepadQuickCommand2Label"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="GamepadQuickCommand2Picker"
+                                                Title="Select command"
+                                                FontFamily="Underwood"
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="End" >
+                                    </Picker>
+                                </Grid>
                                 <StackLayout x:Name="GamepadGripLayout" Spacing="6" IsVisible="False">
                                     <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                         <Label Text="Back Grip L4" x:Name="GamepadGripL4Label"

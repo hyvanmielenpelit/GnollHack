@@ -194,6 +194,8 @@ namespace GnollHackX.Pages.MainScreen
             { "Back Grip R5", GamepadGripDescription("R5", "F5") },
             { "R2 Action", ("What R2 does when pressed alone.", "The command R2 runs when pressed alone. If the command asks for a direction, keep R2 held to choose it in a radial, and release R2 to confirm. After a menu or a release, the same radial stays until you confirm with A. By Role picks the command from your character's role: Cast Quick for Healers, Monks, Priests and Wizards, or Cast while no quick spell is set; Polearm for Knights; and Fire for the others.") },
             { "L2 Action", ("What L2 does when pressed alone.", "The command L2 runs when pressed alone. If the command asks for a direction, keep L2 held to choose it in a radial, and release L2 to confirm. After a menu or a release, the same radial stays until you confirm with A. By Role picks the command from your character's role: Cast Quick for Healers, Monks, Priests and Wizards, or Cast while no quick spell is set; Polearm for Knights; and Fire for the others.") },
+            { "Quick Command 1", GamepadQuickCommandDescription(1, "west") },
+            { "Quick Command 2", GamepadQuickCommandDescription(2, "northwest") },
             { "Right Quick 1", GamepadQuickSlotDescription("Right Quick", 1, "L1 + R2") },
             { "Right Quick 2", GamepadQuickSlotDescription("Right Quick", 2, "L1 + R2") },
             { "Right Quick 3", GamepadQuickSlotDescription("Right Quick", 3, "L1 + R2") },
@@ -223,6 +225,14 @@ namespace GnollHackX.Pages.MainScreen
         {
             return ("Action " + slot + " of the " + radial + " radial.",
                 "An action in the " + radial + " radial, which " + opener + " opens during a game. It runs when you choose it. If it asks for a direction, the direction radial opens.");
+        }
+
+        /* direction is the command's place on the page */
+        private static (string Tooltip, string Description) GamepadQuickCommandDescription(int index, string direction)
+        {
+            return ("Command " + index + " on the Quick Commands page.",
+                "A command on the Quick Commands page of the Actions radial, which L1 + A opens during a game. It sits "
+                + direction + ", after Rest, Search 20, Extended, Skills, Polearm and Wield Last. None leaves the place empty.");
         }
 
         public SettingsPage(GameMenuPage gameMenuPage, MainPage mainPage)
@@ -368,6 +378,11 @@ namespace GnollHackX.Pages.MainScreen
             {
                 triggerPicker.ItemsSource = GHApp.GamepadTriggerCommandItems;
                 triggerPicker.ItemDisplayBinding = new Binding("Name");
+            }
+            foreach (Picker quickPicker in GamepadQuickCommandPickers)
+            {
+                quickPicker.ItemsSource = GHApp.GamepadGripCommandItems;
+                quickPicker.ItemDisplayBinding = new Binding("Name");
             }
             foreach (Picker[] slotPickers in GamepadTriggerSlotPickers)
             {
@@ -2324,6 +2339,12 @@ namespace GnollHackX.Pages.MainScreen
             get { return new Picker[] { GamepadTriggerLTPicker, GamepadTriggerRTPicker }; }
         }
 
+        /* Index i holds GHApp's quick command i */
+        private Picker[] GamepadQuickCommandPickers
+        {
+            get { return new Picker[] { GamepadQuickCommand1Picker, GamepadQuickCommand2Picker }; }
+        }
+
         /* The Controller section is shown whenever a controller can be used, whatever the Use Controller setting,
            so that the setting can always be turned back on; the grip pickers only when grips exist */
         private void SetGamepadInitialValues()
@@ -2358,6 +2379,10 @@ namespace GnollHackX.Pages.MainScreen
                 triggerPickers[t].SelectedIndex = GHApp.GamepadTriggerCommandIndexInList(
                     GHApp.GetGamepadTriggerCommand(trigger), GHApp.DefaultGamepadTriggerCommand(trigger));
             }
+
+            Picker[] quickPickers = GamepadQuickCommandPickers;
+            for (i = 0; i < quickPickers.Length && i < GHApp.GamepadQuickCommandCount; i++)
+                quickPickers[i].SelectedIndex = GHApp.GamepadGripCommandIndexInList(GHApp.GetGamepadQuickCommand(i), 0);
         }
 
         /* Quick Radials and the subtitle on the descriptions' button while the Controller section is shown and
@@ -2424,6 +2449,17 @@ namespace GnollHackX.Pages.MainScreen
                     GHApp.SetGamepadTriggerCommand(trigger, triggerCommand);
                     Preferences.Set(GHApp.GamepadTriggerPreferenceKey(trigger), triggerCommand);
                 }
+            }
+
+            Picker[] quickPickers = GamepadQuickCommandPickers;
+            for (i = 0; i < quickPickers.Length && i < GHApp.GamepadQuickCommandCount; i++)
+            {
+                int index = quickPickers[i].SelectedIndex;
+                if (index < 0 || index >= GHApp.GamepadGripCommandItems.Count)
+                    continue;
+                int command = GHApp.GamepadGripCommandItems[index].GHCommand;
+                GHApp.SetGamepadQuickCommand(i, command);
+                Preferences.Set(GHApp.GamepadQuickCommandPreferenceKey(i), command);
             }
         }
 

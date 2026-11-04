@@ -3956,7 +3956,8 @@ namespace GnollHackX
 
         public static readonly GHGamepadButton[] GamepadGrips = { GHGamepadButton.L4, GHGamepadButton.L5, GHGamepadButton.R4, GHGamepadButton.R5 };
 
-        /* Use Controller, Hide Command Bar, the grips, the trigger commands and the Quick radial slots from the preferences, each missing one at its default */
+        /* Use Controller, Hide Command Bar, the grips, the trigger commands, the Quick radial slots and the quick commands
+           from the preferences, each missing one at its default */
         public static void LoadGamepadSettings()
         {
             GamepadEnabled = Preferences.Get("GamepadEnabled", true);
@@ -3974,6 +3975,9 @@ namespace GnollHackX
                     MigrateGamepadRightTriggerByRole();
                 SetGamepadTriggerCommand(trigger, Preferences.Get(GamepadTriggerPreferenceKey(trigger), DefaultGamepadTriggerCommand(trigger)));
             }
+            int quickIndex;
+            for (quickIndex = 0; quickIndex < GamepadQuickCommandCount; quickIndex++)
+                SetGamepadQuickCommand(quickIndex, Preferences.Get(GamepadQuickCommandPreferenceKey(quickIndex), 0));
         }
 
         /* Once: a grip or Quick radial slot still saved at its old default takes the current one; other choices stay */
@@ -4213,6 +4217,33 @@ namespace GnollHackX
         public static SelectableShortcutButton GetGamepadCommandItem(int command)
         {
             return GamepadGripCommandItems[GamepadGripCommandIndexInList(command, 0)];
+        }
+
+        /* The Actions radial's Quick Commands page keeps its last GamepadQuickCommandCount slots, West and Northwest, for
+           commands chosen in Settings: SelectableShortcutButton.GHCommand values, 0 for None */
+        public const int GamepadQuickCommandCount = 2;
+        private static readonly int[] _gamepadQuickCommands = new int[GamepadQuickCommandCount];
+
+        /* index is 0-based; the key numbers the commands from 1 */
+        public static string GamepadQuickCommandPreferenceKey(int index)
+        {
+            return "GamepadQuickCommand" + (index + 1).ToString() + "Command";
+        }
+
+        /* 0 is None, also for an index out of range */
+        public static int GetGamepadQuickCommand(int index)
+        {
+            if (index < 0 || index >= GamepadQuickCommandCount)
+                return 0;
+            return Interlocked.CompareExchange(ref _gamepadQuickCommands[index], 0, 0);
+        }
+
+        /* A command not in GamepadGripCommandItems becomes None */
+        public static void SetGamepadQuickCommand(int index, int command)
+        {
+            if (index < 0 || index >= GamepadQuickCommandCount)
+                return;
+            Interlocked.Exchange(ref _gamepadQuickCommands[index], GamepadGripCommandItems[GamepadGripCommandIndexInList(command, 0)].GHCommand);
         }
         public static bool UseSingleMoreCommandsPage { get { return Interlocked.CompareExchange(ref _useSingleMoreCommandsPage, 0, 0) != 0; } set { Interlocked.Exchange(ref _useSingleMoreCommandsPage, value ? 1 : 0); } }
         public static bool ShowSkillContextButton { get { return Interlocked.CompareExchange(ref _showSkillContextButton, 0, 0) != 0; } set { Interlocked.Exchange(ref _showSkillContextButton, value ? 1 : 0); } }

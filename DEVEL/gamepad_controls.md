@@ -136,6 +136,10 @@ with Hide Command Bar off.
 | Right Quick | 2-Weapon, Swap, Chat, Throw, Cast, Cast Quick, Zap, Zap Quick |
 | Left Quick | Apply, Drop Items, Drop Types, Pray, Yell, Engrave, Pick-axe, Polearm |
 
+**Quick commands.** Quick Command 1 and Quick Command 2 in **Settings, Controller** take any command the
+bar buttons can hold, or None, the default. They appear West and Northwest on the Actions radial's
+Quick Commands page (see [Radials](#radials)) and run as a Quick radial's action does.
+
 **Direction radial.** When a command asks for a direction with the controller active, the violet
 **Direction** radial opens over the prompt (see [Radials](#radials)). If a trigger's command raised it
 while that trigger is still held, within a second of the press and with no menu or dialog in between,
@@ -200,9 +204,11 @@ radial while its trigger is held, which lasts as long as the trigger.
   tapping an orb does; unavailable while the orbs are hidden). The two orb toggles show the orbs
   themselves, with the current and maximum values. Toggling an option leaves the radial open.
 - **Actions radial** (A with several context commands, or L1 + A for the commands pages):
-  the context buttons plus Skills, Polearm and Wield Last/Unwield (eight slots per page, overflowing onto further pages), then the **commands pages**:
-  Rest, Search 20 and Extended first, then every other command of the single commands page in
-  alphabetical order, eight per page with no gaps. Back to Game, the count pad and, outside wizard
+  the context buttons (eight slots per page, overflowing onto further pages), then the **commands pages**.
+  The first is the **Quick Commands** page: Rest, Search 20 and Extended, then Skills, Polearm and
+  Wield Last/Unwield when their buttons would show, each in its own slot whether or not the others are
+  shown, and Quick Command 1 and 2 West and Northwest. Every other command of the single commands page
+  follows in alphabetical order, eight per page with no gaps. Back to Game, the count pad and, outside wizard
   mode, the wizard commands are left out. The hub shows the page number above the page
   name.
   **X** switches between the context page and the first commands page; L1/R1 page.

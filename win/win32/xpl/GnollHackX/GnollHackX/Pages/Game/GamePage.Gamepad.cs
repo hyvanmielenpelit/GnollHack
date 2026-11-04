@@ -1842,7 +1842,8 @@ namespace GnollHackX.Pages.Game
                 bool wizardMode = EnableWizardMode;
                 List<GHRadialSourceItem> commands = new List<GHRadialSourceItem>();
                 /* The Quick Commands page: Rest, Search 20 and Extended, which the list keeps at its end, then Skills,
-                   Polearm and Wield Last, each in its own slot whether or not the others are shown */
+                   Polearm and Wield Last, each in its own slot whether or not the others are shown, and the two quick
+                   commands from Settings West and Northwest */
                 GHRadialSourceItem[] quick = new GHRadialSourceItem[GHRadialTuning.CommandPageSlotCount];
                 lock (GHApp._moreBtnLock)
                 {
@@ -1884,6 +1885,12 @@ namespace GnollHackX.Pages.Game
                 {
                     if (quick[slot] != null)
                         quickPage.Slots[slot] = GHRadialSlotAssigner.CreateCommandItem(quick[slot]);
+                }
+                for (slot = 0; slot < GHApp.GamepadQuickCommandCount; slot++)
+                {
+                    GHRadialItem quickCommand = CreateGamepadQuickCommandItem(slot);
+                    if (quickCommand != null)
+                        quickPage.Slots[quick.Length - GHApp.GamepadQuickCommandCount + slot] = quickCommand;
                 }
                 if (quickPage.FilledCount > 0)
                     commandPages.Add(quickPage);
@@ -1963,6 +1970,25 @@ namespace GnollHackX.Pages.Game
             source.Row = -1;
             source.ShortcutText = GHUtils.ConstructShortcutText(command);
             return source;
+        }
+
+        /* A quick command from Settings, run as a Quick radial slot is; null for None */
+        private GHRadialItem CreateGamepadQuickCommandItem(int index)
+        {
+            int command = GHApp.GetGamepadQuickCommand(index);
+            SelectableShortcutButton shortcut = GHApp.GetGamepadCommandItem(command);
+            if (command == 0 || shortcut == null || shortcut.GHCommand == 0)
+                return null;
+            GHRadialItem item = new GHRadialItem();
+            item.Id = "quickcmd:" + (index + 1).ToString();
+            item.Label = shortcut.Label;
+            item.Description = GetGamepadItemDescription(shortcut.Name, shortcut.Label);
+            item.IconPath = string.IsNullOrEmpty(shortcut.ImageSourcePath) ? null : "resource://" + shortcut.ImageSourcePath;
+            item.Kind = GHRadialItemKind.Command;
+            item.ClosesOnActivate = true;
+            item.ShortcutText = command > 0 ? GHUtils.ConstructShortcutText(GHApp.MapCommand(command)) : null;
+            item.Tag = (Action)(() => ExecuteGamepadQuickRadialCommand(command));
+            return item;
         }
 
         /* One slot memory per game session */
