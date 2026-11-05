@@ -746,9 +746,7 @@ pmatchz(const char *patrn, const char *strng)
 #ifndef STRNCMPI
 /* case insensitive counted string comparison */
 int
-strncmpi(s1, s2, n) /*{ aka strncasecmp }*/
-const char *s1, *s2;
-size_t n;
+strncmpi(const char *s1, const char *s2, size_t n) /*{ aka strncasecmp }*/
 {
     char t1, t2;
     if (!n)

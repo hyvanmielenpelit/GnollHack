@@ -12485,11 +12485,12 @@ summonmagearmor(struct obj *spell_otmp)
 }
 
 struct monst*
-summoncreature(spl_otyp, monst_id, message_fmt, mmflags, scflags) // capitalize, markassummoned, disregardstrength, disregardhealth, bloodlust, pacifist, faithful
-int spl_otyp, monst_id;
-const char* message_fmt; //input the summoning message with one %s, which is for the monster name
-uint64_t mmflags;
-uint64_t scflags;
+summoncreature( // capitalize, markassummoned, disregardstrength, disregardhealth, bloodlust, pacifist, faithful
+    int spl_otyp,
+    int monst_id,
+    const char* message_fmt, //input the summoning message with one %s, which is for the monster name
+    uint64_t mmflags,
+    uint64_t scflags)
 {
     if (monst_id < LOW_PM)
         return (struct monst*)0;

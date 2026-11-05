@@ -251,8 +251,7 @@ do_light_sources(char **cs_rows)
 
 
 struct monst*
-find_mid_ew(nid) //everywhere
-unsigned nid;
+find_mid_ew(unsigned nid) //everywhere
 {
     struct monst* mtmp;
 

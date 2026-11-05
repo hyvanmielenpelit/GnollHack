@@ -195,11 +195,11 @@ init_tiledata(void)
 }
 
 int
-process_tiledata(process_style, save_file_name, tilemaparray, tilemapflags) /* Save tile data / read tile data / count tiles */
-int process_style;  /* 0 = save data to file, 1 = read data from file, 2 = count tiles */
-const char* save_file_name;
-int* tilemaparray;
-uchar* tilemapflags;
+process_tiledata( /* Save tile data / read tile data / count tiles */
+    int process_style,  /* 0 = save data to file, 1 = read data from file, 2 = count tiles */
+    const char* save_file_name,
+    int* tilemaparray,
+    uchar* tilemapflags)
 {
 #ifdef USE_TILES
     struct tileset_definition* tsd = &default_tileset_definition;

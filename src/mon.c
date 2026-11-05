@@ -2081,8 +2081,7 @@ meatrock(struct monst *mtmp)
 
 /* monster eats a pile of objects */
 int
-meatobj(mtmp) /* for gelatinous cubes */
-struct monst *mtmp;
+meatobj(struct monst *mtmp) /* for gelatinous cubes */
 {
     if (!mtmp)
         return 0;
@@ -4044,8 +4043,7 @@ corpse_chance(struct monst *mon, struct monst *magr, boolean was_swallowed)
 
 /* drop (perhaps) a cadaver and remove monster */
 void
-mondied(mdef) /* mondead + perhaps make a corpse */
-struct monst *mdef;
+mondied(struct monst *mdef) /* mondead + perhaps make a corpse */
 {
     mondead(mdef);
     if (!DEADMONSTER(mdef))

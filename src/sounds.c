@@ -2298,7 +2298,7 @@ struct available_chat_item
     boolean using_special_symbols;
     boolean using_menu_color;
     uchar color;
-    int (*function_ptr)();
+    int (*function_ptr)(struct monst*);
 };
 
 #define CHAT_CATEGORY_GENERAL 0

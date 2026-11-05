@@ -326,8 +326,7 @@ static boolean Schroedingers_cat = FALSE;
 
 /*ARGSUSED*/
 void
-done1(sig_unused) /* called as signal() handler, so sent at least one arg */
-int sig_unused UNUSED;
+done1(int sig_unused UNUSED) /* called as signal() handler, so sent at least one arg */
 {
 #ifndef NO_SIGNAL
     (void) signal(SIGINT, SIG_IGN);

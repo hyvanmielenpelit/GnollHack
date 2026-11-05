@@ -1845,12 +1845,9 @@ mklev(void)
 
 void
 #ifdef SPECIALIZATION
-topologize(croom, do_ordinary)
-struct mkroom *croom;
-boolean do_ordinary;
+topologize(struct mkroom *croom, boolean do_ordinary)
 #else
-topologize(croom)
-struct mkroom *croom;
+topologize(struct mkroom *croom)
 #endif
 {
     int x, y, roomno = (int) ((croom - rooms) + ROOMOFFSET);

@@ -6782,8 +6782,7 @@ drop(struct obj *obj)
 }
 
 int
-autobag(obj) /* To inventory */
-struct obj* obj;
+autobag(struct obj* obj) /* To inventory */
 {
     return auto_bag_in(invent, obj, FALSE);
 }
