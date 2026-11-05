@@ -195,7 +195,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaSentryNative.cs` (`GHAvaloniaSentryNative.ClearAlternateStackOnManagedFaultSignals`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/GHAvaloniaSentryNative.cs` (`GHAvaloniaSentryNative.ClearAlternateStackOnManagedFaultSignals`)
 - Remove when: GnollHack uses a sentry-native release whose CHAIN_AT_START strategy runs the chained handler on the interrupted thread's stack for these signals, and Verify removal passes.
 
 **Symptom.** With sentry-native initialized, a caught `DivideByZeroException` ends the

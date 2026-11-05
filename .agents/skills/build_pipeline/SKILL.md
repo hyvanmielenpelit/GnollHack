@@ -230,6 +230,7 @@ dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-ios 
 
 - **Always run `dotnet` from `GnollHackM/Platforms/Avalonia`.** Its `global.json` pins the SDK and workload set; from the repository root or `GnollHackM` another SDK is chosen. First install the SDK named by `sdk.version` in that file (it may be a preview or release candidate), then run `dotnet workload install maui` in that folder, so that the pinned `workloadVersion` is installed.
 - **No `-t:Compile`** for this flavor (MSB4057); verify with a full build, about 30 s.
+- **Where Avalonia C# goes.** `Platforms/Avalonia/` holds what every runtime identifier compiles. C# that can only work on one OS goes in that OS's folder, `Platforms/Linux/` or `Platforms/MacOS/`, beside its native libraries and packaging, in the subfolder it would have under `Platforms/Avalonia/` (`Cef/`, `Rendering/`). `GnollHackM.csproj` compiles each OS folder only for its runtime identifier (`MauiPlatformSpecificFolder` items; MAUI drops every other `.cs` under `Platforms/`). A file shared by several OSes stays in `Platforms/Avalonia/` with its OS branches under `#if LINUX` / `#if MACOS`, and files in an OS folder keep their file-level `#if` for projects that link them directly.
 
 ```powershell
 cd win\win32\xpl\GnollHackM\Platforms\Avalonia
@@ -250,7 +251,7 @@ Publish needs `-f net11.0`. A Release publish uploads Sentry symbols when the ma
 
 ### macOS flavor
 
-`-r osx-arm64` (Apple Silicon) and `-r osx-x64` (Intel) build the macOS flavor, with the `MACOS` define. It is for development only: not shipped, not packaged as an `.app` and not signed for distribution, and it has no Sentry or app menu yet; controllers work through GameController (`DEVEL/gamepad_controls.md`). C# files used only by this flavor go in `Platforms/MacOS/`, which `GnollHackM.csproj` compiles only for an `osx` runtime identifier (a `MauiPlatformSpecificFolder` item; MAUI drops every other `.cs` under `Platforms/`); Avalonia files that the other flavors also compile keep their macOS branches under `#if MACOS`.
+`-r osx-arm64` (Apple Silicon) and `-r osx-x64` (Intel) build the macOS flavor, with the `MACOS` define. It is for development only: not shipped, not packaged as an `.app` and not signed for distribution, and it has no Sentry or app menu yet; controllers work through GameController (`DEVEL/gamepad_controls.md`). C# files used only by this flavor go in `Platforms/MacOS/` (see "Where Avalonia C# goes" above).
 
 1. **Native solution**: build `GnollHack.sln` with the `macOS` platform in Release (WSL and the Mac; see [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh)). `CopyToMauiMacLibs` puts `libgnollhackmac.dylib` in `Platforms/MacOS/libs/`, beside FMOD's committed `libfmod.dylib` and `libfmodstudio.dylib`; the game data is the Android-format `Platforms/Android/gnh`, as for Linux.
 2. **Publish** from `Platforms/Avalonia`: `dotnet publish ..\..\GnollHackM.csproj -p:GnhAvalonia=true -r osx-arm64 -f net11.0 -c Release --self-contained true -p:GnhSentryUpload=false`. The publish runs on Windows; the .NET SDK signs the apphost ad hoc.

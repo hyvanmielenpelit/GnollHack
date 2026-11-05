@@ -48,7 +48,7 @@ navigation, hint strips, in-page popups, `FileDialogView`, controller settings, 
 
 | Platform | Its code |
 |----------|----------|
-| Steam Deck | `GHEvdev*`, `GHAvaloniaSteamKeyboard`, `Platforms/Avalonia/Cef/`, `Platforms/Linux/Packaging/steam/input/`, `steamdeck/run-gnollhack.sh`, `#if LINUX` branches, the grip bridge |
+| Steam Deck | In `Platforms/Linux/`: `GHEvdev*`, `Cef/`, `Packaging/steam/input/`, `Packaging/steamdeck/run-gnollhack.sh`; elsewhere: `GHAvaloniaSteamKeyboard`, `#if LINUX` branches, the grip bridge |
 | Avalonia Windows | The Windows branches of Avalonia code (the `#else` after `#if LINUX` and `#elif MACOS`, `#elif GNH_AVALONIA` after `GNH_AVALONIA && LINUX`), and the `NativeWebView` paths (`NativeWebViewHost`, `_nativeView` in `GHAvaloniaWebScriptHost`), which the Deck does not run because it uses CEF; the Mac runs them with WKWebView |
 | Avalonia macOS | `Platforms/MacOS/GHGameController*`, the `#elif MACOS` branch of `GHAvaloniaGamepad.StartBackends`, and the `NativeWebView` paths when a change is specific to WKWebView |
 | WinUI 3 | `Platforms/Windows/GHWinUI*`, `GHWebView2FileChooser`, `KeyboardHook`'s key note, `#if WINDOWS` branches in controller code |
@@ -90,9 +90,10 @@ Anything that changes controller behavior, in any of these:
 
 - `win/win32/xpl/GnollHackX/GnollHackX/Gamepad/` and `Radial/`
 - `Pages/Game/GamePage.Gamepad.cs`, `GamePage.GamepadDialogs.cs`, `GamePage.Radial.cs`
-- `win/win32/xpl/GnollHackM/Platforms/Avalonia/`: the gamepad and evdev backends
-  (`GHAvaloniaGamepad*.cs`, `GHEvdev*.cs`), the Steam keyboard, key handling for the grip bridge,
-  and controller input in the in-app browser (`Cef/GHCefInput.cs`, `GHAvaloniaWebScriptHost.cs`)
+- `win/win32/xpl/GnollHackM/Platforms/Avalonia/`: the gamepad code (`GHAvaloniaGamepad*.cs`), the Steam keyboard,
+  key handling for the grip bridge, and controller input in the in-app browser (`GHAvaloniaWebScriptHost.cs`)
+- `win/win32/xpl/GnollHackM/Platforms/Linux/`: the evdev backend (`GHEvdev*.cs`) and the in-app browser's
+  controller input (`Cef/GHCefInput.cs`)
 - `win/win32/xpl/GnollHackM/Platforms/MacOS/GHGameController*.cs`: the macOS flavor's GameController backend
 - `win/win32/xpl/GnollHackM/GHXInputGamepadBackend.cs`, `GHWebPageScript.cs`, and the WinUI 3 glue:
   `Platforms/Windows/GHWinUI*.cs`, `GHWebView2FileChooser.cs`, and `KeyboardHook`'s key note in `MauiProgram.cs`

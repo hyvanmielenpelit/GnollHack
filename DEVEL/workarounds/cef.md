@@ -58,7 +58,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefRuntime.cs` (`GHCefRuntime`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefRuntime.cs` (`GHCefRuntime`)
 - Remove when: CefRuntime's resolver no longer scans the disk on each miss, in a CefGlue.Next.Core release GnollHack uses, and Verify removal passes.
 
 **Symptom.** Once CefRuntime is touched, every unresolved native library lookup in the
@@ -92,7 +92,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.OnKeyDown`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.CopySelectionAsync`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.PasteClipboardTextAsync`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.OnKeyDown`); `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.CopySelectionAsync`); `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.PasteClipboardTextAsync`)
 - Remove when: Chromium's clipboard works in GnollHack's windowless CEF browser in a CEF release GnollHack uses, and Verify removal passes.
 
 **Symptom.** Pasting into a page blocks it, and copying from a page does not reach the
@@ -127,7 +127,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-10-29
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.GoBack`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.GoBack`)
 - Remove when: `CefBrowser.GoBack` goes back in GnollHack's windowless browser after links followed with the controller, in a CEF release GnollHack uses, and Verify removal passes.
 
 **Symptom.** In the in-app browser on the Steam Deck, the toolbar's back button and the

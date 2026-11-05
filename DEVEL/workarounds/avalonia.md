@@ -57,7 +57,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-11-05
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasViewHandler.cs` (`GHAvaloniaCanvasViewHandler.GHMapper`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLViewHandler.cs` (`GHAvaloniaGLViewHandler.GHMapper`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefWebViewHandler.cs` (`GHCefWebViewHandler.Mapper`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasViewHandler.cs` (`GHAvaloniaCanvasViewHandler.GHMapper`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLViewHandler.cs` (`GHAvaloniaGLViewHandler.GHMapper`); `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefWebViewHandler.cs` (`GHCefWebViewHandler.Mapper`)
 - Remove when: ACM's SKCanvasViewHandler and SKGLViewHandler mappers chain to ACM's own view mappers in a release GnollHack uses, and Verify removal passes.
 - Related: WA-AVALONIA-0003
 
@@ -520,7 +520,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-11-05
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaMonitorRefreshRate.cs` (`GHAvaloniaMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaDeviceDisplay.cs` (`GHAvaloniaDeviceDisplay.UpdateMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHRandr.cs` (`GHRandr`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaMonitorRefreshRate.cs` (`GHAvaloniaMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaDeviceDisplay.cs` (`GHAvaloniaDeviceDisplay.UpdateMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Linux/GHRandr.cs` (`GHRandr`)
 - Remove when: Avalonia's `Screen` reports the display mode's refresh rate in a release GnollHack uses, and Verify removal passes.
 
 **Symptom.** DeviceDisplay's refresh rate can only be estimated from frame deltas, and
@@ -595,7 +595,7 @@ Checks:
 - Upstream status when added: reported
 - Upstream status: reported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.SubscribeVisibility`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.SubscribeVisibility`)
 - Remove when: `IsEffectivelyVisible` raises a change notification in an Avalonia release GnollHack uses, and Verify removal passes.
 
 **Symptom.** Without notification, the CEF browser is not told when its control is hidden
@@ -826,7 +826,7 @@ Checks:
 - Upstream status: fixed-unreleased
 - Fixed upstream in: https://github.com/AvaloniaUI/Avalonia/pull/22594
 - Last checked: 2026-10-31
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHIBusDestroyReplyFilter.cs` (`GHIBusDestroyReplyFilter`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaSentry.cs` (`GHAvaloniaSentry.Init`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/GHIBusDestroyReplyFilter.cs` (`GHIBusDestroyReplyFilter`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaSentry.cs` (`GHAvaloniaSentry.Init`)
 - Remove when: GnollHack uses an Avalonia release containing pull request 22594, and Verify removal passes.
 - Related: GNOLLHACK-J1
 
