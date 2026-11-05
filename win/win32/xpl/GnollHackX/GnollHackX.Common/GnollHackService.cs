@@ -64,6 +64,9 @@ namespace GnollHackX.Unknown
 #elif GNH_AVALONIA && LINUX
         public const string dll = @"libgnollhacklinux.so";
         public const string library = "gnollhacklinux";
+#elif GNH_AVALONIA && MACOS
+        public const string dll = @"libgnollhackmac.dylib";
+        public const string library = "gnollhackmac";
 #elif GNH_AVALONIA
         public const string dll = @"gnollhackwin.dll";
         public const string library = "gnollhackwin";

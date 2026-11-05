@@ -7,7 +7,7 @@ description: >-
   Xbox controller on the Avalonia Windows build as a backup; the packaging and Deploy-SteamDeck.ps1
   sequence, what to do when the Deck cannot be reached, what the user must test, and how to read the
   Deck's logs afterward. Read whenever you plan, change or review anything that alters what a
-  controller does or shows: GHGamepad* or GHEvdev* code, GHXInput or GHWinUI code, radial menus, hint strips, focus navigation
+  controller does or shows: GHGamepad* or GHEvdev* code, GHXInput, GHWinUI or GHGameController code, radial menus, hint strips, focus navigation
   on a page, controller settings, Steam Input layouts, or the Steam keyboard. Read before reporting
   such work as finished.
 ---

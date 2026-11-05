@@ -35,6 +35,9 @@ namespace GnollHackM
             Avalonia.Controls.WindowIcon icon = LoadWindowIcon();
             if (icon != null)
                 window.Icon = icon;
+#if MACOS
+            Avalonia.Controls.NativeMenu.SetMenu(window, GHMacApplicationMenu.CreateWindowMenu());
+#endif
 
             /* Windowed Mode is read at startup; a changed setting applies after a restart, as on WinUI */
             bool fullScreen = GHApp.IsFullScreenForced || !Preferences.Get("WindowedMode", false);
@@ -96,15 +99,37 @@ namespace GnollHackM
             if (e.IsProgrammatic || e.CloseReason != Avalonia.Controls.WindowCloseReason.WindowClosing)
                 return;
 
+            if (BeginUserClose(sender as AvWindow))
+                e.Cancel = true;
+        }
+
+        /* A quit the user asked for from the macOS menu (Cmd+Q, Cmd+W): the same flow as the window's close button.
+           Without a game or main page to take it over, as in a replay, the application shuts down. */
+        public static void RequestQuit()
+        {
+            try
+            {
+                if (BeginUserClose(MainWindow))
+                    return;
+                (Avalonia.Application.Current?.ApplicationLifetime as Avalonia.Controls.ApplicationLifetimes.IClassicDesktopStyleApplicationLifetime)?.TryShutdown();
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog(ex.Message);
+            }
+        }
+
+        /* Starts the game's own close flow; true when it took the close over, so the window stays open for now */
+        private static bool BeginUserClose(AvWindow window)
+        {
             try
             {
                 GamePage curGamePage = GHApp.CurrentGamePage;
                 if (curGamePage != null)
                 {
                     if (curGamePage.PlayingReplay)
-                        return;
-                    e.Cancel = true;
-                    (sender as AvWindow)?.Activate();
+                        return false;
+                    window?.Activate();
                     MainThread.InvokeOnMainThreadAsync(async () =>
                     {
                         try
@@ -126,14 +151,13 @@ namespace GnollHackM
                             GHApp.MaybeWriteGHLog(ex.Message);
                         }
                     });
-                    return;
+                    return true;
                 }
 
                 MainPage curMainPage = GHApp.CurrentMainPage;
                 if (curMainPage != null)
                 {
-                    e.Cancel = true;
-                    (sender as AvWindow)?.Activate();
+                    window?.Activate();
                     MainThread.InvokeOnMainThreadAsync(async () =>
                     {
                         try
@@ -145,12 +169,14 @@ namespace GnollHackM
                             GHApp.MaybeWriteGHLog(ex.Message);
                         }
                     });
+                    return true;
                 }
             }
             catch (Exception ex)
             {
                 GHApp.MaybeWriteGHLog(ex.Message);
             }
+            return false;
         }
 
         /* Windowed bounds in this flavor's own preferences: position in physical pixels (Window.Position),

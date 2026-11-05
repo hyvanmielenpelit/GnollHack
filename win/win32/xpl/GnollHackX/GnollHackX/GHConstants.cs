@@ -466,6 +466,8 @@ namespace GnollHackX
         public const int MinSurfaceViewAndroidApiLevel = 31;
         /* Default for the iOS Metal Rendering setting; OpenGL ES otherwise */
         public const bool DefaultUseMetalRendering = false;
+        /* Default for the macOS Metal Rendering setting, read when the game starts */
+        public const bool DefaultUseMetalRenderingMac = true;
         public const bool DefaultCharacterClickAction = false;
         public const bool DefaultDiceAsRanges = true;
         public const bool DefaultDamageFormula = false;
@@ -522,6 +524,7 @@ namespace GnollHackX
         public const string SentryTagLinuxContainer = "linux.container";
         public const string SentryTagLinuxSession = "linux.session";
         public const string SentryTagLinuxGlibc = "linux.glibc";
+        public const string SentryTagMacPackage = "macos.package";
         public const string SentryTagCaughtIn = "caught.in";
         public const string SentryContextProcessMemory = "Process Memory";
         /* Handles above the startup baseline that trigger one handle growth warning per process */

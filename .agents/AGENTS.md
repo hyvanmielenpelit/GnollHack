@@ -147,7 +147,7 @@ Git stores all text files with **LF** line endings in the repository. On checkou
 ## Build Prerequisites
 
 - Visual Studio 2026 with C++ Desktop (v143 build tools) and .NET MAUI workloads
-  - `GnollHack.sln` also contains the legacy Xamarin projects `GnollHackX.Android`, `GnollHackX.Android.Bindings` and `GnollHackX.iOS`, which VS 2026 cannot build: it has no Xamarin. The `MauiAndroid`, `MauiAll`, `Linux` and `x64` solution platforms skip them; `Android+Windows`, `ARM64` and `iPhone` need Visual Studio 2022, or VS 2026 with those projects unloaded (IDE only; a command-line build ignores unloading).
+  - `GnollHack.sln` also contains the legacy Xamarin projects `GnollHackX.Android`, `GnollHackX.Android.Bindings` and `GnollHackX.iOS`, which VS 2026 cannot build: it has no Xamarin. The `MauiAndroid`, `MauiAll`, `Linux`, `macOS`, `iPhone` and `x64` solution platforms skip them; `Android+Windows` and `ARM64` need Visual Studio 2022, or VS 2026 with those projects unloaded (IDE only; a command-line build ignores unloading).
 - .NET 10.0 SDK
 - The .NET MAUI workload. Building from the command line rather than the Visual Studio IDE requires installing it explicitly: `dotnet workload install maui`
 - Windows SDK — install the versions the projects actually target. Check `WindowsTargetPlatformVersion` in the `.vcxproj` files under `win/win32/vs/` (currently the Windows 11 SDK, not the Windows 10 SDK) and the Windows target framework moniker in `GnollHackM.csproj`. Do not assume a fixed version; these move.
@@ -155,7 +155,8 @@ Git stores all text files with **LF** line endings in the repository. On checkou
 - For iOS: Mac build host with Xcode
 - **External assets** (tilesets, sound banks, secrets file) must be obtained from separate repositories — see the `build_pipeline` skill for full details
 - **For Android and iOS builds**: WSL with SSH service running (`sudo service ssh start`) and configured in VS Connection Manager is required before building `GnollHack.sln`, as `dlbdroid` generates the `nhdat` game data archive inside WSL
-- **For iOS builds**: `vcremote` must be configured on the Mac for the C++ library build (`gnollhackios.vcxproj`); `Pair to Mac` is separately needed for the .NET MAUI project (`GnollHackM.csproj`). PSCP download scripts in `win/win32/xpl/gnollhackios/` must be configured with Mac credentials and run interactively once to cache the Mac host key before building in VS.
+- **For iOS builds**: the C++ library (`gnollhackios.vcxproj`) is built on the Mac over SSH, which needs key-based login to the host alias `gnollhack-mac` (wiki page `Development/Set Up SSH Access to the Mac for Native Libraries`) and Xcode on the Mac; `Pair to Mac` is separately needed for the .NET MAUI project (`GnollHackM.csproj`). See the `build_pipeline` skill.
+- **For macOS builds**: the same SSH access builds `libgnollhackmac.dylib` (`gnollhackmac.vcxproj`) with the `macOS` solution platform, which also runs the WSL data pipeline. The macOS flavor of the Avalonia port that uses it (`-r osx-arm64`) is for development only.
 
 ## Implementation Plans
 

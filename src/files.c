@@ -51,7 +51,7 @@ const
 #include <dirent.h>
 #include <stdlib.h>
 #include <sys/resource.h>
-#ifdef GNH_IOS
+#if defined(GNH_IOS) || defined(GNH_MAC)
 #include <fcntl.h>
 #include <errno.h>
 #include <sys/param.h>
@@ -884,7 +884,7 @@ char *
 gnh_lsof(void)
 {
     char* outptr = 0;
-#if defined (GNH_IOS) && defined(UNIX)
+#if (defined(GNH_IOS) || defined(GNH_MAC)) && defined(UNIX)
 #define GNH_LSOF_BUFFER_SIZE (MAXPATHLEN + 1 + BUFSZ * 2)
 #define GNH_LSOF_OUTPUT_BUFFER_SIZE (GNH_LSOF_BUFFER_SIZE + BUFSZ * 2)
     int flags;
@@ -959,7 +959,7 @@ maybe_report_file_descriptors(const char *logtext UNUSED, int error_number UNUSE
             Sprintf(extbuf, " (c:%s, m:%s)", curbuf, maxbuf);
         }
 
-#if defined(GNH_IOS)
+#if defined(GNH_IOS) || defined(GNH_MAC)
         char* ptr = gnh_lsof();
         if (ptr)
         {

@@ -1,0 +1,20 @@
+// SteamPipe app build script for the macOS depot.
+// package-mac.sh fills in the placeholders and writes the result to steam/app_build_mac.vdf on the Mac.
+// Relative paths are relative to this file.
+"AppBuild"
+{
+    "AppID" "{APP_ID}"
+    "Desc" "{BUILD_DESC}"
+    "ContentRoot" "{CONTENT_ROOT}"
+    "BuildOutput" "output"
+    "SetLive" "{BRANCH}"
+
+    "Depots"
+    {
+        "{DEPOT_ID}" "depot_build_mac.vdf"
+
+        // A beta build must also list the current Windows and Linux depots, so that their testers on that
+        // branch keep a working game. Add their IDs and depot build scripts here:
+        // "<depot ID>" "<depot build script>"
+    }
+}

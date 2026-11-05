@@ -23,7 +23,7 @@ issues at the end of the file. Never renumber or reuse an ID.
 - Upstream status when added: not-needed
 - Upstream status: not-needed
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaFontConfig.cs` (`GHAvaloniaFontConfig.CopyToDataDirectory`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/GHAvaloniaFontConfig.cs` (`GHAvaloniaFontConfig.CopyToDataDirectory`)
 - Remove when: GnollHack no longer ships its own fonts for fontconfig in the AppImage, or fontconfig stops keying its cache by folder path.
 
 **Symptom.** In the AppImage, fontconfig would treat the bundled font folder as a new
@@ -88,7 +88,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefApp.cs` (`GHCefApp.OnBeforeCommandLineProcessing`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefRuntime.cs` (`GHCefRuntime.LoadAndInitialize`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefApp.cs` (`GHCefApp.OnBeforeCommandLineProcessing`); `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefRuntime.cs` (`GHCefRuntime.LoadAndInitialize`)
 - Remove when: Chromium's sandbox and zygote work inside the Steam Linux Runtime container, and Verify removal passes under Steam and from the AppImage.
 
 **Symptom.** With Chromium's sandbox and zygote on, CEF does not work inside Steam's

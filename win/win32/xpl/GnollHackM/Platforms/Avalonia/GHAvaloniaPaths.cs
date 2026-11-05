@@ -8,12 +8,30 @@ namespace GnollHackM
     {
         private static readonly object _dataDirectoryLock = new object();
         private static string _dataDirectory = null;
+        private static readonly Lazy<string> _assetDirectory = new Lazy<string>(FindAssetDirectory);
 
-        /* Read-only game assets (gnh, banks, tileset, native libraries): the application directory */
-        public static string AssetDirectory => AppContext.BaseDirectory;
+        /* Read-only game assets (gnh, banks, tileset): the application directory, or on macOS a bundle's
+           Contents/Resources. Native libraries stay beside the executable, in AppContext.BaseDirectory. */
+        public static string AssetDirectory => _assetDirectory.Value;
 
-        /* Writable game data: ~/.local/share/GnollHack on Linux, %LOCALAPPDATA%\GnollHack-Avalonia
-           elsewhere. Created on first use. */
+        private static string FindAssetDirectory()
+        {
+            string baseDirectory = AppContext.BaseDirectory;
+            if (OperatingSystem.IsMacOS())
+            {
+                string trimmed = baseDirectory.TrimEnd('/');
+                if (trimmed.EndsWith("/Contents/MacOS", StringComparison.Ordinal))
+                {
+                    string resources = Path.Combine(Path.GetDirectoryName(trimmed), "Resources");
+                    if (Directory.Exists(resources))
+                        return resources + "/";
+                }
+            }
+            return baseDirectory;
+        }
+
+        /* Writable game data: ~/.local/share/GnollHack on Linux, ~/Library/Application Support/GnollHack on macOS,
+           %LOCALAPPDATA%\GnollHack-Avalonia on Windows. Created on first use. */
         public static string DataDirectory
         {
             get
@@ -22,7 +40,7 @@ namespace GnollHackM
                 {
                     if (_dataDirectory == null)
                     {
-#if LINUX
+#if LINUX || MACOS
                         string folderName = "GnollHack";
 #else
                         string folderName = "GnollHack-Avalonia";

@@ -5,10 +5,11 @@ using Microsoft.Maui.Devices;
 
 namespace GnollHackM
 {
-    /* IDeviceInfo for the Avalonia desktop target. The platform is "Linux" on Linux builds and
+    /* IDeviceInfo for the Avalonia desktop target. The platform is "Linux" on Linux builds, macOS on macOS builds and
        "WindowsAvalonia" otherwise, so that GHApp.IsWindows stays false for the Avalonia Win32 build.
        On Linux, model and manufacturer come from DMI (a Steam Deck reports Jupiter or Galileo, and
-       Valve) and the version from /etc/os-release. */
+       Valve) and the version from /etc/os-release. On macOS, the model is the hw.model identifier, such as
+       MacBookPro17,1. */
     public sealed class GHAvaloniaDeviceInfo : IDeviceInfo
     {
         private readonly string _model;
@@ -26,6 +27,11 @@ namespace GnollHackM
             _model = ReadFirstLine("/sys/class/dmi/id/product_name") ?? _name;
             _manufacturer = ReadFirstLine("/sys/class/dmi/id/sys_vendor") ?? "Unknown";
             _versionString = ReadOsReleaseVersionId() ?? Environment.OSVersion.Version.ToString();
+#elif MACOS
+            _platform = DevicePlatform.macOS;
+            _model = ReadMacModel() ?? _name;
+            _manufacturer = "Apple";
+            _versionString = Environment.OSVersion.Version.ToString();
 #else
             _platform = DevicePlatform.Create("WindowsAvalonia");
             _model = _name;
@@ -63,6 +69,32 @@ namespace GnollHackM
                 return "Unknown";
             }
         }
+
+#if MACOS
+        [System.Runtime.InteropServices.DllImport("libSystem.dylib")]
+        private static extern int sysctlbyname(string name, byte[] oldp, ref UIntPtr oldlenp, IntPtr newp, UIntPtr newlen);
+
+        /* sysctl hw.model, or null when it cannot be read */
+        private static string ReadMacModel()
+        {
+            try
+            {
+                byte[] buffer = new byte[256];
+                UIntPtr length = (UIntPtr)buffer.Length;
+                if (sysctlbyname("hw.model", buffer, ref length, IntPtr.Zero, UIntPtr.Zero) != 0)
+                    return null;
+                int count = (int)length.ToUInt64();
+                while (count > 0 && buffer[count - 1] == 0)
+                    count--;
+                string model = Encoding.ASCII.GetString(buffer, 0, count).Trim();
+                return model.Length == 0 ? null : model;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+#endif
 
         /* Trimmed first line of a text file, or null when it is missing, unreadable or empty */
         private static string ReadFirstLine(string path)

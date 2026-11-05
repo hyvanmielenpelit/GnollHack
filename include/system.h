@@ -93,13 +93,8 @@ E int srandom(unsigned int);
 #endif
 #endif
 #else
-#if defined(MACOSX)
 E long lrand48(void);
 E void srand48(long);
-#else
-E long lrand48();
-E void srand48();
-#endif /* MACOSX */
 #endif /* BSD || ULTRIX || RANDOM */
 
 #if !defined(BSD) || defined(ultrix)
@@ -357,7 +352,7 @@ E char *memset(char *, int, int);
 E void sleep();
 #endif
 #if defined(ULTRIX) || defined(SYSV)
-E unsigned sleep();
+E unsigned sleep(unsigned);
 #endif
 #if defined(HPUX)
 E unsigned int sleep(unsigned int);

@@ -1,5 +1,6 @@
-#if GNH_AVALONIA && LINUX
+#if GNH_AVALONIA && (LINUX || MACOS)
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace GnollHackM
@@ -7,7 +8,11 @@ namespace GnollHackM
     /* One process per data folder. The operating system releases the lock when the process ends, however it ends. */
     internal static class GHAvaloniaInstanceLock
     {
+#if MACOS
+        private const int WouldBlockHResult = 35; /* EWOULDBLOCK, as .NET reports a lock held elsewhere on macOS */
+#else
         private const int WouldBlockHResult = 11; /* EWOULDBLOCK, as .NET reports a lock held elsewhere on Linux */
+#endif
         private const string AlreadyRunningMessage = "GnollHack is already running. Close the other GnollHack window first.";
 
         private static FileStream _lock;
@@ -36,8 +41,34 @@ namespace GnollHackM
         public static void ReportAlreadyRunning()
         {
             Console.Error.WriteLine(AlreadyRunningMessage);
+#if MACOS
+            ShowMacAlert(AlreadyRunningMessage);
+#else
             NativeLibraryPreflightLinux.ShowDialog(AlreadyRunningMessage);
+#endif
         }
+
+#if MACOS
+        /* Through osascript, since Avalonia is not started yet; a failure leaves only the standard error line */
+        private static void ShowMacAlert(string message)
+        {
+            try
+            {
+                ProcessStartInfo info = new ProcessStartInfo("/usr/bin/osascript");
+                info.ArgumentList.Add("-e");
+                info.ArgumentList.Add("display alert \"GnollHack\" message \"" + message.Replace("\\", "\\\\").Replace("\"", "\\\"") + "\"");
+                info.UseShellExecute = false;
+                using (Process process = Process.Start(info))
+                {
+                    process?.WaitForExit();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine("GHAvaloniaInstanceLock: " + ex.Message);
+            }
+        }
+#endif
     }
 }
 #endif

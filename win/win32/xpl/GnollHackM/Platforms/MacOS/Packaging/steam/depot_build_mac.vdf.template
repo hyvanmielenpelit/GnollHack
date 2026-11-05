@@ -1,0 +1,15 @@
+// SteamPipe depot build script for the macOS depot.
+// package-mac.sh fills in the placeholders and writes the result to steam/depot_build_mac.vdf on the Mac.
+// The content root comes from the app build script; it holds GnollHack.app.
+"DepotBuild"
+{
+    "DepotID" "{DEPOT_ID}"
+
+    // Everything under the content root, with its folder structure
+    "FileMapping"
+    {
+        "LocalPath" "*"
+        "DepotPath" "."
+        "Recursive" "1"
+    }
+}

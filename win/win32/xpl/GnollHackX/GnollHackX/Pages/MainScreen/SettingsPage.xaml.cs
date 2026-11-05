@@ -173,8 +173,13 @@ namespace GnollHackX.Pages.MainScreen
             { "Tile Batching", ("Draw floor tiles in one batched call.", "**Off:** Every floor and carpet tile is drawn with its own draw call.\n**On:** Such tiles are collected and drawn in a single batched call, which saves processor time.") },
             { "Text Caching", ("Cache shaped text to reduce garbage collection pauses.", "**Off:** Text is reshaped on every frame.\n**On:** Shaped text is cached and reused, which reduces memory allocation and makes garbage collection pauses less frequent, at the cost of some extra memory.") },
             { "Direct GL Draw", ("Draw the map on its own GPU surface. Applies to the next game.", "**On:** The map is drawn on its own display surface, which the system composites directly. This is usually smoother.\n**Off:** The map is drawn into a texture that is composited with the rest of the game screen. Try this if the map flickers, stays black, or shows graphical glitches.\nCannot be changed during a game; takes effect when the next game or replay starts.") },
+#if GNH_AVALONIA && MACOS
+            { "Metal Rendering", ("Draw with Metal instead of OpenGL. Applies after a restart.", "**Off:** The game window is drawn with OpenGL, which Apple has deprecated but which still works.\n**On:** The game window is drawn with Metal, Apple's current graphics interface.\nTakes effect when GnollHack is started next time.") },
+#else
             { "Metal Rendering", ("Draw with Metal instead of OpenGL ES. Applies to the next game.", "**Off:** The game is drawn with OpenGL ES, which Apple has deprecated but which still works.\n**On:** The game is drawn with Metal, Apple's current graphics interface. iOS limits how much memory a Metal app may use, so the largest GPU cache sizes are not offered with Metal.\nCannot be changed during a game; takes effect when the next game or replay starts.") },
+#endif
             { "Disable Windows Key", ("Prevent Windows key from opening Start menu in-game.", "Prevents the Windows key from opening the Start menu, to avoid accidental focus loss during gameplay.") },
+            { "Allow Option Keys", ("Type the characters your keyboard layout puts on Option keys.", "**Off:** Option works as Alt: Option and a key is that key's Alt command, such as Option+P for #pray.\n**On:** Option and a key types the character your keyboard layout puts there when it is a regular character, such as @ on Option+2 in Finnish or Option+L in German. Other Option combinations remain Alt commands.\nText fields always accept the characters Option types.") },
             { "Application Menu Entry", ("Show GnollHack in your desktop's application menu.", "**On:** GnollHack has an entry with its icon in your desktop's application menu, which starts this AppImage file. If you move the AppImage, the entry follows it the next time you start the game from the new place.\n**Off:** The entry and its icon are removed. Other menu entries are not affected.\nShown only when GnollHack runs from an AppImage. The switch is disabled when an AppImage manager, such as Gear Lever or AppImageLauncher, already has an entry for this file; the entry is then left to that tool.") },
             { "Default Vi-Keys", ("Use vi-keys (hjklyubn) as default for movement.", "**Off**: The default setting for the `number_pad` option is `2` (numbers for movement).\n**On**: The default setting is `0` (vi-keys for movement).") },
             { "On Switching Apps", ("Save game or create checkpoint when switching apps.", "**Save Game**: The game is automatically saved and restored when the player returns. Menus close.\n**Checkpoint**: The game creates a checkpoint and doesn't close menus, but recovers to checkpoint if terminated.") },
@@ -309,7 +314,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 SurfaceViewGrid.IsVisible = false;
             }
-            if (!GHApp.IsMetalAvailable)
+            if (!GHApp.IsMetalAvailable && !GHApp.IsMetalRenderingStartupSetting)
             {
                 MetalGrid.IsVisible = false;
             }
@@ -724,8 +729,19 @@ namespace GnollHackX.Pages.MainScreen
                 }
             }
 
+            /* macOS: only stored; read when the game starts. Stored only when it differs from the default. */
+            if (GHApp.IsMetalRenderingStartupSetting && MetalGrid.IsVisible && MetalSwitch.IsEnabled)
+            {
+                if (MetalSwitch.IsToggled == GHConstants.DefaultUseMetalRenderingMac)
+                {
+                    if (Preferences.ContainsKey("UseMetal"))
+                        Preferences.Remove("UseMetal");
+                }
+                else
+                    Preferences.Set("UseMetal", MetalSwitch.IsToggled);
+            }
             /* Before the GPU cache levels, which the backend clamps */
-            if (MetalGrid.IsVisible && MetalSwitch.IsEnabled)
+            else if (MetalGrid.IsVisible && MetalSwitch.IsEnabled)
             {
                 bool metal = MetalSwitch.IsToggled;
                 bool backendChanged = metal != GHApp.UseMetal;
@@ -1230,6 +1246,12 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set("DisableWindowsKey", DisableWindowsKeySwitch.IsToggled);
             }
 
+            if (AllowOptionKeysGrid.IsVisible && AllowOptionKeysSwitch.IsEnabled)
+            {
+                GHApp.AllowOptionKeys = AllowOptionKeysSwitch.IsToggled;
+                Preferences.Set("AllowOptionKeys", AllowOptionKeysSwitch.IsToggled);
+            }
+
             GHApp.DefaultVIKeys = DefaultVIKeysSwitch.IsToggled;
             Preferences.Set("DefaultVIKeys", DefaultVIKeysSwitch.IsToggled);
 
@@ -1578,7 +1600,7 @@ namespace GnollHackX.Pages.MainScreen
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
-            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, tilebatching = GHConstants.DefaultTileBatching, textblobcaching = GHConstants.DefaultTextBlobCaching, surfaceview = GHApp.IsUseSurfaceViewDefault, metal = GHApp.IsUseMetalDefault, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, tilebatching = GHConstants.DefaultTileBatching, textblobcaching = GHConstants.DefaultTextBlobCaching, surfaceview = GHApp.IsUseSurfaceViewDefault, metal = GHApp.IsUseMetalDefault, save_file_tracking = false, disablewindowskey = false, allowoptionkeys = false, defaultvikeys = false;
             bool experimental = GHConstants.EnableExperimentalFeatures;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
@@ -1669,7 +1691,12 @@ namespace GnollHackX.Pages.MainScreen
             runtimeeffects = Preferences.Get("RuntimeEffects", GHConstants.DefaultRuntimeEffects);
             tilebatching = Preferences.Get("UseTileBatching", GHConstants.DefaultTileBatching);
             surfaceview = Preferences.Get("UseSurfaceView", GHApp.IsUseSurfaceViewDefault);
-            metal = Preferences.Get("UseMetal", GHApp.IsUseMetalDefault);
+            metal = GHApp.IsMetalRenderingStartupSetting ? Preferences.Get("UseMetal", GHConstants.DefaultUseMetalRenderingMac)
+                : Preferences.Get("UseMetal", GHApp.IsUseMetalDefault);
+#if GNH_AVALONIA && MACOS
+            if (_metalRenderingAtStartup < 0)
+                _metalRenderingAtStartup = metal ? 1 : 0;
+#endif
             textblobcaching = Preferences.Get("UseTextBlobCaching", GHConstants.DefaultTextBlobCaching);
             noclipmode = Preferences.Get("DefaultMapNoClipMode", GHConstants.DefaultMapNoClipMode);
             savestyle = Preferences.Get("AppSwitchSaveStyle", GHApp.IsDesktop ? 1 : 0);
@@ -1684,6 +1711,7 @@ namespace GnollHackX.Pages.MainScreen
             screenresolutionpriority = (uint)Preferences.Get("CustomScreenResolutionPriority", 1);
             save_file_tracking = GHApp.SaveFileTracking;
             disablewindowskey = Preferences.Get("DisableWindowsKey", false);
+            allowoptionkeys = Preferences.Get("AllowOptionKeys", false);
             defaultvikeys = Preferences.Get("DefaultVIKeys", false);
             showkeyboardshortcuts = Preferences.Get("ShowKeyboardShortcuts", GHApp.IsShowKeyboardShortcutsDefault);
             singlecmdpage = Preferences.Get("UseSingleMoreCommandsPage", GHApp.IsDesktop);
@@ -1945,8 +1973,10 @@ namespace GnollHackX.Pages.MainScreen
                 RuntimeEffectsLabel.TextColor = gpu && experimental ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
                 SurfaceViewSwitch.IsEnabled = gpu && _gamePage == null; /* The map's GL view is created with the game page */
                 SurfaceViewLabel.TextColor = gpu && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-                MetalSwitch.IsEnabled = gpu && _gamePage == null; /* The GL views are created with the game page */
-                MetalLabel.TextColor = gpu && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+                /* The GL views are created with the game page; on macOS the setting is read at startup */
+                bool metalEnabled = GHApp.IsMetalRenderingStartupSetting || (gpu && _gamePage == null);
+                MetalSwitch.IsEnabled = metalEnabled;
+                MetalLabel.TextColor = metalEnabled ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             }
             else
             {
@@ -1967,8 +1997,8 @@ namespace GnollHackX.Pages.MainScreen
                 RuntimeEffectsLabel.TextColor = GHColors.Gray;
                 SurfaceViewSwitch.IsEnabled = false;
                 SurfaceViewLabel.TextColor = GHColors.Gray;
-                MetalSwitch.IsEnabled = false;
-                MetalLabel.TextColor = GHColors.Gray;
+                MetalSwitch.IsEnabled = GHApp.IsMetalRenderingStartupSetting;
+                MetalLabel.TextColor = GHApp.IsMetalRenderingStartupSetting ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             }
             SimpleCmdLayoutSwitch.IsToggled = simplecmdlayout;
             ShowAltZoomButtonSwitch.IsToggled = showaltzoom;
@@ -2301,6 +2331,8 @@ namespace GnollHackX.Pages.MainScreen
             HideMessageHistorySwitch.IsToggled = hidemsghistory;
             DisableWindowsKeySwitch.IsToggled = disablewindowskey;
             DisableWindowsKeyGrid.IsVisible = GHApp.IsWindows;
+            AllowOptionKeysSwitch.IsToggled = allowoptionkeys;
+            AllowOptionKeysGrid.IsVisible = GHApp.IsMacOS;
             DefaultVIKeysSwitch.IsToggled = defaultvikeys;
             ShowKeyboardShortcutsSwitch.IsToggled = showkeyboardshortcuts;
             UseSingleMoreCommandsPageSwitch.IsToggled = singlecmdpage;
@@ -3487,8 +3519,9 @@ namespace GnollHackX.Pages.MainScreen
             MipMapLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             SurfaceViewSwitch.IsEnabled = e.Value && _gamePage == null;
             SurfaceViewLabel.TextColor = e.Value && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            MetalSwitch.IsEnabled = e.Value && _gamePage == null;
-            MetalLabel.TextColor = e.Value && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
+            bool metalEnabled = GHApp.IsMetalRenderingStartupSetting || (e.Value && _gamePage == null);
+            MetalSwitch.IsEnabled = metalEnabled;
+            MetalLabel.TextColor = metalEnabled ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
 
             if (_isManualTogglingEnabled)
             {
@@ -3577,8 +3610,29 @@ namespace GnollHackX.Pages.MainScreen
             return long.MinValue;
         }
 
+#if GNH_AVALONIA && MACOS
+        /* The Metal Rendering setting the process started with: 1 or 0, -1 until the first settings page has read it,
+           which happens before any save can change it */
+        private static int _metalRenderingAtStartup = -1;
+#endif
+
         private void MetalSwitch_Toggled(object sender, ToggledEventArgs e)
         {
+            /* On macOS the backend does not limit the GPU cache sizes, and the setting is read at startup */
+            if (GHApp.IsMetalRenderingStartupSetting)
+            {
+#if GNH_AVALONIA && MACOS
+                if (_isManualTogglingEnabled && _metalRenderingAtStartup >= 0 && e.Value != (_metalRenderingAtStartup != 0))
+                {
+                    PopupTitleLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, true);
+                    PopupTitleLabel.Text = "Restart Required";
+                    PopupLabel.Text = "Please restart GnollHack for the changes in Metal Rendering to take effect.";
+                    PopupOkButton.IsEnabled = true;
+                    PopupGrid.IsVisible = true;
+                }
+#endif
+                return;
+            }
             if (_isManualTogglingEnabled)
                 RefreshGPUCachePickers(e.Value);
         }

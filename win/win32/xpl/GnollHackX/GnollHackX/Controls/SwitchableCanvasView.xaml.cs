@@ -486,7 +486,14 @@ namespace GnollHackX.Controls
                 if (e.BackendRenderTarget != null)
                 {
                     if(CanvasType == CanvasTypes.MainCanvas)
+                    {
+#if GNH_AVALONIA
+                        /* The Avalonia GL control's render target always describes an OpenGL framebuffer; the context names the backend */
+                        GHApp.GPUBackend = (grContext != null ? grContext.Backend : e.BackendRenderTarget.Backend).ToString();
+#else
                         GHApp.GPUBackend = e.BackendRenderTarget.Backend.ToString();
+#endif
+                    }
 
                     Debug.WriteLine("Using is Skia GPU Rendering: GRContext Backend is " + e.BackendRenderTarget.Backend.ToString());
                 }

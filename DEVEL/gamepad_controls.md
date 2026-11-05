@@ -2,8 +2,8 @@
 
 GnollHack's native gamepad controls are built for the **Steam Deck**: the Avalonia Linux
 build, launched through Steam. They also work with an **Xbox controller** in the WinUI 3
-build and on desktop Linux, and in the Avalonia Windows build, for development. Android and iOS have no gamepad
-support yet.
+build and on desktop Linux, and in the Avalonia Windows and macOS builds, for development; on a Mac with any
+controller macOS supports. Android and iOS have no gamepad support yet.
 
 Contents:
 
@@ -483,6 +483,7 @@ A keyboard template produces no virtual pad, so keys behave as they always did.
 | evdev | Avalonia Linux | `GNOLLHACK_GAMEPAD_EVDEV` allows it (below); off a Steam Deck, available once a controller has been seen |
 | Back-grip key bridge | Avalonia, any OS | `GNOLLHACK_GAMEPAD_KEYS` allows it (below) |
 | XInput | Windows (WinUI 3 and Avalonia) | Always; available once a controller has been seen. Xbox controllers through `xinput1_4.dll` |
+| GameController | Avalonia macOS (development only) | Always; available once a controller has been seen. Controllers macOS supports with an extended gamepad profile (Xbox, PlayStation, MFi) |
 
 A **Steam launch** is any of `SteamGameId`, `SteamAppId` (non-empty and not `0`),
 `SteamClientLaunch=1`, or `SDL_GAMECONTROLLER_ALLOW_STEAM_VIRTUAL_GAMEPAD`. Non-Steam shortcuts
@@ -504,9 +505,9 @@ The evdev backend honors `SDL_GAMECONTROLLER_IGNORE_DEVICES` and
 It never grabs a device.
 
 The bridge only takes F2-F5 without modifiers. **Settings, Controller, Use Controller** turns
-the whole feature off: evdev and XInput input is discarded, and F2-F5 pass through to the game
+the whole feature off: evdev, XInput and GameController input is discarded, and F2-F5 pass through to the game
 as keys. The Controller section is shown only when a backend is available: evdev on a Steam Deck
-and the key bridge from their start, evdev elsewhere and XInput once a controller has been seen
+and the key bridge from their start, evdev elsewhere, XInput and GameController once a controller has been seen
 in the session.
 
 ## Diagnostics
@@ -528,6 +529,12 @@ The hints are written once, 10 s after the backend starts. A frame that throws i
 logged at most once every 10 s, and 30 failed frames in a row stop the gamepad for the session.
 
 The Windows builds log no devices, only failures.
+
+The macOS flavor writes `GAMEPAD gc +connect id=... name=... category=... profile=... style=...`,
+`GAMEPAD gc -disconnect id=...` and `GAMEPAD gc skip ...` (a controller without an extended gamepad
+profile) to standard error: the Terminal it was started from, or `~/Library/Logs/GnollHack/GnollHack.log`
+when started any other way. `GAMEPAD GameController backend
+not started: missing selector ...` means this macOS lacks a call the backend uses.
 
 On the Deck's development shortcut, standard error goes to
 `~/gnollhack-dev/logs/latest.log`.
@@ -577,6 +584,16 @@ This build does not ship. It tests its own code, and is a backup for an unavaila
 XInput is a different backend, with no Steam Input, Steam keyboard or Gaming Mode, so it cannot speak for those.
 
 For the grips, set `GNOLLHACK_GAMEPAD_KEYS=on` and press F2-F5 on the keyboard.
+
+### macOS
+
+The macOS flavor, for development only, reads controllers through Apple's GameController framework:
+any controller paired in System Settings, Bluetooth or connected by USB that has an extended gamepad
+profile, such as Xbox, DualShock 4 and DualSense controllers. The controller list is read every
+frame, so a controller works when switched on before or during the game. The Home button keeps its
+macOS action. There are no back grips (an Xbox Elite controller's paddles are not read), and a
+Nintendo controller has not been tested: its face buttons may come out by label rather than by
+position. It is tested on the Mac itself, with the procedure in the `client_gamepad_testing` skill.
 
 ### Linux Desktop
 

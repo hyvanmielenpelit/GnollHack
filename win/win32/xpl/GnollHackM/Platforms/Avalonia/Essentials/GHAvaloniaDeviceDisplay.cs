@@ -14,9 +14,10 @@ namespace GnollHackM
 {
     /* IDeviceDisplay for the Avalonia desktop target. It works before any Avalonia window exists:
        until OnWindowOpened, MainDisplayInfo is 0 x 0 pixels, density 1, 60 Hz, landscape. Afterwards
-       it follows the window's screen (pixel bounds, scaling, orientation), and the refresh rate is the
+       it follows the window's screen (pixel bounds, scaling, orientation; on macOS, the density is the
+       window's render scaling and the bounds are converted from points to pixels), and the refresh rate is the
        frame loop's estimate, since Avalonia does not report one; the estimate snaps to the monitor's
-       display-mode rate where that is known (Windows and Linux). MainDisplayInfoChanged is
+       display-mode rate where that is known (Windows, Linux and macOS). MainDisplayInfoChanged is
        raised on the Avalonia UI thread whenever any value changes, the refresh rate included. */
     public sealed class GHAvaloniaDeviceDisplay : IDeviceDisplay
     {
@@ -150,6 +151,16 @@ namespace GnollHackM
             double width = screen.Bounds.Width;
             double height = screen.Bounds.Height;
             double density = screen.Scaling > 0 ? screen.Scaling : 1.0;
+#if MACOS
+            // WORKAROUND(WA-AVALONIA-0025): Avalonia.Native reports every macOS screen at scaling 1, in points
+            double renderScaling = window.RenderScaling;
+            if (renderScaling > 0)
+            {
+                density = renderScaling;
+                width *= renderScaling;
+                height *= renderScaling;
+            }
+#endif
             DisplayOrientation orientation;
             DisplayRotation rotation;
             switch (screen.CurrentOrientation)

@@ -74,20 +74,23 @@ Building this solution: compiles build utilities → runs data pipeline → comp
 | Platform | Native libs | Win data | WSL pipeline + `makedefsdroid` | Needs |
 |---|---|---|---|---|
 | `MauiAndroid` | `gnollhackwin.dll`, `.so` (arm64-v8a + x86_64) | ✓ | ✓ | WSL |
-| `MauiAll` | above + `libgnollhackios.a` | ✓ | ✓ | WSL + Mac |
+| `MauiAll` | above + `libgnollhackios.a` (Debug only; Release does not build it) | ✓ | ✓ | WSL; Mac for Debug |
 | `Android+Windows` | `gnollhackwin.dll`, `.so` (both ABIs) | ✓ | ✓ | WSL |
 | `ARM64` | `.so` (both ABIs) | ✓ | ✓ | WSL |
 | `x64` | `gnollhackwin.dll` | ✓ | **✗** | — |
 | `Linux` | `libgnollhacklinux.so` | ✗ | ✓ | WSL |
+| `macOS` | `libgnollhackmac.dylib` | ✗ | ✓ | WSL + Mac |
 | `iPhone` | `libgnollhackios.a` | ✗ | ✓ | WSL + Mac |
 
 **For MAUI work, prefer `MauiAndroid` or `MauiAll`.** `x64` is the only WSL-free platform but does **not** run `makedefsdroid` — no XAML translation, tileset staging, or sound-bank staging.
 
 `Linux` builds `gnollhacklinux` and its dependencies — `makedefs`, `levcomp`, `dgncomp` and the four `*droid` data tools — and nothing else, for the Avalonia Linux flavor. It needs no Android C++ workload.
 
-`Android+Windows` and `ARM64` also build the legacy Xamarin projects `GnollHackX.Android` and `GnollHackX.Android.Bindings` (`iPhone` builds `GnollHackX.iOS`). Visual Studio 2026 has no Xamarin, so they need Visual Studio 2022, or Visual Studio 2026 with those projects unloaded. Unloading is IDE state that a command-line build ignores, and `vswhere -latest` returns VS 2026's MSBuild whenever VS 2026 is installed. `MauiAndroid` builds everything else `Android+Windows` does.
+`macOS` builds `gnollhackmac` and the same data tools as `Linux`, and nothing else. It needs WSL for the data pipeline and the Mac for the library; see [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh).
 
-The solution defines five further platforms — `Android x64`, `iPhoneSimulator`, `Win32`, `ARM`, and `Any CPU` — which are legacy or niche; avoid them unless you specifically need one. `Any CPU` in particular is not a safe default: it builds the legacy ASCII/GUI targets and the Xamarin projects as well.
+`Android+Windows` and `ARM64` also build the legacy Xamarin projects `GnollHackX.Android` and `GnollHackX.Android.Bindings`. Visual Studio 2026 has no Xamarin, so they need Visual Studio 2022, or Visual Studio 2026 with those projects unloaded. Unloading is IDE state that a command-line build ignores, and `vswhere -latest` returns VS 2026's MSBuild whenever VS 2026 is installed. `MauiAndroid` builds everything else `Android+Windows` does.
+
+The solution defines five further platforms — `Android x64`, `iPhoneSimulator`, `Win32`, `ARM`, and `Any CPU` — which are legacy or niche; avoid them unless you specifically need one. `Any CPU` in particular is not a safe default: it builds the legacy ASCII/GUI targets and the Xamarin projects as well. `iPhoneSimulator` and `Any CPU` build `gnollhackios`, so they need the Mac; `ARM` and `Win32` do not build it.
 
 Use the 64-bit MSBuild, as Visual Studio does. `-find MSBuild\**\Bin\MSBuild.exe` returns the 32-bit host, which fail-fasts with no output on Visual Studio's Linux projects (`gnollhacklinux` and the `*droid` data tools). Those projects set `AddSyntheticProjectReferencesForSolutionDependencies` to `false` (`WA-BUILD-0003`): otherwise a command-line solution build stops with `MSB4057` for `GetRecipeFile` on `makedefs.vcxproj`.
 
@@ -161,18 +164,37 @@ Run: `dlb.exe cIf dat/dlb.lst bin/$(Configuration)/$(Platform)/nhdat` from `dat/
 |----------|---------|-------------|--------------|
 | Windows | `gnollhackwin.dll` | `GnollHackM/Platforms/Windows/libs/` | MSVC v143 (`gnollhackwin.vcxproj`, `OutDir` → MAUI directly) |
 | Android | `libgnollhackdroid.so` | `GnollHackX.Android/libs/$(TargetArchAbi)/` | Clang via WSL SSH (`gnollhackdroid` = arm64-v8a, `gnollhackdroid2` = x86_64) |
-| iOS | `libgnollhackios.a` | `GnollHackX.iOS/Native References/` | Xcode via vcremote on Mac (`gnollhackios.vcxproj`) |
+| iOS | `libgnollhackios.a` (arm64) | `GnollHackM/Platforms/iOS/libs/` and `GnollHackX.iOS/Native References/` | clang over SSH on the Mac (`gnollhackios.vcxproj`, `Build-AppleEngine.ps1`) |
+| macOS | `libgnollhackmac.dylib` (arm64 + x86_64) | `GnollHackM/Platforms/MacOS/libs/` | clang over SSH on the Mac (`gnollhackmac.vcxproj`, `Build-AppleEngine.ps1`) |
 
 Post-build `.proj` files copy libraries and assets to `GnollHackM/Platforms/`:
 - `aftergnollhackdll.proj` — FMOD DLLs + gnh data files → Windows
 - `recoverwin.vcxproj` — `util/recover.c` with `GNH_MOBILE;GNH_WIN` (the engine's save layout, unlike `recover.vcxproj`'s tty build), built from `gnollhackwin.vcxproj`'s `AfterBuild` → `Platforms/Windows/gnh/recover.exe`
 - `afterdroidutils.proj` — mobile `nhdat` + data from `C:\wsl-out\` → Android/iOS
 - `aftergnollhackdroid.proj` — Android `.so` → MAUI Android
-- `aftergnollhackios.proj` — iOS `.a` from `C:\mac-out\` → MAUI iOS
+- `aftergnollhackios.proj` — `libgnollhackios.a` from `gnollhackios.vcxproj`'s output (property `GnhiOSLib`) → `Platforms/iOS/libs/` and `GnollHackX.iOS/Native References/`
+- `CopyToMauiMacLibs` (target in `gnollhackmac.vcxproj`) — `libgnollhackmac.dylib` → `Platforms/MacOS/libs/` (gitignored)
 
 ### Android prerequisites: WSL with SSH, VS Connection Manager (127.0.0.1:22).
 
-### iOS prerequisites: WSL + vcremote on Mac + Pair to Mac + PuTTY/PSCP for downloading `libgnollhackios.a`. See wiki pages for setup.
+### iOS prerequisites: WSL + key-based SSH to the Mac (wiki page *Set Up SSH Access to the Mac for Native Libraries*) + Xcode on the Mac + Pair to Mac for the .NET MAUI app.
+
+### Apple engine libraries over SSH
+
+`gnollhackios.vcxproj` and `gnollhackmac.vcxproj` are Makefile-type projects with `x64` configurations. Both import `win/win32/vs/gnollhackapple.props`, which holds the shared engine source list and the build, rebuild and clean command lines, and run `win/win32/xpl/libapple/Build-AppleEngine.ps1`. The script packs the listed sources and the headers into a tar file, copies it to the Mac with Windows' OpenSSH `scp`, unpacks it beside `~/gnollhack-build/<ios|macos>-<Configuration>-<computer>-<hash>/tree` and copies into the tree only the files whose content changed (`sync-tree.sh`), runs `make -f engine.mk` there (`win/win32/xpl/libapple/engine.mk`) with Xcode's clang through `xcrun`, and copies the library back to the project's output folder. The objects stay on the Mac between runs. Each checkout (the hash is of its path) and each computer has its own folder, so worktrees never share objects.
+
+- **Source list:** `gnollhackapple.props` lists the same engine sources as `gnollhacklinux.vcxproj`. Adding an engine source means adding it to both.
+- **Mac host:** an OpenSSH host alias with key-based login: the script's `-SshHost`, else the environment variable `GNOLLHACK_MAC_SSH_HOST`, else `gnollhack-mac`. From MSBuild: `/p:GnhAppleExtraArgs="-SshHost <alias>"`. Every connection uses `BatchMode`, so a missing key or an unknown host key fails at once instead of prompting. The setup is on the wiki page *Set Up SSH Access to the Mac for Native Libraries*.
+- **Recompiling:** make recompiles a source when it, any header, `engine.mk` or the compiler flags and SDK
+  (`obj/flags.txt`) changed. Change detection is by content, not by Windows file times. Every WSL data pipeline run
+  rewrites `date_unix.h`, and every object depends on every header, so a solution build usually recompiles
+  everything. `Rebuild` (`-Clean`) always does. `Clean` (`-CleanOnly`) deletes the local library and this checkout's
+  folder on the Mac.
+- **Output:** each source prints `Compiling <file>`, and its diagnostics follow as one block (`WA-BUILD-0004`), with
+  paths rewritten to this checkout so that Visual Studio's Error List opens them.
+- **Deployment targets:** `GHiOSDeploymentTarget` in `gnollhackios.vcxproj` and `GHMacDeploymentTarget` in `gnollhackmac.vcxproj` are the source of truth.
+- **Errors:** the script prints canonical MSBuild errors: `GNHAB001` `ssh`, `scp` or `tar` missing (Windows' OpenSSH Client), `GNHAB002` the platform's `date_unix.h` missing, `GNHAB003` the source list missing or naming a file outside the repository, `GNHAB004` an invalid host alias or remote folder, `GNHAB005` packing failed, `GNHAB006` the Mac unreachable, `GNHAB007` the SDK unavailable (Xcode not selected or its license not accepted), `GNHAB008` preparing or cleaning the remote folder failed, `GNHAB009` copying or unpacking the sources failed, `GNHAB010` the build on the Mac failed (the compiler output is above it), `GNHAB011` copying the library back failed; warning `GNHAB012` means a clean could not reach the Mac.
+- **No `vcremote`, no PSCP:** the C++ build needs neither `vcremote` on the Mac nor download scripts. Pair to Mac is still needed for the .NET MAUI iOS app (`GnollHackM.csproj`).
 
 ## The `makedefsdroid` Project
 
@@ -208,12 +230,13 @@ dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net10.0-ios 
 
 > Check `GnollHackM.csproj` for current target framework monikers — they change over time.
 
-## Avalonia Port (Linux and Windows)
+## Avalonia Port (Linux, Windows and macOS)
 
-`GnollHackM.csproj` with `-p:GnhAvalonia=true` targets `net11.0` on Avalonia.Controls.Maui instead of the platform backends. The runtime identifier defaults to the host's, so a build on Windows is the `win-x64` flavor (development and testing only, not shipped; `Platforms/Windows` libs and `gnh`, data in `%LOCALAPPDATA%\GnollHack-Avalonia`), and `-r linux-x64` is the shipped Linux flavor (`LINUX` and `SENTRY` defined). Both take the tilesets from `win/win32/tileset` and the Desktop banks from `win/win32/bank/Desktop` directly, so neither needs staged assets. Human-facing walkthroughs: wiki pages `Development/Avalonia Port`, `Development/Build Instructions for Avalonia Linux Version on Windows`, `Development/Build Instructions for Avalonia Windows Version on Windows`.
+`GnollHackM.csproj` with `-p:GnhAvalonia=true` targets `net11.0` on Avalonia.Controls.Maui instead of the platform backends. The runtime identifier defaults to the host's, so a build on Windows is the `win-x64` flavor (development and testing only, not shipped; `Platforms/Windows` libs and `gnh`, data in `%LOCALAPPDATA%\GnollHack-Avalonia`), `-r linux-x64` is the shipped Linux flavor (`LINUX` and `SENTRY` defined), and `-r osx-arm64` is the macOS flavor (`MACOS` defined, development only; see [macOS flavor](#macos-flavor)). All take the tilesets from `win/win32/tileset` and the Desktop banks from `win/win32/bank/Desktop` directly, so neither needs staged assets. Human-facing walkthroughs: wiki pages `Development/Avalonia Port`, `Development/Build Instructions for Avalonia Linux Version on Windows`, `Development/Build Instructions for Avalonia Windows Version on Windows`.
 
 - **Always run `dotnet` from `GnollHackM/Platforms/Avalonia`.** Its `global.json` pins the SDK and workload set; from the repository root or `GnollHackM` another SDK is chosen. First install the SDK named by `sdk.version` in that file (it may be a preview or release candidate), then run `dotnet workload install maui` in that folder, so that the pinned `workloadVersion` is installed.
 - **No `-t:Compile`** for this flavor (MSB4057); verify with a full build, about 30 s.
+- **Where Avalonia C# goes.** `Platforms/Avalonia/` holds what every runtime identifier compiles. C# that can only work on one OS goes in that OS's folder, `Platforms/Linux/` or `Platforms/MacOS/`, beside its native libraries and packaging, in the subfolder it would have under `Platforms/Avalonia/` (`Cef/`, `Rendering/`). `GnollHackM.csproj` compiles each OS folder only for its runtime identifier (`MauiPlatformSpecificFolder` items; MAUI drops every other `.cs` under `Platforms/`). A file shared by several OSes stays in `Platforms/Avalonia/` with its OS branches under `#if LINUX` / `#if MACOS`, and files in an OS folder keep their file-level `#if` for projects that link them directly.
 
 ```powershell
 cd win\win32\xpl\GnollHackM\Platforms\Avalonia
@@ -231,6 +254,40 @@ Publish needs `-f net11.0`. A Release publish uploads Sentry symbols when the ma
 3. **Run** `GnollHackM/bin/Debug/net11.0/win-x64/GnollHackM.exe`. To debug, attach Visual Studio to it (Managed .NET Core); starting `GnollHackM.sln` runs the WinUI 3 app instead.
 
 `GnhCheckAvaloniaNativeInputs` in `GnollHackM.csproj` stops either flavor's build with `GNHNI001` (engine or `nhdat`), `GNHNI002` (banks) or `GNHNI003` (tilesets), naming each missing file. `-p:GnhAllowMissingNativeInputs=true` makes them warnings, for a compile check on a machine without them.
+
+### macOS flavor
+
+`-r osx-arm64` (Apple Silicon) and `-r osx-x64` (Intel) build the macOS flavor, with the `MACOS` and `SENTRY` defines. It is not shipped yet. Step 4 packages it as a signed `GnollHack.app`, DMG and Steam depot content; steps 2-3 are the unbundled development loop. Releases are arm64 only. Controllers work through GameController (`DEVEL/gamepad_controls.md`). C# files used only by this flavor go in `Platforms/MacOS/` (see "Where Avalonia C# goes" above).
+
+1. **Native solution**: build `GnollHack.sln` with the `macOS` platform in Release (WSL and the Mac; see [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh)). `CopyToMauiMacLibs` puts `libgnollhackmac.dylib` in `Platforms/MacOS/libs/`, beside FMOD's committed `libfmod.dylib` and `libfmodstudio.dylib`; the game data is the Android-format `Platforms/Android/gnh`, as for Linux.
+2. **Publish** from `Platforms/Avalonia`: `dotnet publish ..\..\GnollHackM.csproj -p:GnhAvalonia=true -r osx-arm64 -f net11.0 -c Release --self-contained true -p:GnhSentryUpload=false`. The publish runs on Windows; the .NET SDK signs the apphost ad hoc.
+3. **Run** on the Mac from Terminal, unbundled: copy the `publish` folder over (a tar file made on Windows loses the executable bits, so `chmod +x GnollHackM` there), ad-hoc sign `libgnollhackmac.dylib` (`codesign --force --sign -`: the linker signs only its arm64 slice), and start `./GnollHackM`. Data goes to `~/Library/Application Support/GnollHack`. The agents' copy is `~/gnollhack-dev/osx-arm64.tar` plus a `VERSION` file (the GnollHack commit and `git status --short`), unpacked by `~/gnollhack-dev/deploy-mac-build.sh`, a script that lives only on the Mac: it replaces `~/gnollhack-dev/osx-arm64` with the tar's content, moves `VERSION` into it, sets the executable bits of `GnollHackM` and `createdump`, ad-hoc signs `GnollHackM` and every `*.dylib` that `codesign -v` rejects, and prints `VERSION`. Agents never start the game on the Mac: a launch over SSH opens windows and alerts on the screen of whoever is at it. `~/gnollhack-dev/GnollHackDev.app`, a wrapper whose `Contents/MacOS/launch` execs this copy, lets Steam add it as a non-Steam game.
+4. **Package**: `Platforms/MacOS/Packaging/Build-MacPackage.ps1 -Targets App,Dmg,Steam`, run on Windows.
+   - It publishes for osx-arm64 as a single file (`PublishSingleFile`, with native libraries and content left out of the bundle), stages the publish with LF copies of the packaging files, and runs `package-mac.sh` on the Mac over SSH (the `-SshHost` rule of `Build-AppleEngine.ps1`).
+   - On the Mac, it assembles `GnollHack.app`: Mach-O files in `Contents/MacOS`, `gnh`, `banks` and `tileset` in `Contents/Resources`, where `GHAvaloniaPaths.AssetDirectory` finds them in a bundle. It makes the `.icns` from `Resources/AppIcon/macOS/appicon-macos.png`, a 1024 x 1024 master that `Platforms/MacOS/Packaging/New-MacAppIcon.ps1` composes from the iOS icon's two layers (`Resources/AppIcon/iOS/appicon.png` and `appiconios.png`) in Apple's macOS 11+ icon layout; run it again and commit the output when either layer changes. It writes `Info.plist` from `Info.plist.template` (bundle id `com.soundmindgames.GnollHackMac`, distinct from the iOS app's).
+   - It signs every Mach-O and then the bundle with the hardened runtime and `GnollHack.entitlements` (the .NET defaults; no sandbox, which Steam does not support).
+   - With `-NotaryProfile`, it notarizes and staples with `notarytool`; then it makes the DMG and the Steam content with `app_build_mac.vdf` and `depot_build_mac.vdf`.
+   - `-SigningIdentity` defaults to `-` (ad hoc, which runs only on the Mac that made it). A release passes `-SigningIdentity "Developer ID Application: Hyvan mielen pelit ry (CUG8RS847T)" -NotaryProfile gnollhack-notary`, as verified on 2026-11-05: both notarizations were accepted, and the stapled app and DMG pass `spctl` as "Notarized Developer ID".
+   - **Signing keychain:**
+     - An SSH session cannot use the login keychain, which stays locked there: `codesign` fails with `errSecInternalComponent`, and `notarytool` with `keychainLocked`. So the Developer ID identity, the Apple intermediate certificate and the `gnollhack-notary` profile (an App Store Connect Team API key) live in `~/Library/Keychains/gnollhack-signing.keychain-db`.
+     - Its password is in `~/.gnollhack/signing-keychain-password` (mode 600). `package-mac.sh` unlocks it and passes `--keychain` to `codesign` and `notarytool`. `-Keychain` and `-KeychainPasswordFile` override the defaults; `-Keychain ''` uses the default search list, for a run from Terminal on the Mac.
+     - `codesign` takes the certificate from `--keychain` but looks up the private key along the user's search list. Because the login keychain holds a second copy of the identity, the script puts the signing keychain first for the run and restores the original order on exit. The per-session (`-d dynamic`) search list does not exist on macOS 26.
+     - The one-time setup, step by step, is on the wiki page `Development/Build Instructions for Avalonia macOS Version on Windows`.
+     - Pitfalls seen in the setup:
+       - Terminal may not read `~/Desktop` ("Operation not permitted");
+       - `set-key-partition-list` must run after the key is imported;
+       - agents never handle the `.p12`, the `.p8` or any password.
+   - The zip, the DMG, `SHA256SUMS` and `BUILD-INFO` come back to `GnollHackM\bin\MacPackages\<version>-<build>\`. The Steam content stays in `~/gnollhack-build/package/<version>-<build>/steam`, where a person uploads it with `steamcmd +run_app_build`; the script never uploads. `-DevCopy` also puts the app at `~/gnollhack-dev/GnollHack.app`.
+   - Errors are `GNHMP0nn` (Windows) and `GNHMP1nn` (Mac).
+
+- **Rendering**: Metal, then OpenGL, then software, unless the Metal Rendering setting is off (OpenGL, then software; read at startup, so a change applies after a restart). `GNOLLHACK_MAC_RENDERING=metal`, `=opengl` or `=software` overrides the setting for one run. The GPU control prints `GnollHack: Avalonia GL: GPU context backend <Metal|OpenGL>` on standard error when its context changes; no such line means the map is not on the GPU.
+- **GPU budget**: Skia's resource cache is 2 GiB on macOS and 1.5 GiB elsewhere (`SkiaOptions` in `AvaloniaDesktopProgram`). On Metal some levels need about 1.3 GB, against about 0.7 GB on OpenGL, and a full cache re-uploads textures every frame (about 66 ms per paint). Skia keeps unused textures until the cache is full, so a long session can approach the limit. The app log's `Avalonia GL: Skia GPU cache` line shows the use every 10 s. GnollHack's GPU cache setting does not apply to the Avalonia build.
+- **Logs**: started outside a terminal, standard output and error go to `~/Library/Logs/GnollHack/GnollHack.log` (`GHMacStderrLog`); the previous run's is `GnollHack.previous.log`.
+- **Menu bar**: `GHMacApplicationMenu` names the application GnollHack (Avalonia's default is "Avalonia Application") and replaces Avalonia's default application menu items, so that Quit (Cmd+Q) and Close Window (Cmd+W) go through the game's own close flow; a quit from the Dock or at logout saves without asking.
+- **Option key**: by default Option is the meta key, and the letter comes from the key's unmodified character in the current layout (`GHMacKeyboardLayout`), not from Avalonia's US-position key. With the macOS setting **Allow Option Keys** on, Option types any printable ASCII character the layout puts there, such as `@` on Option+2 in Finnish (`GHAvaloniaKeyText.ClassifyMacOption`).
+- **Sentry**: managed only (`GHAvaloniaSentry`): exceptions, breadcrumbs and release health, with the tag `macos.package` (`bundle`, `steam` or `unbundled`). There is no native crash capture on macOS yet. `GNOLLHACK_SENTRY_TEST=1` sends one test message at startup, on Linux too.
+- **FMOD**: `libfmodstudio.dylib` refers to its core as `@rpath/libfmod.dylib` and has no run paths, so `AvaloniaDesktopProgram.ResolveMacLibrary` loads `libfmod.dylib` from the application directory first.
+- **Web view**: Avalonia's `NativeWebView` with the WKWebView adapter, part of the system.
 
 ### Native prerequisites of the Linux flavor
 
@@ -279,12 +336,14 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 |---|---|
 | `GnollHackM/Platforms/Windows/libs/gnollhackwin.dll` | `gnollhackwin.vcxproj` |
 | `GnollHackM/Platforms/Android/libs/{arm64-v8a,x86_64}/libgnollhackdroid.so` | `aftergnollhackdroid.proj` |
-| `GnollHackM/Platforms/iOS/libs/libgnollhackios.a` | `aftergnollhackios.proj` |
+| `GnollHackM/Platforms/iOS/libs/libgnollhackios.a` | `gnollhackios.vcxproj` on the Mac, copied by `aftergnollhackios.proj` (`iPhone`, `iPhoneSimulator`, `Debug\|MauiAll`, `Any CPU`) |
+| `GnollHackM/Platforms/MacOS/libs/libgnollhackmac.dylib` | `gnollhackmac.vcxproj` on the Mac, copied by `CopyToMauiMacLibs` (`macOS` platform; the last configuration built) |
 | `GnollHackM/Platforms/{Windows,Android,iOS}/gnh/nhdat` | `afterdlb.proj` / `afterdroidutils.proj` |
 | `GnollHackM/Platforms/Windows/gnh/recover.exe` | `recoverwin.vcxproj` (from `gnollhackwin.vcxproj`) |
 | `GnollHackM/Platforms/Linux/gnh/recover` (committed) | `Build-LinuxRecover.ps1` (manual) |
 | `GnollHackM/Platforms/Linux/libs/libgnollhacklinux.so` | `gnollhacklinux.vcxproj` (`Linux` platform; the last configuration built) |
 | `win/win32/xpl/gnollhacklinux/date_unix.h` | `afterdroidutils.proj` (WSL pipeline) |
+| `win/win32/xpl/gnollhackmac/date_unix.h` | `afterdroidutils.proj` (WSL pipeline) |
 | `GnollHackM/Platforms/*/tileset/*.ghpng` (3 each; WinUI 3, Android, iOS — the Avalonia port reads `win/win32/tileset`) | `copytilesetdroid.proj` |
 | `GnollHackM/Platforms/*/banks/*.bank` (6 each; WinUI 3, Android, iOS — the Avalonia port reads `win/win32/bank/Desktop`) | `update-wsl-in-*.bat` |
 | 32 generated `.xaml` in `GnollHackM/` | `makedefsdroid` `InitialBuild` |
@@ -309,6 +368,9 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 | `... needs GLIBC_2.xx, above the ... floor` | A Linux binary was built without the sysroot; run `Install-LinuxSysroot.ps1` in the distribution that built it, then rebuild. |
 | `error: the glibc 2.27 sysroot is missing` | Run `Install-LinuxSysroot.ps1` in the distribution the Connection Manager points to. |
 | `undefined reference to '...'` linking a Linux binary | `-z defs` caught a function glibc 2.27 lacks (or keeps in `libdl`/`librt`); avoid it or link its library. |
+| `error GNHAB006: Cannot connect to the Mac` | The Mac is asleep or unreachable, Remote Login is off, or `ssh gnollhack-mac` (or the alias in use) does not log in without a password. See [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh). |
+| `error GNHAB007: The ... SDK is not available on the Mac` | Xcode is missing, not selected, or its license is not accepted: on the Mac, `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` and `sudo xcodebuild -license accept`. |
+| `error GNHAB002: ...date_unix.h is missing` | The WSL data pipeline has not run: build `GnollHack.sln` with the `macOS` or `iPhone` platform, which builds the `*droid` tools first. |
 
 More troubleshooting on the GnollHack Wiki page *Troubleshooting Building GnollHack with .NET MAUI*.
 

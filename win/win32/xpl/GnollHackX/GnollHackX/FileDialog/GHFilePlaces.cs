@@ -28,6 +28,7 @@ namespace GnollHackX
         protected const string ScreenshotsName = "GnollHack Screenshots";
         protected const string DocumentsName = "Documents";
         protected const string DownloadsName = "Downloads";
+        protected const string DesktopName = "Desktop";
         protected const string ExportsName = "GnollHack Exports";
         protected const string SaveFolderName = "GnollHack";
 
@@ -42,6 +43,8 @@ namespace GnollHackX
         {
 #if GNH_AVALONIA && LINUX
             return new GHFreedesktopFilePlaces();
+#elif GNH_AVALONIA && MACOS
+            return new GHMacFilePlaces();
 #elif GNH_AVALONIA || WINDOWS
             return new GHWindowsFilePlaces();
 #else
@@ -63,6 +66,78 @@ namespace GnollHackX
             }
 
             places.Add(place);
+        }
+
+        /* The game's Steam screenshots folder under a Steam userdata folder: the first user's
+           760/remote/<id>/screenshots that exists. Null outside Steam or when none exists. */
+        protected static string FindSteamScreenshotsFolder(string userDataFolder, Func<string, string> getEnvironment,
+            Func<string, bool> directoryExists, Func<string, IEnumerable<string>> listDirectories)
+        {
+            string id = GetSteamShortcutId(getEnvironment);
+            if (id == null)
+            {
+                return null;
+            }
+
+            IEnumerable<string> users = listDirectories(userDataFolder);
+            if (users == null)
+            {
+                return null;
+            }
+
+            foreach (string user in users)
+            {
+                string candidate = user.TrimEnd('/') + "/760/remote/" + id + "/screenshots";
+                if (directoryExists(candidate))
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
+        }
+
+        /* SteamAppId when nonzero, else the high 32 bits of SteamGameId. Null with neither. */
+        private static string GetSteamShortcutId(Func<string, string> getEnvironment)
+        {
+            ulong value;
+            if (TryParseId(getEnvironment("SteamAppId"), out value) && value != 0)
+            {
+                return value.ToString(CultureInfo.InvariantCulture);
+            }
+
+            if (TryParseId(getEnvironment("SteamGameId"), out value) && (value >> 32) != 0)
+            {
+                return (value >> 32).ToString(CultureInfo.InvariantCulture);
+            }
+
+            return null;
+        }
+
+        private static bool TryParseId(string text, out ulong value)
+        {
+            return ulong.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out value);
+        }
+
+        protected static string GetLastSegment(string path)
+        {
+            return path.Substring(path.LastIndexOf('/') + 1);
+        }
+
+        protected static IEnumerable<string> ListDirectoriesOrEmpty(string path)
+        {
+            try
+            {
+                return new List<string>(Directory.EnumerateDirectories(path));
+            }
+            catch (IOException)
+            {
+                return new List<string>();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return new List<string>();
+            }
         }
     }
 
@@ -173,55 +248,7 @@ namespace GnollHackX
 
         private string FindScreenshotsFolder()
         {
-            string id = GetSteamShortcutId();
-            if (id == null)
-            {
-                return null;
-            }
-
-            IEnumerable<string> users = _listDirectories(_home + SteamUserDataFolder);
-            if (users == null)
-            {
-                return null;
-            }
-
-            foreach (string user in users)
-            {
-                string candidate = user.TrimEnd('/') + "/760/remote/" + id + "/screenshots";
-                if (_directoryExists(candidate))
-                {
-                    return candidate;
-                }
-            }
-
-            return null;
-        }
-
-        /* SteamAppId when nonzero, else the high 32 bits of SteamGameId. Null with neither. */
-        private string GetSteamShortcutId()
-        {
-            ulong value;
-            if (TryParseId(_getEnvironment("SteamAppId"), out value) && value != 0)
-            {
-                return value.ToString(CultureInfo.InvariantCulture);
-            }
-
-            if (TryParseId(_getEnvironment("SteamGameId"), out value) && (value >> 32) != 0)
-            {
-                return (value >> 32).ToString(CultureInfo.InvariantCulture);
-            }
-
-            return null;
-        }
-
-        private static bool TryParseId(string text, out ulong value)
-        {
-            return ulong.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out value);
-        }
-
-        private static string GetLastSegment(string path)
-        {
-            return path.Substring(path.LastIndexOf('/') + 1);
+            return FindSteamScreenshotsFolder(_home + SteamUserDataFolder, _getEnvironment, _directoryExists, _listDirectories);
         }
 
         private static string ReadFileOrNull(string path)
@@ -239,21 +266,130 @@ namespace GnollHackX
                 return null;
             }
         }
+    }
 
-        private static IEnumerable<string> ListDirectoriesOrEmpty(string path)
+    /* macOS: the home folders, the game's Steam screenshots and the volumes under /Volumes. Paths are built with '/',
+       as in GHFreedesktopFilePlaces, so that the class behaves the same under test on Windows. */
+    public sealed class GHMacFilePlaces : GHFilePlaces
+    {
+        private const string VolumesFolder = "/Volumes";
+        private const string SteamUserDataFolder = "/Library/Application Support/Steam/userdata";
+
+        private readonly Func<string, string> _getEnvironment;
+        private readonly string _home;
+        private readonly Func<string, bool> _directoryExists;
+        private readonly Func<string, IEnumerable<string>> _listDirectories;
+        private readonly Func<IEnumerable<string>> _listVolumes;
+
+        public GHMacFilePlaces()
+            : this(Environment.GetEnvironmentVariable, Environment.GetFolderPath(Environment.SpecialFolder.UserProfile),
+                  Directory.Exists, ListDirectoriesOrEmpty, ListVolumes)
         {
+        }
+
+        /* listDirectories and listVolumes return full paths */
+        public GHMacFilePlaces(Func<string, string> getEnvironment, string home, Func<string, bool> directoryExists,
+            Func<string, IEnumerable<string>> listDirectories, Func<IEnumerable<string>> listVolumes)
+        {
+            _getEnvironment = getEnvironment;
+            _home = (home ?? "").TrimEnd('/');
+            _directoryExists = directoryExists;
+            _listDirectories = listDirectories;
+            _listVolumes = listVolumes;
+        }
+
+        public override IList<GHFilePlace> GetOpenPlaces(bool isImport)
+        {
+            string documents = _home + "/" + DocumentsName;
+            List<GHFilePlace> places = new List<GHFilePlace>();
+            if (isImport)
+            {
+                AddIfExists(places, new GHFilePlace(ExportsName, documents + "/" + SaveFolderName));
+            }
+
+            AddIfExists(places, new GHFilePlace(PicturesName, _home + "/" + PicturesName));
+            string screenshots = FindSteamScreenshotsFolder(_home + SteamUserDataFolder, _getEnvironment, _directoryExists, _listDirectories);
+            if (screenshots != null)
+            {
+                AddIfExists(places, new GHFilePlace(ScreenshotsName, screenshots, false, true));
+            }
+
+            AddIfExists(places, new GHFilePlace(DesktopName, _home + "/" + DesktopName));
+            AddIfExists(places, new GHFilePlace(DocumentsName, documents));
+            AddIfExists(places, new GHFilePlace(DownloadsName, _home + "/" + DownloadsName));
+            foreach (string volume in _listVolumes())
+            {
+                AddIfExists(places, new GHFilePlace(GetLastSegment(volume), volume));
+            }
+
+            return places;
+        }
+
+        public override IList<GHFilePlace> GetSavePlaces()
+        {
+            List<GHFilePlace> places = new List<GHFilePlace>();
+            AddSavePlace(places, DocumentsName, _home + "/" + DocumentsName);
+            AddSavePlace(places, DownloadsName, _home + "/" + DownloadsName);
+            foreach (string volume in _listVolumes())
+            {
+                if (_directoryExists(volume))
+                {
+                    AddSavePlace(places, GetLastSegment(volume), volume);
+                }
+            }
+
+            return places;
+        }
+
+        private static void AddSavePlace(List<GHFilePlace> places, string parentName, string parentPath)
+        {
+            AddUnique(places, new GHFilePlace(parentName + "/" + SaveFolderName, parentPath + "/" + SaveFolderName, true),
+                StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void AddIfExists(List<GHFilePlace> places, GHFilePlace place)
+        {
+            if (_directoryExists(place.Path))
+            {
+                AddUnique(places, place, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        /* The volumes mounted under /Volumes, from the mount table. A folder there that is not a mount point, such as
+           a leftover "Data", is left out, and so is the startup disk, which /Volumes lists only as a symbolic link
+           to /. Hidden mount points are left out too. */
+        private static IEnumerable<string> ListVolumes()
+        {
+            List<string> volumes = new List<string>();
+            DriveInfo[] drives;
             try
             {
-                return new List<string>(Directory.EnumerateDirectories(path));
+                drives = DriveInfo.GetDrives();
             }
             catch (IOException)
             {
-                return new List<string>();
+                return volumes;
             }
             catch (UnauthorizedAccessException)
             {
-                return new List<string>();
+                return volumes;
             }
+
+            foreach (DriveInfo drive in drives)
+            {
+                string path = (drive.Name ?? "").TrimEnd('/');
+                if (!path.StartsWith(VolumesFolder + "/", StringComparison.OrdinalIgnoreCase)
+                    || path.IndexOf('/', VolumesFolder.Length + 1) >= 0
+                    || GetLastSegment(path).StartsWith(".", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                if (!volumes.Contains(path))
+                    volumes.Add(path);
+            }
+
+            return volumes;
         }
     }
 

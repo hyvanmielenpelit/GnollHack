@@ -5,7 +5,7 @@
 
 .DESCRIPTION
     The used API is every function exported by gnhsentry.def, every sentry_ function declared extern in
-    GnollHackM\GHSentryNative.cs and GnollHackM\Platforms\Avalonia\GHAvaloniaSentryNative.cs, sentry_handle_exception
+    GnollHackM\GHSentryNative.cs and GnollHackM\Platforms\Linux\GHAvaloniaSentryNative.cs, sentry_handle_exception
     (called by gnhsentry.c, not exported), and the types sentry_value_t, sentry_ucontext_t,
     sentry_handler_strategy_t, sentry_options_t, sentry_transport_t and sentry_envelope_t. gnhsentry.c itself is not
     scanned: the compiler checks it against include\sentry.h.
@@ -295,7 +295,7 @@ try
     $VendoredHeaderPath = Join-Path $ScriptDir 'include\sentry.h'
     $CSharpPaths = @(
         (Join-Path $GnollHackMDir 'GHSentryNative.cs'),
-        (Join-Path $GnollHackMDir 'Platforms\Avalonia\GHAvaloniaSentryNative.cs'))
+        (Join-Path $GnollHackMDir 'Platforms\Linux\GHAvaloniaSentryNative.cs'))
 
     $newHeaderPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($NewHeader)
     $oldHeaderPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OldHeader)

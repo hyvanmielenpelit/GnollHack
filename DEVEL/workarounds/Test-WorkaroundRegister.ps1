@@ -66,7 +66,7 @@ $OptionalFields = @('Fixed upstream in', 'Related', 'Removed', 'Superseded by')
 $StatusValues = @('active', 'removable', 'removed', 'superseded')
 $UpstreamValues = @('unreported', 'reported', 'fixed-unreleased', 'released', 'wontfix', 'not-needed')
 $CheckResults = @('still-needed', 'not-needed', 'unverified', 'removed')
-$PlatformPattern = '^(Android|iOS|Mac \(iPad app\)|Windows|Linux)( \((Avalonia|MAUI)\))?$'
+$PlatformPattern = '^(Android|iOS|Mac \(iPad app\)|macOS|Windows|Linux)( \((Avalonia|MAUI)\))?$'
 $IdPattern = 'WA-[A-Z]+-\d{4}'
 
 # Known issues: their own fields and vocabularies; the upstream vocabulary is shared.

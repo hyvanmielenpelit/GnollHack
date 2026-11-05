@@ -13,9 +13,9 @@ namespace GnollHackM
 {
     /* ISecureStorage over securestore.bin in the data directory: one AES-GCM encrypted JSON object
        of all keys and values. The key is derived with HKDF-SHA256 from the machine id
-       (/etc/machine-id on Linux, the machine name elsewhere) and a fixed application salt, so this is
-       obfuscation-level protection only: any process of the same user can derive the same key. On
-       Linux the file is created with mode 0600. A file that cannot be decrypted or parsed, for
+       (/etc/machine-id on Linux, the hardware UUID on macOS, the machine name elsewhere) and a fixed
+       application salt, so this is obfuscation-level protection only: any process of the same user can
+       derive the same key. On Linux and macOS the file is created with mode 0600. A file that cannot be decrypted or parsed, for
        example after the machine id changed, is kept as securestore.bin.corrupt and the store starts
        empty. File layout: "GHS1", 12-byte nonce, 16-byte tag, ciphertext. */
     public sealed class GHAvaloniaSecureStorage : ISecureStorage
@@ -198,7 +198,7 @@ namespace GnollHackM
                 Access = FileAccess.Write,
                 Share = FileShare.None,
             };
-#if LINUX
+#if LINUX || MACOS
             if (!OperatingSystem.IsWindows())
                 options.UnixCreateMode = UnixFileMode.UserRead | UnixFileMode.UserWrite;
 #endif
@@ -287,6 +287,18 @@ namespace GnollHackM
                     continue;
                 }
             }
+#elif MACOS
+            try
+            {
+                byte[] uuid = new byte[16];
+                Timespec wait = new Timespec();
+                wait.tv_sec = 1;
+                if (gethostuuid(uuid, ref wait) == 0)
+                    return FormatUuid(uuid);
+            }
+            catch (Exception)
+            {
+            }
 #endif
             try
             {
@@ -299,6 +311,32 @@ namespace GnollHackM
             }
             return "GnollHack";
         }
+
+#if MACOS
+        [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]
+        private struct Timespec
+        {
+            public long tv_sec;
+            public long tv_nsec;
+        }
+
+        [System.Runtime.InteropServices.DllImport("libSystem.dylib")]
+        private static extern int gethostuuid(byte[] id, ref Timespec wait);
+
+        /* In the byte order of uuid_unparse_upper */
+        private static string FormatUuid(byte[] uuid)
+        {
+            StringBuilder sb = new StringBuilder(36);
+            int i;
+            for (i = 0; i < uuid.Length; i++)
+            {
+                if (i == 4 || i == 6 || i == 8 || i == 10)
+                    sb.Append('-');
+                sb.Append(uuid[i].ToString("X2"));
+            }
+            return sb.ToString();
+        }
+#endif
     }
 
     [JsonSerializable(typeof(Dictionary<string, string>), TypeInfoPropertyName = "SecureStoreDictionary")]

@@ -18,11 +18,11 @@ issues at the end of the file. Never renumber or reuse an ID.
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaMargin.cs` (`GHAvaloniaMargin.Register`)
 - Remove when: An Avalonia.Controls.Maui release no longer copies the MAUI margin to the Avalonia control, and Verify removal passes.
 
@@ -42,6 +42,7 @@ text must not wrap early or disappear.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0002: ACM Skia handler mappers chain to MAUI's inert view mappers
 
@@ -51,12 +52,12 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui.SkiaSharp.Views, Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasViewHandler.cs` (`GHAvaloniaCanvasViewHandler.GHMapper`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLViewHandler.cs` (`GHAvaloniaGLViewHandler.GHMapper`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefWebViewHandler.cs` (`GHCefWebViewHandler.Mapper`)
+- Last checked: 2026-11-05
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasViewHandler.cs` (`GHAvaloniaCanvasViewHandler.GHMapper`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLViewHandler.cs` (`GHAvaloniaGLViewHandler.GHMapper`); `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefWebViewHandler.cs` (`GHCefWebViewHandler.Mapper`)
 - Remove when: ACM's SKCanvasViewHandler and SKGLViewHandler mappers chain to ACM's own view mappers in a release GnollHack uses, and Verify removal passes.
 - Related: WA-AVALONIA-0003
 
@@ -76,6 +77,7 @@ size, hide and show as on WinUI.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0003: Aligned Skia views collapse to zero size
 
@@ -85,12 +87,12 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui.SkiaSharp.Views
 - Defective version: Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: https://github.com/AvaloniaUI/Avalonia.Controls.Maui/issues/201
 - Upstream status when added: released
 - Upstream status: released
 - Fixed upstream in: https://github.com/AvaloniaUI/Avalonia.Controls.Maui/pull/230 (contained in 11.0.0-rc.2.26287.618)
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasViewHandler.cs` (`GHAvaloniaCanvasViewHandler.MapLayoutAlignment`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLViewHandler.cs` (`GHAvaloniaGLViewHandler.MapLayoutAlignment`)
 - Remove when: ACM stops mapping MAUI layout options onto the alignment of Skia controls, or GnollHack's Skia controls stop measuring zero, and Verify removal passes.
 - Related: WA-AVALONIA-0002
@@ -116,6 +118,7 @@ flavor and check that Skia views with Start, Center or End options keep their si
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | Issue closed as completed by PR 230, which the shipped version contains; not re-tested with GnollHack's MeasureOverride.
 - 2026-10-23 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | still-needed | ACM's ViewHandler still maps layout alignment; PR 230's fix is in SKCanvasViewControl.MeasureOverride, which GHAvaloniaCanvasControl and GHAvaloniaGLControl override to return zero. Decompiled shipped package, not a run.
+- 2026-11-05 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0004: ACM ViewHandler.GetDesiredSize is not virtual
 
@@ -125,11 +128,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/CustomLabel.cs` (`AutoSizeSKCanvasViewHandler`)
 - Remove when: ACM's `GetDesiredSize` can be overridden in a release GnollHack uses, and Verify removal passes.
 
@@ -147,6 +150,7 @@ headers) have the same size as on WinUI.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0005: ACM does not apply InputTransparent to layouts
 
@@ -156,11 +160,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaLayoutInput.cs` (`GHAvaloniaLayoutInput.Register`)
 - Remove when: ACM's layout handler honors `InputTransparent` and `CascadeInputTransparent` in a release GnollHack uses, and Verify removal passes.
 
@@ -180,6 +184,7 @@ below them.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0006: Scroll view content keeps its first alignment
 
@@ -189,11 +194,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaAlignment.cs` (`GHAvaloniaAlignment.MapScrollContent`)
 - Remove when: ACM updates a scroll view content's alignment when its layout options change, in a release GnollHack uses, and Verify removal passes.
 
@@ -211,6 +216,7 @@ VaultPage and change what it shows; the content must be aligned as on WinUI.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0007: Check box sits above the center of its label
 
@@ -220,11 +226,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaAlignment.cs` (`GHAvaloniaAlignment.MapCheckBoxTemplate`)
 - Remove when: ACM's check box centers its box vertically in a release GnollHack uses, and Verify removal passes.
 
@@ -241,6 +247,7 @@ open SettingsPage and check that each box lines up with its label.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0008: ACM leaves some control colors to the Fluent theme
 
@@ -250,11 +257,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-27
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapButtonDisabledTextColor`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapButtonDisabledBackground`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapCaret`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaControlTheming.cs` (`GHAvaloniaControlTheming.MapCheckBoxColor`)
 - Remove when: ACM maps these colors as MAUI's WinUI handlers do, in a release GnollHack uses, and Verify removal passes.
 
@@ -286,6 +293,7 @@ WinUI.
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
 - 2026-10-27 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | still-needed | Disabled button background seen on the Steam Deck; ACM's ButtonExtensions sets no ButtonBackgroundDisabled. Background mapping added.
+- 2026-11-05 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0009: ACM Skia controls raise no hover touch actions
 
@@ -295,11 +303,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui.SkiaSharp.Views
 - Defective version: Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaPointerHover.cs` (`GHAvaloniaPointerHover`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.OnPointerEntered`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLControl.cs` (`GHAvaloniaGLControl.OnPointerEntered`)
 - Remove when: ACM's Skia controls raise Entered, Moved and Exited for a mouse without contact, in a release GnollHack uses, and Verify removal passes.
 
@@ -318,6 +326,7 @@ flavor and check that hovering the mouse over the map still updates the hover di
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0010: ACM canvas view paints inside the render pass
 
@@ -327,11 +336,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui.SkiaSharp.Views
 - Defective version: Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-01
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasViewHandler.cs` (`GHAvaloniaCanvasViewHandler.CreatePlatformView`)
 - Remove when: ACM's canvas view raises `PaintSurface` where a handler may change MAUI properties, as SkiaSharp's views do on other platforms, and Verify removal passes.
 - Related: WA-AVALONIA-0021
@@ -356,6 +365,7 @@ Checks:
 - 2026-10-23 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
 - 2026-10-27 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | Requests inside the platform frame callback paint at once, for WA-AVALONIA-0021.
 - 2026-11-01 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | `Render` clips the image to the control's bounds; a canvas that shrank left stale pixels outside them.
+- 2026-11-05 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0011: ACM font registrar misreads UTF-16 font names
 
@@ -365,11 +375,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaFontRegistrar.cs` (`GHAvaloniaFontRegistrar`); `win/win32/xpl/GnollHackM/MauiProgram.cs` (`MauiProgram.CreateMauiApp`)
 - Remove when: ACM's font registrar decodes Unicode-platform names as UTF-16 in a release GnollHack uses, and Verify removal passes.
 
@@ -390,6 +400,7 @@ elsewhere first.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0012: ACM converts MauiFont items after the resource step
 
@@ -399,11 +410,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`AvaloniaResource` fonts)
 - Remove when: ACM's build converts `MauiFont` items before Avalonia's resource step in a release GnollHack uses, and Verify removal passes.
 
@@ -421,6 +432,7 @@ failure per font).
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0013: ACM Essentials leaves most Essentials APIs unimplemented
 
@@ -430,11 +442,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui.Essentials
 - Defective version: Avalonia.Controls.Maui.Essentials 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaEssentials.cs` (`GHAvaloniaEssentials.InstallEarly`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaEssentials.cs` (`GHAvaloniaEssentials.InstallAfterBuilder`); `win/win32/xpl/GnollHackM/MauiProgram.cs` (`MauiProgram.CreateMauiApp`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.CheckAndRequestWritePermission`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.CheckAndRequestReadPermission`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/MainScreen/ResetPage.xaml.cs` (`ResetPage.CheckAndRequestWritePermission`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/MainScreen/ResetPage.xaml.cs` (`ResetPage.CheckAndRequestReadPermission`)
 - Remove when: Avalonia.Controls.Maui.Essentials implements the APIs GnollHack uses in a release GnollHack uses, and Verify removal passes for each one.
 
@@ -459,6 +471,7 @@ page's file commands); nothing may throw.
 
 Checks:
 - 2026-10-23 | Avalonia.Controls.Maui.Essentials 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui.Essentials 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0014: Avalonia's render timer keeps a stale RandR rate
 
@@ -502,12 +515,12 @@ Checks:
 - Component: Avalonia
 - Package: Avalonia
 - Defective version: Avalonia 12.1.4 (via Avalonia.Controls.Maui 11.0.0-rc.2.26287.618)
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-27
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaMonitorRefreshRate.cs` (`GHAvaloniaMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaDeviceDisplay.cs` (`GHAvaloniaDeviceDisplay.UpdateMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHRandr.cs` (`GHRandr`)
+- Last checked: 2026-11-05
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaMonitorRefreshRate.cs` (`GHAvaloniaMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaDeviceDisplay.cs` (`GHAvaloniaDeviceDisplay.UpdateMonitorRefreshRate`); `win/win32/xpl/GnollHackM/Platforms/Linux/GHRandr.cs` (`GHRandr`)
 - Remove when: Avalonia's `Screen` reports the display mode's refresh rate in a release GnollHack uses, and Verify removal passes.
 
 **Symptom.** DeviceDisplay's refresh rate can only be estimated from frame deltas, and
@@ -520,16 +533,20 @@ rates internally, for its render timer, but does not expose them.
 **Workaround.** On Windows the rate of the window's monitor is read with
 `MonitorFromWindow`, `GetMonitorInfoW` and `EnumDisplaySettingsW`; on Linux, `GHRandr`
 reads the mode of the X11 RandR CRTC under the window's screen on its own display
-connection. The frame loop's estimate snaps to that rate.
+connection; on macOS, CoreGraphics' display mode of the screen's `CGDirectDisplayID` (from
+`Screen.TryGetPlatformHandle`), with CoreVideo's nominal rate when the mode reports none. The
+frame loop's estimate snaps to that rate.
 
 **Verify removal.** Replace the user32 and RandR reads with Avalonia's rate. Build the
 Avalonia flavor for Windows, move the window between monitors of different rates, and check
 that DeviceDisplay reports each monitor's rate. Build the Linux flavor, start it with debug
-log messages on, and check that the log shows the monitor rate read from RandR.
+log messages on, and check that the log shows the monitor rate read from RandR. Do the same
+with the macOS flavor on a Mac.
 
 Checks:
 - 2026-10-23 | Avalonia 12.1.4 | unverified | No upstream issue found.
 - 2026-10-27 | Avalonia 12.1.4 | unverified | Extended to Linux through X11 RandR.
+- 2026-11-05 | Avalonia 12.1.4 | still-needed | Extended to macOS. Decompiled `Avalonia.Controls.dll`: `Screen` has no refresh rate; Avalonia.Native's `AvnScreen` reports only the display id. Without a monitor rate the Mac's estimate read 60.66 Hz on a 60.000 Hz panel.
 
 ## WA-AVALONIA-0016: NativeControlHost ignores render transform changes
 
@@ -539,11 +556,11 @@ Checks:
 - Component: Avalonia
 - Package: Avalonia
 - Defective version: Avalonia 12.1.4 (via Avalonia.Controls.Maui 11.0.0-rc.2.26287.618)
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaWebView.cs` (`GHAvaloniaWebView.MapPositionTracking`)
 - Remove when: `NativeControlHost` moves its native control when an ancestor's render transform changes, in a release GnollHack uses, and Verify removal passes.
 
@@ -563,6 +580,7 @@ DisplayFilePage, and check that the page ends up inside the modal.
 
 Checks:
 - 2026-10-23 | Avalonia 12.1.4 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia 12.1.4 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0017: IsEffectivelyVisible has no change event
 
@@ -577,7 +595,7 @@ Checks:
 - Upstream status when added: reported
 - Upstream status: reported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.SubscribeVisibility`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/Cef/GHCefWebViewControl.cs` (`GHCefWebViewControl.SubscribeVisibility`)
 - Remove when: `IsEffectivelyVisible` raises a change notification in an Avalonia release GnollHack uses, and Verify removal passes.
 
 **Symptom.** Without notification, the CEF browser is not told when its control is hidden
@@ -637,11 +655,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui.SkiaSharp.Views
 - Defective version: Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-27
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaTouchTracker.cs` (`GHAvaloniaTouchTracker`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.OnPointerPressed`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLControl.cs` (`GHAvaloniaGLControl.OnPointerPressed`)
 - Remove when: ACM's Skia controls raise Released or Cancelled for every touch they raised Pressed for, in a release GnollHack uses, and Verify removal passes.
 - Related: WA-AVALONIA-0009, WA-WINUI-0004, WA-SKIASHARP-0010
@@ -674,6 +692,7 @@ Avalonia harness, or on a device, check that every `Pressed` is followed by `Rel
 
 Checks:
 - 2026-10-27 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | still-needed | Reproduced in Avalonia.Headless 12.1.4: stock controls leave the touch open in all three cases. No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0020: ACM modal overlays do not trap keyboard focus
 
@@ -683,11 +702,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-27
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaFocusGuard.cs` (`GHAvaloniaFocusGuard.ClearFocusOutsideTopPage`)
 - Remove when: ACM's modal presentation keeps keyboard focus inside the top-most modal page (Tab, arrows, and a focus held by the page below) in a release GnollHack uses, and Verify removal passes. The guard stays for GnollHack's own in-page overlays; only the tag and this entry go.
 
@@ -711,6 +730,7 @@ Settings and nothing on the main page may react.
 
 Checks:
 - 2026-10-27 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | No upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0021: An animation frame that commits nothing waits for a 16 ms timer
 
@@ -720,11 +740,11 @@ Checks:
 - Component: Avalonia
 - Package: Avalonia
 - Defective version: Avalonia 12.1.4 (via Avalonia.Controls.Maui 11.0.0-rc.2.26287.618)
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-02
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.CompositionTarget_Rendering`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLControl.cs` (`GHAvaloniaGLControl.RequestPresent`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.RequestPaint`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.RequestPresent`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.FlushDeferredPaints`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/Game/GamePage.Radial.cs` (`GamePage.InvalidateRadialCanvas`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/MainScreen/SettingsPage.Pickers.cs` (`SettingsPage.GamepadFrameTick`)
 - Remove when: An animation frame that commits nothing is followed by one at the display's next refresh in a release GnollHack uses, and Verify removal passes.
 - Related: WA-AVALONIA-0010
@@ -754,6 +774,7 @@ workaround is still needed if the callback intervals after skipped ticks cluster
 Checks:
 - 2026-10-27 | Avalonia 12.1.4 | still-needed | Measured on a Steam Deck OLED in Desktop Mode, before the workaround: 15.75 ms median after skipped ticks. No upstream issue found.
 - 2026-11-02 | Avalonia 12.1.4 | unverified | SettingsPage's command radial repaints from the frame tick as GamePage's does.
+- 2026-11-05 | Avalonia 12.1.4 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0022: FileResult.OpenReadAsync throws for ACM's file picker results
 
@@ -763,11 +784,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui.Essentials
 - Defective version: Avalonia.Controls.Maui.Essentials 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-30
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.OpenPickedFileAsync`)
 - Remove when: `FileResult.OpenReadAsync`, called through a `FileResult` reference, works on the Avalonia flavor in a release GnollHack uses, and Verify removal passes.
 
@@ -789,6 +810,7 @@ succeed.
 
 Checks:
 - 2026-10-30 | Avalonia.Controls.Maui.Essentials 11.0.0-rc.2.26287.618 | still-needed | Read in the decompiled package and MAUI's source; no upstream issue found.
+- 2026-11-05 | Avalonia.Controls.Maui.Essentials 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
 
 ## WA-AVALONIA-0023: IBus's Destroy reply reaches Sentry as an unobserved exception
 
@@ -804,7 +826,7 @@ Checks:
 - Upstream status: fixed-unreleased
 - Fixed upstream in: https://github.com/AvaloniaUI/Avalonia/pull/22594
 - Last checked: 2026-10-31
-- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHIBusDestroyReplyFilter.cs` (`GHIBusDestroyReplyFilter`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaSentry.cs` (`GHAvaloniaSentry.Init`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/GHIBusDestroyReplyFilter.cs` (`GHIBusDestroyReplyFilter`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaSentry.cs` (`GHAvaloniaSentry.Init`)
 - Remove when: GnollHack uses an Avalonia release containing pull request 22594, and Verify removal passes.
 - Related: GNOLLHACK-J1
 
@@ -837,11 +859,11 @@ Checks:
 - Component: Avalonia.Controls.Maui
 - Package: Avalonia.Controls.Maui
 - Defective version: Avalonia.Controls.Maui 11.0.0-rc.2.26287.618
-- Platforms: Linux, Windows (Avalonia)
+- Platforms: Linux, macOS, Windows (Avalonia)
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-02
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/Pages/MainScreen/SettingsPage.Pickers.cs` (`SettingsPage.OpenPickerList`)
 - Remove when: ACM raises a single tap when the pointer comes up, as MAUI's other platforms do, in a release GnollHack uses, and Verify removal passes.
 
@@ -863,3 +885,84 @@ list must scroll, and nothing may be chosen. A tap on a row must still choose it
 
 Checks:
 - 2026-11-02 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | still-needed | Read in the decompiled `AvaloniaGesturePlatformManager.OnPointerPressed`. No upstream issue found: searched AvaloniaUI/Avalonia.Controls.Maui for TapGestureRecognizer.
+- 2026-11-05 | Avalonia.Controls.Maui 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
+
+## WA-AVALONIA-0025: Avalonia.Native reports every macOS screen at scaling 1, in points
+
+- Status: active
+- Added: 2026-11-04
+- GnollHack version: 3.37 (437)
+- Component: Avalonia
+- Package: Avalonia.Native
+- Defective version: Avalonia.Native 12.1.4 (via Avalonia.Controls.Maui 11.0.0-rc.2.26287.618)
+- Platforms: macOS (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-04
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Essentials/GHAvaloniaDeviceDisplay.cs` (`GHAvaloniaDeviceDisplay.UpdateFromWindow`)
+- Remove when: Avalonia.Native reports a macOS screen's backing scale factor as its scaling and its bounds in pixels, in a release GnollHack uses, and Verify removal passes.
+
+**Symptom.** On a Retina Mac, everything the game draws with SkiaSharp at a size scaled by
+`GHApp.DisplayDensity` is half as large as it should be: CustomLabel texts, and the texts on
+the map, which also sit off their tiles. Text drawn by XAML controls is the right size.
+
+**Cause.** `Screens::GetScreen` in `native/Avalonia.Native/src/OSX/Screens.mm` sets
+`ret->Scaling = 1` for every screen and takes the bounds and working area from the `NSScreen`'s
+`frame` and `visibleFrame`, which are in points. `AvnScreen.Refresh` passes both through, so
+`Screen.Scaling` is 1 and `Screen.Bounds` is in points. `TopLevel.RenderScaling` is the window's
+backing scale factor, 2 on Retina, and the canvases size their surfaces from it, so the
+surfaces are in pixels while `DisplayDensity` stays 1.
+
+**Workaround.** On macOS, `UpdateFromWindow` takes the density from `window.RenderScaling` and
+multiplies the screen's width and height by it. `window.ScalingChanged` already calls
+`UpdateFromWindow`, so moving the window to a display with another scale factor is followed.
+
+**Verify removal.** Remove the `#if MACOS` block in `UpdateFromWindow`, publish `osx-arm64` and
+run it on a Retina Mac: the game's labels on the main screen and the texts on the map must be
+the same size relative to the window as in the Windows app, and the map texts must sit on
+their tiles.
+
+Checks:
+- 2026-11-04 | Avalonia.Native 12.1.4 | still-needed | Read `Screens.mm` and `ScreenImpl.cs` at commit 2d79ba55fae1b1e71c69f93a668080c9029e6a31 (the shipped `Avalonia.Native.dll`'s product version). No upstream issue found: searched AvaloniaUI/Avalonia for macOS Screen Scaling and Screen.Scaling.
+
+## WA-AVALONIA-0026: Avalonia's WKWebView adapter answers no file input
+
+- Status: active
+- Added: 2026-11-05
+- GnollHack version: 3.37 (437)
+- Component: Avalonia
+- Package: Avalonia.Controls.WebView
+- Defective version: Avalonia.Controls.WebView 12.1.1 (via Avalonia.Controls.Maui 11.0.0-rc.2.26287.618)
+- Platforms: macOS (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-05
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaOverseerHost.cs` (`NativeWebViewHost.FileInputScript`, `NativeWebViewHost.PickAndDeliverFilesAsync`)
+- Remove when: Avalonia's WKWebView adapter answers a file input with an open panel, in a release GnollHack uses, and Verify removal passes.
+
+**Symptom.** In the macOS flavor, the Gnoll Overseer's `+` attach button does nothing. The SPA
+clicks a hidden `<input type="file">`, and no file dialog opens.
+
+**Cause.** WKWebView shows a file input's chooser only through its `WKUIDelegate`'s
+`webView:runOpenPanelWithParameters:initiatedByFrame:completionHandler:`. Avalonia.Controls.WebView
+12.1.1 sets no UI delegate: its assembly has the strings `WKWebView` and `invokeCSharpAction`, but
+no `UIDelegate`, `runOpenPanel` or `runJavaScriptAlertPanel`. JavaScript alerts and confirms do
+nothing either; the Overseer does not use them. CEF on Linux and WebView2 on Windows have their
+own chooser hooks, which GnollHack answers.
+
+**Workaround.** For the Overseer page on the WKWebView adapter, `NativeWebViewHost` injects
+`FileInputScript`: a capture-phase click listener that cancels a file input's click and posts
+`gnollhack_host_pick_files` with the input's `multiple` and `accept` through `invokeCSharpAction`.
+`PickAndDeliverFilesAsync` opens GnollHack's file dialog when a controller is in use, and the
+system's open panel otherwise. It reads up to 5 files of at most 20 MB each and passes them as
+`{ name, type, dataUrl }` entries to the SPA's `window.__gnollhackReceiveFiles`, the entry point
+the iOS picker uses.
+
+**Verify removal.** Remove `FileInputScript` from `NativeWebViewHost.OnPageLoaded`, publish
+`osx-arm64`, and in a game open Gnoll Overseer and press `+`: a file dialog must open, and a
+picked `.png` must appear as an attachment.
+
+Checks:
+- 2026-11-05 | Avalonia.Controls.WebView 12.1.1 | still-needed | Searched `lib/net10.0/Avalonia.Controls.WebView.dll` for the selector strings in both ASCII and UTF-16; the user's Mac run found the `+` button dead (task `mac_avalonia_readiness_review`, round A, M3). No upstream issue found.

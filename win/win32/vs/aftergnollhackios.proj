@@ -3,18 +3,18 @@
   <Import Project="files.props"/>
   <!-- TODO not copying record-->
   <!--
-    Inputs="$(MacOutDir)libgnollhackios.a"
-    Outputs="$(iOSNativeReferencesDir)libgnollhackios.a" 
+    Inputs="$(GnhiOSLib)"
+    Outputs="$(iOSNativeReferencesDir)libgnollhackios.a"
   -->
+  <!-- GnhiOSLib: the library gnollhackios.vcxproj copied back from the Mac -->
   <Target Name="Build">
-    <Copy SkipUnchangedFiles="False" SourceFiles="$(MacOutDir)libgnollhackios.a" DestinationFolder="$(iOSNativeReferencesDir)"/>
-  <Message Text="Copied libgnollhackios.a from $(MacOutDir) to $(iOSNativeReferencesDir)" Importance="High" />
-    <Copy SkipUnchangedFiles="False" SourceFiles="$(MacOutDir)libgnollhackios.a" DestinationFolder="$(MauiiOSNativeReferencesDir)"/>
-  <Message Text="Copied libgnollhackios.a from $(MacOutDir) to $(MauiiOSNativeReferencesDir)" Importance="High" />
+    <Error Condition="'$(GnhiOSLib)' == '' Or !Exists('$(GnhiOSLib)')" Text="aftergnollhackios.proj: GnhiOSLib '$(GnhiOSLib)' does not exist." />
+    <Copy SkipUnchangedFiles="False" SourceFiles="$(GnhiOSLib)" DestinationFolder="$(iOSNativeReferencesDir)"/>
+  <Message Text="Copied libgnollhackios.a from $(GnhiOSLib) to $(iOSNativeReferencesDir)" Importance="High" />
+    <Copy SkipUnchangedFiles="False" SourceFiles="$(GnhiOSLib)" DestinationFolder="$(MauiiOSNativeReferencesDir)"/>
+  <Message Text="Copied libgnollhackios.a from $(GnhiOSLib) to $(MauiiOSNativeReferencesDir)" Importance="High" />
   </Target>
   <Target Name="Clean">
-    <Delete Files="$(MacOutDir)libgnollhackios.a"/>
-  <Message Text="Deleted libgnollhackios.a from $(MacOutDir)" Importance="High" />
     <Delete Files="$(iOSNativeReferencesDir)libgnollhackios.a"/>
   <Message Text="Deleted libgnollhackios.a from $(iOSNativeReferencesDir)" Importance="High" />
     <Delete Files="$(MauiiOSNativeReferencesDir)libgnollhackios.a"/>

@@ -16,7 +16,7 @@ namespace GnollHackM
 
         private static readonly object _saveLock = new object();
         private static bool _saveAttempted = false;
-#if LINUX
+#if LINUX || MACOS
         private const int SignalExitCode = 143;
         /* How long the normal shutdown may take after a signal; Main ends the process well before this */
         private const int SignalShutdownTimeoutMs = 5000;

@@ -27,8 +27,19 @@ internal static class AvaloniaDesktopProgram
         GHAvaloniaShutdown.RegisterSignals();
         GHAvaloniaFontConfig.Install();
 #endif
+#if MACOS
+        GHMacStderrLog.Install();
+        if (!GHAvaloniaInstanceLock.TryAcquire())
+        {
+            GHAvaloniaInstanceLock.ReportAlreadyRunning();
+            return 0;
+        }
+        GHAvaloniaShutdown.RegisterSignals();
+#endif
         if (OperatingSystem.IsLinux())
             NativeLibrary.SetDllImportResolver(typeof(AvaloniaDesktopProgram).Assembly, ResolveLinuxLibrary);
+        else if (OperatingSystem.IsMacOS())
+            NativeLibrary.SetDllImportResolver(typeof(AvaloniaDesktopProgram).Assembly, ResolveMacLibrary);
         int exitCode = BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         /* The lifetime can end with a game running, for example when the desktop session ends */
         GHAvaloniaShutdown.SaveGameBeforeExit();
@@ -41,9 +52,13 @@ internal static class AvaloniaDesktopProgram
     }
 
     /* X11: GLX with a software fallback, no Vulkan; popups drawn inside the window; WM_CLASS "GnollHack", which
-       a desktop entry matches with StartupWMClass. 1 GiB GPU resource budget. */
+       a desktop entry matches with StartupWMClass. macOS: GetMacRenderingModes, from the Metal Rendering setting;
+       popups drawn inside the window; GHMacApplicationMenu instead of Avalonia's default application menu items.
+       GPU resource budget: 2 GiB on macOS, where Metal needs about 1.3 GB on some levels, and 1.5 GiB elsewhere, where
+       OpenGL needs about 0.7 GB; a full cache re-uploads textures every frame. */
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<AvaloniaApp>()
+    {
+        AppBuilder builder = AppBuilder.Configure<AvaloniaApp>()
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace()
@@ -53,7 +68,19 @@ internal static class AvaloniaDesktopProgram
                 OverlayPopups = true,
                 WmClass = "GnollHack",
             })
-            .With(new SkiaOptions { MaxGpuResourceSizeBytes = 1024L * 1024 * 1024 });
+            .With(new AvaloniaNativePlatformOptions
+            {
+                RenderingMode = GetMacRenderingModes(),
+                OverlayPopups = true,
+            })
+            .With(new MacOSPlatformOptions { DisableDefaultApplicationMenuItems = true })
+            .With(new SkiaOptions { MaxGpuResourceSizeBytes = (OperatingSystem.IsMacOS() ? 2048L : 1536L) * 1024 * 1024 });
+#if MACOS
+        /* Registered before Avalonia.Native's own callback, which reads the application name */
+        builder = builder.AfterSetup(GHMacApplicationMenu.Install);
+#endif
+        return builder;
+    }
 
     /* The FMOD wrappers import "fmod" and "fmodstudio". libfmodstudio.so.14 loads its core library by soname,
        libfmod.so.14, from its own directory; loading the core under any other file name would create a
@@ -74,6 +101,53 @@ internal static class AvaloniaDesktopProgram
             return IntPtr.Zero;
 
         return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, fileName));
+    }
+
+    /* macOS: Metal, then OpenGL, then software; OpenGL, then software when the Metal Rendering setting is off.
+       GNOLLHACK_MAC_RENDERING overrides the setting: =metal starts at Metal, =opengl at OpenGL, =software uses only
+       software rendering. Essentials are installed here, before Avalonia starts, to read the setting. */
+    private static AvaloniaNativeRenderingMode[] GetMacRenderingModes()
+    {
+        AvaloniaNativeRenderingMode[] metalFirst = { AvaloniaNativeRenderingMode.Metal, AvaloniaNativeRenderingMode.OpenGl, AvaloniaNativeRenderingMode.Software };
+        AvaloniaNativeRenderingMode[] openGlFirst = { AvaloniaNativeRenderingMode.OpenGl, AvaloniaNativeRenderingMode.Software };
+
+        string mode = Environment.GetEnvironmentVariable("GNOLLHACK_MAC_RENDERING");
+        if (string.Equals(mode, "metal", StringComparison.OrdinalIgnoreCase))
+            return metalFirst;
+        if (string.Equals(mode, "opengl", StringComparison.OrdinalIgnoreCase))
+            return openGlFirst;
+        if (string.Equals(mode, "software", StringComparison.OrdinalIgnoreCase))
+            return new[] { AvaloniaNativeRenderingMode.Software };
+
+        if (!OperatingSystem.IsMacOS())
+            return metalFirst;
+        try
+        {
+            GHAvaloniaEssentials.InstallEarly();
+            bool metal = Microsoft.Maui.Storage.Preferences.Default.Get("UseMetal", GHConstants.DefaultUseMetalRenderingMac);
+            return metal ? metalFirst : openGlFirst;
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine("GnollHack: reading Metal Rendering failed: " + ex.Message);
+            return metalFirst;
+        }
+    }
+
+    /* The FMOD wrappers import "fmod" and "fmodstudio". libfmodstudio.dylib refers to its core library by install
+       name; libfmod.dylib is loaded from the application directory first, so that the dynamic loader uses that
+       image rather than searching for one. */
+    private static IntPtr ResolveMacLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
+    {
+        string core = Path.Combine(AppContext.BaseDirectory, "libfmod.dylib");
+        if (libraryName == "fmod")
+            return NativeLibrary.Load(core);
+        if (libraryName == "fmodstudio")
+        {
+            NativeLibrary.Load(core);
+            return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, "libfmodstudio.dylib"));
+        }
+        return IntPtr.Zero;
     }
 
 #if LINUX

@@ -180,6 +180,10 @@ typedef xchar boolean; /* 0 or 1 */
 #include "iosconf.h"
 #endif
 
+#ifdef GNH_MAC
+#include "macosconf.h"
+#endif
+
 #ifdef GNH_WIN
 #include "winconf.h"
 #endif

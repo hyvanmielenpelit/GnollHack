@@ -52,6 +52,8 @@
     <DefineConstants>GNH_MAUI;GNH_AVALONIA;USE_SPAN_FOR_SUBSTRING;CORECLR</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);LINUX</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);SENTRY</DefineConstants>
+    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('osx'))">$(DefineConstants);MACOS</DefineConstants>
+    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('osx'))">$(DefineConstants);SENTRY</DefineConstants>
     <MauiActiveBackend>avalonia</MauiActiveBackend>
     <AvaloniaControlsMauiGenerateDesktopProgram>false</AvaloniaControlsMauiGenerateDesktopProgram>
     <InvariantGlobalization>true</InvariantGlobalization>
@@ -62,6 +64,9 @@
 
   <ItemGroup Condition="'$(GnhAvalonia)' == 'true'">
     <MauiPlatformSpecificFolder Include="Platforms\Avalonia\" BackendIdentity="avalonia" />
+    <!-- C# code of one OS's flavor only; these folders also hold its native libraries and packaging, which are not compiled -->
+    <MauiPlatformSpecificFolder Include="Platforms\Linux\" BackendIdentity="avalonia" Condition="$(RuntimeIdentifier.StartsWith('linux'))" />
+    <MauiPlatformSpecificFolder Include="Platforms\MacOS\" BackendIdentity="avalonia" Condition="$(RuntimeIdentifier.StartsWith('osx'))" />
     <!-- Decimal, as in the -windows item group: 32000000 is 32 MB -->
     <RuntimeHostConfigurationOption Include="System.GC.Gen0MaxBudget" Value="32000000" />
   </ItemGroup>
@@ -1155,9 +1160,15 @@
     <Content Include="Resources\AppIcon\appicon.png" Link="gnollhack.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(GnhAvalonia)' == 'true' And !$(RuntimeIdentifier.StartsWith('linux'))">
+  <ItemGroup Condition="'$(GnhAvalonia)' == 'true' And !$(RuntimeIdentifier.StartsWith('linux')) And !$(RuntimeIdentifier.StartsWith('osx'))">
     <Content Include="Platforms\Windows\libs\*.dll" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Platforms\Windows\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('osx'))">
+    <!-- The engine and FMOD's core and Studio libraries, which AvaloniaDesktopProgram loads from the application directory -->
+    <Content Include="Platforms\MacOS\libs\*.dylib" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="Platforms\Android\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- Banks and tile sets from their install folders, so no native build has to stage them; the WinUI 3 items above
@@ -1563,8 +1574,9 @@
   </ItemGroup>
 
   <!-- WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT builds on Windows and Linux -->
-  <!-- GHSentryNative runs sentry-native on these platforms; Sentry .NET must never start a second one -->
-  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('linux')))">
+  <!-- GHSentryNative runs sentry-native on these platforms; Sentry .NET must never start a second one. The macOS
+       flavor has no native layer yet and keeps Sentry .NET's off as well. -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And ($(RuntimeIdentifier.StartsWith('linux')) Or $(RuntimeIdentifier.StartsWith('osx'))))">
     <SentryNative>false</SentryNative>
   </PropertyGroup>
 
@@ -1777,11 +1789,13 @@
     <PropertyGroup>
       <_GnhNativeSolutionRemedy>Build win\win32\vs\GnollHack.sln with the x64 solution platform.</_GnhNativeSolutionRemedy>
       <_GnhNativeSolutionRemedy Condition="$(RuntimeIdentifier.StartsWith('linux'))">Build win\win32\vs\GnollHack.sln with the Linux solution platform in Release.</_GnhNativeSolutionRemedy>
+      <_GnhNativeSolutionRemedy Condition="$(RuntimeIdentifier.StartsWith('osx'))">Build win\win32\vs\GnollHack.sln with the macOS solution platform in Release.</_GnhNativeSolutionRemedy>
       <_GnhAssetRemedy>See the GnollHack wiki page Development/Install Tile Sets and FMOD Sound Banks.</_GnhAssetRemedy>
     </PropertyGroup>
     <ItemGroup>
-      <_GnhNativeInput Include="Platforms\Windows\libs\gnollhackwin.dll;Platforms\Windows\gnh\nhdat" Condition="!$(RuntimeIdentifier.StartsWith('linux'))" Code="GNHNI001" Remedy="$(_GnhNativeSolutionRemedy)" />
+      <_GnhNativeInput Include="Platforms\Windows\libs\gnollhackwin.dll;Platforms\Windows\gnh\nhdat" Condition="!$(RuntimeIdentifier.StartsWith('linux')) And !$(RuntimeIdentifier.StartsWith('osx'))" Code="GNHNI001" Remedy="$(_GnhNativeSolutionRemedy)" />
       <_GnhNativeInput Include="Platforms\Linux\libs\libgnollhacklinux.so;Platforms\Android\gnh\nhdat" Condition="$(RuntimeIdentifier.StartsWith('linux'))" Code="GNHNI001" Remedy="$(_GnhNativeSolutionRemedy)" />
+      <_GnhNativeInput Include="Platforms\MacOS\libs\libgnollhackmac.dylib;Platforms\Android\gnh\nhdat" Condition="$(RuntimeIdentifier.StartsWith('osx'))" Code="GNHNI001" Remedy="$(_GnhNativeSolutionRemedy)" />
       <_GnhNativeInput Include="..\..\bank\Desktop\Auxiliary.bank;..\..\bank\Desktop\Intro.bank;..\..\bank\Desktop\Master.bank;..\..\bank\Desktop\Master.strings.bank;..\..\bank\Desktop\Music.bank;..\..\bank\Desktop\Preliminary.bank" Code="GNHNI002" Remedy="Install the Desktop sound banks in win\win32\bank\Desktop. $(_GnhAssetRemedy)" />
       <_GnhNativeInput Include="..\..\tileset\gnollhack_64x96_transparent_32bits.png;..\..\tileset\gnollhack_64x96_transparent_32bits-2.png;..\..\tileset\gnollhack_64x96_transparent_32bits-3.png" Code="GNHNI003" Remedy="Install the tile sets in win\win32\tileset. $(_GnhAssetRemedy)" />
       <_GnhMissingNativeInput Include="@(_GnhNativeInput)" Condition="!Exists('%(FullPath)')" />

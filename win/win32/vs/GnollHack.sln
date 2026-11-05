@@ -145,6 +145,14 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhacklinux", "gnollhack
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0} = {F8445183-52F2-45A0-BB4F-B433F3B721F0}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "gnollhackmac", "gnollhackmac.vcxproj", "{E615DB70-9FCF-4F41-B7F5-55688997553A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{19C1C54D-60D5-44AB-820E-7D07B180F153} = {19C1C54D-60D5-44AB-820E-7D07B180F153}
+		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1} = {6FF04CCD-3E5A-423E-B6B8-637C42A007C1}
+		{86B3654F-2B3F-478C-B108-17E989444FB3} = {86B3654F-2B3F-478C-B108-17E989444FB3}
+		{F8445183-52F2-45A0-BB4F-B433F3B721F0} = {F8445183-52F2-45A0-BB4F-B433F3B721F0}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Android x64 = Debug|Android x64
@@ -155,6 +163,7 @@ Global
 		Debug|iPhone = Debug|iPhone
 		Debug|iPhoneSimulator = Debug|iPhoneSimulator
 		Debug|Linux = Debug|Linux
+		Debug|macOS = Debug|macOS
 		Debug|MauiAll = Debug|MauiAll
 		Debug|MauiAndroid = Debug|MauiAndroid
 		Debug|Win32 = Debug|Win32
@@ -167,6 +176,7 @@ Global
 		Release|iPhone = Release|iPhone
 		Release|iPhoneSimulator = Release|iPhoneSimulator
 		Release|Linux = Release|Linux
+		Release|macOS = Release|macOS
 		Release|MauiAll = Release|MauiAll
 		Release|MauiAndroid = Release|MauiAndroid
 		Release|Win32 = Release|Win32
@@ -183,6 +193,7 @@ Global
 		{CEC5D360-8804-454F-8591-002184C23499}.Debug|iPhone.ActiveCfg = Debug|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Debug|Linux.ActiveCfg = Debug|x64
+		{CEC5D360-8804-454F-8591-002184C23499}.Debug|macOS.ActiveCfg = Debug|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Debug|MauiAndroid.ActiveCfg = Debug|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -199,6 +210,7 @@ Global
 		{CEC5D360-8804-454F-8591-002184C23499}.Release|iPhone.ActiveCfg = Release|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Release|Linux.ActiveCfg = Release|x64
+		{CEC5D360-8804-454F-8591-002184C23499}.Release|macOS.ActiveCfg = Release|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Release|MauiAll.ActiveCfg = Release|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Release|MauiAndroid.ActiveCfg = Release|x64
 		{CEC5D360-8804-454F-8591-002184C23499}.Release|Win32.ActiveCfg = Release|Win32
@@ -217,7 +229,9 @@ Global
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Debug|iPhone.ActiveCfg = Debug|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Debug|Linux.ActiveCfg = Debug|x64
+		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Debug|macOS.ActiveCfg = Debug|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Debug|Linux.Build.0 = Debug|x64
+		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Debug|macOS.Build.0 = Debug|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Debug|MauiAll.Build.0 = Debug|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -238,7 +252,9 @@ Global
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Release|iPhone.ActiveCfg = Release|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Release|Linux.ActiveCfg = Release|x64
+		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Release|macOS.ActiveCfg = Release|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Release|Linux.Build.0 = Release|x64
+		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Release|macOS.Build.0 = Release|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Release|MauiAll.ActiveCfg = Release|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Release|MauiAll.Build.0 = Release|x64
 		{8A3F81C7-2968-49A8-86BF-2669412AD7DE}.Release|MauiAndroid.ActiveCfg = Release|x64
@@ -259,6 +275,7 @@ Global
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Debug|iPhone.ActiveCfg = Debug|x64
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Debug|Linux.ActiveCfg = Debug|x64
+		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Debug|macOS.ActiveCfg = Debug|x64
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Debug|MauiAll.Build.0 = Debug|x64
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -279,6 +296,7 @@ Global
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Release|iPhone.ActiveCfg = Release|x64
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Release|Linux.ActiveCfg = Release|x64
+		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Release|macOS.ActiveCfg = Release|x64
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Release|MauiAll.ActiveCfg = Release|x64
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Release|MauiAll.Build.0 = Release|x64
 		{0303A585-3F83-4BB7-AF6B-1E12C8FB54AC}.Release|MauiAndroid.ActiveCfg = Release|x64
@@ -299,7 +317,9 @@ Global
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Debug|iPhone.ActiveCfg = Debug|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Debug|Linux.ActiveCfg = Debug|x64
+		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Debug|macOS.ActiveCfg = Debug|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Debug|Linux.Build.0 = Debug|x64
+		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Debug|macOS.Build.0 = Debug|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Debug|MauiAll.Build.0 = Debug|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -320,7 +340,9 @@ Global
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Release|iPhone.ActiveCfg = Release|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Release|Linux.ActiveCfg = Release|x64
+		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Release|macOS.ActiveCfg = Release|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Release|Linux.Build.0 = Release|x64
+		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Release|macOS.Build.0 = Release|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Release|MauiAll.ActiveCfg = Release|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Release|MauiAll.Build.0 = Release|x64
 		{9DD9C52E-E8C9-4533-BD22-83C055C0AABA}.Release|MauiAndroid.ActiveCfg = Release|x64
@@ -343,7 +365,9 @@ Global
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Debug|iPhoneSimulator.Build.0 = Debug|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Debug|Linux.ActiveCfg = Debug|x64
+		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Debug|macOS.ActiveCfg = Debug|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Debug|Linux.Build.0 = Debug|x64
+		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Debug|macOS.Build.0 = Debug|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Debug|MauiAll.Build.0 = Debug|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -364,7 +388,9 @@ Global
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Release|iPhone.ActiveCfg = Release|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Release|Linux.ActiveCfg = Release|x64
+		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Release|macOS.ActiveCfg = Release|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Release|Linux.Build.0 = Release|x64
+		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Release|macOS.Build.0 = Release|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Release|MauiAll.ActiveCfg = Release|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Release|MauiAll.Build.0 = Release|x64
 		{BA3DD34C-04B7-40D0-B373-9329AA9E8945}.Release|MauiAndroid.ActiveCfg = Release|x64
@@ -383,6 +409,7 @@ Global
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Debug|iPhone.ActiveCfg = Debug|x64
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Debug|Linux.ActiveCfg = Debug|x64
+		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Debug|macOS.ActiveCfg = Debug|x64
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Debug|MauiAndroid.ActiveCfg = Debug|x64
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -399,6 +426,7 @@ Global
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Release|iPhone.ActiveCfg = Release|x64
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Release|Linux.ActiveCfg = Release|x64
+		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Release|macOS.ActiveCfg = Release|x64
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Release|MauiAll.ActiveCfg = Release|x64
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Release|MauiAndroid.ActiveCfg = Release|x64
 		{2F35F228-6733-4FE5-9B46-B3AA10D4BC2E}.Release|Win32.ActiveCfg = Release|Win32
@@ -415,6 +443,7 @@ Global
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Debug|iPhone.ActiveCfg = Debug|x64
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Debug|Linux.ActiveCfg = Debug|x64
+		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Debug|macOS.ActiveCfg = Debug|x64
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Debug|MauiAndroid.ActiveCfg = Debug|x64
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -431,6 +460,7 @@ Global
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Release|iPhone.ActiveCfg = Release|x64
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Release|Linux.ActiveCfg = Release|x64
+		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Release|macOS.ActiveCfg = Release|x64
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Release|MauiAll.ActiveCfg = Release|x64
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Release|MauiAndroid.ActiveCfg = Release|x64
 		{609BC774-C6F8-4B2B-AA7D-5B3D0EA95751}.Release|Win32.ActiveCfg = Release|Win32
@@ -447,6 +477,7 @@ Global
 		{6813477F-64B6-4B97-B230-438D0D233385}.Debug|iPhone.ActiveCfg = Debug|x64
 		{6813477F-64B6-4B97-B230-438D0D233385}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{6813477F-64B6-4B97-B230-438D0D233385}.Debug|Linux.ActiveCfg = Debug|x64
+		{6813477F-64B6-4B97-B230-438D0D233385}.Debug|macOS.ActiveCfg = Debug|x64
 		{6813477F-64B6-4B97-B230-438D0D233385}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{6813477F-64B6-4B97-B230-438D0D233385}.Debug|MauiAndroid.ActiveCfg = Debug|x64
 		{6813477F-64B6-4B97-B230-438D0D233385}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -463,6 +494,7 @@ Global
 		{6813477F-64B6-4B97-B230-438D0D233385}.Release|iPhone.ActiveCfg = Release|x64
 		{6813477F-64B6-4B97-B230-438D0D233385}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{6813477F-64B6-4B97-B230-438D0D233385}.Release|Linux.ActiveCfg = Release|x64
+		{6813477F-64B6-4B97-B230-438D0D233385}.Release|macOS.ActiveCfg = Release|x64
 		{6813477F-64B6-4B97-B230-438D0D233385}.Release|MauiAll.ActiveCfg = Release|x64
 		{6813477F-64B6-4B97-B230-438D0D233385}.Release|MauiAndroid.ActiveCfg = Release|x64
 		{6813477F-64B6-4B97-B230-438D0D233385}.Release|Win32.ActiveCfg = Release|Win32
@@ -479,6 +511,7 @@ Global
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Debug|iPhone.ActiveCfg = Debug|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Debug|Linux.ActiveCfg = Debug|x64
+		{BE04E242-A1E9-4593-B95B-057F37330B76}.Debug|macOS.ActiveCfg = Debug|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Debug|MauiAndroid.ActiveCfg = Debug|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -495,6 +528,7 @@ Global
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|iPhone.ActiveCfg = Release|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|Linux.ActiveCfg = Release|x64
+		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|macOS.ActiveCfg = Release|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|MauiAll.ActiveCfg = Release|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|MauiAndroid.ActiveCfg = Release|x64
 		{BE04E242-A1E9-4593-B95B-057F37330B76}.Release|Win32.ActiveCfg = Release|Win32
@@ -511,6 +545,7 @@ Global
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Debug|iPhone.ActiveCfg = Debug|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Debug|Linux.ActiveCfg = Debug|x64
+		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Debug|macOS.ActiveCfg = Debug|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Debug|MauiAndroid.ActiveCfg = Debug|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -527,6 +562,7 @@ Global
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|iPhone.ActiveCfg = Release|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|Linux.ActiveCfg = Release|x64
+		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|macOS.ActiveCfg = Release|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|MauiAll.ActiveCfg = Release|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|MauiAndroid.ActiveCfg = Release|x64
 		{2E1F4BB3-3BD7-43AD-8E64-D3B8A2F5D7B2}.Release|Win32.ActiveCfg = Release|Win32
@@ -543,6 +579,7 @@ Global
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Debug|iPhone.ActiveCfg = Debug|x64
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Debug|Linux.ActiveCfg = Debug|x64
+		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Debug|macOS.ActiveCfg = Debug|x64
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Debug|MauiAndroid.ActiveCfg = Debug|x64
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Debug|Win32.ActiveCfg = Debug|Win32
@@ -559,6 +596,7 @@ Global
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Release|iPhone.ActiveCfg = Release|x64
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Release|Linux.ActiveCfg = Release|x64
+		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Release|macOS.ActiveCfg = Release|x64
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Release|MauiAll.ActiveCfg = Release|x64
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Release|MauiAndroid.ActiveCfg = Release|x64
 		{BAA70D0F-3EC7-4D10-91F0-974F1F49308B}.Release|Win32.ActiveCfg = Release|Win32
@@ -576,6 +614,7 @@ Global
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|iPhone.ActiveCfg = Debug|x64
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|Linux.ActiveCfg = Debug|x64
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|macOS.ActiveCfg = Debug|x64
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|MauiAll.Build.0 = Debug|x64
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -594,6 +633,7 @@ Global
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|iPhone.ActiveCfg = Release|x64
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|Linux.ActiveCfg = Release|x64
+		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|macOS.ActiveCfg = Release|x64
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|MauiAll.ActiveCfg = Release|x64
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|MauiAll.Build.0 = Release|x64
 		{31BFD9BC-3798-4A01-ADBD-59CD1D323C66}.Release|MauiAndroid.ActiveCfg = Release|x64
@@ -620,6 +660,7 @@ Global
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Debug|iPhone.ActiveCfg = Debug|Any CPU
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Debug|Linux.ActiveCfg = Debug|Any CPU
+		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Debug|MauiAll.ActiveCfg = Debug|Any CPU
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Debug|MauiAndroid.ActiveCfg = Debug|Any CPU
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Debug|Win32.ActiveCfg = Debug|Any CPU
@@ -644,6 +685,7 @@ Global
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Release|iPhone.ActiveCfg = Release|Any CPU
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Release|Linux.ActiveCfg = Release|Any CPU
+		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Release|macOS.ActiveCfg = Release|Any CPU
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Release|MauiAll.ActiveCfg = Release|Any CPU
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Release|MauiAndroid.ActiveCfg = Release|Any CPU
 		{E4915AD3-CA01-44FE-A99F-0D6E9DC49F08}.Release|Win32.ActiveCfg = Release|Any CPU
@@ -656,11 +698,10 @@ Global
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|ARM.ActiveCfg = Debug|iPhoneSimulator
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|ARM64.ActiveCfg = Debug|iPhone
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|iPhone.ActiveCfg = Debug|iPhone
-		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|iPhone.Build.0 = Debug|iPhone
-		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|iPhone.Deploy.0 = Debug|iPhone
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|Linux.ActiveCfg = Debug|iPhone
+		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|macOS.ActiveCfg = Debug|iPhone
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|MauiAll.ActiveCfg = Debug|iPhone
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|MauiAndroid.ActiveCfg = Debug|iPhone
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Debug|Win32.ActiveCfg = Debug|iPhoneSimulator
@@ -671,11 +712,10 @@ Global
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|ARM.ActiveCfg = Release|iPhoneSimulator
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|ARM64.ActiveCfg = Release|iPhone
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|iPhone.ActiveCfg = Release|iPhone
-		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|iPhone.Build.0 = Release|iPhone
-		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|iPhone.Deploy.0 = Release|iPhone
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|Linux.ActiveCfg = Release|iPhone
+		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|macOS.ActiveCfg = Release|iPhone
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|MauiAll.ActiveCfg = Release|iPhone
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|MauiAndroid.ActiveCfg = Release|iPhone
 		{0BBCFE15-9A3B-4175-A543-24B39C812D9E}.Release|Win32.ActiveCfg = Release|iPhoneSimulator
@@ -691,10 +731,10 @@ Global
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|ARM64.ActiveCfg = Debug|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|ARM64.Build.0 = Debug|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|iPhone.ActiveCfg = Debug|Any CPU
-		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|iPhone.Build.0 = Debug|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|Linux.ActiveCfg = Debug|Any CPU
+		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|MauiAll.ActiveCfg = Debug|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|MauiAndroid.ActiveCfg = Debug|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Debug|Win32.ActiveCfg = Debug|Any CPU
@@ -711,10 +751,10 @@ Global
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|ARM64.ActiveCfg = Release|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|ARM64.Build.0 = Release|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|iPhone.ActiveCfg = Release|Any CPU
-		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|iPhone.Build.0 = Release|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|Linux.ActiveCfg = Release|Any CPU
+		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|macOS.ActiveCfg = Release|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|MauiAll.ActiveCfg = Release|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|MauiAndroid.ActiveCfg = Release|Any CPU
 		{514A3E21-9E1F-4F19-B8C3-77898D1326F6}.Release|Win32.ActiveCfg = Release|Any CPU
@@ -733,6 +773,7 @@ Global
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|iPhone.ActiveCfg = Debug|Any CPU
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|Linux.ActiveCfg = Debug|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|MauiAll.ActiveCfg = Debug|Any CPU
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|MauiAndroid.ActiveCfg = Debug|Any CPU
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Debug|Win32.ActiveCfg = Debug|Any CPU
@@ -751,6 +792,7 @@ Global
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|iPhone.ActiveCfg = Release|Any CPU
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|Linux.ActiveCfg = Release|Any CPU
+		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|macOS.ActiveCfg = Release|Any CPU
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|MauiAll.ActiveCfg = Release|Any CPU
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|MauiAndroid.ActiveCfg = Release|Any CPU
 		{6603A81B-B0D4-4119-B731-77C579AC7C86}.Release|Win32.ActiveCfg = Release|Any CPU
@@ -768,6 +810,7 @@ Global
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Debug|iPhone.ActiveCfg = Debug|ARM64
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Debug|iPhoneSimulator.ActiveCfg = Debug|ARM64
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Debug|Linux.ActiveCfg = Debug|ARM64
+		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Debug|macOS.ActiveCfg = Debug|ARM64
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Debug|MauiAll.ActiveCfg = Debug|ARM64
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Debug|MauiAll.Build.0 = Debug|ARM64
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Debug|MauiAndroid.ActiveCfg = Debug|ARM64
@@ -787,6 +830,7 @@ Global
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Release|iPhone.ActiveCfg = Release|ARM64
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Release|iPhoneSimulator.ActiveCfg = Release|ARM64
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Release|Linux.ActiveCfg = Release|ARM64
+		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Release|macOS.ActiveCfg = Release|ARM64
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Release|MauiAll.ActiveCfg = Release|ARM64
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Release|MauiAll.Build.0 = Release|ARM64
 		{51DAF34F-B699-442D-A9BA-4A3B2800A09A}.Release|MauiAndroid.ActiveCfg = Release|ARM64
@@ -812,7 +856,9 @@ Global
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Debug|iPhoneSimulator.Build.0 = Debug|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Debug|Linux.ActiveCfg = Debug|x64
+		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Debug|macOS.ActiveCfg = Debug|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Debug|Linux.Build.0 = Debug|x64
+		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Debug|macOS.Build.0 = Debug|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Debug|MauiAll.Build.0 = Debug|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -839,7 +885,9 @@ Global
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Release|iPhoneSimulator.Build.0 = Release|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Release|Linux.ActiveCfg = Release|x64
+		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Release|macOS.ActiveCfg = Release|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Release|Linux.Build.0 = Release|x64
+		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Release|macOS.Build.0 = Release|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Release|MauiAll.ActiveCfg = Release|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Release|MauiAll.Build.0 = Release|x64
 		{19C1C54D-60D5-44AB-820E-7D07B180F153}.Release|MauiAndroid.ActiveCfg = Release|x64
@@ -866,7 +914,9 @@ Global
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Debug|iPhoneSimulator.Build.0 = Debug|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Debug|Linux.ActiveCfg = Debug|x64
+		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Debug|macOS.ActiveCfg = Debug|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Debug|Linux.Build.0 = Debug|x64
+		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Debug|macOS.Build.0 = Debug|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Debug|MauiAll.Build.0 = Debug|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -893,7 +943,9 @@ Global
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Release|iPhoneSimulator.Build.0 = Release|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Release|Linux.ActiveCfg = Release|x64
+		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Release|macOS.ActiveCfg = Release|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Release|Linux.Build.0 = Release|x64
+		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Release|macOS.Build.0 = Release|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Release|MauiAll.ActiveCfg = Release|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Release|MauiAll.Build.0 = Release|x64
 		{F8445183-52F2-45A0-BB4F-B433F3B721F0}.Release|MauiAndroid.ActiveCfg = Release|x64
@@ -920,7 +972,9 @@ Global
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Debug|iPhoneSimulator.Build.0 = Debug|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Debug|Linux.ActiveCfg = Debug|x64
+		{86B3654F-2B3F-478C-B108-17E989444FB3}.Debug|macOS.ActiveCfg = Debug|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Debug|Linux.Build.0 = Debug|x64
+		{86B3654F-2B3F-478C-B108-17E989444FB3}.Debug|macOS.Build.0 = Debug|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Debug|MauiAll.Build.0 = Debug|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -947,7 +1001,9 @@ Global
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Release|iPhoneSimulator.Build.0 = Release|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Release|Linux.ActiveCfg = Release|x64
+		{86B3654F-2B3F-478C-B108-17E989444FB3}.Release|macOS.ActiveCfg = Release|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Release|Linux.Build.0 = Release|x64
+		{86B3654F-2B3F-478C-B108-17E989444FB3}.Release|macOS.Build.0 = Release|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Release|MauiAll.ActiveCfg = Release|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Release|MauiAll.Build.0 = Release|x64
 		{86B3654F-2B3F-478C-B108-17E989444FB3}.Release|MauiAndroid.ActiveCfg = Release|x64
@@ -974,7 +1030,9 @@ Global
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Debug|iPhoneSimulator.Build.0 = Debug|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Debug|Linux.ActiveCfg = Debug|x64
+		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Debug|macOS.ActiveCfg = Debug|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Debug|Linux.Build.0 = Debug|x64
+		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Debug|macOS.Build.0 = Debug|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Debug|MauiAll.Build.0 = Debug|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -1001,7 +1059,9 @@ Global
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Release|iPhoneSimulator.Build.0 = Release|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Release|Linux.ActiveCfg = Release|x64
+		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Release|macOS.ActiveCfg = Release|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Release|Linux.Build.0 = Release|x64
+		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Release|macOS.Build.0 = Release|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Release|MauiAll.ActiveCfg = Release|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Release|MauiAll.Build.0 = Release|x64
 		{6FF04CCD-3E5A-423E-B6B8-637C42A007C1}.Release|MauiAndroid.ActiveCfg = Release|x64
@@ -1025,6 +1085,7 @@ Global
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Debug|Linux.ActiveCfg = Debug|Any CPU
+		{3469E673-1318-4731-9168-23F32D98FB3E}.Debug|macOS.ActiveCfg = Debug|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Debug|MauiAll.ActiveCfg = Debug|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Debug|MauiAll.Build.0 = Debug|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Debug|MauiAndroid.ActiveCfg = Debug|Any CPU
@@ -1048,6 +1109,7 @@ Global
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Release|Linux.ActiveCfg = Release|Any CPU
+		{3469E673-1318-4731-9168-23F32D98FB3E}.Release|macOS.ActiveCfg = Release|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Release|MauiAll.ActiveCfg = Release|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Release|MauiAll.Build.0 = Release|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Release|MauiAndroid.ActiveCfg = Release|Any CPU
@@ -1056,41 +1118,39 @@ Global
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Release|Win32.Build.0 = Release|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Release|x64.ActiveCfg = Release|Any CPU
 		{3469E673-1318-4731-9168-23F32D98FB3E}.Release|x64.Build.0 = Release|Any CPU
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Android x64.ActiveCfg = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Android+Windows.ActiveCfg = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Any CPU.ActiveCfg = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Any CPU.Build.0 = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|ARM.ActiveCfg = Debug|ARM
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|ARM.Build.0 = Debug|ARM
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|iPhone.ActiveCfg = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|iPhone.Build.0 = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|iPhoneSimulator.ActiveCfg = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|iPhoneSimulator.Build.0 = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Linux.ActiveCfg = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|MauiAll.ActiveCfg = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|MauiAll.Build.0 = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|MauiAndroid.ActiveCfg = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Win32.ActiveCfg = Debug|x86
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Win32.Build.0 = Debug|x86
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|x64.ActiveCfg = Debug|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Android x64.ActiveCfg = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Android+Windows.ActiveCfg = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Any CPU.ActiveCfg = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Any CPU.Build.0 = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|ARM.ActiveCfg = Release|ARM
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|ARM.Build.0 = Release|ARM
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|ARM64.ActiveCfg = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|iPhone.ActiveCfg = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|iPhone.Build.0 = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|iPhoneSimulator.ActiveCfg = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|iPhoneSimulator.Build.0 = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Linux.ActiveCfg = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|MauiAll.ActiveCfg = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|MauiAndroid.ActiveCfg = Release|ARM64
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Win32.ActiveCfg = Release|x86
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Win32.Build.0 = Release|x86
-		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|x64.ActiveCfg = Release|ARM64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Android x64.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Android+Windows.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Any CPU.Build.0 = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|ARM.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|ARM64.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|iPhone.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|iPhone.Build.0 = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|iPhoneSimulator.Build.0 = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Linux.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|macOS.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|MauiAll.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|MauiAll.Build.0 = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|MauiAndroid.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|Win32.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Debug|x64.ActiveCfg = Debug|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Android x64.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Android+Windows.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Any CPU.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Any CPU.Build.0 = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|ARM.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|ARM64.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|iPhone.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|iPhone.Build.0 = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|iPhoneSimulator.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|iPhoneSimulator.Build.0 = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Linux.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|macOS.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|MauiAll.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|MauiAndroid.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|Win32.ActiveCfg = Release|x64
+		{F6E7EFA6-0470-47C8-A6B0-5DE72BAC7291}.Release|x64.ActiveCfg = Release|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Debug|Android x64.ActiveCfg = Debug|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Debug|Android x64.Build.0 = Debug|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Debug|Android+Windows.ActiveCfg = Debug|x64
@@ -1103,6 +1163,7 @@ Global
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Debug|iPhone.ActiveCfg = Debug|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Debug|Linux.ActiveCfg = Debug|x64
+		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Debug|macOS.ActiveCfg = Debug|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Debug|MauiAll.Build.0 = Debug|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -1122,6 +1183,7 @@ Global
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Release|iPhone.ActiveCfg = Release|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Release|Linux.ActiveCfg = Release|x64
+		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Release|macOS.ActiveCfg = Release|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Release|MauiAll.ActiveCfg = Release|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Release|MauiAll.Build.0 = Release|x64
 		{9FBEF27E-78FF-4491-9342-396ACF7B33E6}.Release|MauiAndroid.ActiveCfg = Release|x64
@@ -1138,6 +1200,7 @@ Global
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|iPhone.ActiveCfg = Debug|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|Linux.ActiveCfg = Debug|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|macOS.ActiveCfg = Debug|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|Linux.Build.0 = Debug|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|MauiAll.ActiveCfg = Debug|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Debug|MauiAndroid.ActiveCfg = Debug|x64
@@ -1152,11 +1215,40 @@ Global
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|iPhone.ActiveCfg = Release|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|iPhoneSimulator.ActiveCfg = Release|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|Linux.ActiveCfg = Release|x64
+		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|macOS.ActiveCfg = Release|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|Linux.Build.0 = Release|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|MauiAll.ActiveCfg = Release|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|MauiAndroid.ActiveCfg = Release|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|Win32.ActiveCfg = Release|x64
 		{9AE8799F-9A4E-4D00-AFA0-C7D892050822}.Release|x64.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|Android x64.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|Android+Windows.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|ARM.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|ARM64.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|iPhone.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|iPhoneSimulator.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|Linux.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|macOS.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|macOS.Build.0 = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|MauiAll.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|MauiAndroid.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|Win32.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Debug|x64.ActiveCfg = Debug|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|Android x64.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|Android+Windows.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|Any CPU.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|ARM.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|ARM64.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|iPhone.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|iPhoneSimulator.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|Linux.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|macOS.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|macOS.Build.0 = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|MauiAll.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|MauiAndroid.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|Win32.ActiveCfg = Release|x64
+		{E615DB70-9FCF-4F41-B7F5-55688997553A}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

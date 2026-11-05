@@ -340,6 +340,7 @@ namespace GnollHackX
             UseTileBatching = Preferences.Get("UseTileBatching", GHConstants.DefaultTileBatching);
             UseTextBlobCaching = Preferences.Get("UseTextBlobCaching", GHConstants.DefaultTextBlobCaching);
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
+            AllowOptionKeys = Preferences.Get("AllowOptionKeys", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
             /* Once per Steam Deck: earlier builds defaulted to showing shortcuts, and the Settings page saved that value */
             if (IsSteamDeck && !Preferences.Get("SteamDeckShortcutsDefaultApplied", false))
@@ -1905,6 +1906,8 @@ namespace GnollHackX
         public static bool IsNoStore { get; set; }
         /* Linux: started from an AppImage, whose runtime sets APPIMAGE to the image file's path */
         public static bool IsAppImage { get; set; }
+        /* macOS: started from inside an .app bundle */
+        public static bool IsMacAppBundle { get; set; }
 
         private static void ProcessEnvironment()
         {
@@ -1912,11 +1915,24 @@ namespace GnollHackX
             IsSteam = false;
             IsNoStore = false;
             IsAppImage = false;
+            IsMacAppBundle = false;
             if (IsLinux)
             {
                 try
                 {
                     IsAppImage = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPIMAGE"));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+            else if (IsMacOS)
+            {
+                try
+                {
+                    string baseDirectory = AppDomain.CurrentDomain.BaseDirectory ?? "";
+                    IsMacAppBundle = baseDirectory.IndexOf(".app/Contents/MacOS/", StringComparison.OrdinalIgnoreCase) >= 0;
                 }
                 catch (Exception ex)
                 {
@@ -2500,6 +2516,14 @@ namespace GnollHackX
         /* MAUI iOS with a Metal device; set once in Initialize */
         public static bool IsMetalAvailable { get { return Interlocked.CompareExchange(ref _isMetalAvailable, 0, 0) != 0; } }
         public static bool IsUseMetalDefault { get { return IsMetalAvailable && GHConstants.DefaultUseMetalRendering; } }
+        /* macOS Avalonia: the Metal Rendering setting chooses Avalonia.Native's rendering backend when the process starts;
+           a change applies after a restart */
+        public static readonly bool IsMetalRenderingStartupSetting =
+#if GNH_AVALONIA && MACOS
+            true;
+#else
+            false;
+#endif
         private static int _useMetal = 0;
         /* The GPU canvases draw with Metal instead of OpenGL ES. Read when a GamePage is constructed; see SwitchableCanvasView.CreateGLView */
         public static bool UseMetal { get { return IsMetalAvailable && Interlocked.CompareExchange(ref _useMetal, 0, 0) != 0; } set { Interlocked.Exchange(ref _useMetal, value ? 1 : 0); } }
@@ -3925,6 +3949,7 @@ namespace GnollHackX
         private static int _shiftDown = 0;
         private static int _windowsKeyDown = 0;
         private static int _disableWindowsKey = 0;
+        private static int _allowOptionKeys = 0;
         private static int _defaultVIKeys = 0;
         private static int _showKeyboardShortcuts = 0;
         private static int _gamepadEnabled = 1;
@@ -3945,6 +3970,8 @@ namespace GnollHackX
         public static bool ShiftDown { get { return Interlocked.CompareExchange(ref _shiftDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _shiftDown, value ? 1 : 0); } }
         public static bool WindowsKeyDown { get { return Interlocked.CompareExchange(ref _windowsKeyDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _windowsKeyDown, value ? 1 : 0); } }
         public static bool DisableWindowsKey { get { return Interlocked.CompareExchange(ref _disableWindowsKey, 0, 0) != 0; } set { Interlocked.Exchange(ref _disableWindowsKey, value ? 1 : 0); } }
+        /* macOS: Option types the characters the keyboard layout puts on it, instead of being the Alt modifier */
+        public static bool AllowOptionKeys { get { return Interlocked.CompareExchange(ref _allowOptionKeys, 0, 0) != 0; } set { Interlocked.Exchange(ref _allowOptionKeys, value ? 1 : 0); } }
         public static bool DefaultVIKeys { get { return Interlocked.CompareExchange(ref _defaultVIKeys, 0, 0) != 0; } set { Interlocked.Exchange(ref _defaultVIKeys, value ? 1 : 0); } }
         public static bool ShowKeyboardShortcuts { get { return Interlocked.CompareExchange(ref _showKeyboardShortcuts, 0, 0) != 0; } set { Interlocked.Exchange(ref _showKeyboardShortcuts, value ? 1 : 0); } }
         /* The Use Controller setting; also applied to GHGamepadService */
@@ -4692,10 +4719,16 @@ namespace GnollHackX
 #else
             false;
 #endif
+        public static readonly bool IsMacOS =
+#if GNH_AVALONIA && MACOS
+            true;
+#else
+            false;
+#endif
         public static readonly bool IsMaui = true;
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
 #if GNH_AVALONIA
-        public static readonly string PlatformDisplayName = IsLinux ? "Linux Avalonia" : "Windows Avalonia";
+        public static readonly string PlatformDisplayName = IsLinux ? "Linux Avalonia" : OperatingSystem.IsMacOS() ? "macOS Avalonia" : "Windows Avalonia";
 #endif
         public static readonly bool IsPackaged = (Microsoft.Maui.ApplicationModel.AppInfo.Current?.PackagingModel ?? AppPackagingModel.Unpackaged) == AppPackagingModel.Packaged;
 #else
@@ -4711,6 +4744,7 @@ namespace GnollHackX
         public static readonly bool IsMaui = false;
         public static readonly bool IsDesktop = false;
         public static readonly bool IsLinux = false;
+        public static readonly bool IsMacOS = false;
         public static readonly string RuntimePlatform = Device.RuntimePlatform;
         public static readonly bool IsPackaged = true;
 #endif
@@ -8675,6 +8709,17 @@ namespace GnollHackX
                 else
                     return "unpackaged";
             }
+            else if (IsMacOS)
+            {
+                if (IsPlaytest)
+                    return "steam-playtest";
+                else if (IsSteam)
+                    return "steam";
+                else if (IsMacAppBundle)
+                    return "packaged";
+                else
+                    return "unpackaged";
+            }
             return "unknown";
         }
 
@@ -9645,6 +9690,17 @@ namespace GnollHackX
                 else if (IsSteam)
                     platid += "s";
                 else if (IsAppImage)
+                    platid += "p";
+                else
+                    platid += "u";
+            }
+            else if (IsMacOS)
+            {
+                if (IsPlaytest)
+                    platid += "t";
+                else if (IsSteam)
+                    platid += "s";
+                else if (IsMacAppBundle)
                     platid += "p";
                 else
                     platid += "u";
