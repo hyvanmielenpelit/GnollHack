@@ -151,7 +151,7 @@ sed -e "s/{BUNDLE_ID}/$BUNDLE_ID/g" -e "s/{VERSION}/$VERSION/g" -e "s/{BUILD}/$B
 plutil -lint "$CONTENTS/Info.plist" > /dev/null || fail GNHMP104 "the generated Info.plist is not valid"
 printf 'APPL????' > "$CONTENTS/PkgInfo"
 
-# --- Icon: an iconset from appicon.png; the 1024 slot is scaled up when the master is smaller ---
+# --- Icon: an iconset from appicon.png, the 1024 x 1024 master from New-MacAppIcon.ps1; a smaller master is scaled up ---
 echo "Making GnollHack.icns"
 ICONSET="$WORK/GnollHack.iconset"
 mkdir -p "$ICONSET"
