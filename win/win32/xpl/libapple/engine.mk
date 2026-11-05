@@ -31,12 +31,14 @@ TARGET_FLAGS := -target arm64-apple-ios$(MIN_OS)
 PLATFORM_DEFINES := -DGNH_IOS
 PLATFORM_DIR := win/win32/xpl/gnollhackios
 TARGET := $(OUTDIR)/libgnollhackios.a
+TARGET_DSYM :=
 else ifeq ($(PLATFORM),macos)
 SDK := macosx
 TARGET_FLAGS := -arch arm64 -arch x86_64 -mmacosx-version-min=$(MIN_OS)
 PLATFORM_DEFINES := -DGNH_MAC
 PLATFORM_DIR := win/win32/xpl/gnollhackmac
 TARGET := $(OUTDIR)/libgnollhackmac.dylib
+TARGET_DSYM := $(TARGET).dSYM
 else
 $(error PLATFORM must be ios or macos)
 endif
@@ -61,7 +63,7 @@ OBJS := $(SOURCES:%.c=$(OBJDIR)/%.o)
 HEADERS := $(wildcard include/*.h win/win32/xpl/libshare/*.h $(PLATFORM_DIR)/*.h)
 
 .PHONY: all
-all: $(TARGET)
+all: $(TARGET) $(TARGET_DSYM)
 
 # WORKAROUND(WA-BUILD-0004): Xcode's GNU make 3.81 has no --output-sync
 # Each compile's diagnostics go to a file and are printed in one piece under a lock, so parallel jobs do not
@@ -79,3 +81,8 @@ $(OUTDIR)/libgnollhackios.a: $(OBJS) gnh-sources.mk
 $(OUTDIR)/libgnollhackmac.dylib: $(OBJS) gnh-sources.mk
 	@mkdir -p $(OUTDIR)
 	$(CC) $(TARGET_FLAGS) -dynamiclib -install_name @rpath/libgnollhackmac.dylib -o $@ $(OBJS) -lm -lpthread
+
+# The engine's DWARF stays in the objects; dsymutil collects it while they exist
+$(OUTDIR)/libgnollhackmac.dylib.dSYM: $(OUTDIR)/libgnollhackmac.dylib
+	rm -rf $@
+	xcrun dsymutil $< -o $@

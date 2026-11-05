@@ -1,18 +1,22 @@
-# gnhsentry.dll and libsentry.so
+# gnhsentry.dll, libsentry.so and libgnhsentry.dylib
 
-GnollHack's Windows and Linux builds capture native crashes with sentry-native's inproc backend, from two
+GnollHack's Windows, Linux and macOS builds capture native crashes with sentry-native's inproc backend, from three
 binaries committed to the repository:
 
 | Binary | Built by | Contents |
 |--------|----------|----------|
 | `GnollHackM\Platforms\Windows\libs\gnhsentry.dll` | `Build-GnhSentry.ps1` in this folder | `sentry-native.lib` from the Sentry NuGet package, linked statically, plus GnollHack's crash shim `gnhsentry.c` |
 | `GnollHackM\Platforms\Linux\libs\libsentry.so` | `GnollHackM\Platforms\Linux\Packaging\Build-LinuxSentryNative.ps1` | sentry-native built in WSL as a shared library from a pinned checkout |
+| `GnollHackM\Platforms\MacOS\libs\libgnhsentry.dylib` | `GnollHackM\Platforms\MacOS\Packaging\Build-MacSentryNative.ps1`, on the Mac over SSH | `sentry-native\osx\libsentry-native.a` from the Sentry NuGet package, linked into a universal dylib that exports the names in `gnhsentry.exports`, with no shim |
 
 ## Why they exist
 
 - **WA-SENTRY-0003.** Sentry .NET starts its own sentry-native only in trimmed or Native AOT builds, and GnollHack
-  ships JIT builds on Windows and Linux. `GHSentryNative` therefore initializes sentry-native itself, and
+  ships JIT builds on Windows, Linux and macOS. `GHSentryNative` therefore initializes sentry-native itself, and
   `SentryNative` is `false` in `GnollHackM.csproj` so that Sentry .NET never starts a second one.
+- On macOS the package's static library is linked as it is. CoreCLR takes managed faults there through Mach
+  exception ports, not signals, so neither the Linux `SA_ONSTACK` adjustment (WA-SENTRY-0005) nor a chain-at-start
+  handler strategy is needed.
 - On Windows the Sentry package carries sentry-native as a static library, `sentry-native\win-x64\sentry-native.lib`,
   which P/Invoke cannot load. gnhsentry.dll links it into a DLL that exports the functions in `gnhsentry.def`, and
   adds two pieces in front of it:
@@ -23,10 +27,10 @@ binaries committed to the repository:
 
 The register entries in `DEVEL\workarounds\sentry.md` have the details.
 
-Both binaries are committed because building them needs tools that an ordinary GnollHackM build does not: MSVC and
-the restored Sentry package for gnhsentry.dll, and a WSL distribution with the build tools and the pinned
-sentry-native checkout for libsentry.so. They change only when Sentry is upgraded or the shim changes, and a manifest
-next to each records what it was built from.
+All three binaries are committed because building them needs tools that an ordinary GnollHackM build does not: MSVC
+and the restored Sentry package for gnhsentry.dll, a WSL distribution with the build tools and the pinned
+sentry-native checkout for libsentry.so, and the Mac with Xcode for libgnhsentry.dylib. They change only when Sentry
+is upgraded or the shim or the export list changes, and a manifest next to each records what it was built from.
 
 ## include\sentry.h
 
@@ -48,8 +52,8 @@ its license is the one already shipped in `GnollHackM\Platforms\Windows\licenses
 
 ## The manifests and the build-time guard
 
-Each script writes a manifest next to its binary, only after the binary has passed the script's checks. Both are
-generated; never edit them.
+Each script writes a manifest next to its binary, only after the binary has passed the script's checks. All three
+are generated; never edit them.
 
 - **`GnollHackM\Platforms\Windows\libs\gnhsentry.build.props`**: the package version and the sentry-native version
   the DLL was built from; the SHA-256 of the linked `sentry-native.lib`, of the DLL, of its PDB and of the compiler
@@ -57,13 +61,17 @@ generated; never edit them.
   Sentry debug ID; and the MSVC and Windows SDK versions.
 - **`GnollHackM\Platforms\Linux\libs\libsentry.build.props`**: the sentry-native version, the pinned commit, the
   normalized hash of `include\sentry.h`, and the SHA-256 and GNU build ID of libsentry.so.
+- **`GnollHackM\Platforms\MacOS\libs\libgnhsentry.build.props`**: the package version and the sentry-native version
+  the dylib was built from; the SHA-256 of the linked `libsentry-native.a` and of the dylib; the normalized hash of
+  `GnollHackM\Platforms\MacOS\Packaging\gnhsentry.exports`, `gnhsentry.def` and `include\sentry.h`; the arm64 and
+  x86_64 UUIDs; and the clang and macOS SDK versions.
 
 The normalized hash reads each file as UTF-8 and turns CRLF into LF before hashing, so it does not depend on the
 checkout's line endings.
 
-`GnollHackM\GnhSentryNative.targets` imports both manifests and, in the `GnhCheckSentryNativeBinaries` target before
-every Windows and Linux build of GnollHackM, compares them with the current inputs. It does not run for Android or
-iOS.
+`GnollHackM\GnhSentryNative.targets` imports the manifests and, in the `GnhCheckSentryNativeBinaries` target before
+every Windows, Linux and macOS build of GnollHackM, compares them with the current inputs. It does not run for
+Android or iOS.
 
 | Code | Problem |
 |------|---------|
@@ -79,6 +87,15 @@ iOS.
 | `GNHSN014` | `include\sentry.h` changed since libsentry.so was built |
 | `GNHSN015` | The Linux or the Windows manifest is missing |
 | `GNHSN016` | As `GNHSN006`, for the Linux build |
+| `GNHSN021` | `GnhSentryVersion` is not the package version libgnhsentry.dylib was built from, or its sentry-native version is not gnhsentry.dll's |
+| `GNHSN022` | The restored `libsentry-native.a` is not the one libgnhsentry.dylib linked |
+| `GNHSN023` | `libgnhsentry.dylib` is not the library the script built |
+| `GNHSN024` | `gnhsentry.exports`, `gnhsentry.def` or `include\sentry.h` changed since libgnhsentry.dylib was built |
+| `GNHSN025` | The Mac manifest or the restored `libsentry-native.a` is missing |
+| `GNHSN026` | As `GNHSN006`, for the macOS build |
+
+`gnhsentry.def` is among the Mac inputs because `GHSentryNative.cs` imports every export it lists on macOS too, so
+any edit to it, even a Windows-only export, also needs `Build-MacSentryNative.ps1`.
 
 The problems are warnings, except in Release builds that publish, archive, package or upload symbols
 (`_IsPublishing`, `ArchiveOnBuild`, `PublishAppxPackage`, `GenerateAppxPackageOnBuild` or `SentryUploadSymbols`),
@@ -89,7 +106,8 @@ where they are errors. Two switches override that:
 
 `UploadGnhSentryPdbToSentry` uploads `win\win32\vs\symbols\Release\x64\gnhsentry\gnhsentry.pdb` with the other
 Windows symbols, and only when its hash equals the manifest's, so the symbols come from the machine that built the
-committed DLL.
+committed DLL. On macOS, `UploadGnollHackMacDsymToSentry` uploads libgnhsentry.dylib itself, whose symbol table names
+its functions (WA-SENTRY-0011).
 
 ## Skipping a rebuild on purpose
 
@@ -99,7 +117,8 @@ guard reports as stale is recorded, not passed on a command line: commit
 comment giving the reason, and remove it at the next rebuild.
 
 The expected case is a Linux-only release from a machine without MSVC after a Sentry upgrade: `GNHSN011` blocks the
-Linux publish until gnhsentry.dll is rebuilt, by design.
+Linux publish until gnhsentry.dll is rebuilt, by design. Likewise, a macOS release after a Sentry upgrade or a
+`gnhsentry.def` edit is blocked by `GNHSN021` to `GNHSN024` until `Build-MacSentryNative.ps1` has run.
 
 ## Upgrade runbook
 
@@ -122,15 +141,15 @@ Linux publish until gnhsentry.dll is rebuilt, by design.
    .\Compare-SentryNativeApi.ps1 -NewHeader \\wsl.localhost\Ubuntu-20.04\root\.cache\gnollhack-sentry-native\sentry-native\include\sentry.h
    ```
 
-   Exit 0: rerun with `-Update`. Exit 1: update `gnhsentry.c`, `GHSentryNative.cs` and `GHAvaloniaSentryNative.cs`
-   to the new declarations, then rerun with `-Update -AcceptChanges`. Exit 2: the script's symbol list or parser
-   needs fixing first.
-6. Run `Build-GnhSentry.ps1` and `Build-LinuxSentryNative.ps1`.
+   Exit 0: rerun with `-Update`. Exit 1: update `gnhsentry.c`, `GHSentryNative.cs`, `GHAvaloniaSentryNative.cs` and
+   `GnollHackM\Platforms\MacOS\Packaging\gnhsentry.exports` to the new declarations, then rerun with
+   `-Update -AcceptChanges`. Exit 2: the script's symbol list or parser needs fixing first.
+6. Run `Build-GnhSentry.ps1`, `Build-LinuxSentryNative.ps1` and `Build-MacSentryNative.ps1`.
 7. Re-check every register entry whose `Package` names `Sentry`, `Sentry.Maui` or `sentry-native`, found by
    searching the `Package` fields, per `client_workarounds`. The lint's drift warnings cover only entries whose
    upstream fix is merged or released, so they are not the list. Then run
    `DEVEL\workarounds\Test-WorkaroundRegister.ps1`.
-8. Smoke tests: wizard-mode `#crashtest` segmentation fault on Windows and Linux, restart, one native report
+8. Smoke tests: wizard-mode `#crashtest` segmentation fault on Windows, Linux and macOS, restart, one native report
    uploaded; an unhandled managed exception still raises `AppDomain.UnhandledException` (WA-SENTRY-0001's Verify
-   removal steps).
-9. Commit the version change, header, both binaries and both manifests together.
+   removal steps). `#crashtest` exists only in a Debug engine, on every platform.
+9. Commit the version change, header, the three binaries, their manifests and the macOS license copy together.

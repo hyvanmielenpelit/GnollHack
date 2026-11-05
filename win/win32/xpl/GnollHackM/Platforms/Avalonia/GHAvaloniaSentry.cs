@@ -6,8 +6,8 @@ using GnollHackX;
 namespace GnollHackM
 {
     /* Sentry for the Linux and macOS builds, through the core SDK: Sentry.Maui is not used on the Avalonia backend.
-       Linux also runs sentry-native for native crashes; macOS has managed events, breadcrumbs and release health only,
-       and Sentry .NET's own handler reports a terminating managed exception. */
+       Both also run sentry-native for native crashes, and Sentry .NET's own handler reports a terminating managed
+       exception. */
     internal static class GHAvaloniaSentry
     {
         public static void Init()
@@ -21,7 +21,6 @@ namespace GnollHackM
                 if (string.IsNullOrEmpty(dsn))
                     return;
 
-#if LINUX
                 /* Set explicitly on both SDKs, so that native crash events match the managed ones */
                 string release = GHSentryNative.GetRelease();
                 string environment = GHSentryNative.GetEnvironment();
@@ -31,15 +30,11 @@ namespace GnollHackM
                 bool debug = false;
 #endif
                 /* Explicit: the default, .sentry-native in the current directory, is inside the read-only AppImage
-                   mount, because AppRun changes into $APPDIR/gnollhack */
+                   mount on Linux, because AppRun changes into $APPDIR/gnollhack, and / for an app started from
+                   Finder on macOS */
                 string databaseDirectory = Path.Combine(GHAvaloniaPaths.DataDirectory, "sentry-native");
                 /* Before SentrySdk.Init, which reads CrashedLastRun */
                 bool nativeInitialized = GHSentryNative.Init(dsn, release, environment, debug, databaseDirectory, out bool crashedLastRun);
-#else
-                /* Sentry .NET's own release and environment rule, which the Linux build applies explicitly */
-                string release = null;
-                string environment = null;
-#endif
 
                 SentrySdk.Init(options =>
                 {
@@ -59,13 +54,13 @@ namespace GnollHackM
                     options.Debug = true;
                     options.TracesSampleRate = 1.0;
 #endif
-#if LINUX
                     if (nativeInitialized)
                     {
                         options.ScopeObserver = new GHSentryNativeScopeObserver();
                         options.EnableScopeSync = true;
                         options.CrashedLastRun = () => crashedLastRun;
                     }
+#if LINUX
                     // WORKAROUND(WA-AVALONIA-0023): IBus's Destroy reply reaches Sentry as an unobserved exception
                     options.AddExceptionFilter(new IBusDestroyReplyExceptionFilter());
 #endif
@@ -90,13 +85,6 @@ namespace GnollHackM
                     scope.SetTag(GHConstants.SentryTagLinuxSession, session);
                     scope.SetTag(GHConstants.SentryTagLinuxGlibc, glibc);
                 });
-
-                if (nativeInitialized)
-                {
-                    AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-                    AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
-                    GHSentryNative.StartOutboxUpload(dsn);
-                }
 #else
                 string macPackage = GetMacPackage();
                 SentrySdk.ConfigureScope(scope =>
@@ -104,6 +92,13 @@ namespace GnollHackM
                     scope.SetTag(GHConstants.SentryTagMacPackage, macPackage);
                 });
 #endif
+
+                if (nativeInitialized)
+                {
+                    AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
+                    AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
+                    GHSentryNative.StartOutboxUpload(dsn);
+                }
 
                 /* GNOLLHACK_SENTRY_TEST=1 sends one message, to check delivery without a crash */
                 if (Environment.GetEnvironmentVariable("GNOLLHACK_SENTRY_TEST") == "1")
@@ -115,7 +110,6 @@ namespace GnollHackM
             }
         }
 
-#if LINUX
         /* A terminating managed exception is reported by Sentry .NET, whose handler, subscribed earlier, runs first.
            CoreCLR's abort path then bypasses sentry-native's SIGABRT handler; closing sentry-native uninstalls its
            handlers, so no native duplicate can follow even if that changes. */
@@ -130,6 +124,7 @@ namespace GnollHackM
             GHSentryNative.Close();
         }
 
+#if LINUX
         private sealed class IBusDestroyReplyExceptionFilter : Sentry.Extensibility.IExceptionFilter
         {
             public bool Filter(Exception ex)

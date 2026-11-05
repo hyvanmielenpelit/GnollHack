@@ -1,0 +1,13 @@
+<!-- Written by Build-MacSentryNative.ps1; checked by GnhSentryNative.targets. Do not edit. -->
+<Project>
+  <PropertyGroup>
+    <GnhMacSentryPackageVersion>6.12.1</GnhMacSentryPackageVersion>
+    <GnhMacSentryNativeVersion>0.17.2</GnhMacSentryNativeVersion>
+    <GnhMacSentryLibSha256>A1D97B85F91AA98F415A773D0B1D31BC27014C4412BA824704A8122A46C309E9</GnhMacSentryLibSha256>
+    <GnhMacSentrySourceSha256>3D2899C4B6876E004E06FC491876761A364D2FE5A0C880197D4C1C0F06F97F94</GnhMacSentrySourceSha256>
+    <GnhMacSentryDylibSha256>3BC931ACEB8AE826CB59AC78EA4284EB8B82177A5EC28E0355CD2B1427118213</GnhMacSentryDylibSha256>
+    <GnhMacSentryArm64Uuid>24BD721D-AC1D-30AA-9F8F-105DA8191E7F</GnhMacSentryArm64Uuid>
+    <GnhMacSentryX64Uuid>8F0F4E8F-2A1E-3268-816D-D6B8BAC5F6F1</GnhMacSentryX64Uuid>
+    <GnhMacSentryToolset>Apple clang version 21.0.0 (clang-2100.3.34.2), macOS SDK 27.0</GnhMacSentryToolset>
+  </PropertyGroup>
+</Project>

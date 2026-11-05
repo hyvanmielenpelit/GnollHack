@@ -1,4 +1,4 @@
-#if SENTRY && (WINDOWS || (GNH_AVALONIA && LINUX))
+#if SENTRY && (WINDOWS || (GNH_AVALONIA && (LINUX || MACOS)))
 using System;
 using System.Globalization;
 using System.Text.Json;
@@ -6,7 +6,7 @@ using Sentry;
 
 namespace GnollHackM
 {
-    // WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT builds on Windows and Linux
+    // WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT desktop builds
     /* Mirrors Sentry .NET's scope into sentry-native's, so that a native crash event carries the same tags, extras,
        breadcrumbs and user. Called by the SDK while it updates the scope; never throws. */
     internal sealed class GHSentryNativeScopeObserver : IScopeObserver

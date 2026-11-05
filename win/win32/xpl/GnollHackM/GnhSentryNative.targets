@@ -1,7 +1,8 @@
-<!-- Checks that gnhsentry.dll and libsentry.so match the inputs recorded in their manifests -->
+<!-- Checks that gnhsentry.dll, libsentry.so and libgnhsentry.dylib match the inputs recorded in their manifests -->
 <Project>
   <Import Project="Platforms\Windows\libs\gnhsentry.build.props" Condition="Exists('$(MSBuildThisFileDirectory)Platforms\Windows\libs\gnhsentry.build.props')" />
   <Import Project="Platforms\Linux\libs\libsentry.build.props" Condition="Exists('$(MSBuildThisFileDirectory)Platforms\Linux\libs\libsentry.build.props')" />
+  <Import Project="Platforms\MacOS\libs\libgnhsentry.build.props" Condition="Exists('$(MSBuildThisFileDirectory)Platforms\MacOS\libs\libgnhsentry.build.props')" />
 
   <!-- SHA-256 of the files' concatenated text with CRLF read as LF, so the hash does not depend on the checkout's line
        endings; uppercase hex without dashes, as Build-GnhSentry.ps1 and Build-LinuxSentryNative.ps1 compute it -->
@@ -28,10 +29,65 @@
     </Task>
   </UsingTask>
 
+  <!-- The LC_UUID of a Mach-O file's arm64 slice, fat or thin, as uppercase hex with dashes; empty when there is none or the file is cut short -->
+  <UsingTask TaskName="GnhGetMachOArm64Uuid" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+    <ParameterGroup>
+      <MachOFile ParameterType="System.String" Required="true" />
+      <Uuid ParameterType="System.String" Output="true" />
+    </ParameterGroup>
+    <Task>
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Code Type="Fragment" Language="cs"><![CDATA[
+        Uuid = "";
+        byte[] b = File.ReadAllBytes(MachOFile);
+        Func<long, uint> be = o => (uint)(b[o] << 24 | b[o + 1] << 16 | b[o + 2] << 8 | b[o + 3]);
+        Func<long, uint> le = o => BitConverter.ToUInt32(b, (int)o);
+        const uint CpuArm64 = 0x0100000C;
+        long slice = -1;
+        if (b.Length >= 8 && be(0) == 0xCAFEBABE)
+        {
+            uint count = be(4);
+            for (long i = 0; i < count && 8 + i * 20 + 20 <= b.Length; i++)
+            {
+                long a = 8 + i * 20;
+                if (be(a) == CpuArm64)
+                    slice = be(a + 8);
+            }
+        }
+        else if (b.Length >= 32 && le(0) == 0xFEEDFACF && le(4) == CpuArm64)
+        {
+            slice = 0;
+        }
+        if (slice >= 0 && slice + 32 <= b.Length && le(slice) == 0xFEEDFACF)
+        {
+            uint ncmds = le(slice + 16);
+            long p = slice + 32;
+            for (uint i = 0; i < ncmds && p + 8 <= b.Length; i++)
+            {
+                uint cmd = le(p);
+                uint size = le(p + 4);
+                if (cmd == 0x1B)
+                {
+                    if (p + 24 <= b.Length)
+                        Uuid = new Guid(new byte[] { b[p + 11], b[p + 10], b[p + 9], b[p + 8], b[p + 13], b[p + 12], b[p + 15], b[p + 14],
+                            b[p + 16], b[p + 17], b[p + 18], b[p + 19], b[p + 20], b[p + 21], b[p + 22], b[p + 23] }).ToString("D").ToUpperInvariant();
+                    break;
+                }
+                if (size < 8)
+                    break;
+                p += size;
+            }
+        }
+      ]]></Code>
+    </Task>
+  </UsingTask>
+
   <!-- Visual Studio's fast up-to-date check runs the build, and so the check, when one of these changes -->
   <ItemGroup>
     <UpToDateCheckInput Include="..\gnhsentrywin\gnhsentry.c;..\gnhsentrywin\gnhsentry.def;..\gnhsentrywin\include\sentry.h" />
     <UpToDateCheckInput Include="Platforms\Windows\libs\gnhsentry.build.props;Platforms\Linux\libs\libsentry.build.props" />
+    <UpToDateCheckInput Include="Platforms\MacOS\Packaging\gnhsentry.exports;Platforms\MacOS\libs\libgnhsentry.build.props" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -39,12 +95,14 @@
     <_GnhSentryDllRemedy Condition="'$(GnhAllowStaleSentryNative)' == 'true'">$(_GnhSentryDllRemedy) (GnhAllowStaleSentryNative is set)</_GnhSentryDllRemedy>
     <_GnhLibSentryRemedy>Run win\win32\xpl\GnollHackM\Platforms\Linux\Packaging\Build-LinuxSentryNative.ps1, or pass -p:GnhAllowStaleSentryNative=true.</_GnhLibSentryRemedy>
     <_GnhLibSentryRemedy Condition="'$(GnhAllowStaleSentryNative)' == 'true'">$(_GnhLibSentryRemedy) (GnhAllowStaleSentryNative is set)</_GnhLibSentryRemedy>
+    <_GnhMacSentryDylibRemedy>Run win\win32\xpl\GnollHackM\Platforms\MacOS\Packaging\Build-MacSentryNative.ps1, or pass -p:GnhAllowStaleSentryNative=true.</_GnhMacSentryDylibRemedy>
+    <_GnhMacSentryDylibRemedy Condition="'$(GnhAllowStaleSentryNative)' == 'true'">$(_GnhMacSentryDylibRemedy) (GnhAllowStaleSentryNative is set)</_GnhMacSentryDylibRemedy>
   </PropertyGroup>
 
   <!-- Reports every problem the checks found: as errors for Release publish, archive, package and symbol upload builds
        and with GnhSentryNativeStrict=true, otherwise as warnings; GnhAllowStaleSentryNative=true always makes them
        warnings. EnableSentryUploadForPublish runs first, so SentryUploadSymbols is final here. -->
-  <Target Name="GnhCheckSentryNativeBinaries" BeforeTargets="BeforeBuild" DependsOnTargets="EnableSentryUploadForPublish;_GnhCheckGnhSentryDll;_GnhCheckLibSentry" Condition="'$(DesignTimeBuild)' != 'true' And $(DefineConstants.Contains('SENTRY')) And ($(TargetFramework.Contains('-windows')) Or '$(GnhAvalonia)' == 'true')">
+  <Target Name="GnhCheckSentryNativeBinaries" BeforeTargets="BeforeBuild" DependsOnTargets="EnableSentryUploadForPublish;_GnhCheckGnhSentryDll;_GnhCheckLibSentry;_GnhCheckMacSentryDylib" Condition="'$(DesignTimeBuild)' != 'true' And $(DefineConstants.Contains('SENTRY')) And ($(TargetFramework.Contains('-windows')) Or '$(GnhAvalonia)' == 'true')">
     <PropertyGroup>
       <_GnhSentryNativeStrict>false</_GnhSentryNativeStrict>
       <_GnhSentryNativeStrict Condition="'$(GnhSentryNativeStrict)' == 'true' Or ('$(Configuration)' == 'Release' And ('$(_IsPublishing)' == 'true' Or '$(ArchiveOnBuild)' == 'true' Or '$(PublishAppxPackage)' == 'true' Or '$(GenerateAppxPackageOnBuild)' == 'true' Or '$(SentryUploadSymbols)' == 'true'))">true</_GnhSentryNativeStrict>
@@ -135,6 +193,54 @@
       <_GnhSentryNativeProblem Include="GNHSN014" Condition="'$(_GnhLibSentryCanCheck)' == 'true' And Exists('$(_GnhLibSentryHeader)') And '$(_GnhLibSentryHeaderSha256)' != '$(GnhLibSentryHeaderSha256)'" Code="GNHSN014" Text="win\win32\xpl\gnhsentrywin\include\sentry.h has the normalized hash $(_GnhLibSentryHeaderSha256), but libsentry.so was built from a header with $(GnhLibSentryHeaderSha256). $(_GnhLibSentryRemedy)" />
       <_GnhSentryNativeProblem Include="GNHSN016" Condition="'@(_GnhSentryStalePackageReference)' != ''" Code="GNHSN016" Text="PackageReference %(_GnhSentryStalePackageReference.Identity) has Version %(_GnhSentryStalePackageReference.Version), not GnhSentryVersion $(GnhSentryVersion); set its Version to the GnhSentryVersion property in GnollHackM.csproj. $(_GnhLibSentryRemedy)" />
       <_GnhSentryNativeProblem Include="GNHSN016" Condition="'$(PkgSentry)' != '' And !$(_GnhPkgSentryFolder.EndsWith('$(_GnhPkgSentrySuffix)'))" Code="GNHSN016" Text="The restore resolved the Sentry package to $(PkgSentry), not to version $(GnhSentryVersion); restore again. $(_GnhLibSentryRemedy)" />
+    </ItemGroup>
+  </Target>
+
+  <!-- libgnhsentry.dylib: linked on the Mac from the Sentry package's osx static library and gnhsentry.exports -->
+  <Target Name="_GnhCheckMacSentryDylib" Condition="'$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('osx'))">
+    <PropertyGroup>
+      <_GnhNuGetPackageRoot>$(NuGetPackageRoot)</_GnhNuGetPackageRoot>
+      <_GnhNuGetPackageRoot Condition="'$(_GnhNuGetPackageRoot)' == ''">$(UserProfile)\.nuget\packages\</_GnhNuGetPackageRoot>
+      <_GnhPkgSentryFolder>$(PkgSentry.TrimEnd('\').ToLowerInvariant())</_GnhPkgSentryFolder>
+      <_GnhPkgSentrySuffix>\sentry\$(GnhSentryVersion.ToLowerInvariant())</_GnhPkgSentrySuffix>
+      <_GnhSentryPackageDir>$(PkgSentry)</_GnhSentryPackageDir>
+      <_GnhSentryPackageDir Condition="'$(_GnhSentryPackageDir)' == ''">$([MSBuild]::EnsureTrailingSlash('$(_GnhNuGetPackageRoot)'))sentry\$(GnhSentryVersion.ToLowerInvariant())</_GnhSentryPackageDir>
+      <_GnhMacSentryNativeLib>$([MSBuild]::EnsureTrailingSlash('$(_GnhSentryPackageDir)'))sentry-native\osx\libsentry-native.a</_GnhMacSentryNativeLib>
+      <_GnhMacSentryDylib>$(MSBuildProjectDirectory)\Platforms\MacOS\libs\libgnhsentry.dylib</_GnhMacSentryDylib>
+      <_GnhMacSentryCanCheck>true</_GnhMacSentryCanCheck>
+      <_GnhMacSentryCanCheck Condition="'$(GnhMacSentryDylibSha256)' == '' Or !Exists('$(_GnhMacSentryNativeLib)')">false</_GnhMacSentryCanCheck>
+    </PropertyGroup>
+    <ItemGroup>
+      <_GnhMacSentrySource Include="Platforms\MacOS\Packaging\gnhsentry.exports;..\gnhsentrywin\gnhsentry.def;..\gnhsentrywin\include\sentry.h" />
+      <_GnhMacSentryMissingSource Include="@(_GnhMacSentrySource)" Condition="!Exists('%(FullPath)')" />
+      <_GnhSentryStalePackageReference Include="@(PackageReference)" Condition="('%(Identity)' == 'Sentry' Or '%(Identity)' == 'Sentry.Maui') And '%(Version)' != '$(GnhSentryVersion)'" />
+    </ItemGroup>
+    <PropertyGroup>
+      <_GnhMacSentryMissingSources>@(_GnhMacSentryMissingSource->'%(Identity)', ', ')</_GnhMacSentryMissingSources>
+    </PropertyGroup>
+
+    <GetFileHash Condition="'$(_GnhMacSentryCanCheck)' == 'true'" Files="$(_GnhMacSentryNativeLib)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="_GnhMacSentryNativeLibSha256" />
+    </GetFileHash>
+    <GetFileHash Condition="'$(_GnhMacSentryCanCheck)' == 'true' And Exists('$(_GnhMacSentryDylib)')" Files="$(_GnhMacSentryDylib)" Algorithm="SHA256">
+      <Output TaskParameter="Hash" PropertyName="_GnhMacSentryDylibSha256" />
+    </GetFileHash>
+    <GnhGetNormalizedTextHash Condition="'$(_GnhMacSentryCanCheck)' == 'true' And '@(_GnhMacSentryMissingSource)' == ''" Files="@(_GnhMacSentrySource)">
+      <Output TaskParameter="Hash" PropertyName="_GnhMacSentrySourceSha256" />
+    </GnhGetNormalizedTextHash>
+
+    <ItemGroup>
+      <_GnhSentryNativeProblem Include="GNHSN025" Condition="'$(GnhMacSentryDylibSha256)' == ''" Code="GNHSN025" Text="Platforms\MacOS\libs\libgnhsentry.build.props was not found, so libgnhsentry.dylib cannot be checked against Sentry $(GnhSentryVersion). $(_GnhMacSentryDylibRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN025" Condition="!Exists('$(_GnhMacSentryNativeLib)')" Code="GNHSN025" Text="libsentry-native.a was not found at $(_GnhMacSentryNativeLib), so libgnhsentry.dylib cannot be checked against it. $(_GnhMacSentryDylibRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN021" Condition="'$(GnhMacSentryDylibSha256)' != '' And '$(GnhSentryVersion)' != '$(GnhMacSentryPackageVersion)'" Code="GNHSN021" Text="libgnhsentry.dylib was built from Sentry $(GnhMacSentryPackageVersion), but GnhSentryVersion is $(GnhSentryVersion). $(_GnhMacSentryDylibRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN021" Condition="'$(GnhMacSentryDylibSha256)' != '' And '$(GnhSentryDllSha256)' != '' And '$(GnhMacSentryNativeVersion)' != '$(GnhSentryDllNativeVersion)'" Code="GNHSN021" Text="libgnhsentry.dylib is sentry-native $(GnhMacSentryNativeVersion), but gnhsentry.dll uses sentry-native $(GnhSentryDllNativeVersion). $(_GnhMacSentryDylibRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN022" Condition="'$(_GnhMacSentryCanCheck)' == 'true' And '$(_GnhMacSentryNativeLibSha256)' != '$(GnhMacSentryLibSha256)'" Code="GNHSN022" Text="$(_GnhMacSentryNativeLib) has SHA-256 $(_GnhMacSentryNativeLibSha256), but libgnhsentry.dylib was linked from a libsentry-native.a with SHA-256 $(GnhMacSentryLibSha256). $(_GnhMacSentryDylibRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN023" Condition="'$(_GnhMacSentryCanCheck)' == 'true' And !Exists('$(_GnhMacSentryDylib)')" Code="GNHSN023" Text="libgnhsentry.dylib was not found at $(_GnhMacSentryDylib). $(_GnhMacSentryDylibRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN023" Condition="'$(_GnhMacSentryCanCheck)' == 'true' And Exists('$(_GnhMacSentryDylib)') And '$(_GnhMacSentryDylibSha256)' != '$(GnhMacSentryDylibSha256)'" Code="GNHSN023" Text="$(_GnhMacSentryDylib) has SHA-256 $(_GnhMacSentryDylibSha256), but libgnhsentry.build.props records $(GnhMacSentryDylibSha256). $(_GnhMacSentryDylibRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN024" Condition="'$(_GnhMacSentryCanCheck)' == 'true' And '@(_GnhMacSentryMissingSource)' != ''" Code="GNHSN024" Text="libgnhsentry.dylib sources not found: $(_GnhMacSentryMissingSources). $(_GnhMacSentryDylibRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN024" Condition="'$(_GnhMacSentryCanCheck)' == 'true' And '@(_GnhMacSentryMissingSource)' == '' And '$(_GnhMacSentrySourceSha256)' != '$(GnhMacSentrySourceSha256)'" Code="GNHSN024" Text="Platforms\MacOS\Packaging\gnhsentry.exports, win\win32\xpl\gnhsentrywin\gnhsentry.def and include\sentry.h have the normalized hash $(_GnhMacSentrySourceSha256), but libgnhsentry.dylib was built from sources with $(GnhMacSentrySourceSha256). $(_GnhMacSentryDylibRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN026" Condition="'@(_GnhSentryStalePackageReference)' != ''" Code="GNHSN026" Text="PackageReference %(_GnhSentryStalePackageReference.Identity) has Version %(_GnhSentryStalePackageReference.Version), not GnhSentryVersion $(GnhSentryVersion); set its Version to the GnhSentryVersion property in GnollHackM.csproj. $(_GnhMacSentryDylibRemedy)" />
+      <_GnhSentryNativeProblem Include="GNHSN026" Condition="'$(PkgSentry)' != '' And !$(_GnhPkgSentryFolder.EndsWith('$(_GnhPkgSentrySuffix)'))" Code="GNHSN026" Text="The restore resolved the Sentry package to $(PkgSentry), not to version $(GnhSentryVersion); restore again. $(_GnhMacSentryDylibRemedy)" />
     </ItemGroup>
   </Target>
 </Project>

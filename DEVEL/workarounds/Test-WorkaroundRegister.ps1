@@ -612,10 +612,11 @@ if (Test-Path -LiteralPath $csprojPath) {
         if ($packageVersions[$name] -notcontains $version) { $packageVersions[$name] += $version }
         $packageSources[$name] = 'GnollHackM.csproj references'
     }
-    # sentry-native, from the build manifests of gnhsentry.dll and libsentry.so
+    # sentry-native, from the build manifests of gnhsentry.dll, libsentry.so and libgnhsentry.dylib
     $manifests = @(
         @{ Path = 'win\win32\xpl\GnollHackM\Platforms\Windows\libs\gnhsentry.build.props'; Property = 'GnhSentryDllNativeVersion' },
-        @{ Path = 'win\win32\xpl\GnollHackM\Platforms\Linux\libs\libsentry.build.props'; Property = 'GnhLibSentryNativeVersion' }
+        @{ Path = 'win\win32\xpl\GnollHackM\Platforms\Linux\libs\libsentry.build.props'; Property = 'GnhLibSentryNativeVersion' },
+        @{ Path = 'win\win32\xpl\GnollHackM\Platforms\MacOS\libs\libgnhsentry.build.props'; Property = 'GnhMacSentryNativeVersion' }
     )
     foreach ($manifest in $manifests) {
         $manifestPath = Join-Path $root $manifest.Path

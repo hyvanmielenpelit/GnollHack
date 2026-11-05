@@ -104,7 +104,7 @@ Then:
 Checks:
 - 2026-10-23 | sentry-native 0.17.2 | still-needed | No upstream issue found; inproc installs only the unhandled-exception filter.
 
-## WA-SENTRY-0003: Sentry .NET captures no native crashes in JIT builds on Windows and Linux
+## WA-SENTRY-0003: Sentry .NET captures no native crashes in JIT desktop builds
 
 - Status: active
 - Added: 2026-10-22 (from git history)
@@ -112,39 +112,41 @@ Checks:
 - Component: sentry-dotnet
 - Package: Sentry, Sentry.Maui
 - Defective version: Sentry 6.12.1
-- Platforms: Windows (MAUI), Linux
+- Platforms: Windows (MAUI), Linux, macOS
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-05
 - Code: `win/win32/xpl/GnollHackM/GHSentryNative.cs` (`GHSentryNative`); `win/win32/xpl/GnollHackM/GHSentryNativeScopeObserver.cs` (`GHSentryNativeScopeObserver`); `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`SentryNative`)
-- Remove when: Sentry .NET starts its native SDK, with scope sync and crash upload, in JIT builds on Windows and Linux, GnollHack uses that release, and Verify removal passes.
+- Remove when: Sentry .NET starts its native SDK, with scope sync and crash upload, in JIT builds on Windows, Linux and macOS, GnollHack uses that release, and Verify removal passes.
 - Related: WA-SENTRY-0004
 
 **Symptom.** A crash in native code, such as the C game core, is not reported by Sentry .NET
-on the Windows and Linux builds.
+on the Windows, Linux and macOS builds.
 
 **Cause.** Sentry .NET starts its own native SDK only in trimmed or Native AOT builds.
 GnollHack ships JIT builds on these platforms.
 
 **Workaround.** `GHSentryNative` initializes sentry-native itself before `SentrySdk.Init`:
-gnhsentry.dll on Windows, libsentry.so on Linux, inproc backend, with a transport that
-stores crash envelopes in an outbox that is uploaded at the next start. It feeds
-`CrashedLastRun` to Sentry .NET, and `GHSentryNativeScopeObserver` mirrors the managed
-scope into the native one. `SentryNative` is `false` for these builds, so Sentry .NET never
-starts a second sentry-native beside it.
+gnhsentry.dll on Windows, libsentry.so on Linux, libgnhsentry.dylib on macOS, inproc
+backend, with a transport that stores crash envelopes in an outbox that is uploaded at the
+next start. It feeds `CrashedLastRun` to Sentry .NET, and `GHSentryNativeScopeObserver`
+mirrors the managed scope into the native one. `SentryNative` is `false` for these builds,
+so Sentry .NET never starts a second sentry-native beside it.
 
 **Verify removal.** With a Sentry .NET release that supports native crashes in JIT builds:
 - Remove `GHSentryNative.Init` and the scope observer from `WindowsSentryNative` and
   `GHAvaloniaSentry`, and enable the SDK's own native support (remove `SentryNative=false`
   from `GnollHackM.csproj`).
-- Build Windows and Linux Release builds.
+- Build Windows, Linux and macOS Release builds of the game, but with a Debug engine:
+  `#crashtest` exists only in Debug engines on every platform.
 - In wizard mode, run `#crashtest` with a segmentation fault on each, and confirm that the
   next start uploads a native crash event carrying the managed scope's tags, extras and
   breadcrumbs, and that the release-health session ends as crashed.
 
 Checks:
 - 2026-10-23 | Sentry 6.12.1, Sentry.Maui 6.12.1 | still-needed | No upstream issue found; the comment states the SDK's native support is limited to trimmed or Native AOT builds.
+- 2026-11-05 | Sentry 6.12.1 | still-needed | macOS: the osx static library is linked only by Native AOT (Sentry.Native.targets); libgnhsentry.dylib added.
 
 ## WA-SENTRY-0004: SentrySdk.CaptureEnvelope can drop native-only event fields
 
@@ -154,7 +156,7 @@ Checks:
 - Component: sentry-dotnet
 - Package: Sentry, Sentry.Maui
 - Defective version: Sentry 6.12.1
-- Platforms: Windows (MAUI), Linux
+- Platforms: Windows (MAUI), Linux, macOS
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
@@ -417,3 +419,44 @@ description:
 
 Checks:
 - 2026-10-25 | Sentry 6.12.1 (sentry-android 8.60.0) | still-needed | No ANR or exit-info class in sentry-android-core 8.60.0 references getDescription; Sentry 6.12.1 NativeOptions has no AttachAnrThreadDump; no upstream issue found.
+
+## WA-SENTRY-0011: UploadDebugInfoToSentry uploads dSYMs only for iOS and Mac Catalyst
+
+- Status: active
+- Added: 2026-11-05
+- GnollHack version: 3.37 (437)
+- Component: sentry-dotnet
+- Package: Sentry
+- Defective version: Sentry 6.12.1
+- Platforms: macOS
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-05
+- Code: `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`UploadGnollHackMacDsymToSentry`)
+- Remove when: Sentry's MSBuild integration uploads dSYMs for osx JIT builds, GnollHack uses that release, and Verify removal passes.
+- Related: WA-SENTRY-0006
+
+**Symptom.** A macOS Avalonia Release publish with `SentryUploadSymbols` uploads no native
+debug files, so native frames in libgnollhackmac.dylib and libgnhsentry.dylib stay
+unsymbolicated.
+
+**Cause.** In a standard managed build, `Sentry.targets` adds the `dsym` symbol type only
+when the target platform is iOS or Mac Catalyst.
+
+**Workaround.** `UploadGnollHackMacDsymToSentry` runs after `UploadDebugInfoToSentry`. It
+uploads libgnhsentry.dylib, whose symbol table names its functions, and the engine's
+libgnollhackmac.dylib.dSYM, which `Build-AppleEngine.ps1` makes with `dsymutil` beside the
+dylib, both with `sentry-cli debug-files upload -t dsym`. The `.dSYM` is uploaded only
+when its arm64 UUID matches the dylib's; a mismatch or a missing `.dSYM` fails a strict
+build.
+
+**Verify removal.** Delete the target. Then:
+- Build the macOS Avalonia Release package with `SENTRY_AUTH_TOKEN` set and
+  `GnhSentryUpload=true`.
+- Confirm in the build log that `UploadDebugInfoToSentry` uploads libgnollhackmac.dylib's
+  `.dSYM` and libgnhsentry.dylib, and in Sentry that both debug files are present for the
+  build.
+
+Checks:
+- 2026-11-05 | Sentry 6.12.1 | still-needed | Sentry.targets:198-199 limits dsym to ios and maccatalyst.

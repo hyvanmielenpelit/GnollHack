@@ -136,7 +136,8 @@ internal static class AvaloniaDesktopProgram
 
     /* The FMOD wrappers import "fmod" and "fmodstudio". libfmodstudio.dylib refers to its core library by install
        name; libfmod.dylib is loaded from the application directory first, so that the dynamic loader uses that
-       image rather than searching for one. */
+       image rather than searching for one. GHSentryNative imports "gnhsentry", always the application's own
+       libgnhsentry.dylib. */
     private static IntPtr ResolveMacLibrary(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
     {
         string core = Path.Combine(AppContext.BaseDirectory, "libfmod.dylib");
@@ -147,6 +148,10 @@ internal static class AvaloniaDesktopProgram
             NativeLibrary.Load(core);
             return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, "libfmodstudio.dylib"));
         }
+#if SENTRY
+        if (libraryName == "gnhsentry")
+            return NativeLibrary.Load(Path.Combine(AppContext.BaseDirectory, "libgnhsentry.dylib"));
+#endif
         return IntPtr.Zero;
     }
 

@@ -10,6 +10,9 @@
     persist on the Mac between runs, and make recompiles a source when it, a header, engine.mk or the compiler flags
     changed. Every run of the WSL data pipeline rewrites date_unix.h, so a solution build usually recompiles everything.
 
+    For macOS, make also writes libgnollhackmac.dylib.dSYM with dsymutil whenever it is missing or older than the
+    library. The script checks with dwarfdump that its arm64 UUID matches the library's, then copies it to -OutDir too.
+
     Each checkout has its own folder on the Mac, ~/<RemoteRoot>/<platform>-<Configuration>-<computer>-<hash>, where
     the hash is taken from the checkout's path, so worktrees and computers never share objects.
 
@@ -33,7 +36,7 @@
     The local working folder for the tar file and the generated files.
 
 .PARAMETER OutDir
-    The local folder the library is copied to.
+    The local folder the library, and for macOS its .dSYM, are copied to.
 
 .PARAMETER SourceList
     A file with the full path of one C source per line, written by the GnhWriteAppleSourceList target.
@@ -48,7 +51,7 @@
     Deletes the objects and the library on the Mac before building.
 
 .PARAMETER CleanOnly
-    Deletes the local library and, when the Mac can be reached, this checkout's build folder on the Mac, then stops.
+    Deletes the local library and its .dSYM and, when the Mac can be reached, this checkout's build folder on the Mac, then stops.
 
 .PARAMETER PackageOnly
     Writes the tar file and stops, without connecting to the Mac.
@@ -135,6 +138,26 @@ function Convert-MacDiagnostic
     return $Line
 }
 
+# The arm64 UUID that dwarfdump prints for a file on the Mac, or an empty string when it prints none
+function Get-MacArm64Uuid
+{
+    param([string]$Path)
+    $lines = @(& $script:Ssh @script:SshOptions $script:SshHost ('xcrun dwarfdump --uuid {0}' -f $Path))
+    if ($LASTEXITCODE -ne 0)
+    {
+        return ''
+    }
+    foreach ($line in $lines)
+    {
+        $m = [regex]::Match([string]$line, '^UUID: (?<uuid>[0-9A-Fa-f-]+) \(arm64\) ')
+        if ($m.Success)
+        {
+            return $m.Groups['uuid'].Value.ToUpperInvariant()
+        }
+    }
+    return ''
+}
+
 # ---------------------------------------------------------------------------------------------------
 # Settings
 # ---------------------------------------------------------------------------------------------------
@@ -182,6 +205,8 @@ $Sha = [Security.Cryptography.SHA256]::Create()
 $RootHash = -join ($Sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($RepoRoot.ToLowerInvariant()))[0..3] | ForEach-Object { $_.ToString('x2') })
 $RemoteDir = '{0}/{1}-{2}-{3}-{4}' -f $RemoteRoot.TrimEnd('/'), $Platform, $Configuration, $Computer, $RootHash
 $LocalLib = Join-Path $OutDir $LibName
+$DsymName = $LibName + '.dSYM'
+$LocalDsym = Join-Path $OutDir $DsymName
 $script:SshOptions = @('-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15')
 
 # ---------------------------------------------------------------------------------------------------
@@ -193,6 +218,10 @@ if ($CleanOnly)
     if (Test-Path $LocalLib)
     {
         Remove-Item $LocalLib -Force
+    }
+    if (($Platform -eq 'macos') -and (Test-Path $LocalDsym))
+    {
+        Remove-Item $LocalDsym -Recurse -Force
     }
     $script:Ssh = Find-Tool 'ssh.exe' 'OpenSSH\ssh.exe'
     & $script:Ssh @script:SshOptions $SshHost ('rm -rf {0}' -f $RemoteDir)
@@ -313,4 +342,31 @@ New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 Invoke-Tool 'GNHAB011' 'Copying the library from the Mac' $Scp (@('-q') + @($script:SshOptions) + @(('{0}:{1}/out/{2}' -f $SshHost, $RemoteDir, $LibName), $LocalLib))
 Invoke-Mac 'GNHAB011' 'Inspecting the library' ('lipo -info {0}/out/{1}' -f $RemoteDir, $LibName)
 Write-Host ('Build-AppleEngine.ps1: {0} copied to {1}' -f $LibName, $LocalLib)
+
+if ($Platform -eq 'macos')
+{
+    if (Test-Path $LocalDsym)
+    {
+        Remove-Item $LocalDsym -Recurse -Force
+    }
+    $RemoteLib = '{0}/out/{1}' -f $RemoteDir, $LibName
+    $RemoteDsym = '{0}/out/{1}' -f $RemoteDir, $DsymName
+    $LibUuid = Get-MacArm64Uuid $RemoteLib
+    $DsymUuid = Get-MacArm64Uuid $RemoteDsym
+    if ([string]::IsNullOrEmpty($LibUuid))
+    {
+        Stop-Build 'GNHAB013' ('dwarfdump found no arm64 UUID in {0} on the Mac.' -f $RemoteLib)
+    }
+    if ([string]::IsNullOrEmpty($DsymUuid))
+    {
+        Stop-Build 'GNHAB013' ('dwarfdump found no arm64 UUID in {0} on the Mac.' -f $RemoteDsym)
+    }
+    if ($LibUuid -ne $DsymUuid)
+    {
+        Stop-Build 'GNHAB013' ('The arm64 UUID of {0} ({1}) does not match that of {2} ({3}).' -f $RemoteDsym, $DsymUuid, $RemoteLib, $LibUuid)
+    }
+    # -C compresses on the wire: DWARF compresses well
+    Invoke-Tool 'GNHAB011' 'Copying the debug symbols from the Mac' $Scp (@('-q', '-C', '-r') + @($script:SshOptions) + @(('{0}:{1}' -f $SshHost, $RemoteDsym), $OutDir))
+    Write-Host ('Build-AppleEngine.ps1: {0} (arm64 UUID {1}) copied to {2}' -f $DsymName, $DsymUuid, $LocalDsym)
+}
 exit 0

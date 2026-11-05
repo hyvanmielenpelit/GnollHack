@@ -42,9 +42,16 @@
   <Target Name="CopyToMauiMacLibs" AfterTargets="Build;Rebuild" Condition="Exists('$(OutDir)libgnollhackmac.dylib')">
     <Copy SourceFiles="$(OutDir)libgnollhackmac.dylib" DestinationFolder="$(MauiMacLibsDir)" SkipUnchangedFiles="false" />
     <Message Text="Copied libgnollhackmac.dylib to $(MauiMacLibsDir)" Importance="High" />
+    <RemoveDir Directories="$(MauiMacLibsDir)libgnollhackmac.dylib.dSYM" />
+    <ItemGroup>
+      <GnhMacDsymFile Include="$(OutDir)libgnollhackmac.dylib.dSYM\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(GnhMacDsymFile)" DestinationFiles="@(GnhMacDsymFile->'$(MauiMacLibsDir)libgnollhackmac.dylib.dSYM\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="false" Condition="Exists('$(OutDir)libgnollhackmac.dylib.dSYM')" />
+    <Message Text="Copied libgnollhackmac.dylib.dSYM to $(MauiMacLibsDir)" Importance="High" Condition="Exists('$(OutDir)libgnollhackmac.dylib.dSYM')" />
   </Target>
   <Target Name="CleanMauiMacLibs" AfterTargets="Clean">
     <Delete Files="$(MauiMacLibsDir)libgnollhackmac.dylib" />
-    <Message Text="Deleted libgnollhackmac.dylib from $(MauiMacLibsDir)" Importance="High" />
+    <RemoveDir Directories="$(MauiMacLibsDir)libgnollhackmac.dylib.dSYM" />
+    <Message Text="Deleted libgnollhackmac.dylib and libgnollhackmac.dylib.dSYM from $(MauiMacLibsDir)" Importance="High" />
   </Target>
 </Project>

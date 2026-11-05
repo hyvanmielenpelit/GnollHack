@@ -64,6 +64,7 @@ win/win32/xpl/GnollHackM/Platforms/Linux/libs/libgnollhacklinux.so
 libgnollhackios.a
 libgnollhacklinux.so*
 libgnollhackmac.dylib
+libgnollhackmac.dylib.dSYM/
 gnollhackwin.dll
 gnollhackwin.lib
 gnollhackwin.exp

@@ -1169,6 +1169,8 @@
     <!-- The engine and FMOD's core and Studio libraries, which AvaloniaDesktopProgram loads from the application directory -->
     <Content Include="Platforms\MacOS\libs\*.dylib" Link="%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="Platforms\Android\gnh\*" Link="gnh\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+    <!-- libgnhsentry.dylib's license: sentry-native's -->
+    <None Include="Platforms\MacOS\licenses\sentry-native\*" Link="licenses\sentry-native\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <!-- Banks and tile sets from their install folders, so no native build has to stage them; the WinUI 3 items above
@@ -1573,15 +1575,15 @@
     <PackageReference Include="SkiaSharp.Views.Maui.Core" Version="3.119.4" />
   </ItemGroup>
 
-  <!-- WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT builds on Windows and Linux -->
-  <!-- GHSentryNative runs sentry-native on these platforms; Sentry .NET must never start a second one. The macOS
-       flavor has no native layer yet and keeps Sentry .NET's off as well. -->
+  <!-- WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT desktop builds -->
+  <!-- GHSentryNative runs sentry-native on these platforms; Sentry .NET must never start a second one. -->
   <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And ($(RuntimeIdentifier.StartsWith('linux')) Or $(RuntimeIdentifier.StartsWith('osx'))))">
     <SentryNative>false</SentryNative>
   </PropertyGroup>
 
-  <!-- Sentry and Sentry.Maui. gnhsentry.dll is linked from this package's sentry-native.lib; GnhSentryNative.targets
-       checks that it was built from this version -->
+  <!-- Sentry and Sentry.Maui. gnhsentry.dll is linked from this package's sentry-native.lib, libgnhsentry.dylib from
+       its osx libsentry-native.a, and libsentry.so is built from the same sentry-native version; GnhSentryNative.targets
+       checks that all three were built from this version -->
   <PropertyGroup>
     <GnhSentryVersion>6.12.1</GnhSentryVersion>
   </PropertyGroup>
@@ -1733,6 +1735,41 @@
       <Output TaskParameter="ExitCode" PropertyName="_GnollHackLinuxSoExitCode" />
     </Exec>
     <Warning Condition="Exists('$(GnollHackLinuxSo)') And '$(_GnollHackLinuxSoExitCode)' != '0'" Text="Sentry CLI could not upload libgnollhacklinux.so." />
+  </Target>
+  <!-- WORKAROUND(WA-SENTRY-0011): UploadDebugInfoToSentry uploads dSYMs only for iOS and Mac Catalyst -->
+  <!-- The engine's DWARF stays in its object files; the .dSYM made beside the dylib by Build-AppleEngine.ps1 carries
+       it. libgnhsentry.dylib's symbol table names its functions. Sentry skips files it already has. The .dSYM is
+       uploaded only when its arm64 UUID matches the dylib's; a mismatch or a missing .dSYM is an error in strict
+       builds (_GnhSentryNativeStrict) and a warning otherwise. -->
+  <Target Name="UploadGnollHackMacDsymToSentry" AfterTargets="UploadDebugInfoToSentry" DependsOnTargets="GnhCheckSentryNativeBinaries" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And '$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('osx')) And '$(DesignTimeBuild)' != 'true'">
+    <PropertyGroup>
+      <GnollHackMacDylib>$(MSBuildProjectDirectory)\Platforms\MacOS\libs\libgnollhackmac.dylib</GnollHackMacDylib>
+      <GnollHackMacDsym>$(GnollHackMacDylib).dSYM</GnollHackMacDsym>
+      <GnollHackMacDsymDwarf>$(GnollHackMacDsym)\Contents\Resources\DWARF\libgnollhackmac.dylib</GnollHackMacDsymDwarf>
+      <GnhMacSentryDylib>$(MSBuildProjectDirectory)\Platforms\MacOS\libs\libgnhsentry.dylib</GnhMacSentryDylib>
+    </PropertyGroup>
+    <Exec Condition="Exists('$(GnhMacSentryDylib)')" Command="$(SentryCLIDebugFilesUploadCommand) -t dsym &quot;$(GnhMacSentryDylib)&quot;" IgnoreExitCode="true" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="ExitCode" PropertyName="_GnhMacSentryDylibExitCode" />
+    </Exec>
+    <Warning Condition="Exists('$(GnhMacSentryDylib)') And '$(_GnhMacSentryDylibExitCode)' != '0'" Text="Sentry CLI could not upload libgnhsentry.dylib." />
+    <Error Condition="!Exists('$(GnollHackMacDsymDwarf)') And '$(_GnhSentryNativeStrict)' == 'true'" Text="libgnollhackmac.dylib.dSYM not found at $(GnollHackMacDsym); build the engine with the macOS solution platform. The engine's native symbols were not uploaded to Sentry." />
+    <Warning Condition="!Exists('$(GnollHackMacDsymDwarf)') And '$(_GnhSentryNativeStrict)' != 'true'" Text="libgnollhackmac.dylib.dSYM not found at $(GnollHackMacDsym); build the engine with the macOS solution platform. The engine's native symbols were not uploaded to Sentry." />
+    <GnhGetMachOArm64Uuid Condition="Exists('$(GnollHackMacDsymDwarf)')" MachOFile="$(GnollHackMacDylib)">
+      <Output TaskParameter="Uuid" PropertyName="_GnhMacDylibUuid" />
+    </GnhGetMachOArm64Uuid>
+    <GnhGetMachOArm64Uuid Condition="Exists('$(GnollHackMacDsymDwarf)')" MachOFile="$(GnollHackMacDsymDwarf)">
+      <Output TaskParameter="Uuid" PropertyName="_GnhMacDsymUuid" />
+    </GnhGetMachOArm64Uuid>
+    <PropertyGroup Condition="Exists('$(GnollHackMacDsymDwarf)')">
+      <_GnhMacDsymMatchesDylib>false</_GnhMacDsymMatchesDylib>
+      <_GnhMacDsymMatchesDylib Condition="'$(_GnhMacDylibUuid)' != '' And '$(_GnhMacDylibUuid)' == '$(_GnhMacDsymUuid)'">true</_GnhMacDsymMatchesDylib>
+    </PropertyGroup>
+    <Error Condition="Exists('$(GnollHackMacDsymDwarf)') And '$(_GnhMacDsymMatchesDylib)' != 'true' And '$(_GnhSentryNativeStrict)' == 'true'" Text="$(GnollHackMacDylib) has arm64 UUID '$(_GnhMacDylibUuid)', but its .dSYM has '$(_GnhMacDsymUuid)'; rebuild the engine. Its symbols were not uploaded to Sentry." />
+    <Warning Condition="Exists('$(GnollHackMacDsymDwarf)') And '$(_GnhMacDsymMatchesDylib)' != 'true' And '$(_GnhSentryNativeStrict)' != 'true'" Text="$(GnollHackMacDylib) has arm64 UUID '$(_GnhMacDylibUuid)', but its .dSYM has '$(_GnhMacDsymUuid)'; rebuild the engine. Its symbols were not uploaded to Sentry." />
+    <Exec Condition="Exists('$(GnollHackMacDsymDwarf)') And '$(_GnhMacDsymMatchesDylib)' == 'true'" Command="$(SentryCLIDebugFilesUploadCommand) -t dsym &quot;$(GnollHackMacDsym)&quot;" IgnoreExitCode="true" ContinueOnError="WarnAndContinue">
+      <Output TaskParameter="ExitCode" PropertyName="_GnollHackMacDsymExitCode" />
+    </Exec>
+    <Warning Condition="Exists('$(GnollHackMacDsymDwarf)') And '$(_GnhMacDsymMatchesDylib)' == 'true' And '$(_GnollHackMacDsymExitCode)' != '0'" Text="Sentry CLI could not upload libgnollhackmac.dylib.dSYM." />
   </Target>
   <!-- WORKAROUND(WA-IOS-0005): Visual Studio iOS Archive leaves dSYMs on the Mac -->
   <!-- The SDK's CopyDSYMFromMac copies the dSYMs to Windows only for BuildIpa or CopyAppBundle builds, so a Visual

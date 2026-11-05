@@ -1,4 +1,4 @@
-#if SENTRY && (WINDOWS || (GNH_AVALONIA && LINUX))
+#if SENTRY && (WINDOWS || (GNH_AVALONIA && (LINUX || MACOS)))
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,9 +15,9 @@ using GnollHackX;
 
 namespace GnollHackM
 {
-    // WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT builds on Windows and Linux
+    // WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT desktop builds
     /* Native crash capture through sentry-native (inproc backend, no built-in transport): gnhsentry.dll on Windows,
-       libsentry.so on Linux. Initialized before Sentry .NET, which starts its own native SDK only in trimmed or Native
+       libsentry.so on Linux, libgnhsentry.dylib on macOS. Initialized before Sentry .NET, which starts its own native SDK only in trimmed or Native
        AOT builds. Crash envelopes go to an outbox folder and are uploaded at the next start. */
     internal static class GHSentryNative
     {
@@ -28,7 +28,7 @@ namespace GnollHackM
             public ulong Bits;
         }
 
-#if WINDOWS
+#if WINDOWS || MACOS
         private const string LibraryName = "gnhsentry";
 #else
         private const string LibraryName = "sentry";
@@ -195,7 +195,7 @@ namespace GnollHackM
 #if WINDOWS
                     /* Records the current unhandled-exception filter, which the wrapper keeps in the chain */
                     WindowsSentryNative.gnh_crash_prepare();
-#else
+#elif LINUX
                     GHAvaloniaSentryNative.ConfigureOptions(options);
 #endif
                 }
@@ -228,7 +228,7 @@ namespace GnollHackM
                         _crashedLastRun = false;
                         return false;
                     }
-#else
+#elif LINUX
                     GHAvaloniaSentryNative.AfterInit();
 #endif
                 }
