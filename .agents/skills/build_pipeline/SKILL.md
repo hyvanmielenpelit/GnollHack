@@ -73,6 +73,7 @@ Building this solution: compiles build utilities → runs data pipeline → comp
 
 | Platform | Native libs | Win data | WSL pipeline + `makedefsdroid` | Needs |
 |---|---|---|---|---|
+| `Any CPU` | all: `gnollhackwin.dll`, `.so` (both ABIs), `libgnollhackios.a`, `libgnollhackmac.dylib`, `libgnollhacklinux.so`; also the legacy ASCII/GUI and Xamarin projects | ✓ | ✓ | WSL + Mac; Visual Studio 2022 |
 | `MauiAndroid` | `gnollhackwin.dll`, `.so` (arm64-v8a + x86_64) | ✓ | ✓ | WSL |
 | `MauiAll` | above + `libgnollhackios.a` (Debug only; Release does not build it) | ✓ | ✓ | WSL; Mac for Debug |
 | `Android+Windows` | `gnollhackwin.dll`, `.so` (both ABIs) | ✓ | ✓ | WSL |
@@ -82,15 +83,17 @@ Building this solution: compiles build utilities → runs data pipeline → comp
 | `macOS` | `libgnollhackmac.dylib` | ✗ | ✓ | WSL + Mac |
 | `iPhone` | `libgnollhackios.a` | ✗ | ✓ | WSL + Mac |
 
-**For MAUI work, prefer `MauiAndroid` or `MauiAll`.** `x64` is the only WSL-free platform but does **not** run `makedefsdroid` — no XAML translation, tileset staging, or sound-bank staging.
+**To build every library version, use `Any CPU`.** It is the platform normally used for a full build, and for checking that everything still builds. It builds the Apple libraries on the Mac, so a fully successful build needs the Mac reachable; without one, the iOS and macOS projects fail and the other platforms below build the rest. It also builds the legacy Xamarin projects, so it needs Visual Studio 2022, or Visual Studio 2026 with those projects unloaded.
+
+**For MAUI work without a full build, prefer `MauiAndroid` or `MauiAll`.** `x64` is the only WSL-free platform but does **not** run `makedefsdroid` — no XAML translation, tileset staging, or sound-bank staging.
 
 `Linux` builds `gnollhacklinux` and its dependencies — `makedefs`, `levcomp`, `dgncomp` and the four `*droid` data tools — and nothing else, for the Avalonia Linux flavor. It needs no Android C++ workload.
 
 `macOS` builds `gnollhackmac` and the same data tools as `Linux`, and nothing else. It needs WSL for the data pipeline and the Mac for the library; see [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh).
 
-`Android+Windows` and `ARM64` also build the legacy Xamarin projects `GnollHackX.Android` and `GnollHackX.Android.Bindings`. Visual Studio 2026 has no Xamarin, so they need Visual Studio 2022, or Visual Studio 2026 with those projects unloaded. Unloading is IDE state that a command-line build ignores, and `vswhere -latest` returns VS 2026's MSBuild whenever VS 2026 is installed. `MauiAndroid` builds everything else `Android+Windows` does.
+`Any CPU`, `Android+Windows` and `ARM64` also build the legacy Xamarin projects `GnollHackX.Android` and `GnollHackX.Android.Bindings`. Visual Studio 2026 has no Xamarin, so they need Visual Studio 2022, or Visual Studio 2026 with those projects unloaded. Unloading is IDE state that a command-line build ignores, and `vswhere -latest` returns VS 2026's MSBuild whenever VS 2026 is installed. `MauiAndroid` builds everything else `Android+Windows` does.
 
-The solution defines five further platforms — `Android x64`, `iPhoneSimulator`, `Win32`, `ARM`, and `Any CPU` — which are legacy or niche; avoid them unless you specifically need one. `Any CPU` in particular is not a safe default: it builds the legacy ASCII/GUI targets and the Xamarin projects as well. `iPhoneSimulator` and `Any CPU` build `gnollhackios`, so they need the Mac; `ARM` and `Win32` do not build it.
+The solution defines four further platforms — `Android x64`, `iPhoneSimulator`, `Win32`, and `ARM` — which are legacy or niche; avoid them unless you specifically need one. `iPhoneSimulator` also builds `gnollhackios` and needs the Mac; `ARM` and `Win32` build neither Apple library.
 
 Use the 64-bit MSBuild, as Visual Studio does. `-find MSBuild\**\Bin\MSBuild.exe` returns the 32-bit host, which fail-fasts with no output on Visual Studio's Linux projects (`gnollhacklinux` and the `*droid` data tools). Those projects set `AddSyntheticProjectReferencesForSolutionDependencies` to `false` (`WA-BUILD-0003`): otherwise a command-line solution build stops with `MSB4057` for `GetRecipeFile` on `makedefs.vcxproj`.
 
@@ -341,7 +344,7 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 | `GnollHackM/Platforms/Windows/libs/gnollhackwin.dll` | `gnollhackwin.vcxproj` |
 | `GnollHackM/Platforms/Android/libs/{arm64-v8a,x86_64}/libgnollhackdroid.so` | `aftergnollhackdroid.proj` |
 | `GnollHackM/Platforms/iOS/libs/libgnollhackios.a` | `gnollhackios.vcxproj` on the Mac, copied by `aftergnollhackios.proj` (`iPhone`, `iPhoneSimulator`, `Debug\|MauiAll`, `Any CPU`) |
-| `GnollHackM/Platforms/MacOS/libs/libgnollhackmac.dylib` | `gnollhackmac.vcxproj` on the Mac, copied by `CopyToMauiMacLibs` (`macOS` platform; the last configuration built) |
+| `GnollHackM/Platforms/MacOS/libs/libgnollhackmac.dylib` | `gnollhackmac.vcxproj` on the Mac, copied by `CopyToMauiMacLibs` (`macOS`, `Any CPU`; the last configuration built) |
 | `GnollHackM/Platforms/{Windows,Android,iOS}/gnh/nhdat` | `afterdlb.proj` / `afterdroidutils.proj` |
 | `GnollHackM/Platforms/Windows/gnh/recover.exe` | `recoverwin.vcxproj` (from `gnollhackwin.vcxproj`) |
 | `GnollHackM/Platforms/Linux/gnh/recover` (committed) | `Build-LinuxRecover.ps1` (manual) |
