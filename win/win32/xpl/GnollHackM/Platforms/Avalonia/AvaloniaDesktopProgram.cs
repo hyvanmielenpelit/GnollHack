@@ -54,7 +54,8 @@ internal static class AvaloniaDesktopProgram
     /* X11: GLX with a software fallback, no Vulkan; popups drawn inside the window; WM_CLASS "GnollHack", which
        a desktop entry matches with StartupWMClass. macOS: GetMacRenderingModes, from the Metal Rendering setting;
        popups drawn inside the window; GHMacApplicationMenu instead of Avalonia's default application menu items.
-       1 GiB GPU resource budget. */
+       GPU resource budget: 2 GiB on macOS, where Metal needs about 1.3 GB on some levels, and 1.5 GiB elsewhere, where
+       OpenGL needs about 0.7 GB; a full cache re-uploads textures every frame. */
     public static AppBuilder BuildAvaloniaApp()
     {
         AppBuilder builder = AppBuilder.Configure<AvaloniaApp>()
@@ -73,7 +74,7 @@ internal static class AvaloniaDesktopProgram
                 OverlayPopups = true,
             })
             .With(new MacOSPlatformOptions { DisableDefaultApplicationMenuItems = true })
-            .With(new SkiaOptions { MaxGpuResourceSizeBytes = 1024L * 1024 * 1024 });
+            .With(new SkiaOptions { MaxGpuResourceSizeBytes = (OperatingSystem.IsMacOS() ? 2048L : 1536L) * 1024 * 1024 });
 #if MACOS
         /* Registered before Avalonia.Native's own callback, which reads the application name */
         builder = builder.AfterSetup(GHMacApplicationMenu.Install);

@@ -98,6 +98,8 @@ namespace GnollHackM
 
         /* Render thread only, shared by all GL controls */
         private static int _swapIntervalReported = 0;
+        private const long ResourceCacheReportIntervalSeconds = 10;
+        private static long _lastResourceCacheReportTicks = 0;
 #if LINUX
         private static IntPtr _swapIntervalDrawable = IntPtr.Zero;
         private static GHAvaloniaGLControl _presentSampler = null;
@@ -416,6 +418,7 @@ namespace GnollHackM
 
                 GHAvaloniaFrameLoop.RecordGlDraw(drawStart, paintMs);
                 SamplePresentTiming((long)pixelWidth * pixelHeight);
+                ReportResourceCache(grContext);
             }
         }
 #pragma warning restore CS0618
@@ -516,6 +519,29 @@ namespace GnollHackM
             canvas.Scale(1.0f / (float)scaling);
             canvas.DrawImage(snapshot, 0, 0, SKSamplingOptions.Default, null);
             canvas.Restore();
+        }
+
+        /* Render thread: the shared GRContext's resource cache use against its limit, in the app log at most once every
+           ResourceCacheReportIntervalSeconds. Every GL control shares Avalonia's context, so one line covers them all. */
+        private static void ReportResourceCache(GRContext grContext)
+        {
+            long now = Stopwatch.GetTimestamp();
+            if (_lastResourceCacheReportTicks != 0 && now - _lastResourceCacheReportTicks < ResourceCacheReportIntervalSeconds * Stopwatch.Frequency)
+                return;
+            _lastResourceCacheReportTicks = now;
+            try
+            {
+                int resourceCount;
+                long resourceBytes;
+                grContext.GetResourceCacheUsage(out resourceCount, out resourceBytes);
+                long limitBytes = grContext.GetResourceCacheLimit();
+                GHApp.MaybeWriteGHLog("Avalonia GL: Skia GPU cache " + resourceCount + " resources, " + (resourceBytes / (1024 * 1024)) + " MB of "
+                    + (limitBytes / (1024 * 1024)) + " MB");
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("Avalonia GL: reading the Skia GPU cache failed: " + ex.Message);
+            }
         }
 
         /* Passes a changed context, or a newly connected handler, to GRContextChangedAction */
