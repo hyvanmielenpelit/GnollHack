@@ -9,11 +9,12 @@ using GnollHackX;
 namespace GnollHackM
 {
     /* Gamepad glue for the Avalonia build. At the first frame at least a second after the window is attached
-       it registers the backends with GHGamepadService: evdev on Linux, XInput on Windows, and the back-grip key
-       bridge when GNOLLHACK_GAMEPAD_KEYS allows it. OnFrame runs first in every frame callback and polls the
-       service with immediate canvas paints deferred until after the poll. Window activation goes to the
-       service, and pointer movement or presses clear its gamepad-active state. A frame that throws is logged at
-       most once per 10 s, and 30 such frames in a row stop the backends for the session. UI thread only. */
+       it registers the backends with GHGamepadService: evdev on Linux, GameController on macOS, XInput on
+       Windows, and the back-grip key bridge when GNOLLHACK_GAMEPAD_KEYS allows it. OnFrame runs first in every
+       frame callback and polls the service with immediate canvas paints deferred until after the poll. Window
+       activation goes to the service, and pointer movement or presses clear its gamepad-active state. A frame
+       that throws is logged at most once per 10 s, and 30 such frames in a row stop the backends for the
+       session. UI thread only. */
     internal static class GHAvaloniaGamepad
     {
         private const double StartDelaySeconds = 1.0;
@@ -156,6 +157,13 @@ namespace GnollHackM
                 string error;
                 if (!GHGamepadService.RegisterBackend(new GHEvdevGamepadBackend(), !GHApp.IsSteamDeck, out error))
                     WriteLog("GAMEPAD evdev backend not started: " + error);
+            }
+#elif MACOS
+            if (OperatingSystem.IsMacOS())
+            {
+                string error;
+                if (!GHGamepadService.RegisterBackend(new GHGameControllerBackend(), true, out error))
+                    WriteLog("GAMEPAD GameController backend not started: " + error);
             }
 #else
             if (OperatingSystem.IsWindows())

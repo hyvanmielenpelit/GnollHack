@@ -64,7 +64,7 @@ The `Where` column uses exactly these, so that a filter finds everything for one
 | `iOS` | An iPhone or iPad |
 | `Any` | Any build you have at hand, usually a wizard-mode check of C core behavior |
 | `Visual Studio` | A build or project step in the IDE |
-| `Mac` | The Mac build host |
+| `Mac` | The Mac: the build host, and the macOS flavor run from Terminal |
 | `This machine` | A command on your own computer, such as `setup.ps1` |
 | `Git` | A commit |
 | `GitHub` | An upstream issue |

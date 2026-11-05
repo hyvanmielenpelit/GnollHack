@@ -63,6 +63,8 @@
 
   <ItemGroup Condition="'$(GnhAvalonia)' == 'true'">
     <MauiPlatformSpecificFolder Include="Platforms\Avalonia\" BackendIdentity="avalonia" />
+    <!-- C# code of the macOS flavor only; libs/ holds its native libraries -->
+    <MauiPlatformSpecificFolder Include="Platforms\MacOS\" BackendIdentity="avalonia" Condition="$(RuntimeIdentifier.StartsWith('osx'))" />
     <!-- Decimal, as in the -windows item group: 32000000 is 32 MB -->
     <RuntimeHostConfigurationOption Include="System.GC.Gen0MaxBudget" Value="32000000" />
   </ItemGroup>

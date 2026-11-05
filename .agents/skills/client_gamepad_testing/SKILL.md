@@ -7,7 +7,7 @@ description: >-
   Xbox controller on the Avalonia Windows build as a backup; the packaging and Deploy-SteamDeck.ps1
   sequence, what to do when the Deck cannot be reached, what the user must test, and how to read the
   Deck's logs afterward. Read whenever you plan, change or review anything that alters what a
-  controller does or shows: GHGamepad* or GHEvdev* code, GHXInput or GHWinUI code, radial menus, hint strips, focus navigation
+  controller does or shows: GHGamepad* or GHEvdev* code, GHXInput, GHWinUI or GHGameController code, radial menus, hint strips, focus navigation
   on a page, controller settings, Steam Input layouts, or the Steam keyboard. Read before reporting
   such work as finished.
 ---
@@ -33,6 +33,7 @@ The devices:
 | Windows PC, Xbox controller | WinUI 3 | Yes | **Platform** | From Visual Studio, Debug x64; see [Xbox on WinUI 3](#xbox-on-winui-3) |
 | Linux PC, Xbox controller | Avalonia Linux | Yes | **Platform** | From the Linux package; see [Xbox on Desktop Linux](#xbox-on-desktop-linux) |
 | Windows PC, Xbox controller | Avalonia Windows | No | **Platform** for its own code; otherwise a backup and extra check | Directly, from the build output; see [Xbox on Avalonia Windows](#xbox-on-avalonia-windows) |
+| Mac, Xbox or PlayStation controller | Avalonia macOS | No | **Platform** for its own code | From Terminal on the Mac; see [Controller on Avalonia macOS](#controller-on-avalonia-macos) |
 
 Android and iOS have no controller support yet. When a build gains it, add a row with the role **Platform**, and
 write its procedure in this skill. Its first implementation gets a full pass there; after that this rule applies.
@@ -48,7 +49,8 @@ navigation, hint strips, in-page popups, `FileDialogView`, controller settings, 
 | Platform | Its code |
 |----------|----------|
 | Steam Deck | `GHEvdev*`, `GHAvaloniaSteamKeyboard`, `Platforms/Avalonia/Cef/`, `Platforms/Linux/Packaging/steam/input/`, `steamdeck/run-gnollhack.sh`, `#if LINUX` branches, the grip bridge |
-| Avalonia Windows | The Windows branches of Avalonia code (`#else` of `#if LINUX`, `#elif GNH_AVALONIA` after `GNH_AVALONIA && LINUX`), and the `NativeWebView` paths (`NativeWebViewHost`, `_nativeView` in `GHAvaloniaWebScriptHost`), which the Deck does not run because it uses CEF |
+| Avalonia Windows | The Windows branches of Avalonia code (the `#else` after `#if LINUX` and `#elif MACOS`, `#elif GNH_AVALONIA` after `GNH_AVALONIA && LINUX`), and the `NativeWebView` paths (`NativeWebViewHost`, `_nativeView` in `GHAvaloniaWebScriptHost`), which the Deck does not run because it uses CEF; the Mac runs them with WKWebView |
+| Avalonia macOS | `Platforms/MacOS/GHGameController*`, the `#elif MACOS` branch of `GHAvaloniaGamepad.StartBackends`, and the `NativeWebView` paths when a change is specific to WKWebView |
 | WinUI 3 | `Platforms/Windows/GHWinUI*`, `GHWebView2FileChooser`, `KeyboardHook`'s key note, `#if WINDOWS` branches in controller code |
 | Desktop Linux | The `!IsSteamDeck` branches of the evdev backend and `GHAvaloniaGamepad`, and physical pads in `GHEvdev*` |
 | Both Windows builds | `GnollHackM/GHXInputGamepadBackend.cs`. Test on WinUI 3 |
@@ -91,6 +93,7 @@ Anything that changes controller behavior, in any of these:
 - `win/win32/xpl/GnollHackM/Platforms/Avalonia/`: the gamepad and evdev backends
   (`GHAvaloniaGamepad*.cs`, `GHEvdev*.cs`), the Steam keyboard, key handling for the grip bridge,
   and controller input in the in-app browser (`Cef/GHCefInput.cs`, `GHAvaloniaWebScriptHost.cs`)
+- `win/win32/xpl/GnollHackM/Platforms/MacOS/GHGameController*.cs`: the macOS flavor's GameController backend
 - `win/win32/xpl/GnollHackM/GHXInputGamepadBackend.cs`, `GHWebPageScript.cs`, and the WinUI 3 glue:
   `Platforms/Windows/GHWinUI*.cs`, `GHWebView2FileChooser.cs`, and `KeyboardHook`'s key note in `MauiProgram.cs`
 - `Platforms/Linux/Packaging/steam/input/` and `steamdeck/run-gnollhack.sh`
@@ -225,6 +228,22 @@ the backup cannot speak for it.
 outstanding". The Deck test stays outstanding, and only the user can decide that the backup is enough
 for a particular change. If they make it, the checks become `waived` in the status table, and the note
 says so.
+
+## Controller on Avalonia macOS
+
+The macOS flavor does not ship. Its controller code, the GameController backend, is tested on the Mac with a real
+controller (Xbox or PlayStation, paired in System Settings, Bluetooth, or by USB) and needs no Deck.
+
+1. Publish from `win\win32\xpl\GnollHackM\Platforms\Avalonia` and copy the build to the Mac over SSH as "macOS flavor"
+   in `build_pipeline` describes: a tar of the `publish` folder as `~/gnollhack-dev/osx-arm64.tar` with a `VERSION`
+   file, unpacked by `~/gnollhack-dev/deploy-mac-build.sh` on the Mac. `libgnollhackmac.dylib` must be current if the
+   C core or bridge changed.
+2. The user starts the game from Terminal, with the controller on: `cd ~/gnollhack-dev/osx-arm64 && ./GnollHackM`.
+   The `GAMEPAD gc` lines in that Terminal name each controller, its profile and its style.
+3. The checks are a `TEST` session in the task's Developer Runbook with `Where` = `Mac`.
+
+**What it cannot cover:** evdev and device filtering, Steam Input and its layouts, the grips, the Steam keyboard,
+Gaming Mode and the Deck's screen size. It is the only device that runs the in-app browser on WKWebView.
 
 ## First-Time Setup
 
