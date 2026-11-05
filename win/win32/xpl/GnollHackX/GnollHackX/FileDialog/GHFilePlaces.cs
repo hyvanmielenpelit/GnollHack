@@ -355,31 +355,38 @@ namespace GnollHackX
             }
         }
 
-        /* The mounted volumes, without the startup disk, which /Volumes lists as a symbolic link to /, and without
-           hidden entries */
+        /* The volumes mounted under /Volumes, from the mount table. A folder there that is not a mount point, such as
+           a leftover "Data", is left out, and so is the startup disk, which /Volumes lists only as a symbolic link
+           to /. Hidden mount points are left out too. */
         private static IEnumerable<string> ListVolumes()
         {
             List<string> volumes = new List<string>();
-            foreach (string path in ListDirectoriesOrEmpty(VolumesFolder))
+            DriveInfo[] drives;
+            try
             {
-                try
-                {
-                    if (GetLastSegment(path).StartsWith(".", StringComparison.Ordinal)
-                        || (File.GetAttributes(path) & FileAttributes.ReparsePoint) != 0)
-                    {
-                        continue;
-                    }
-                }
-                catch (IOException)
-                {
-                    continue;
-                }
-                catch (UnauthorizedAccessException)
+                drives = DriveInfo.GetDrives();
+            }
+            catch (IOException)
+            {
+                return volumes;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return volumes;
+            }
+
+            foreach (DriveInfo drive in drives)
+            {
+                string path = (drive.Name ?? "").TrimEnd('/');
+                if (!path.StartsWith(VolumesFolder + "/", StringComparison.OrdinalIgnoreCase)
+                    || path.IndexOf('/', VolumesFolder.Length + 1) >= 0
+                    || GetLastSegment(path).StartsWith(".", StringComparison.Ordinal))
                 {
                     continue;
                 }
 
-                volumes.Add(path);
+                if (!volumes.Contains(path))
+                    volumes.Add(path);
             }
 
             return volumes;
