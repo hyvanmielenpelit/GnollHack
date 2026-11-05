@@ -464,7 +464,7 @@ Invoke-Tool 'GNHMS005' 'Packing the library' $Tar @('-c', '-f', $TarFile, '-C', 
 
 if ((Invoke-Native $script:Ssh (@($script:SshOptions) + @($SshHost, 'true'))) -ne 0)
 {
-    Stop-Build 'GNHMS005' ("Cannot connect to the Mac as '{0}'. Check that the Mac is awake, that Remote Login is on, and that 'ssh {0}' logs in without a password; see the wiki page Set Up SSH Access to the Mac for Native Libraries." -f $SshHost)
+    Stop-Build 'GNHMS005' ("Cannot connect to the Mac as '{0}'. Check that the Mac is awake, that its address on the HostName line of '{0}' in %USERPROFILE%\.ssh\config is current, that Remote Login is on, and that 'ssh {0}' logs in without a password; see the wiki page Set Up SSH Access to the Mac for Native Libraries." -f $SshHost)
 }
 # No quotes in remote commands: Windows PowerShell mangles them on the way to ssh, and the remote paths are checked
 # to hold no spaces

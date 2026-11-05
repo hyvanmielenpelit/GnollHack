@@ -417,7 +417,7 @@ Invoke-Tool 'GNHMP007' 'Packing the stage' $Tar @('-cf', $TarFile, '-C', $StageD
 Write-Host ('Copying to {0}' -f $SshHost)
 if ((Invoke-Native $Ssh (@($SshOptions) + @($SshHost, 'true'))) -ne 0)
 {
-    Stop-Build 'GNHMP008' ('Cannot connect to the Mac {0}: it is asleep or unreachable, Remote Login is off, or the key is not set up.' -f $SshHost)
+    Stop-Build 'GNHMP008' ('Cannot connect to the Mac {0}: it is asleep or unreachable, its address on the HostName line of {0} in %USERPROFILE%\.ssh\config is out of date, Remote Login is off, or the key is not set up.' -f $SshHost)
 }
 # No quotes in remote commands: Windows PowerShell mangles them on the way to ssh, and the remote paths are checked
 # to hold no spaces

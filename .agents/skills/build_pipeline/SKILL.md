@@ -185,6 +185,7 @@ Post-build `.proj` files copy libraries and assets to `GnollHackM/Platforms/`:
 
 - **Source list:** `gnollhackapple.props` lists the same engine sources as `gnollhacklinux.vcxproj`. Adding an engine source means adding it to both.
 - **Mac host:** an OpenSSH host alias with key-based login: the script's `-SshHost`, else the environment variable `GNOLLHACK_MAC_SSH_HOST`, else `gnollhack-mac`. From MSBuild: `/p:GnhAppleExtraArgs="-SshHost <alias>"`. Every connection uses `BatchMode`, so a missing key or an unknown host key fails at once instead of prompting. The setup is on the wiki page *Set Up SSH Access to the Mac for Native Libraries*.
+- **Mac address:** the Mac's IP address or host name is entered only as the alias's `HostName` in `%USERPROFILE%\.ssh\config`; nothing in the repository, the projects or the environment holds it. When the Mac moves to another network, editing that line is the whole update. The alias sets `HostKeyAlias` to its own name, so the host key is trusted under the alias, not the address; an entry without it fails with `GNHAB006` after an address change, because the new address is an unknown host under `BatchMode`.
 - **Recompiling:** make recompiles a source when it, any header, `engine.mk` or the compiler flags and SDK
   (`obj/flags.txt`) changed. Change detection is by content, not by Windows file times. Every WSL data pipeline run
   rewrites `date_unix.h`, and every object depends on every header, so a solution build usually recompiles
@@ -371,7 +372,7 @@ A green MSBuild result is not proof artifacts exist. Check these after building 
 | `... needs GLIBC_2.xx, above the ... floor` | A Linux binary was built without the sysroot; run `Install-LinuxSysroot.ps1` in the distribution that built it, then rebuild. |
 | `error: the glibc 2.27 sysroot is missing` | Run `Install-LinuxSysroot.ps1` in the distribution the Connection Manager points to. |
 | `undefined reference to '...'` linking a Linux binary | `-z defs` caught a function glibc 2.27 lacks (or keeps in `libdl`/`librt`); avoid it or link its library. |
-| `error GNHAB006: Cannot connect to the Mac` | The Mac is asleep or unreachable, Remote Login is off, or `ssh gnollhack-mac` (or the alias in use) does not log in without a password. See [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh). |
+| `error GNHAB006: Cannot connect to the Mac` | The Mac is asleep or unreachable, its address changed (update `HostName` in `%USERPROFILE%\.ssh\config`), Remote Login is off, or `ssh gnollhack-mac` (or the alias in use) does not log in without a password. See [Apple engine libraries over SSH](#apple-engine-libraries-over-ssh). |
 | `error GNHAB007: The ... SDK is not available on the Mac` | Xcode is missing, not selected, or its license is not accepted: on the Mac, `sudo xcode-select -s /Applications/Xcode.app/Contents/Developer` and `sudo xcodebuild -license accept`. |
 | `error GNHAB002: ...date_unix.h is missing` | The WSL data pipeline has not run: build `GnollHack.sln` with the `macOS` or `iPhone` platform, which builds the `*droid` tools first. |
 | `Build-MacPackage.ps1 ... error GNHMP002` | `libgnollhackmac.dylib`, `nhdat` or the macOS icon master missing: build `GnollHack.sln` with the `macOS` platform in Release, or run `New-MacAppIcon.ps1`. |

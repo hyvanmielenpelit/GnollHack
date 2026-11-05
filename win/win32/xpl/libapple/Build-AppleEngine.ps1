@@ -306,7 +306,7 @@ $Scp = Find-Tool 'scp.exe' 'OpenSSH\scp.exe'
 & $script:Ssh @script:SshOptions $SshHost ('xcrun --sdk {0} --show-sdk-path' -f $Sdk)
 if ($LASTEXITCODE -eq 255)
 {
-    Stop-Build 'GNHAB006' ("Cannot connect to the Mac as '{0}'. Check that the Mac is awake, that Remote Login is on, and that 'ssh {0}' logs in without a password; see the wiki page Set Up SSH Access to the Mac for Native Libraries." -f $SshHost)
+    Stop-Build 'GNHAB006' ("Cannot connect to the Mac as '{0}'. Check that the Mac is awake, that its address on the HostName line of '{0}' in %USERPROFILE%\.ssh\config is current, that Remote Login is on, and that 'ssh {0}' logs in without a password; see the wiki page Set Up SSH Access to the Mac for Native Libraries." -f $SshHost)
 }
 if ($LASTEXITCODE -ne 0)
 {
