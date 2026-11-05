@@ -8,6 +8,11 @@
 #                  [--identity <codesign identity, - for ad hoc>] [--notary-profile <notarytool keychain profile>]
 #                  [--targets app,dmg,steam] [--steam-app-id <id>] [--steam-depot-id <id>] [--steam-branch <name>]
 #                  [--steam-desc <text>] [--dev-copy]
+#                  [--keychain <path> --keychain-password-file <path>]
+#
+# --keychain names the keychain holding the Developer ID identity and the notarytool profile. An SSH session cannot
+# use the login keychain, which stays locked there, so release builds over SSH use a dedicated signing keychain,
+# unlocked here with the password in --keychain-password-file.
 #
 # <input> holds publish/ (the dotnet publish output) and packaging/ (Info.plist.template, GnollHack.entitlements,
 # appicon.png, steam/*.template). Results go to <output>: the zipped app, the DMG, SHA256SUMS, BUILD-INFO,
@@ -36,6 +41,8 @@ STEAM_DEPOT_ID=""
 STEAM_BRANCH=""
 STEAM_DESC=""
 DEV_COPY=0
+KEYCHAIN=""
+KEYCHAIN_PASSWORD_FILE=""
 
 while [ $# -gt 0 ]; do
     case "$1" in
@@ -53,6 +60,8 @@ while [ $# -gt 0 ]; do
     --steam-branch) STEAM_BRANCH="$2"; shift 2 ;;
     --steam-desc) STEAM_DESC="$2"; shift 2 ;;
     --dev-copy) DEV_COPY=1; shift ;;
+    --keychain) KEYCHAIN="$2"; shift 2 ;;
+    --keychain-password-file) KEYCHAIN_PASSWORD_FILE="$2"; shift 2 ;;
     *) fail GNHMP101 "unknown argument $1" ;;
     esac
 done
@@ -83,6 +92,31 @@ NOTARIZE=0
 if [ -n "$NOTARY_PROFILE" ]; then
     [ "$IDENTITY" != "-" ] || fail GNHMP103 "notarization needs a Developer ID identity, not ad-hoc signing"
     NOTARIZE=1
+fi
+
+# The signing keychain: unlocked for this run; codesign and notarytool are pointed at it
+CODESIGN_KEYCHAIN_ARGS=()
+NOTARY_KEYCHAIN_ARGS=()
+if [ -n "$KEYCHAIN" ] && [ "$IDENTITY" != "-" ]; then
+    [ -f "$KEYCHAIN" ] || fail GNHMP114 "the signing keychain $KEYCHAIN does not exist; see the build_pipeline skill, macOS signing"
+    [ -n "$KEYCHAIN_PASSWORD_FILE" ] && [ -f "$KEYCHAIN_PASSWORD_FILE" ] \
+        || fail GNHMP114 "the signing keychain's password file ${KEYCHAIN_PASSWORD_FILE:-(none)} does not exist"
+    security unlock-keychain -p "$(cat "$KEYCHAIN_PASSWORD_FILE")" "$KEYCHAIN" \
+        || fail GNHMP115 "the signing keychain $KEYCHAIN could not be unlocked"
+    # codesign takes the certificate from --keychain but looks up its private key along the search list; when the
+    # login keychain, locked in an SSH session, holds the same identity, it stops there with errSecInternalComponent.
+    # The signing keychain goes first until the script exits. Keychain paths here contain no spaces.
+    ORIGINAL_KEYCHAINS="$(security list-keychains -d user | tr -d '"')"
+    restore_keychains()
+    {
+        # shellcheck disable=SC2086
+        security list-keychains -d user -s $ORIGINAL_KEYCHAINS
+    }
+    trap restore_keychains EXIT
+    # shellcheck disable=SC2046
+    security list-keychains -d user -s "$KEYCHAIN" $(printf '%s\n' $ORIGINAL_KEYCHAINS | grep -v -x -F "$KEYCHAIN")
+    CODESIGN_KEYCHAIN_ARGS=(--keychain "$KEYCHAIN")
+    NOTARY_KEYCHAIN_ARGS=(--keychain "$KEYCHAIN")
 fi
 
 ARCH_NAME="macos-arm64"
@@ -137,7 +171,7 @@ sign()
     if [ "$IDENTITY" = "-" ]; then
         codesign --force --options runtime "$@" --sign - "$target"
     else
-        codesign --force --timestamp --options runtime "$@" --sign "$IDENTITY" "$target"
+        codesign --force --timestamp --options runtime "$@" "${CODESIGN_KEYCHAIN_ARGS[@]+"${CODESIGN_KEYCHAIN_ARGS[@]}"}" --sign "$IDENTITY" "$target"
     fi
 }
 echo "Signing with identity $IDENTITY"
@@ -156,14 +190,14 @@ notarize()
     local label="$2"
     local result="$WORK/notary-$label.plist"
     echo "Notarizing $label"
-    xcrun notarytool submit "$file" --keychain-profile "$NOTARY_PROFILE" --wait --output-format plist > "$result" \
+    xcrun notarytool submit "$file" --keychain-profile "$NOTARY_PROFILE" "${NOTARY_KEYCHAIN_ARGS[@]+"${NOTARY_KEYCHAIN_ARGS[@]}"}" --wait --output-format plist > "$result" \
         || fail GNHMP108 "notarytool could not submit $label"
     local status id
     status="$(plutil -extract status raw "$result" 2>/dev/null || echo unknown)"
     id="$(plutil -extract id raw "$result" 2>/dev/null || echo unknown)"
     NOTARY_IDS="$NOTARY_IDS $label=$id"
     if [ "$status" != "Accepted" ]; then
-        xcrun notarytool log "$id" --keychain-profile "$NOTARY_PROFILE" || true
+        xcrun notarytool log "$id" --keychain-profile "$NOTARY_PROFILE" "${NOTARY_KEYCHAIN_ARGS[@]+"${NOTARY_KEYCHAIN_ARGS[@]}"}" || true
         fail GNHMP109 "notarization of $label ended as $status (submission $id)"
     fi
 }
@@ -190,7 +224,8 @@ if has_target dmg; then
     hdiutil create -volname GnollHack -srcfolder "$STAGE" -ov -format UDZO "$DMG" > /dev/null \
         || fail GNHMP112 "hdiutil could not make the DMG"
     if [ "$IDENTITY" != "-" ]; then
-        codesign --force --timestamp --sign "$IDENTITY" "$DMG" || fail GNHMP106 "signing the DMG failed"
+        codesign --force --timestamp "${CODESIGN_KEYCHAIN_ARGS[@]+"${CODESIGN_KEYCHAIN_ARGS[@]}"}" --sign "$IDENTITY" "$DMG" \
+            || fail GNHMP106 "signing the DMG failed"
     fi
     if [ "$NOTARIZE" = "1" ]; then
         notarize "$DMG" dmg

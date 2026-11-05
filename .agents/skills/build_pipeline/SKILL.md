@@ -267,7 +267,16 @@ Publish needs `-f net11.0`. A Release publish uploads Sentry symbols when the ma
    - On the Mac, it assembles `GnollHack.app`: Mach-O files in `Contents/MacOS`, `gnh`, `banks` and `tileset` in `Contents/Resources`, where `GHAvaloniaPaths.AssetDirectory` finds them in a bundle. It makes the `.icns` from `Resources/AppIcon/appicon.png`, and writes `Info.plist` from `Info.plist.template` (bundle id `com.soundmindgames.GnollHackMac`, distinct from the iOS app's).
    - It signs every Mach-O and then the bundle with the hardened runtime and `GnollHack.entitlements` (the .NET defaults; no sandbox, which Steam does not support).
    - With `-NotaryProfile`, it notarizes and staples with `notarytool`; then it makes the DMG and the Steam content with `app_build_mac.vdf` and `depot_build_mac.vdf`.
-   - `-SigningIdentity` defaults to `-` (ad hoc, which runs only on the Mac that made it). A release passes `"Developer ID Application: … (CUG8RS847T)"` and `-NotaryProfile gnollhack-notary`, a keychain profile on the Mac.
+   - `-SigningIdentity` defaults to `-` (ad hoc, which runs only on the Mac that made it). A release passes `-SigningIdentity "Developer ID Application: Hyvan mielen pelit ry (CUG8RS847T)" -NotaryProfile gnollhack-notary`, as verified on 2026-11-05: both notarizations were accepted, and the stapled app and DMG pass `spctl` as "Notarized Developer ID".
+   - **Signing keychain:**
+     - An SSH session cannot use the login keychain, which stays locked there: `codesign` fails with `errSecInternalComponent`, and `notarytool` with `keychainLocked`. So the Developer ID identity, the Apple intermediate certificate and the `gnollhack-notary` profile (an App Store Connect Team API key) live in `~/Library/Keychains/gnollhack-signing.keychain-db`.
+     - Its password is in `~/.gnollhack/signing-keychain-password` (mode 600). `package-mac.sh` unlocks it and passes `--keychain` to `codesign` and `notarytool`. `-Keychain` and `-KeychainPasswordFile` override the defaults; `-Keychain ''` uses the default search list, for a run from Terminal on the Mac.
+     - `codesign` takes the certificate from `--keychain` but looks up the private key along the user's search list. Because the login keychain holds a second copy of the identity, the script puts the signing keychain first for the run and restores the original order on exit. The per-session (`-d dynamic`) search list does not exist on macOS 26.
+     - The one-time setup, step by step, is on the wiki page `Development/Build Instructions for Avalonia macOS Version on Windows`.
+     - Pitfalls seen in the setup:
+       - Terminal may not read `~/Desktop` ("Operation not permitted");
+       - `set-key-partition-list` must run after the key is imported;
+       - agents never handle the `.p12`, the `.p8` or any password.
    - The zip, the DMG, `SHA256SUMS` and `BUILD-INFO` come back to `GnollHackM\bin\MacPackages\<version>-<build>\`. The Steam content stays in `~/gnollhack-build/package/<version>-<build>/steam`, where a person uploads it with `steamcmd +run_app_build`; the script never uploads. `-DevCopy` also puts the app at `~/gnollhack-dev/GnollHack.app`.
    - Errors are `GNHMP0nn` (Windows) and `GNHMP1nn` (Mac).
 
