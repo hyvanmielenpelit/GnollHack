@@ -16,7 +16,7 @@
 #
 # <input> holds publish/ (the dotnet publish output) and packaging/ (Info.plist.template, GnollHack.entitlements,
 # appicon.png, steam/*.template). Results go to <output>: the zipped app, the DMG, SHA256SUMS, BUILD-INFO,
-# symbols/ and steam/.
+# symbols/ and steam/, plus steam.tar and steam-content.sha256 for Build-MacPackage.ps1's copy to Windows.
 # Errors are printed as "package-mac.sh : error GNHMP1nn: ..." and end the script with exit code 1.
 
 set -euo pipefail
@@ -98,7 +98,7 @@ fi
 CODESIGN_KEYCHAIN_ARGS=()
 NOTARY_KEYCHAIN_ARGS=()
 if [ -n "$KEYCHAIN" ] && [ "$IDENTITY" != "-" ]; then
-    [ -f "$KEYCHAIN" ] || fail GNHMP114 "the signing keychain $KEYCHAIN does not exist; see the build_pipeline skill, macOS signing"
+    [ -f "$KEYCHAIN" ] || fail GNHMP114 "the signing keychain $KEYCHAIN does not exist; see the wiki page Development/Build Instructions for Avalonia macOS Version on Windows, Signing Setup"
     [ -n "$KEYCHAIN_PASSWORD_FILE" ] && [ -f "$KEYCHAIN_PASSWORD_FILE" ] \
         || fail GNHMP114 "the signing keychain's password file ${KEYCHAIN_PASSWORD_FILE:-(none)} does not exist"
     security unlock-keychain -p "$(cat "$KEYCHAIN_PASSWORD_FILE")" "$KEYCHAIN" \
@@ -106,6 +106,7 @@ if [ -n "$KEYCHAIN" ] && [ "$IDENTITY" != "-" ]; then
     # codesign takes the certificate from --keychain but looks up its private key along the search list; when the
     # login keychain, locked in an SSH session, holds the same identity, it stops there with errSecInternalComponent.
     # The signing keychain goes first until the script exits. Keychain paths here contain no spaces.
+    # WORKAROUND(WA-BUILD-0006): codesign looks up a --keychain identity's private key along the search list
     ORIGINAL_KEYCHAINS="$(security list-keychains -d user | tr -d '"')"
     restore_keychains()
     {
@@ -245,6 +246,11 @@ if has_target steam; then
             -e "s|{BUILD_DESC}|$STEAM_DESC|g" -e "s|{CONTENT_ROOT}|content|g" \
             "$PACKAGING/steam/${kind}_build_mac.vdf.template" > "$STEAM/${kind}_build_mac.vdf"
     done
+    # For the copy to Windows: a tar without AppleDouble ._ files, which would break the bundle's seal, and the
+    # SHA-256 of every content file to check the copy against.
+    (cd "$STEAM" && find content -type f -exec shasum -a 256 {} + | sort -k2) > "$OUTPUT/steam-content.sha256"
+    COPYFILE_DISABLE=1 tar --no-mac-metadata -cf "$OUTPUT/steam.tar" -C "$STEAM" app_build_mac.vdf depot_build_mac.vdf content \
+        || fail GNHMP113 "the Steam content could not be packed for the copy to Windows"
 fi
 
 if [ "$DEV_COPY" = "1" ]; then
@@ -279,5 +285,6 @@ fi
 
 echo "Done: $OUTPUT"
 if has_target steam; then
-    echo "Upload, as a person: steamcmd +login <account> +run_app_build \"$OUTPUT/steam/app_build_mac.vdf\" +quit"
+    echo "Steam content: $OUTPUT/steam, and through Build-MacPackage.ps1 in the Windows results. A person uploads it"
+    echo "with ContentBuilder or steamcmd from either: steamcmd +login <account> +run_app_build <steam folder>/app_build_mac.vdf +quit"
 fi

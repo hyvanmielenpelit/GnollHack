@@ -130,6 +130,7 @@ _Isincrementalbuild
 !DEVEL/performance/scripts/*.ps1
 !DEVEL/workarounds/*.ps1
 !win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/*.ps1
+!win/win32/xpl/GnollHackM/Platforms/MacOS/Packaging/*.ps1
 !win/win32/xpl/gnhsentrywin/*.ps1
 !win/win32/xpl/libapple/*.ps1
 

@@ -156,7 +156,7 @@ Git stores all text files with **LF** line endings in the repository. On checkou
 - **External assets** (tilesets, sound banks, secrets file) must be obtained from separate repositories — see the `build_pipeline` skill for full details
 - **For Android and iOS builds**: WSL with SSH service running (`sudo service ssh start`) and configured in VS Connection Manager is required before building `GnollHack.sln`, as `dlbdroid` generates the `nhdat` game data archive inside WSL
 - **For iOS builds**: the C++ library (`gnollhackios.vcxproj`) is built on the Mac over SSH, which needs key-based login to the host alias `gnollhack-mac` (wiki page `Development/Set Up SSH Access to the Mac for Native Libraries`) and Xcode on the Mac; `Pair to Mac` is separately needed for the .NET MAUI project (`GnollHackM.csproj`). See the `build_pipeline` skill.
-- **For macOS builds**: the same SSH access builds `libgnollhackmac.dylib` (`gnollhackmac.vcxproj`) with the `macOS` solution platform, which also runs the WSL data pipeline. The macOS flavor of the Avalonia port that uses it (`-r osx-arm64`) is for development only.
+- **For macOS builds**: the same SSH access builds `libgnollhackmac.dylib` (`gnollhackmac.vcxproj`) with the `macOS` solution platform, which also runs the WSL data pipeline. The macOS flavor of the Avalonia port (`-r osx-arm64`) is packaged on the Mac over SSH by `Platforms/MacOS/Packaging/Build-MacPackage.ps1` as `GnollHack.app`, a DMG and Steam depot content, and has not been released yet. A release needs the Developer ID signing keychain and notarization profile on the Mac, set up once by a person (wiki page `Development/Build Instructions for Avalonia macOS Version on Windows`); see the `build_pipeline` skill.
 
 ## Implementation Plans
 

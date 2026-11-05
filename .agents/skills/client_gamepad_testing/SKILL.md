@@ -232,7 +232,7 @@ says so.
 
 ## Controller on Avalonia macOS
 
-The macOS flavor does not ship. Its controller code, the GameController backend, is tested on the Mac with a real
+The macOS flavor has not been released yet. Its controller code, the GameController backend, is tested on the Mac with a real
 controller (Xbox or PlayStation, paired in System Settings, Bluetooth, or by USB) and needs no Deck.
 
 1. Publish from `win\win32\xpl\GnollHackM\Platforms\Avalonia` and copy the build to the Mac over SSH as "macOS flavor"
@@ -241,6 +241,8 @@ controller (Xbox or PlayStation, paired in System Settings, Bluetooth, or by USB
    C core or bridge changed.
 2. The user starts the game from Terminal, with the controller on: `cd ~/gnollhack-dev/osx-arm64 && ./GnollHackM`.
    The `GAMEPAD gc` lines in that Terminal name each controller, its profile and its style.
+   The bundled test copy works too: `Build-MacPackage.ps1 -Targets App -DevCopy -NoSentryUpload`, then the user runs
+   `~/gnollhack-dev/GnollHack.app/Contents/MacOS/GnollHackM` in Terminal.
 3. The checks are a `TEST` session in the task's Developer Runbook with `Where` = `Mac`.
 
 **What it cannot cover:** evdev and device filtering, Steam Input and its layouts, the grips, the Steam keyboard,

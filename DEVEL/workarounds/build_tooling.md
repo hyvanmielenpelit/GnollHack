@@ -190,3 +190,35 @@ the pause from `sync-tree.sh`.
 
 Checks:
 - 2026-11-05 | Xcode 27.0 | still-needed | An edit 0.3 s after a build was reported `up to date`; after 1.1 s it rebuilt.
+
+## WA-BUILD-0006: codesign looks up a --keychain identity's private key along the keychain search list
+
+- Status: active
+- Added: 2026-11-05
+- GnollHack version: 3.37 (437)
+- Component: macOS code signing
+- Package: macOS
+- Defective version: macOS 26.6 (codesign)
+- Platforms: macOS
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-05
+- Code: `win/win32/xpl/GnollHackM/Platforms/MacOS/Packaging/package-mac.sh` (`restore_keychains`)
+- Remove when: `codesign --keychain` signs over SSH while a locked login keychain holds the same identity, and Verify removal passes.
+
+**Symptom.** Over SSH, `codesign --keychain <signing keychain>` fails with `errSecInternalComponent` although that
+keychain is unlocked and its key's partition list allows `codesign:`.
+
+**Cause.** `codesign` takes the certificate from `--keychain` but looks up the private key along the user's keychain
+search list, and stops at the copy in the login keychain, which is locked in an SSH session. macOS 26 has no
+per-session (`-d dynamic`) search list.
+
+**Workaround.** `package-mac.sh` puts the signing keychain first in the user search list for the run and restores the
+original order on exit.
+
+**Verify removal.** Remove the reordering, keep the identity in both keychains, and run `Build-MacPackage.ps1` with the
+Developer ID identity. If signing succeeds, remove the workaround.
+
+Checks:
+- 2026-11-05 | macOS 26.6 | still-needed | Signing failed with errSecInternalComponent until the signing keychain was first in the search list.

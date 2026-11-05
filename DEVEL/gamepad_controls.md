@@ -2,8 +2,9 @@
 
 GnollHack's native gamepad controls are built for the **Steam Deck**: the Avalonia Linux
 build, launched through Steam. They also work with an **Xbox controller** in the WinUI 3
-build and on desktop Linux, and in the Avalonia Windows and macOS builds, for development; on a Mac with any
-controller macOS supports. Android and iOS have no gamepad support yet.
+build, on desktop Linux and in the Avalonia Windows build, which is for development, and with any controller
+macOS supports in the Avalonia macOS build, which has not been released yet. Android and iOS have no gamepad support
+yet.
 
 Contents:
 
@@ -483,7 +484,7 @@ A keyboard template produces no virtual pad, so keys behave as they always did.
 | evdev | Avalonia Linux | `GNOLLHACK_GAMEPAD_EVDEV` allows it (below); off a Steam Deck, available once a controller has been seen |
 | Back-grip key bridge | Avalonia, any OS | `GNOLLHACK_GAMEPAD_KEYS` allows it (below) |
 | XInput | Windows (WinUI 3 and Avalonia) | Always; available once a controller has been seen. Xbox controllers through `xinput1_4.dll` |
-| GameController | Avalonia macOS (development only) | Always; available once a controller has been seen. Controllers macOS supports with an extended gamepad profile (Xbox, PlayStation, MFi) |
+| GameController | Avalonia macOS (not released yet) | Always; available once a controller has been seen. Controllers macOS supports with an extended gamepad profile (Xbox, PlayStation, MFi) |
 
 A **Steam launch** is any of `SteamGameId`, `SteamAppId` (non-empty and not `0`),
 `SteamClientLaunch=1`, or `SDL_GAMECONTROLLER_ALLOW_STEAM_VIRTUAL_GAMEPAD`. Non-Steam shortcuts
@@ -587,7 +588,7 @@ For the grips, set `GNOLLHACK_GAMEPAD_KEYS=on` and press F2-F5 on the keyboard.
 
 ### macOS
 
-The macOS flavor, for development only, reads controllers through Apple's GameController framework:
+The macOS flavor, not released yet, reads controllers through Apple's GameController framework:
 any controller paired in System Settings, Bluetooth or connected by USB that has an extended gamepad
 profile, such as Xbox, DualShock 4 and DualSense controllers. The controller list is read every
 frame, so a controller works when switched on before or during the game. The Home button keeps its
