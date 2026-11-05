@@ -1,7 +1,10 @@
 #if GNH_AVALONIA
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using GnollHackX;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace GnollHackM
@@ -143,7 +146,7 @@ namespace GnollHackM
         private const string AcmMessageTypePrefix = "__AvaloniaControlsMaui";
 
         /* Esc forwarding for a focused page, trusted key presses only; synthetic Escapes are left to the page. With the
-           WebKitGTK adapter, also the SPA's GnollHackBridge transport, which posts through the adapter's
+           WebKitGTK and WKWebView adapters, also the SPA's GnollHackBridge transport, which posts through the adapter's
            invokeCSharpAction. Host-injected and free of eval, so the page's CSP allows it. */
         private const string HostKeyScript =
             "if (!window.__gnollhackHostKeys) {" +
@@ -158,6 +161,24 @@ namespace GnollHackM
             "if (!window.GnollHackBridge && window.invokeCSharpAction) {" +
             " window.GnollHackBridge = { onWebMessage: function (s) { window.invokeCSharpAction(String(s)); } };" +
             "}";
+
+        // WORKAROUND(WA-AVALONIA-0026): Avalonia's WKWebView adapter answers no file input
+        /* WKWebView: a click on a file input, the SPA's programmatic one included, asks the host for files instead;
+           PickAndDeliverFilesAsync hands them to the SPA's __gnollhackReceiveFiles */
+        private const string FilePickMessageType = "gnollhack_host_pick_files";
+        private const string FileInputScript =
+            "if (!window.__gnollhackFileInput && window.invokeCSharpAction) {" +
+            " window.__gnollhackFileInput = true;" +
+            " document.addEventListener('click', function (e) {" +
+            "  var t = e.target;" +
+            "  if (t && t.tagName === 'INPUT' && t.type === 'file') {" +
+            "   e.preventDefault();" +
+            "   window.invokeCSharpAction(JSON.stringify({ type: 'gnollhack_host_pick_files', multiple: !!t.multiple, accept: t.accept || '' }));" +
+            "  }" +
+            " }, true);" +
+            "}";
+        private const int MaxAttachedFiles = 5;
+        private const long MaxAttachedFileBytes = 20L * 1024 * 1024;
 
         private readonly Action<string, string> _bridgeMessageReceived;
         private readonly Action _escapePressed;
@@ -197,6 +218,11 @@ namespace GnollHackM
         private bool IsWebKitGtk
         {
             get { return _view?.AdapterInfo?.Type == Avalonia.Platform.WebViewAdapterType.WebKitGtk; }
+        }
+
+        private bool IsWkWebView
+        {
+            get { return _view?.AdapterInfo?.Type == Avalonia.Platform.WebViewAdapterType.WkWebView; }
         }
 
         public void Detach()
@@ -240,7 +266,9 @@ namespace GnollHackM
             if (_view == null)
                 return;
 
-            string script = BridgeEnabled && IsWebKitGtk ? HostKeyScript + BridgeScript : HostKeyScript;
+            string script = BridgeEnabled && (IsWebKitGtk || IsWkWebView) ? HostKeyScript + BridgeScript : HostKeyScript;
+            if (BridgeEnabled && IsWkWebView)
+                script += FileInputScript;
             _ = InvokeScriptAsync("(function () {" + script + "})();");
         }
 
@@ -257,11 +285,15 @@ namespace GnollHackM
 
             string type = null;
             string key = null;
+            bool multiple = false;
+            string accept = null;
             try
             {
                 JObject message = JObject.Parse(body);
                 type = message["type"]?.ToString();
                 key = message["key"]?.ToString();
+                multiple = message["multiple"]?.Type == JTokenType.Boolean && message["multiple"].Value<bool>();
+                accept = message["accept"]?.ToString();
             }
             catch (Exception)
             {
@@ -278,6 +310,13 @@ namespace GnollHackM
                 return;
             }
 
+            if (type == FilePickMessageType)
+            {
+                if (BridgeEnabled && IsWkWebView)
+                    Avalonia.Threading.Dispatcher.UIThread.Post(() => { _ = PickAndDeliverFilesAsync(multiple, accept); });
+                return;
+            }
+
             if (BridgeEnabled)
                 _bridgeMessageReceived(body, null);
         }
@@ -287,6 +326,126 @@ namespace GnollHackM
             e.Handled = true;
             if (e.Request != null)
                 _newWindowRequested(e.Request);
+        }
+
+        /* GnollHack's file dialog when a controller is in use, else the system's, as GHCefWebViewControl chooses; the
+           files go to the SPA as { name, type, dataUrl } entries, as from the iOS picker. UI thread. Never throws. */
+        private async Task PickAndDeliverFilesAsync(bool multiple, string accept)
+        {
+            try
+            {
+                List<string> extensions = AcceptExtensions(accept);
+                int maxFiles = multiple ? MaxAttachedFiles : 1;
+                IList<string> paths;
+                if (GHFileDialogHost.UseCustomDialog)
+                {
+                    paths = await GHFileDialogHost.PickFilesAsync("Attach Files", "Attach", multiple, maxFiles, extensions, false);
+                }
+                else
+                {
+                    Avalonia.Platform.Storage.IStorageProvider storage = _view != null ? Avalonia.Controls.TopLevel.GetTopLevel(_view)?.StorageProvider : null;
+                    if (storage == null)
+                        return;
+                    List<Avalonia.Platform.Storage.FilePickerFileType> filters = new List<Avalonia.Platform.Storage.FilePickerFileType>();
+                    if (extensions.Count > 0)
+                    {
+                        List<string> patterns = new List<string>();
+                        foreach (string extension in extensions)
+                            patterns.Add("*" + extension);
+                        filters.Add(new Avalonia.Platform.Storage.FilePickerFileType("Accepted files") { Patterns = patterns });
+                    }
+                    filters.Add(Avalonia.Platform.Storage.FilePickerFileTypes.All);
+                    IReadOnlyList<Avalonia.Platform.Storage.IStorageFile> files = await storage.OpenFilePickerAsync(
+                        new Avalonia.Platform.Storage.FilePickerOpenOptions { Title = "Attach Files", AllowMultiple = multiple, FileTypeFilter = filters });
+                    List<string> localPaths = new List<string>();
+                    if (files != null)
+                    {
+                        foreach (Avalonia.Platform.Storage.IStorageFile file in files)
+                        {
+                            string localPath = Avalonia.Platform.Storage.StorageProviderExtensions.TryGetLocalPath(file);
+                            if (!string.IsNullOrEmpty(localPath))
+                                localPaths.Add(localPath);
+                        }
+                    }
+                    paths = localPaths;
+                }
+
+                if (paths == null || paths.Count == 0 || _view == null)
+                    return;
+
+                JArray entries = new JArray();
+                foreach (string path in paths)
+                {
+                    if (entries.Count >= maxFiles)
+                        break;
+                    FileInfo info = new FileInfo(path);
+                    if (!info.Exists)
+                        continue;
+                    if (info.Length > MaxAttachedFileBytes)
+                    {
+                        GHApp.MaybeWriteGHLog("GHAvaloniaOverseerHost: " + info.Name + " is too large to attach (" + info.Length + " bytes)");
+                        continue;
+                    }
+                    string mime = MimeTypeOf(info.Extension);
+                    byte[] data = await File.ReadAllBytesAsync(path);
+                    JObject entry = new JObject();
+                    entry["name"] = info.Name;
+                    entry["type"] = mime;
+                    entry["dataUrl"] = "data:" + mime + ";base64," + Convert.ToBase64String(data);
+                    entries.Add(entry);
+                }
+                if (entries.Count == 0)
+                    return;
+
+                string literal = JsonConvert.SerializeObject(entries.ToString(Formatting.None));
+                await InvokeScriptAsync("if (window.__gnollhackReceiveFiles) { window.__gnollhackReceiveFiles(" + literal + "); }");
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHAvaloniaOverseerHost: attaching files failed: " + ex.Message);
+            }
+        }
+
+        /* The extensions in an accept attribute, such as ".txt,.png,image/*", with their dots */
+        private static List<string> AcceptExtensions(string accept)
+        {
+            List<string> extensions = new List<string>();
+            if (string.IsNullOrEmpty(accept))
+                return extensions;
+            foreach (string part in accept.Split(','))
+            {
+                string trimmed = part.Trim().ToLowerInvariant();
+                if (trimmed.Length > 1 && trimmed[0] == '.' && !extensions.Contains(trimmed))
+                    extensions.Add(trimmed);
+            }
+            return extensions;
+        }
+
+        private static string MimeTypeOf(string extension)
+        {
+            switch ((extension ?? "").ToLowerInvariant())
+            {
+            case ".txt":
+                return "text/plain";
+            case ".md":
+                return "text/markdown";
+            case ".html":
+            case ".htm":
+                return "text/html";
+            case ".png":
+                return "image/png";
+            case ".jpg":
+            case ".jpeg":
+                return "image/jpeg";
+            case ".webp":
+                return "image/webp";
+            case ".gif":
+                return "image/gif";
+            case ".json":
+                return "application/json";
+            default:
+                return "application/octet-stream";
+            }
         }
     }
 }

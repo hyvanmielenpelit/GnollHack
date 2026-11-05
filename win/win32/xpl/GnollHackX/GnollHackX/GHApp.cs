@@ -340,6 +340,7 @@ namespace GnollHackX
             UseTileBatching = Preferences.Get("UseTileBatching", GHConstants.DefaultTileBatching);
             UseTextBlobCaching = Preferences.Get("UseTextBlobCaching", GHConstants.DefaultTextBlobCaching);
             DisableWindowsKey = Preferences.Get("DisableWindowsKey", false);
+            AllowOptionKeys = Preferences.Get("AllowOptionKeys", false);
             DefaultVIKeys = Preferences.Get("DefaultVIKeys", false);
             /* Once per Steam Deck: earlier builds defaulted to showing shortcuts, and the Settings page saved that value */
             if (IsSteamDeck && !Preferences.Get("SteamDeckShortcutsDefaultApplied", false))
@@ -1905,6 +1906,8 @@ namespace GnollHackX
         public static bool IsNoStore { get; set; }
         /* Linux: started from an AppImage, whose runtime sets APPIMAGE to the image file's path */
         public static bool IsAppImage { get; set; }
+        /* macOS: started from inside an .app bundle */
+        public static bool IsMacAppBundle { get; set; }
 
         private static void ProcessEnvironment()
         {
@@ -1912,11 +1915,24 @@ namespace GnollHackX
             IsSteam = false;
             IsNoStore = false;
             IsAppImage = false;
+            IsMacAppBundle = false;
             if (IsLinux)
             {
                 try
                 {
                     IsAppImage = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("APPIMAGE"));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
+            else if (IsMacOS)
+            {
+                try
+                {
+                    string baseDirectory = AppDomain.CurrentDomain.BaseDirectory ?? "";
+                    IsMacAppBundle = baseDirectory.IndexOf(".app/Contents/MacOS/", StringComparison.OrdinalIgnoreCase) >= 0;
                 }
                 catch (Exception ex)
                 {
@@ -3933,6 +3949,7 @@ namespace GnollHackX
         private static int _shiftDown = 0;
         private static int _windowsKeyDown = 0;
         private static int _disableWindowsKey = 0;
+        private static int _allowOptionKeys = 0;
         private static int _defaultVIKeys = 0;
         private static int _showKeyboardShortcuts = 0;
         private static int _gamepadEnabled = 1;
@@ -3953,6 +3970,8 @@ namespace GnollHackX
         public static bool ShiftDown { get { return Interlocked.CompareExchange(ref _shiftDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _shiftDown, value ? 1 : 0); } }
         public static bool WindowsKeyDown { get { return Interlocked.CompareExchange(ref _windowsKeyDown, 0, 0) != 0; } set { Interlocked.Exchange(ref _windowsKeyDown, value ? 1 : 0); } }
         public static bool DisableWindowsKey { get { return Interlocked.CompareExchange(ref _disableWindowsKey, 0, 0) != 0; } set { Interlocked.Exchange(ref _disableWindowsKey, value ? 1 : 0); } }
+        /* macOS: Option types the characters the keyboard layout puts on it, instead of being the Alt modifier */
+        public static bool AllowOptionKeys { get { return Interlocked.CompareExchange(ref _allowOptionKeys, 0, 0) != 0; } set { Interlocked.Exchange(ref _allowOptionKeys, value ? 1 : 0); } }
         public static bool DefaultVIKeys { get { return Interlocked.CompareExchange(ref _defaultVIKeys, 0, 0) != 0; } set { Interlocked.Exchange(ref _defaultVIKeys, value ? 1 : 0); } }
         public static bool ShowKeyboardShortcuts { get { return Interlocked.CompareExchange(ref _showKeyboardShortcuts, 0, 0) != 0; } set { Interlocked.Exchange(ref _showKeyboardShortcuts, value ? 1 : 0); } }
         /* The Use Controller setting; also applied to GHGamepadService */
@@ -8696,6 +8715,8 @@ namespace GnollHackX
                     return "steam-playtest";
                 else if (IsSteam)
                     return "steam";
+                else if (IsMacAppBundle)
+                    return "packaged";
                 else
                     return "unpackaged";
             }
@@ -9679,6 +9700,8 @@ namespace GnollHackX
                     platid += "t";
                 else if (IsSteam)
                     platid += "s";
+                else if (IsMacAppBundle)
+                    platid += "p";
                 else
                     platid += "u";
             }

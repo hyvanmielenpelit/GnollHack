@@ -753,6 +753,97 @@ namespace GnollHackX.UnitTests
             Assert.Equal(UserData + "/111/760/remote/2881053371/screenshots", screenshots.Path);
         }
 
+        /* GHMacFilePlaces */
+
+        private const string MacHome = "/Users/player";
+        private const string MacUserData = MacHome + "/Library/Application Support/Steam/userdata";
+
+        private sealed class FakeMac
+        {
+            public readonly Dictionary<string, string> Environment = new Dictionary<string, string>();
+            public readonly HashSet<string> Directories = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            public readonly Dictionary<string, string[]> Listings = new Dictionary<string, string[]>();
+            public readonly List<string> Volumes = new List<string>();
+
+            public GHMacFilePlaces CreatePlaces()
+            {
+                return new GHMacFilePlaces(
+                    name => Environment.TryGetValue(name, out string value) ? value : null,
+                    MacHome,
+                    path => Directories.Contains(path),
+                    path => Listings.TryGetValue(path, out string[] list) ? list : new string[0],
+                    () => Volumes);
+            }
+        }
+
+        private static FakeMac CreateFullMac()
+        {
+            FakeMac mac = new FakeMac();
+            mac.Directories.Add(MacHome + "/Pictures");
+            mac.Directories.Add(MacHome + "/Desktop");
+            mac.Directories.Add(MacHome + "/Documents");
+            mac.Directories.Add(MacHome + "/Downloads");
+            mac.Directories.Add("/Volumes/USB STICK");
+            mac.Volumes.Add("/Volumes/USB STICK");
+            mac.Environment["SteamAppId"] = "2881053371";
+            mac.Listings[MacUserData] = new[] { MacUserData + "/111", MacUserData + "/222" };
+            mac.Directories.Add(MacUserData + "/222/760/remote/2881053371/screenshots");
+            return mac;
+        }
+
+        [Fact]
+        public void Mac_OpenPlacesInOrder()
+        {
+            IList<GHFilePlace> places = CreateFullMac().CreatePlaces().GetOpenPlaces(false);
+
+            Assert.Equal(new[] { "Pictures", "GnollHack Screenshots", "Desktop", "Documents", "Downloads", "USB STICK" }, places.Select(p => p.Name));
+            Assert.Equal(MacUserData + "/222/760/remote/2881053371/screenshots", places[1].Path);
+            Assert.True(places[1].HideThumbnails);
+            Assert.Equal("/Volumes/USB STICK", places[5].Path);
+            Assert.All(places, p => Assert.False(p.CreateOnUse));
+        }
+
+        [Fact]
+        public void Mac_ImportStartsWithExports()
+        {
+            FakeMac mac = CreateFullMac();
+            mac.Directories.Add(MacHome + "/Documents/GnollHack");
+
+            IList<GHFilePlace> places = mac.CreatePlaces().GetOpenPlaces(true);
+
+            Assert.Equal("GnollHack Exports", places[0].Name);
+            Assert.Equal(MacHome + "/Documents/GnollHack", places[0].Path);
+        }
+
+        [Fact]
+        public void Mac_NoSteamIdsLeavesScreenshotsOut()
+        {
+            FakeMac mac = CreateFullMac();
+            mac.Environment.Remove("SteamAppId");
+
+            Assert.DoesNotContain(mac.CreatePlaces().GetOpenPlaces(false), p => p.Name == "GnollHack Screenshots");
+        }
+
+        [Fact]
+        public void Mac_SavePlacesIncludeVolumes()
+        {
+            IList<GHFilePlace> places = CreateFullMac().CreatePlaces().GetSavePlaces();
+
+            Assert.Equal(new[] { "Documents/GnollHack", "Downloads/GnollHack", "USB STICK/GnollHack" }, places.Select(p => p.Name));
+            Assert.Equal("/Volumes/USB STICK/GnollHack", places[2].Path);
+            Assert.All(places, p => Assert.True(p.CreateOnUse));
+        }
+
+        [Fact]
+        public void Mac_MissingVolumeIsLeftOut()
+        {
+            FakeMac mac = new FakeMac();
+            mac.Volumes.Add("/Volumes/Gone");
+
+            Assert.Empty(mac.CreatePlaces().GetOpenPlaces(false));
+            Assert.Equal(new[] { "Documents/GnollHack", "Downloads/GnollHack" }, mac.CreatePlaces().GetSavePlaces().Select(p => p.Name));
+        }
+
         /* GHWindowsFilePlaces */
 
         [Fact]

@@ -925,3 +925,44 @@ their tiles.
 
 Checks:
 - 2026-11-04 | Avalonia.Native 12.1.4 | still-needed | Read `Screens.mm` and `ScreenImpl.cs` at commit 2d79ba55fae1b1e71c69f93a668080c9029e6a31 (the shipped `Avalonia.Native.dll`'s product version). No upstream issue found: searched AvaloniaUI/Avalonia for macOS Screen Scaling and Screen.Scaling.
+
+## WA-AVALONIA-0026: Avalonia's WKWebView adapter answers no file input
+
+- Status: active
+- Added: 2026-11-05
+- GnollHack version: 3.37 (437)
+- Component: Avalonia
+- Package: Avalonia.Controls.WebView
+- Defective version: Avalonia.Controls.WebView 12.1.1 (via Avalonia.Controls.Maui 11.0.0-rc.2.26287.618)
+- Platforms: macOS (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-05
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaOverseerHost.cs` (`NativeWebViewHost.FileInputScript`, `NativeWebViewHost.PickAndDeliverFilesAsync`)
+- Remove when: Avalonia's WKWebView adapter answers a file input with an open panel, in a release GnollHack uses, and Verify removal passes.
+
+**Symptom.** In the macOS flavor, the Gnoll Overseer's `+` attach button does nothing. The SPA
+clicks a hidden `<input type="file">`, and no file dialog opens.
+
+**Cause.** WKWebView shows a file input's chooser only through its `WKUIDelegate`'s
+`webView:runOpenPanelWithParameters:initiatedByFrame:completionHandler:`. Avalonia.Controls.WebView
+12.1.1 sets no UI delegate: its assembly has the strings `WKWebView` and `invokeCSharpAction`, but
+no `UIDelegate`, `runOpenPanel` or `runJavaScriptAlertPanel`. JavaScript alerts and confirms do
+nothing either; the Overseer does not use them. CEF on Linux and WebView2 on Windows have their
+own chooser hooks, which GnollHack answers.
+
+**Workaround.** For the Overseer page on the WKWebView adapter, `NativeWebViewHost` injects
+`FileInputScript`: a capture-phase click listener that cancels a file input's click and posts
+`gnollhack_host_pick_files` with the input's `multiple` and `accept` through `invokeCSharpAction`.
+`PickAndDeliverFilesAsync` opens GnollHack's file dialog when a controller is in use, and the
+system's open panel otherwise. It reads up to 5 files of at most 20 MB each and passes them as
+`{ name, type, dataUrl }` entries to the SPA's `window.__gnollhackReceiveFiles`, the entry point
+the iOS picker uses.
+
+**Verify removal.** Remove `FileInputScript` from `NativeWebViewHost.OnPageLoaded`, publish
+`osx-arm64`, and in a game open Gnoll Overseer and press `+`: a file dialog must open, and a
+picked `.png` must appear as an attachment.
+
+Checks:
+- 2026-11-05 | Avalonia.Controls.WebView 12.1.1 | still-needed | Searched `lib/net10.0/Avalonia.Controls.WebView.dll` for the selector strings in both ASCII and UTF-16; the user's Mac run found the `+` button dead (task `mac_avalonia_readiness_review`, round A, M3). No upstream issue found.

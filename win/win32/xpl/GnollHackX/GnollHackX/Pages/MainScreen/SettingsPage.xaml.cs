@@ -179,6 +179,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Metal Rendering", ("Draw with Metal instead of OpenGL ES. Applies to the next game.", "**Off:** The game is drawn with OpenGL ES, which Apple has deprecated but which still works.\n**On:** The game is drawn with Metal, Apple's current graphics interface. iOS limits how much memory a Metal app may use, so the largest GPU cache sizes are not offered with Metal.\nCannot be changed during a game; takes effect when the next game or replay starts.") },
 #endif
             { "Disable Windows Key", ("Prevent Windows key from opening Start menu in-game.", "Prevents the Windows key from opening the Start menu, to avoid accidental focus loss during gameplay.") },
+            { "Allow Option Keys", ("Type the characters your keyboard layout puts on Option keys.", "**Off:** Option works as Alt: Option and a key is that key's Alt command, such as Option+P for #pray.\n**On:** Option and a key types the character your keyboard layout puts there when it is a regular character, such as @ on Option+2 in Finnish or Option+L in German. Other Option combinations remain Alt commands.\nText fields always accept the characters Option types.") },
             { "Application Menu Entry", ("Show GnollHack in your desktop's application menu.", "**On:** GnollHack has an entry with its icon in your desktop's application menu, which starts this AppImage file. If you move the AppImage, the entry follows it the next time you start the game from the new place.\n**Off:** The entry and its icon are removed. Other menu entries are not affected.\nShown only when GnollHack runs from an AppImage. The switch is disabled when an AppImage manager, such as Gear Lever or AppImageLauncher, already has an entry for this file; the entry is then left to that tool.") },
             { "Default Vi-Keys", ("Use vi-keys (hjklyubn) as default for movement.", "**Off**: The default setting for the `number_pad` option is `2` (numbers for movement).\n**On**: The default setting is `0` (vi-keys for movement).") },
             { "On Switching Apps", ("Save game or create checkpoint when switching apps.", "**Save Game**: The game is automatically saved and restored when the player returns. Menus close.\n**Checkpoint**: The game creates a checkpoint and doesn't close menus, but recovers to checkpoint if terminated.") },
@@ -1245,6 +1246,12 @@ namespace GnollHackX.Pages.MainScreen
                 Preferences.Set("DisableWindowsKey", DisableWindowsKeySwitch.IsToggled);
             }
 
+            if (AllowOptionKeysGrid.IsVisible && AllowOptionKeysSwitch.IsEnabled)
+            {
+                GHApp.AllowOptionKeys = AllowOptionKeysSwitch.IsToggled;
+                Preferences.Set("AllowOptionKeys", AllowOptionKeysSwitch.IsToggled);
+            }
+
             GHApp.DefaultVIKeys = DefaultVIKeysSwitch.IsToggled;
             Preferences.Set("DefaultVIKeys", DefaultVIKeysSwitch.IsToggled);
 
@@ -1593,7 +1600,7 @@ namespace GnollHackX.Pages.MainScreen
 #if !SENTRY
             bool postdiagnostics = GHConstants.DefaultPosting;
 #endif
-            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, tilebatching = GHConstants.DefaultTileBatching, textblobcaching = GHConstants.DefaultTextBlobCaching, surfaceview = GHApp.IsUseSurfaceViewDefault, metal = GHApp.IsUseMetalDefault, save_file_tracking = false, disablewindowskey = false, defaultvikeys = false;
+            bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, tilebatching = GHConstants.DefaultTileBatching, textblobcaching = GHConstants.DefaultTextBlobCaching, surfaceview = GHApp.IsUseSurfaceViewDefault, metal = GHApp.IsUseMetalDefault, save_file_tracking = false, disablewindowskey = false, allowoptionkeys = false, defaultvikeys = false;
             bool experimental = GHConstants.EnableExperimentalFeatures;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
@@ -1704,6 +1711,7 @@ namespace GnollHackX.Pages.MainScreen
             screenresolutionpriority = (uint)Preferences.Get("CustomScreenResolutionPriority", 1);
             save_file_tracking = GHApp.SaveFileTracking;
             disablewindowskey = Preferences.Get("DisableWindowsKey", false);
+            allowoptionkeys = Preferences.Get("AllowOptionKeys", false);
             defaultvikeys = Preferences.Get("DefaultVIKeys", false);
             showkeyboardshortcuts = Preferences.Get("ShowKeyboardShortcuts", GHApp.IsShowKeyboardShortcutsDefault);
             singlecmdpage = Preferences.Get("UseSingleMoreCommandsPage", GHApp.IsDesktop);
@@ -2323,6 +2331,8 @@ namespace GnollHackX.Pages.MainScreen
             HideMessageHistorySwitch.IsToggled = hidemsghistory;
             DisableWindowsKeySwitch.IsToggled = disablewindowskey;
             DisableWindowsKeyGrid.IsVisible = GHApp.IsWindows;
+            AllowOptionKeysSwitch.IsToggled = allowoptionkeys;
+            AllowOptionKeysGrid.IsVisible = GHApp.IsMacOS;
             DefaultVIKeysSwitch.IsToggled = defaultvikeys;
             ShowKeyboardShortcutsSwitch.IsToggled = showkeyboardshortcuts;
             UseSingleMoreCommandsPageSwitch.IsToggled = singlecmdpage;

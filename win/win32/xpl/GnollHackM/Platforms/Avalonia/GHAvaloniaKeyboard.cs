@@ -9,7 +9,8 @@ namespace GnollHackM
     /* Routes the window's keys to the game, as the WinUI build's low-level keyboard hook does. Tunnel handlers
        on the window see every key before Avalonia's focus navigation (Tab, arrows), access keys (Alt) and back
        navigation (Alt+Left). Special keys and Ctrl or Alt combinations go to the game on KeyDown; characters
-       come from TextInput, which follows the keyboard layout, dead keys and AltGr. Avalonia raises no
+       come from TextInput, which follows the keyboard layout, dead keys and AltGr, and on macOS the Option
+       combinations that GHAvaloniaKeyText.ClassifyMacOption treats as text. Avalonia raises no
        TextInput for a KeyDown marked handled, and a key the game declines continues to the focused control.
        UI thread only. */
     internal static class GHAvaloniaKeyboard
@@ -99,6 +100,21 @@ namespace GnollHackM
             {
                 if (e.Key == Key.Tab || e.Key == Key.F4) /* Alt+Tab and Alt+F4 stay with the system */
                     return;
+#if MACOS
+                /* Avalonia's key follows the Option character, or the US position when that is not a letter */
+                char baseCharacter = GHMacKeyboardLayout.GetBaseCharacter(e.PhysicalKey);
+                GHMacOptionKeyKind optionKind = GHAvaloniaKeyText.ClassifyMacOption(baseCharacter, e.KeySymbol, GHApp.AllowOptionKeys);
+                if (optionKind == GHMacOptionKeyKind.Text)
+                    return;
+                if (optionKind == GHMacOptionKeyKind.MetaLetter)
+                {
+                    spkey = GHSpecialKey.A + (char.ToLowerInvariant(baseCharacter) - 'a');
+                    handled = GHApp.SendSpecialKeyPress(spkey, false, true, shift);
+                    _keyDownRouted = true;
+                    e.Handled = handled;
+                    return;
+                }
+#endif
 
                 spkey = GetAltSpecialKey(e.Key);
                 if (spkey != GHSpecialKey.None)

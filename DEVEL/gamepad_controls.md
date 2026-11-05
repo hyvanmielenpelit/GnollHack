@@ -532,7 +532,8 @@ The Windows builds log no devices, only failures.
 
 The macOS flavor writes `GAMEPAD gc +connect id=... name=... category=... profile=... style=...`,
 `GAMEPAD gc -disconnect id=...` and `GAMEPAD gc skip ...` (a controller without an extended gamepad
-profile) to standard error, which is the Terminal it was started from. `GAMEPAD GameController backend
+profile) to standard error: the Terminal it was started from, or `~/Library/Logs/GnollHack/GnollHack.log`
+when started any other way. `GAMEPAD GameController backend
 not started: missing selector ...` means this macOS lacks a call the backend uses.
 
 On the Deck's development shortcut, standard error goes to

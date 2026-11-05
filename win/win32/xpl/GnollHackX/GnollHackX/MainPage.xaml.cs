@@ -1060,7 +1060,7 @@ namespace GnollHackX
                             }
                         }
                     }
-                    else if (GHApp.IsLinux)
+                    else if (GHApp.IsLinux || GHApp.IsMacOS)
                     {
                         if (GHApp.IsSteam)
                             endText = "You can revert to an old version of the game by going to the Betas tab under GnollHack Properties and activating a compatible version therein.";
@@ -1886,7 +1886,7 @@ namespace GnollHackX
                         }
                     }
                 }
-                else if (GHApp.IsLinux)
+                else if (GHApp.IsLinux || GHApp.IsMacOS)
                 {
                     if (GHApp.IsSteam)
                     {
@@ -2133,6 +2133,22 @@ namespace GnollHackX
         {
             try
             {
+                await OpenAboutPage();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                UpperButtonGrid.IsEnabled = true;
+            }
+        }
+
+        /* The About page from the macOS application menu: only when the main menu shows with nothing over it */
+        public async Task TryOpenAboutPageFromMenu()
+        {
+            try
+            {
+                if (GHApp.CurrentGamePage != null || GHApp.PageFromTopOfModalNavigationStack() != null || !UpperButtonGrid.IsEnabled)
+                    return;
                 await OpenAboutPage();
             }
             catch (Exception ex)

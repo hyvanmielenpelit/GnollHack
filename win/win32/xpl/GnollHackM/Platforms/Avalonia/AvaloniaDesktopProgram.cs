@@ -28,6 +28,7 @@ internal static class AvaloniaDesktopProgram
         GHAvaloniaFontConfig.Install();
 #endif
 #if MACOS
+        GHMacStderrLog.Install();
         if (!GHAvaloniaInstanceLock.TryAcquire())
         {
             GHAvaloniaInstanceLock.ReportAlreadyRunning();
@@ -52,10 +53,11 @@ internal static class AvaloniaDesktopProgram
 
     /* X11: GLX with a software fallback, no Vulkan; popups drawn inside the window; WM_CLASS "GnollHack", which
        a desktop entry matches with StartupWMClass. macOS: GetMacRenderingModes, from the Metal Rendering setting;
-       popups drawn inside the window.
+       popups drawn inside the window; GHMacApplicationMenu instead of Avalonia's default application menu items.
        1 GiB GPU resource budget. */
     public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<AvaloniaApp>()
+    {
+        AppBuilder builder = AppBuilder.Configure<AvaloniaApp>()
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace()
@@ -70,7 +72,14 @@ internal static class AvaloniaDesktopProgram
                 RenderingMode = GetMacRenderingModes(),
                 OverlayPopups = true,
             })
+            .With(new MacOSPlatformOptions { DisableDefaultApplicationMenuItems = true })
             .With(new SkiaOptions { MaxGpuResourceSizeBytes = 1024L * 1024 * 1024 });
+#if MACOS
+        /* Registered before Avalonia.Native's own callback, which reads the application name */
+        builder = builder.AfterSetup(GHMacApplicationMenu.Install);
+#endif
+        return builder;
+    }
 
     /* The FMOD wrappers import "fmod" and "fmodstudio". libfmodstudio.so.14 loads its core library by soname,
        libfmod.so.14, from its own directory; loading the core under any other file name would create a
