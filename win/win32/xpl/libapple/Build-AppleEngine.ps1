@@ -4,11 +4,14 @@
 
 .DESCRIPTION
     Run by gnollhackios.vcxproj and gnollhackmac.vcxproj. Packs the engine sources named in -SourceList, the headers of
-    include\, win\win32\xpl\libshare\ and the platform folder, and an LF copy of engine.mk into a tar file in -IntDir,
-    copies it to the Mac with scp, unpacks it into a fresh source tree, builds it there with make and clang, and copies
-    the library back to -OutDir. Objects persist on the Mac between runs, and make recompiles a source only when it or
-    a header is newer than its object. Every run of the WSL data pipeline rewrites date_unix.h, so a solution build
-    usually recompiles everything.
+    include\, win\win32\xpl\libshare\ and the platform folder, and LF copies of engine.mk and sync-tree.sh into a tar
+    file in -IntDir, copies it to the Mac with scp, unpacks it there and copies into the build tree only the files whose
+    content changed (sync-tree.sh), builds it with make and clang, and copies the library back to -OutDir. Objects
+    persist on the Mac between runs, and make recompiles a source when it, a header, engine.mk or the compiler flags
+    changed. Every run of the WSL data pipeline rewrites date_unix.h, so a solution build usually recompiles everything.
+
+    Each checkout has its own folder on the Mac, ~/<RemoteRoot>/<platform>-<Configuration>-<computer>-<hash>, where
+    the hash is taken from the checkout's path, so worktrees and computers never share objects.
 
     The Mac is reached through an OpenSSH host alias with key-based authentication: -SshHost, else the environment
     variable GNOLLHACK_MAC_SSH_HOST, else gnollhack-mac. Every connection uses BatchMode, so a missing key or an unknown
@@ -39,13 +42,13 @@
     The OpenSSH host alias of the Mac.
 
 .PARAMETER RemoteRoot
-    The build folder on the Mac, relative to the home folder. Default: gnollhack-build.
+    The parent of the build folders on the Mac, relative to the home folder. Default: gnollhack-build.
 
 .PARAMETER Clean
     Deletes the objects and the library on the Mac before building.
 
 .PARAMETER CleanOnly
-    Deletes the local library and, when the Mac can be reached, the objects and the library on the Mac, then stops.
+    Deletes the local library and, when the Mac can be reached, this checkout's build folder on the Mac, then stops.
 
 .PARAMETER PackageOnly
     Writes the tar file and stops, without connecting to the Mac.
@@ -115,6 +118,23 @@ function Invoke-Mac
     Invoke-Tool $Code $What $script:Ssh (@($script:SshOptions) + @($script:SshHost, $Command))
 }
 
+# Clang names files relative to the tree on the Mac; Visual Studio's Error List needs this checkout's paths
+function Convert-MacDiagnostic
+{
+    param([string]$Line)
+    $m = [regex]::Match($Line, '^(?<file>(?:src|include|sys|win|util)/[^:]+):(?<line>\d+):(?<col>\d+): (?<rest>(?:fatal error|error|warning|note): .*)$')
+    if ($m.Success)
+    {
+        return ('{0}\{1}({2},{3}): {4}' -f $script:RepoRoot, $m.Groups['file'].Value.Replace('/', '\'), $m.Groups['line'].Value, $m.Groups['col'].Value, $m.Groups['rest'].Value)
+    }
+    $m = [regex]::Match($Line, '^(?<lead>In file included from |\s+from )(?<file>(?:src|include|sys|win|util)/[^:]+)(?<rest>:.*)$')
+    if ($m.Success)
+    {
+        return ('{0}{1}\{2}{3}' -f $m.Groups['lead'].Value, $script:RepoRoot, $m.Groups['file'].Value.Replace('/', '\'), $m.Groups['rest'].Value)
+    }
+    return $Line
+}
+
 # ---------------------------------------------------------------------------------------------------
 # Settings
 # ---------------------------------------------------------------------------------------------------
@@ -152,7 +172,15 @@ else
     $PlatformDir = 'win\win32\xpl\gnollhackmac'
     $Sdk = 'macosx'
 }
-$RemoteDir = '{0}/{1}-{2}' -f $RemoteRoot.TrimEnd('/'), $Platform, $Configuration
+# One folder per checkout: make decides what to rebuild from the objects already there
+$Computer = ([string]$env:COMPUTERNAME).ToLowerInvariant() -replace '[^a-z0-9-]', '-'
+if ([string]::IsNullOrEmpty($Computer))
+{
+    $Computer = 'pc'
+}
+$Sha = [Security.Cryptography.SHA256]::Create()
+$RootHash = -join ($Sha.ComputeHash([Text.Encoding]::UTF8.GetBytes($RepoRoot.ToLowerInvariant()))[0..3] | ForEach-Object { $_.ToString('x2') })
+$RemoteDir = '{0}/{1}-{2}-{3}-{4}' -f $RemoteRoot.TrimEnd('/'), $Platform, $Configuration, $Computer, $RootHash
 $LocalLib = Join-Path $OutDir $LibName
 $script:SshOptions = @('-o', 'BatchMode=yes', '-o', 'ConnectTimeout=15')
 
@@ -167,7 +195,7 @@ if ($CleanOnly)
         Remove-Item $LocalLib -Force
     }
     $script:Ssh = Find-Tool 'ssh.exe' 'OpenSSH\ssh.exe'
-    & $script:Ssh @script:SshOptions $SshHost ('rm -rf {0}/obj {0}/out' -f $RemoteDir)
+    & $script:Ssh @script:SshOptions $SshHost ('rm -rf {0}' -f $RemoteDir)
     if ($LASTEXITCODE -ne 0)
     {
         Write-Host ('Build-AppleEngine.ps1 : warning GNHAB012: {0} was not cleaned on the Mac ({1}).' -f $RemoteDir, $SshHost)
@@ -216,9 +244,11 @@ foreach ($dir in @('include', 'win\win32\xpl\libshare', $PlatformDir))
 
 New-Item -ItemType Directory -Force -Path $IntDir | Out-Null
 $Utf8 = New-Object System.Text.UTF8Encoding($false)
-# The Mac's make and shell need LF; the repository copy of engine.mk is CRLF on Windows
+# The Mac's make and shell need LF; the repository copies of engine.mk and sync-tree.sh are CRLF on Windows
 $Makefile = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'engine.mk')) -replace "`r`n", "`n"
 [IO.File]::WriteAllText((Join-Path $IntDir 'engine.mk'), $Makefile, $Utf8)
+$SyncScript = [IO.File]::ReadAllText((Join-Path $PSScriptRoot 'sync-tree.sh')) -replace "`r`n", "`n"
+[IO.File]::WriteAllText((Join-Path $IntDir 'sync-tree.sh'), $SyncScript, $Utf8)
 [IO.File]::WriteAllText((Join-Path $IntDir 'gnh-sources.mk'), ('SOURCES := ' + ($Sources -join ' ') + "`n"), $Utf8)
 $FileList = Join-Path $IntDir 'gnh-files.txt'
 [IO.File]::WriteAllText($FileList, ((@($Sources) + @($Headers)) -join "`n") + "`n", $Utf8)
@@ -230,7 +260,7 @@ if (Test-Path $TarFile)
 }
 $Tar = Find-Tool 'tar.exe' 'tar.exe'
 Invoke-Tool 'GNHAB005' 'Packing the sources' $Tar @('-c', '-f', $TarFile, '-C', $RepoRoot, '-T', $FileList)
-Invoke-Tool 'GNHAB005' 'Packing the makefiles' $Tar @('-r', '-f', $TarFile, '-C', $IntDir, 'engine.mk', 'gnh-sources.mk')
+Invoke-Tool 'GNHAB005' 'Packing the makefiles' $Tar @('-r', '-f', $TarFile, '-C', $IntDir, 'engine.mk', 'gnh-sources.mk', 'sync-tree.sh')
 Write-Host ('Build-AppleEngine.ps1: {0} sources and {1} headers packed into {2}' -f $Sources.Count, $Headers.Count, $TarFile)
 if ($PackageOnly)
 {
@@ -257,15 +287,27 @@ if ($LASTEXITCODE -ne 0)
 Invoke-Mac 'GNHAB008' 'Preparing the build folder on the Mac' ('mkdir -p {0}' -f $RemoteDir)
 if ($Clean)
 {
-    Invoke-Mac 'GNHAB008' 'Cleaning the build folder on the Mac' ('rm -rf {0}/obj {0}/out' -f $RemoteDir)
+    Invoke-Mac 'GNHAB008' 'Cleaning the build folder on the Mac' ('rm -rf {0}/obj {0}/out {0}/tree' -f $RemoteDir)
 }
 # -C compresses on the wire: the tar file is about 18 MB, 3.5 MB compressed
 Invoke-Tool 'GNHAB009' 'Copying the sources to the Mac' $Scp (@('-q', '-C') + @($script:SshOptions) + @($TarFile, ('{0}:{1}/gnh-src.tar' -f $SshHost, $RemoteDir)))
-# A fresh tree, so that a file deleted from the repository cannot linger; tar keeps the files' times, so make still
-# rebuilds only what changed
-Invoke-Mac 'GNHAB009' 'Unpacking the sources on the Mac' ('rm -rf {0}/tree && mkdir -p {0}/tree && tar -xf {0}/gnh-src.tar -C {0}/tree' -f $RemoteDir)
+# Unpacked beside the tree; sync-tree.sh then rewrites only changed files, so make never trusts Windows file times
+Invoke-Mac 'GNHAB009' 'Unpacking the sources on the Mac' ('rm -rf {0}/incoming && mkdir -p {0}/incoming && tar -xf {0}/gnh-src.tar -C {0}/incoming && sh {0}/incoming/sync-tree.sh {0}/incoming {0}/tree' -f $RemoteDir)
 Write-Host ('Build-AppleEngine.ps1: building {0} ({1}) on {2} in ~/{3}' -f $LibName, $Configuration, $SshHost, $RemoteDir)
-Invoke-Mac 'GNHAB010' 'The engine build on the Mac' ('make -C {0}/tree -f engine.mk -j$(sysctl -n hw.ncpu) PLATFORM={1} CONFIG={2} MIN_OS={3} OBJDIR=../obj OUTDIR=../out' -f $RemoteDir, $Platform, $Configuration, $MinOS)
+try
+{
+    [Console]::OutputEncoding = $Utf8
+}
+catch
+{
+}
+# 2>&1 on the Mac: Windows PowerShell 5.1 turns a native command's redirected stderr into errors
+$MakeCommand = 'make -C {0}/tree -f engine.mk -j$(sysctl -n hw.ncpu) PLATFORM={1} CONFIG={2} MIN_OS={3} OBJDIR=../obj OUTDIR=../out 2>&1' -f $RemoteDir, $Platform, $Configuration, $MinOS
+& $script:Ssh @script:SshOptions $SshHost $MakeCommand | ForEach-Object { Convert-MacDiagnostic $_ }
+if ($LASTEXITCODE -ne 0)
+{
+    Stop-Build 'GNHAB010' ('The engine build on the Mac failed with exit code {0}.' -f $LASTEXITCODE)
+}
 
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 Invoke-Tool 'GNHAB011' 'Copying the library from the Mac' $Scp (@('-q') + @($script:SshOptions) + @(('{0}:{1}/out/{2}' -f $SshHost, $RemoteDir, $LibName), $LocalLib))

@@ -48,6 +48,13 @@ CFLAGS := $(TARGET_FLAGS) -std=gnu99 -g -fno-strict-aliasing $(CONFIG_FLAGS) $(D
 	-I$(PLATFORM_DIR) -Iinclude -Iwin/win32/xpl/libshare \
 	-Wall -Wno-enum-enum-conversion -Wno-deprecated-declarations -Wno-pointer-sign -Wno-format
 
+# Objects depend on this file, rewritten only when the compiler, its flags or the SDK change
+SDK_PATH := $(shell xcrun --sdk $(SDK) --show-sdk-path)
+FLAGS_STAMP := $(OBJDIR)/flags.txt
+FLAGS_TEXT := $(CC) $(CFLAGS) $(SDK_PATH)
+$(shell mkdir -p $(OBJDIR) && printf '%s\n' '$(FLAGS_TEXT)' | cmp -s - $(FLAGS_STAMP) || printf '%s\n' '$(FLAGS_TEXT)' > $(FLAGS_STAMP))
+$(info Compiler: $(CC) $(CFLAGS))
+
 OBJS := $(SOURCES:%.c=$(OBJDIR)/%.o)
 
 # Every object depends on every header: compiler dependency files cannot be written for two -arch at once
@@ -56,15 +63,19 @@ HEADERS := $(wildcard include/*.h win/win32/xpl/libshare/*.h $(PLATFORM_DIR)/*.h
 .PHONY: all
 all: $(TARGET)
 
-$(OBJDIR)/%.o: %.c $(HEADERS)
+# WORKAROUND(WA-BUILD-0004): Xcode's GNU make 3.81 has no --output-sync
+# Each compile's diagnostics go to a file and are printed in one piece under a lock, so parallel jobs do not
+# interleave them
+$(OBJDIR)/%.o: %.c $(HEADERS) engine.mk $(FLAGS_STAMP)
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -c $< -o $@
+	@echo "Compiling $<"
+	@$(CC) $(CFLAGS) -c $< -o $@ 2> $@.log; status=$$?; lockf -k $(OBJDIR)/output.lock cat $@.log >&2; rm -f $@.log; exit $$status
 
-$(OUTDIR)/libgnollhackios.a: $(OBJS)
+$(OUTDIR)/libgnollhackios.a: $(OBJS) gnh-sources.mk
 	@mkdir -p $(OUTDIR)
 	rm -f $@
 	$(LIBTOOL) -static -o $@ $(OBJS)
 
-$(OUTDIR)/libgnollhackmac.dylib: $(OBJS)
+$(OUTDIR)/libgnollhackmac.dylib: $(OBJS) gnh-sources.mk
 	@mkdir -p $(OUTDIR)
 	$(CC) $(TARGET_FLAGS) -dynamiclib -install_name @rpath/libgnollhackmac.dylib -o $@ $(OBJS) -lm -lpthread
