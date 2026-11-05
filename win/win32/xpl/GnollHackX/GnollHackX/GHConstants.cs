@@ -524,6 +524,7 @@ namespace GnollHackX
         public const string SentryTagLinuxContainer = "linux.container";
         public const string SentryTagLinuxSession = "linux.session";
         public const string SentryTagLinuxGlibc = "linux.glibc";
+        public const string SentryTagMacPackage = "macos.package";
         public const string SentryTagCaughtIn = "caught.in";
         public const string SentryContextProcessMemory = "Process Memory";
         /* Handles above the startup baseline that trigger one handle growth warning per process */

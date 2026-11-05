@@ -53,6 +53,7 @@
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);LINUX</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);SENTRY</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('osx'))">$(DefineConstants);MACOS</DefineConstants>
+    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('osx'))">$(DefineConstants);SENTRY</DefineConstants>
     <MauiActiveBackend>avalonia</MauiActiveBackend>
     <AvaloniaControlsMauiGenerateDesktopProgram>false</AvaloniaControlsMauiGenerateDesktopProgram>
     <InvariantGlobalization>true</InvariantGlobalization>
@@ -1573,8 +1574,9 @@
   </ItemGroup>
 
   <!-- WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT builds on Windows and Linux -->
-  <!-- GHSentryNative runs sentry-native on these platforms; Sentry .NET must never start a second one -->
-  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('linux')))">
+  <!-- GHSentryNative runs sentry-native on these platforms; Sentry .NET must never start a second one. The macOS
+       flavor has no native layer yet and keeps Sentry .NET's off as well. -->
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And ($(RuntimeIdentifier.StartsWith('linux')) Or $(RuntimeIdentifier.StartsWith('osx'))))">
     <SentryNative>false</SentryNative>
   </PropertyGroup>
 
