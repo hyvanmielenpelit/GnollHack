@@ -274,7 +274,7 @@ namespace GnollHackX.Pages.MainScreen
                 PickerListFrame.BackgroundColor = GHColors.MsgBoxDarkModeBkgColor;
             }
 
-            RefreshRatePicker.ItemsSource = BuildMapRefreshRateItems(GHApp.RoundedReconciledRefreshRate, GHApp.UsePlatformRenderLoop);
+            RefreshRatePicker.ItemsSource = BuildMapRefreshRateItems(GetMapFpsListRefreshRate(), GHApp.UsePlatformRenderLoop);
 
             PrimaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(false);
             SecondaryGPUCachePicker.ItemsSource = GHApp.GetGPUCacheSizeList(true);
@@ -666,10 +666,22 @@ namespace GnollHackX.Pages.MainScreen
 #if WINDOWS
             int roundedRefreshRate = (int)DisplaySettingsHelper.GetCurrentResolution()?.RefreshRate;
 #else
-            int roundedRefreshRate = GHApp.RoundedReconciledRefreshRate;
+            int roundedRefreshRate = GetMapFpsListRefreshRate();
 #endif
             RefreshRatePicker.ItemsSource = BuildMapRefreshRateItems(roundedRefreshRate, PlatformRenderLoopGrid.IsVisible && PlatformRenderLoopSwitch.IsToggled);
             SelectMapRefreshRateItem(selectedSetting);
+        }
+
+        /* The refresh rate the Map FPS list is built for. The Windows Avalonia flavor reads the display mode's rate,
+           which a Screen Resolution change sets at once, while GHApp's measured rate takes a moment to follow it */
+        private static int GetMapFpsListRefreshRate()
+        {
+#if WINDOWS_AVALONIA
+            ScreenResolutionItem current = DisplaySettingsHelper.GetCurrentResolution();
+            if (current != null && current.RefreshRate > 1)
+                return (int)current.RefreshRate;
+#endif
+            return GHApp.RoundedReconciledRefreshRate;
         }
 
         private async Task SetSettingValues()
