@@ -59,8 +59,6 @@ public static class MauiProgram
 #if LINUX
         GHCefEngine.Decide();
 #endif
-        GHAvaloniaLayoutInput.Register();
-        GHAvaloniaMargin.Register();
         GHAvaloniaControlTheming.Register();
         GHAvaloniaPickerTheming.Register();
         GHAvaloniaAlignment.Register();
@@ -729,7 +727,6 @@ public static class MauiProgram
 #if GNH_AVALONIA
         /* UseAvaloniaEssentials and UseAvaloniaApp replaced Preferences and AppInfo */
         GHAvaloniaEssentials.InstallAfterBuilder();
-        // WORKAROUND(WA-AVALONIA-0011): ACM font registrar misreads UTF-16 font names
         Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.Replace(builder.Services,
             Microsoft.Extensions.DependencyInjection.ServiceDescriptor.Singleton<IFontRegistrar>(new GHAvaloniaFontRegistrar()));
 #endif

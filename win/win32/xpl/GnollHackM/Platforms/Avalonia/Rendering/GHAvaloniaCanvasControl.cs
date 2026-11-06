@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using GnollHackX;
 using SkiaSharp;
@@ -9,20 +8,18 @@ using AvDispatcher = Avalonia.Threading.Dispatcher;
 using AvDispatcherPriority = Avalonia.Threading.DispatcherPriority;
 using AvPoint = Avalonia.Point;
 using AvPointerCaptureLostEventArgs = Avalonia.Input.PointerCaptureLostEventArgs;
-using AvPointerEventArgs = Avalonia.Input.PointerEventArgs;
 using AvPointerPressedEventArgs = Avalonia.Input.PointerPressedEventArgs;
 using AvPointerReleasedEventArgs = Avalonia.Input.PointerReleasedEventArgs;
-using AvPointerType = Avalonia.Input.PointerType;
 using AvRect = Avalonia.Rect;
 
 namespace GnollHackM
 {
-    // WORKAROUND(WA-AVALONIA-0010): ACM canvas view paints inside the render pass
-    /* ACM's SKCanvasViewControl, painting on the UI thread outside Avalonia's render pass, because
-       GnollHack's raster views read and write MAUI properties while painting. Paint requests are
-       coalesced into one posted paint below layout priority, except that a request made inside the
-       platform frame callback paints at once; Render only draws the last painted image.
-       Touch handling is ACM's; mouse hover, and Cancelled for a touch ACM drops, are raised here. */
+    // WORKAROUND(WA-AVALONIA-0021): An animation frame that commits nothing waits for a 16 ms timer
+    /* ACM's SKCanvasViewControl with its own paint path on the UI thread. Paint requests are coalesced into
+       one posted paint below layout priority, except that a request made inside the platform frame callback
+       paints at once, so that frame commits it; Render only draws the last painted image. The base control
+       is given no PaintSurfaceAction, so it never paints. Touch and hover handling are ACM's; Cancelled for
+       a touch ACM drops is raised here. */
     public class GHAvaloniaCanvasControl : Avalonia.Controls.Maui.SkiaSharp.Views.Controls.SKCanvasViewControl
     {
         /* Normal requests run after layout; requests made by a paint itself run below input, so a view
@@ -41,8 +38,8 @@ namespace GnollHackM
         private double _currentImageScaling = 1.0;
         private Avalonia.Controls.TopLevel _topLevel = null;
 
-        /* Stopwatch timestamp of the last raised hover move */
-        private long _lastHoverMoveTicks = 0;
+        /* The paint callback; the base control paints whenever its own PaintSurfaceAction is set */
+        private Action<SKPaintSurfaceEventArgs> _paintAction = null;
 
         /* Touch ids ACM has raised Pressed for; UI thread only */
         private readonly GHAvaloniaTouchTracker _touchTracker = new GHAvaloniaTouchTracker();
@@ -64,6 +61,19 @@ namespace GnollHackM
                     control.PaintIfRequested();
             }
             _deferredPaints.Clear();
+        }
+
+        /* Takes the handler's paint callback off the base control; UI thread, after the handler connects */
+        public void AdoptPaintSurfaceAction()
+        {
+            _paintAction = PaintSurfaceAction;
+            PaintSurfaceAction = null;
+        }
+
+        /* UI thread, when the handler disconnects */
+        public void ReleasePaintSurfaceAction()
+        {
+            _paintAction = null;
         }
 
         /* Marks the view dirty and posts one paint unless one is already posted; any thread */
@@ -140,7 +150,7 @@ namespace GnollHackM
 
         private void PaintCore()
         {
-            Action<SKPaintSurfaceEventArgs> paintAction = PaintSurfaceAction;
+            Action<SKPaintSurfaceEventArgs> paintAction = _paintAction;
             if (paintAction == null)
                 return;
 
@@ -253,45 +263,6 @@ namespace GnollHackM
         private void TopLevel_ScalingChanged(object sender, EventArgs e)
         {
             RequestPaint();
-        }
-
-        // WORKAROUND(WA-AVALONIA-0009): ACM Skia controls raise no hover touch actions
-        protected override void OnPointerEntered(AvPointerEventArgs e)
-        {
-            base.OnPointerEntered(e);
-            RaiseHover(e, SKTouchAction.Entered);
-        }
-
-        protected override void OnPointerExited(AvPointerEventArgs e)
-        {
-            base.OnPointerExited(e);
-            RaiseHover(e, SKTouchAction.Exited);
-        }
-
-        /* ACM's base handles in-contact moves */
-        protected override void OnPointerMoved(AvPointerEventArgs e)
-        {
-            base.OnPointerMoved(e);
-            if (GHAvaloniaPointerHover.IsInContact(e.GetCurrentPoint(this).Properties))
-                return;
-
-            long now = Stopwatch.GetTimestamp();
-            if (now - _lastHoverMoveTicks < GHAvaloniaPointerHover.HoverMoveIntervalTicks)
-                return;
-            _lastHoverMoveTicks = now;
-            RaiseHover(e, SKTouchAction.Moved);
-        }
-
-        /* Mouse only: touch screens and pens produce no hover */
-        private void RaiseHover(AvPointerEventArgs e, SKTouchAction action)
-        {
-            Func<SKTouchEventArgs, bool> touchAction = TouchAction;
-            if (!EnableTouchEvents || touchAction == null || e.Pointer.Type != AvPointerType.Mouse)
-                return;
-            if (GHAvaloniaPointerHover.IsInContact(e.GetCurrentPoint(this).Properties))
-                return;
-
-            GHAvaloniaPointerHover.Raise(this, e, action, IgnorePixelScaling, touchAction);
         }
 
         // WORKAROUND(WA-AVALONIA-0019): ACM Skia controls drop touches without Released or Cancelled

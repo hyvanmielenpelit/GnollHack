@@ -11,11 +11,9 @@ using Microsoft.Maui;
 
 namespace GnollHackM
 {
-    // WORKAROUND(WA-AVALONIA-0011): ACM font registrar misreads UTF-16 font names
     /* MAUI font registrar on Avalonia, replacing ACM's. Fonts are Avalonia resources under Assets/Fonts/, loaded into
        the fonts:GnollHack collection with the vertical metrics DirectWrite uses, and a registered font resolves to
-       that collection with the family name Avalonia reads from the font. ACM's own name table reader decodes UTF-16
-       names of the Unicode platform as UTF-8, which breaks diablo_h.ttf and archristy.ttf. */
+       that collection with the family name Avalonia reads from the font. */
     internal sealed class GHAvaloniaFontRegistrar : IFontRegistrar
     {
         private const string CollectionKey = "fonts:GnollHack";

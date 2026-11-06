@@ -1,23 +1,18 @@
 #if GNH_AVALONIA
-using System.ComponentModel;
 using System.Linq;
 using Avalonia.VisualTree;
 using Microsoft.Maui;
-using AcmCheckBoxHandler = Avalonia.Controls.Maui.Handlers.CheckBoxHandler;
 using AcmScrollViewHandler = Avalonia.Controls.Maui.Handlers.ScrollViewHandler;
-using MauiView = Microsoft.Maui.Controls.View;
 
 namespace GnollHackM
 {
-    /* Alignments and scroll bar space that the Avalonia layout, not MAUI's, decides on */
+    /* Scroll bar space that the Avalonia layout, not MAUI's, decides on */
     internal static class GHAvaloniaAlignment
     {
         /* Before any handler is created */
         public static void Register()
         {
             AcmScrollViewHandler.Mapper.AppendToMapping(nameof(IContentView.Content), MapScrollBarSpace);
-            AcmScrollViewHandler.Mapper.AppendToMapping(nameof(IContentView.Content), MapScrollContent);
-            AcmCheckBoxHandler.Mapper.AppendToMapping(nameof(ICheckBox.IsChecked), MapCheckBoxTemplate);
         }
 
         /* Room for the vertical scroll bar while the content scrolls vertically. The Fluent ScrollViewer shows
@@ -70,53 +65,6 @@ namespace GnollHackM
             Avalonia.Thickness padding = new Avalonia.Thickness(0, 0, width, 0);
             if (scrollViewer.Padding != padding)
                 scrollViewer.Padding = padding;
-        }
-
-        // WORKAROUND(WA-AVALONIA-0006): Scroll view content keeps its first alignment
-        /* ACM hands a scroll view's content to an Avalonia ScrollViewer, which aligns it by the Avalonia control's
-           alignment. ACM sets that from the MAUI options only when the handler is created, and MAUI does not remap
-           them when they change, so content whose options change later (VaultPage) keeps the original alignment. */
-        private static void MapScrollContent(AcmScrollViewHandler handler, IScrollView scrollView)
-        {
-            MauiView content = scrollView.PresentedContent as MauiView;
-            if (content == null)
-                return;
-
-            content.PropertyChanged -= OnScrollContentPropertyChanged;
-            content.PropertyChanged += OnScrollContentPropertyChanged;
-        }
-
-        private static void OnScrollContentPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            MauiView content = sender as MauiView;
-            if (content?.Handler == null)
-                return;
-
-            if (e.PropertyName == MauiView.VerticalOptionsProperty.PropertyName)
-                content.Handler.UpdateValue(nameof(IView.VerticalLayoutAlignment));
-            else if (e.PropertyName == MauiView.HorizontalOptionsProperty.PropertyName)
-                content.Handler.UpdateValue(nameof(IView.HorizontalLayoutAlignment));
-        }
-
-        // WORKAROUND(WA-AVALONIA-0007): Check box sits above the center of its label
-        /* The Fluent template keeps the box at the top of a CheckBoxMinHeight-high area, while ACM's check box is
-           taller (MAUI's 44-unit minimum), so the box sat above the center of the label next to it */
-        private static void MapCheckBoxTemplate(AcmCheckBoxHandler handler, ICheckBox checkBox)
-        {
-            Avalonia.Controls.CheckBox box = ((IElementHandler)handler).PlatformView as Avalonia.Controls.CheckBox;
-            if (box == null)
-                return;
-
-            box.TemplateApplied -= OnCheckBoxTemplateApplied;
-            box.TemplateApplied += OnCheckBoxTemplateApplied;
-        }
-
-        private static void OnCheckBoxTemplateApplied(object sender, Avalonia.Controls.Primitives.TemplateAppliedEventArgs e)
-        {
-            Avalonia.Controls.Border rectangle = e.NameScope.Find("NormalRectangle") as Avalonia.Controls.Border;
-            Avalonia.Layout.Layoutable indicator = rectangle?.GetVisualParent() as Avalonia.Layout.Layoutable;
-            if (indicator != null)
-                indicator.VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center;
         }
     }
 }

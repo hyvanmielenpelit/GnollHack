@@ -2,7 +2,6 @@ using Microsoft.Maui;
 using SkiaSharp.Views.Maui;
 using AcmSKGLViewControl = Avalonia.Controls.Maui.SkiaSharp.Views.Controls.SKGLViewControl;
 using AcmSKGLViewHandler = Avalonia.Controls.Maui.SkiaSharp.Views.Handlers.SKGLViewHandler;
-using AcmViewHandler = Avalonia.Controls.Maui.Handlers.ViewHandler;
 
 namespace GnollHackM
 {
@@ -10,22 +9,15 @@ namespace GnollHackM
        on the UI thread. The paint, size, context and touch handling are ACM's. */
     public sealed class GHAvaloniaGLViewHandler : AcmSKGLViewHandler
     {
-        // WORKAROUND(WA-AVALONIA-0002): ACM Skia handler mappers chain to MAUI's inert view mappers
-        /* Chained to ACM's view mappers, not to ACM's SKGLViewHandler mappers: those chain to MAUI's own
-           ViewHandler mappers, whose entries do nothing on Avalonia, so sizes, margins, visibility and
-           the other view properties would never reach the control */
         public static Microsoft.Maui.PropertyMapper<ISKGLView, AcmSKGLViewHandler> GHMapper =
-            new Microsoft.Maui.PropertyMapper<ISKGLView, AcmSKGLViewHandler>(AcmViewHandler.ViewMapper)
+            new Microsoft.Maui.PropertyMapper<ISKGLView, AcmSKGLViewHandler>(AcmSKGLViewHandler.Mapper)
             {
-                [nameof(ISKGLView.EnableTouchEvents)] = AcmSKGLViewHandler.MapEnableTouchEvents,
-                [nameof(ISKGLView.IgnorePixelScaling)] = AcmSKGLViewHandler.MapIgnorePixelScaling,
-                [nameof(ISKGLView.HasRenderLoop)] = AcmSKGLViewHandler.MapHasRenderLoop,
                 [nameof(IView.HorizontalLayoutAlignment)] = MapLayoutAlignment,
                 [nameof(IView.VerticalLayoutAlignment)] = MapLayoutAlignment,
             };
 
         public static Microsoft.Maui.CommandMapper<ISKGLView, AcmSKGLViewHandler> GHCommandMapper =
-            new Microsoft.Maui.CommandMapper<ISKGLView, AcmSKGLViewHandler>(AcmViewHandler.ViewCommandMapper)
+            new Microsoft.Maui.CommandMapper<ISKGLView, AcmSKGLViewHandler>(AcmSKGLViewHandler.CommandMapper)
             {
                 [nameof(ISKGLView.InvalidateSurface)] = MapInvalidateSurface,
             };

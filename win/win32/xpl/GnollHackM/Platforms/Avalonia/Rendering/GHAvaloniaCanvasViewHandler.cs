@@ -2,7 +2,6 @@ using Microsoft.Maui;
 using SkiaSharp.Views.Maui;
 using AcmSKCanvasViewControl = Avalonia.Controls.Maui.SkiaSharp.Views.Controls.SKCanvasViewControl;
 using AcmSKCanvasViewHandler = Avalonia.Controls.Maui.SkiaSharp.Views.Handlers.SKCanvasViewHandler;
-using AcmViewHandler = Avalonia.Controls.Maui.Handlers.ViewHandler;
 
 namespace GnollHackM
 {
@@ -10,21 +9,16 @@ namespace GnollHackM
        InvalidateSurface and IgnorePixelScaling request a coalesced paint; the rest is ACM's. */
     public class GHAvaloniaCanvasViewHandler : AcmSKCanvasViewHandler
     {
-        // WORKAROUND(WA-AVALONIA-0002): ACM Skia handler mappers chain to MAUI's inert view mappers
-        /* Chained to ACM's view mappers, not to ACM's SKCanvasViewHandler mappers: those chain to MAUI's own
-           ViewHandler mappers, whose entries do nothing on Avalonia, so sizes, margins, visibility and
-           the other view properties would never reach the control */
         public static Microsoft.Maui.PropertyMapper<ISKCanvasView, AcmSKCanvasViewHandler> GHMapper =
-            new Microsoft.Maui.PropertyMapper<ISKCanvasView, AcmSKCanvasViewHandler>(AcmViewHandler.ViewMapper)
+            new Microsoft.Maui.PropertyMapper<ISKCanvasView, AcmSKCanvasViewHandler>(AcmSKCanvasViewHandler.Mapper)
             {
-                [nameof(ISKCanvasView.EnableTouchEvents)] = AcmSKCanvasViewHandler.MapEnableTouchEvents,
                 [nameof(ISKCanvasView.IgnorePixelScaling)] = MapIgnorePixelScalingAndPaint,
                 [nameof(IView.HorizontalLayoutAlignment)] = MapLayoutAlignment,
                 [nameof(IView.VerticalLayoutAlignment)] = MapLayoutAlignment,
             };
 
         public static Microsoft.Maui.CommandMapper<ISKCanvasView, AcmSKCanvasViewHandler> GHCommandMapper =
-            new Microsoft.Maui.CommandMapper<ISKCanvasView, AcmSKCanvasViewHandler>(AcmViewHandler.ViewCommandMapper)
+            new Microsoft.Maui.CommandMapper<ISKCanvasView, AcmSKCanvasViewHandler>(AcmSKCanvasViewHandler.CommandMapper)
             {
                 [nameof(ISKCanvasView.InvalidateSurface)] = MapInvalidateSurface,
             };
@@ -33,8 +27,21 @@ namespace GnollHackM
         {
         }
 
-        // WORKAROUND(WA-AVALONIA-0010): ACM canvas view paints inside the render pass
+        // WORKAROUND(WA-AVALONIA-0021): An animation frame that commits nothing waits for a 16 ms timer
         protected override AcmSKCanvasViewControl CreatePlatformView() => new GHAvaloniaCanvasControl();
+
+        // WORKAROUND(WA-AVALONIA-0021): An animation frame that commits nothing waits for a 16 ms timer
+        protected override void ConnectHandler(AcmSKCanvasViewControl platformView)
+        {
+            base.ConnectHandler(platformView);
+            (platformView as GHAvaloniaCanvasControl)?.AdoptPaintSurfaceAction();
+        }
+
+        protected override void DisconnectHandler(AcmSKCanvasViewControl platformView)
+        {
+            (platformView as GHAvaloniaCanvasControl)?.ReleasePaintSurfaceAction();
+            base.DisconnectHandler(platformView);
+        }
 
         /* An entry in a derived mapper replaces the chained one, so ACM's mapping is called explicitly */
         public static void MapIgnorePixelScalingAndPaint(AcmSKCanvasViewHandler handler, ISKCanvasView view)
