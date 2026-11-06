@@ -192,7 +192,7 @@ const struct propname propertynames[] = {
     { EDIBILITY_APPRAISAL, "recognizing detrimental food", "recognition of detrimental food" },
     { CORPSE_PROPERTY_APPRAISAL, "recognizing corpse properties", "recognition of corpse properties" },
     { TRUE_SEEING, "having true seeing", "true seeing" },
-    { KNIGHT_JUMPING, "able to jump like a chess knight", "jumping like a chess knight" },
+    { KNIGHT_JUMPING, "able to jump like a chess knight", "chess knight jumping" },
     {  0, 0, 0 },
 };
 
