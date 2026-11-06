@@ -2361,6 +2361,32 @@ delete_error_savefile(void)
     return -1;
 }
 
+static int
+delete_save_file_tracking_file(void)
+{
+    char trkbuf[FQN_MAX_FILENAME + BUFSZ];
+
+    if (!*SAVEF)
+        return -1;
+    get_tracking_file_name(trkbuf);
+    if (access(trkbuf, F_OK) != 0)
+        return -2; /* Tracking file does not exist */
+    return unlink(trkbuf);
+}
+
+/* Deletes the save file named by SAVEF and every file kept beside it: the backup and temporary
+   backup, the pre-recovery and error save files, and the save file tracking file */
+void
+delete_character_savefiles(void)
+{
+    (void) delete_tmp_backup_savefile();
+    (void) delete_backup_savefile();
+    (void) delete_prerecovery_savefile();
+    (void) delete_error_savefile();
+    (void) delete_save_file_tracking_file();
+    (void) delete_savefile_if_exists();
+}
+
 int
 delete_running_files(void)
 {

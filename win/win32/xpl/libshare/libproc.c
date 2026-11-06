@@ -200,7 +200,7 @@ void lib_askname(void)
                             else if (ans == 'y')
                             {
                                 set_savefile_name(TRUE);
-                                delete_savefile();
+                                delete_character_savefiles();
                                 return;
                             }
                             else

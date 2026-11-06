@@ -2475,11 +2475,7 @@ select_saved_game(winid bannerwin, uchar style, struct save_game_data *saved)
                 }
                 else
                 {
-                    delete_tmp_backup_savefile();
-                    delete_backup_savefile();
-                    delete_prerecovery_savefile();
-                    delete_error_savefile();
-                    delete_savefile();
+                    delete_character_savefiles();
                 }
             }
             else

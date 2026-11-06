@@ -1363,6 +1363,7 @@ E int offer_prerecovery_savefile_after_panic(void);
 E int restore_fallback_savefile(const char **);
 E int delete_savefile_if_exists(void);
 E int delete_error_savefile(void);
+E void delete_character_savefiles(void);
 E int delete_running_files(void);
 E boolean check_existing_save_file(void);
 E boolean check_existing_error_save_file(void);

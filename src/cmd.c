@@ -5785,11 +5785,7 @@ dodeletesavedgame(void)
         {
             if (yn_query_ex(ATR_NONE, CLR_MSG_NEGATIVE, "Delete Save File", "Are you sure to delete the save file?") == 'y')
             {
-                delete_tmp_backup_savefile();
-                delete_backup_savefile();
-                delete_prerecovery_savefile();
-                delete_error_savefile();
-                delete_savefile();
+                delete_character_savefiles();
                 pline1("Save file has been deleted.");
             }
             else

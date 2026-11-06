@@ -1588,11 +1588,7 @@ newgame(void)
 
     /* Delete existing save files and backup save files from previous characters of the same name, if any; this may happen if save file has been corrupted */
     set_savefile_name(TRUE);
-    (void)delete_savefile_if_exists();
-    (void)delete_tmp_backup_savefile();
-    (void)delete_backup_savefile();
-    (void)delete_prerecovery_savefile();
-    (void)delete_error_savefile();
+    delete_character_savefiles();
     delete_excess_levelfiles();
 
     /* Post crash context data to GUI */
