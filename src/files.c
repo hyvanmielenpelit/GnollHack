@@ -3033,7 +3033,7 @@ get_saved_games(void)
 
 /* The saves and running games of the current mode, or of every mode with all_modes */
 struct save_game_data *
-get_saved_games_ex(boolean all_modes)
+get_saved_games_ex(boolean all_modes UNUSED)
 {
 #if defined(SELECTSAVED)
     int j = 0;
