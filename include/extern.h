@@ -1346,8 +1346,8 @@ E char *plname_from_file(const char *, struct save_game_stats*);
 E struct save_game_data newsavegamedata(char*, char*, struct save_game_stats, boolean, boolean, boolean);
 #endif
 E struct save_game_data *get_saved_games(void);
+E struct save_game_data *get_saved_games_ex(boolean);
 E void free_saved_games(struct save_game_data *);
-E boolean check_saved_game_exists(void);
 E int make_tmp_backup_savefile_from_uncompressed_savefile(const char*);
 E int move_tmp_backup_savefile_to_actual_backup_savefile(void);
 E int restore_backup_savefile(boolean);
@@ -1364,6 +1364,7 @@ E int restore_fallback_savefile(const char **);
 E int delete_savefile_if_exists(void);
 E int delete_error_savefile(void);
 E void delete_character_savefiles(void);
+E void delete_same_name_savefiles(void);
 E int delete_running_files(void);
 E boolean check_existing_save_file(void);
 E boolean check_existing_error_save_file(void);
@@ -1376,6 +1377,7 @@ E const char *get_recover_savefile_failure_reason(void);
 #if defined(GNH_MOBILE)
 E boolean game_in_progress_elsewhere(const char *);
 E void show_game_already_running(const char *);
+E void show_save_name_message(const char *, const char *);
 E void refuse_game_in_progress_elsewhere(void);
 E const char *describe_savefile_recoveries(void);
 E const char *describe_game_instance_lock(void);
@@ -3230,6 +3232,8 @@ E void get_save_game_stats_from_file(int, struct save_game_stats*);
 E int restore_menu(winid);
 E int select_saved_game(winid, uchar, struct save_game_data*);
 #endif
+E int check_same_name_saves(boolean, boolean *, boolean *);
+E boolean confirm_imported_load(void);
 E void minit(void);
 E boolean lookup_id_mapping(unsigned, unsigned *);
 E void mread(int, genericptr_t, size_t);

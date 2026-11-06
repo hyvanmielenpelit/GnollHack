@@ -105,6 +105,13 @@ struct save_game_stats {
 #define SAVEFLAGS_TOURNAMENT_MODE   0x02
 #define SAVEFLAGS_FILETRACK_VALID   0x04
 
+/* check_same_name_saves() results */
+#define SAME_NAME_SAVE_NONE         0x00
+#define SAME_NAME_SAVE_REGULAR      0x01 /* save or error save of this mode */
+#define SAME_NAME_SAVE_IMPORTED     0x02 /* imported save of this mode */
+#define SAME_NAME_SAVE_RUNNING      0x04 /* running or crashed game of this mode */
+#define SAME_NAME_SAVE_OTHER_MODE   0x08 /* any save or running game of the other mode */
+
 struct save_game_data {
     char* playername;
     char filename[256];

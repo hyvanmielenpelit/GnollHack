@@ -2115,6 +2115,20 @@ show_game_already_running(const char *text)
     }
 }
 
+/* Tells the player why a character name cannot be used */
+void
+show_save_name_message(const char *title, const char *text)
+{
+    if (open_special_view && iflags.window_inited)
+    {
+        struct special_view_info info = { 0 };
+        info.viewtype = SPECIAL_VIEW_MESSAGE;
+        info.title = title;
+        info.text = text;
+        (void) open_special_view(info);
+    }
+}
+
 /* Ends a game start whose character another process is playing. Called before
    levelfiles_claimed is set, so clearlocks() leaves that process's files alone. Does not
    return. */
@@ -2374,17 +2388,72 @@ delete_save_file_tracking_file(void)
     return unlink(trkbuf);
 }
 
+/* An imported save file's backup is the regular save file name plus the backup and imported
+   extensions, the order the import writes */
+static int
+delete_imported_backup_savefile(void)
+{
+    char bakbuf[FQN_MAX_FILENAME + BUFSZ];
+    boolean saved_from_error = plname_from_error_savefile;
+
+    if (!sysopt.make_backup_savefiles || !plname_from_imported_savefile || !*plname)
+        return -1;
+
+    plname_from_error_savefile = FALSE;
+    plname_from_imported_savefile = FALSE;
+    set_savefile_name(TRUE);
+    Strcpy(bakbuf, fqname(SAVEF, SAVEPREFIX, 0));
+    plname_from_error_savefile = saved_from_error;
+    plname_from_imported_savefile = TRUE;
+    set_savefile_name(TRUE);
+
+    print_special_savefile_extension(bakbuf, BACKUP_EXTENSION);
+    print_imported_savefile_extension(bakbuf);
+    nh_uncompress(bakbuf);
+    if (access(bakbuf, F_OK) != 0)
+        return -2; /* Imported backup file does not exist */
+    return unlink(bakbuf);
+}
+
 /* Deletes the save file named by SAVEF and every file kept beside it: the backup and temporary
-   backup, the pre-recovery and error save files, and the save file tracking file */
+   backup, the pre-recovery and error save files, the save file tracking file and, for an
+   imported save file, the imported backup */
 void
 delete_character_savefiles(void)
 {
+    (void) delete_imported_backup_savefile();
     (void) delete_tmp_backup_savefile();
     (void) delete_backup_savefile();
     (void) delete_prerecovery_savefile();
     (void) delete_error_savefile();
     (void) delete_save_file_tracking_file();
     (void) delete_savefile_if_exists();
+}
+
+/* Deletes the file sets of every save named plname: regular, imported, and imported error.
+   The regular set includes its error save file. */
+void
+delete_same_name_savefiles(void)
+{
+    boolean saved_from_error = plname_from_error_savefile;
+    boolean saved_from_imported = plname_from_imported_savefile;
+
+    plname_from_error_savefile = FALSE;
+    plname_from_imported_savefile = FALSE;
+    set_savefile_name(TRUE);
+    delete_character_savefiles();
+
+    plname_from_imported_savefile = TRUE;
+    set_savefile_name(TRUE);
+    delete_character_savefiles();
+
+    plname_from_error_savefile = TRUE;
+    set_savefile_name(TRUE);
+    delete_character_savefiles();
+
+    plname_from_error_savefile = saved_from_error;
+    plname_from_imported_savefile = saved_from_imported;
+    set_savefile_name(TRUE);
 }
 
 int
@@ -2953,8 +3022,25 @@ int filter_imported_backup(const struct dirent *entry)
 #endif
 #endif /* defined(SELECTSAVED) */
 
+#if defined(SELECTSAVED)
+static boolean
+save_flags_match_mode(uchar save_flags, boolean all_modes)
+{
+    if (all_modes)
+        return TRUE;
+    return (boolean)(((save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0) == (TournamentMode != 0));
+}
+#endif
+
 struct save_game_data *
 get_saved_games(void)
+{
+    return get_saved_games_ex(FALSE);
+}
+
+/* The saves and running games of the current mode, or of every mode with all_modes */
+struct save_game_data *
+get_saved_games_ex(boolean all_modes)
 {
 #if defined(SELECTSAVED)
     int j = 0;
@@ -2971,10 +3057,17 @@ get_saved_games(void)
         //char fq_save_ibuf[SAVESIZE + BUFSZ] = "";
         char fq_lock_rbuf[SAVESIZE + BUFSZ] = "";
         char saved_plname[PL_NSIZ] = "";
+        boolean saved_from_error = plname_from_error_savefile;
+        boolean saved_from_imported = plname_from_imported_savefile;
 
         Strcpy(saved_plname, plname);
         Strcpy(plname, "*");
+        /* The search pattern is always the regular one */
+        plname_from_error_savefile = FALSE;
+        plname_from_imported_savefile = FALSE;
         set_savefile_name(FALSE);
+        plname_from_error_savefile = saved_from_error;
+        plname_from_imported_savefile = saved_from_imported;
 #ifdef GNH_WIN
         Sprintf(fq_lock_rbuf, "%d*.0", getuid());
         Strcpy(foundfileprefix, "save\\");
@@ -3051,9 +3144,7 @@ get_saved_games(void)
                         r = plname_from_file(usedfoundfile, &gamestats);
                         if (r)
                         {
-                            if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
-                                continue;
-                            if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                            if (!save_flags_match_mode(gamestats.save_flags, all_modes))
                                 continue;
                             result[j++] = newsavegamedata(r, usedfoundfile, gamestats, FALSE, is_imported ? isimportederror : is_error, is_imported);
                         }
@@ -3120,9 +3211,7 @@ get_saved_games(void)
                         r = plname_from_running(usedfoundfile, &gamestats);
                         if (r)
                         {
-                            if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
-                                continue;
-                            if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                            if (!save_flags_match_mode(gamestats.save_flags, all_modes))
                                 continue;
                             result[j++] = newsavegamedata(r, usedfoundfile, gamestats, TRUE, FALSE, FALSE);
                         }
@@ -3168,9 +3257,7 @@ get_saved_games(void)
                         r = plname_from_file(filename, &gamestats);
                         if (r)
                         {
-                            if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
-                                continue;
-                            if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                            if (!save_flags_match_mode(gamestats.save_flags, all_modes))
                                 continue;
                             result[j++] = newsavegamedata(r, filename, gamestats, FALSE, FALSE, FALSE);
                         }
@@ -3202,7 +3289,7 @@ get_saved_games(void)
                 boolean isimportedbackupfile = !!filter_imported_backup(namelist[i]);
                 boolean isimportedfile = !!filter_imported(namelist[i]);
                 boolean istrackingfile = !!is_save_file_tracking_file_name(namelist[i]->d_name);
-                if (isbackupfile || isimportedbackupfile || istrackingfile || (TournamentMode && isimportedfile))
+                if (isbackupfile || isimportedbackupfile || istrackingfile || (TournamentMode && isimportedfile && !all_modes))
                     continue;
                 char filename[BUFSZ + PL_NSIZ + 64];
                 char* r;
@@ -3210,9 +3297,7 @@ get_saved_games(void)
                 r = plname_from_file(filename, &gamestats);
                 if (r)
                 {
-                    if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
-                        continue;
-                    if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                    if (!save_flags_match_mode(gamestats.save_flags, all_modes))
                         continue;
                     boolean iserrorfile = filter_error(namelist[i]) || filter_imported_error(namelist[i]);
                     result[j++] = newsavegamedata(r, filename, gamestats, FALSE, iserrorfile, isimportedfile);
@@ -3227,9 +3312,7 @@ get_saved_games(void)
                 r = plname_from_running(namelist2[i]->d_name, &gamestats);
                 if (r)
                 {
-                    if (TournamentMode && !(gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE))
-                        continue;
-                    if (!TournamentMode && (gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0)
+                    if (!save_flags_match_mode(gamestats.save_flags, all_modes))
                         continue;
                     result[j++] = newsavegamedata(r, namelist2[i]->d_name, gamestats, TRUE, FALSE, FALSE);
                 }

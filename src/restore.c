@@ -2233,6 +2233,14 @@ restore_menu(winid bannerwin)
                 plname_from_error_savefile = saved[ccg_saveno].is_error_save_file;
                 plname_from_imported_savefile = saved[ccg_saveno].is_imported_save_file;
                 repeat = FALSE;
+                if (!confirm_imported_load())
+                {
+                    *plname = 0;
+                    plname_from_error_savefile = FALSE;
+                    plname_from_imported_savefile = FALSE;
+                    ch = 0;
+                    repeat = TRUE;
+                }
             }
             else /* Start new game; something's wrong */
             {
@@ -2414,6 +2422,14 @@ select_saved_game(winid bannerwin, uchar style, struct save_game_data *saved)
                 {
                     shoulddelete = TRUE;
                 }
+                else if (!confirm_imported_load())
+                {
+                    *plname = 0;
+                    plname_from_error_savefile = FALSE;
+                    plname_from_imported_savefile = FALSE;
+                    ch = 0;
+                    repeat = TRUE;
+                }
             }
             else if (ch < 0)
                 ch = 0; // ++ch; /* -1 -> 0 (new game), -2 -> -1 (quit) */
@@ -2500,30 +2516,103 @@ select_saved_game(winid bannerwin, uchar style, struct save_game_data *saved)
             putstr(bannerwin, 0, copyright_banner_line(i));
         putstr(bannerwin, 0, "");
     }
+
+    /* No game is loaded, so no save file name variant applies */
+    if (ch <= 0)
+    {
+        plname_from_error_savefile = FALSE;
+        plname_from_imported_savefile = FALSE;
+    }
     return ch;
 }
 
 #endif /* SELECTSAVED */
 
-boolean
-check_saved_game_exists(void)
+/* SAME_NAME_SAVE_* bits for the saves and running games named plname; running games of this
+   mode count only with include_running. For the save to load, *error_ptr and *imported_ptr get
+   the flags of the regular save if there is one, else of the imported one. */
+int
+check_same_name_saves(boolean include_running, boolean *error_ptr, boolean *imported_ptr)
 {
-    struct save_game_data* saved = get_saved_games(); /* array of character names */
+    int res = SAME_NAME_SAVE_NONE;
+    boolean regular_is_error_only = TRUE, imported_is_error = FALSE, have_imported = FALSE;
+    struct save_game_data *saved = get_saved_games_ex(TRUE); /* every mode */
+
     if (saved)
     {
-        int i = 0;
-        while (saved[i].playername)
+        int i;
+        for (i = 0; saved[i].playername; i++)
         {
-            if (!strcmp(saved[i].playername, plname) && !saved[i].is_running)
+            boolean is_tournament_save;
+
+            if (strcmp(saved[i].playername, plname))
+                continue;
+
+            is_tournament_save = (saved[i].gamestats.save_flags & SAVEFLAGS_TOURNAMENT_MODE) != 0;
+            /* Imported saves cannot be loaded in tournament mode */
+            if (is_tournament_save != (TournamentMode != 0) || (TournamentMode && saved[i].is_imported_save_file))
             {
-                free_saved_games(saved);
-                return TRUE;
+                res |= SAME_NAME_SAVE_OTHER_MODE;
             }
-            i++;
+            else if (saved[i].is_running)
+            {
+                if (include_running)
+                    res |= SAME_NAME_SAVE_RUNNING;
+            }
+            else if (saved[i].is_imported_save_file)
+            {
+                res |= SAME_NAME_SAVE_IMPORTED;
+                if (!have_imported || !saved[i].is_error_save_file)
+                    imported_is_error = saved[i].is_error_save_file;
+                have_imported = TRUE;
+            }
+            else
+            {
+                res |= SAME_NAME_SAVE_REGULAR;
+                if (!saved[i].is_error_save_file)
+                    regular_is_error_only = FALSE;
+            }
         }
+        free_saved_games(saved);
     }
-    free_saved_games(saved);
-    return FALSE;
+
+    /* The save to load: a regular one before an imported one, and a save before an error save */
+    if (error_ptr)
+        *error_ptr = (res & SAME_NAME_SAVE_REGULAR) ? regular_is_error_only
+                     : (res & SAME_NAME_SAVE_IMPORTED) ? imported_is_error : FALSE;
+    if (imported_ptr)
+        *imported_ptr = !(res & SAME_NAME_SAVE_REGULAR) && (res & SAME_NAME_SAVE_IMPORTED) != 0;
+
+    /* get_saved_games_ex() leaves SAVEF naming the last file it read */
+    set_savefile_name(TRUE);
+    return res;
+}
+
+/* TRUE if the imported save for plname may be loaded. A regular save of the same name would be
+   overwritten by it, so the player is asked first, and on Yes its file set is deleted. */
+boolean
+confirm_imported_load(void)
+{
+    char qbuf[BUFSZ + PL_NSIZ];
+    boolean saved_from_error = plname_from_error_savefile;
+
+    if (!plname_from_imported_savefile)
+        return TRUE;
+    if (!(check_same_name_saves(FALSE, (boolean *)0, (boolean *)0) & SAME_NAME_SAVE_REGULAR))
+        return TRUE;
+
+    Sprintf(qbuf, "There is also a saved game for \'%s\' that was not imported. Loading the imported game replaces it, and that game and its backup will be deleted. Do you want to continue?", plname);
+    if (yn_query_ex(ATR_NONE, CLR_RED, "Replace Saved Game?", qbuf) != 'y')
+        return FALSE;
+
+    plname_from_error_savefile = FALSE;
+    plname_from_imported_savefile = FALSE;
+    set_savefile_name(TRUE);
+    delete_character_savefiles();
+    plname_from_error_savefile = saved_from_error;
+    plname_from_imported_savefile = TRUE;
+    set_savefile_name(TRUE);
+    return TRUE;
 }
 
 

@@ -129,6 +129,77 @@ void lib_player_selection(void)
     }
 }
 
+/* Checks plname against the existing saves before a new character takes it. Returns 0 when the
+   name is free or its saves were deleted on Yes, 'l' to load the existing character, 'n' to ask
+   for another name, and 'q' to quit. */
+static char
+lib_check_existing_character(boolean allow_load)
+{
+    char qbuf[BUFSZ + PL_NSIZ] = "";
+    char ans;
+    boolean load_error = FALSE, load_imported = FALSE;
+    int matches;
+
+    plname_from_error_savefile = FALSE;
+    plname_from_imported_savefile = FALSE;
+    /* Running games of this mode recover by name, except during a rename */
+    matches = check_same_name_saves(!allow_load, &load_error, &load_imported);
+
+    if (matches & SAME_NAME_SAVE_OTHER_MODE)
+    {
+        Sprintf(qbuf, "There is already a %s character named \'%s\'. Tournament and regular characters cannot share a name, so choose another name.",
+            TournamentMode ? "regular" : "tournament", plname);
+        show_save_name_message("Name Already in Use", qbuf);
+        return 'n';
+    }
+    if (matches & SAME_NAME_SAVE_RUNNING)
+    {
+        Sprintf(qbuf, "A game for a character named \'%s\' did not end properly and can still be recovered, so choose another name.", plname);
+        show_save_name_message("Name Already in Use", qbuf);
+        return 'n';
+    }
+    if (!(matches & (SAME_NAME_SAVE_REGULAR | SAME_NAME_SAVE_IMPORTED)))
+        return 0;
+
+    if (game_in_progress_elsewhere(plname))
+    {
+        show_game_already_running("This character is being played in another "
+                                  "GnollHack window. Choose another name, or "
+                                  "save or exit the game there first.");
+        return 'n';
+    }
+
+    if (!(matches & SAME_NAME_SAVE_IMPORTED))
+        Sprintf(qbuf, "There is already a saved game for a character named \'%s\'. Do you want to overwrite the save file and delete the existing character?", plname);
+    else if (!(matches & SAME_NAME_SAVE_REGULAR))
+        Sprintf(qbuf, "There is already an imported saved game for a character named \'%s\'. Do you want to overwrite the save file and delete the existing character?", plname);
+    else
+        Sprintf(qbuf, "There are already saved games for characters named \'%s\', one of them imported. Do you want to overwrite the save files and delete the existing characters?", plname);
+
+    if (allow_load)
+        ans = lib_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, NO_GLYPH, "Overwrite Existing Character?",
+            qbuf, "ynql", 'n', "Yes\nNo\nQuit\nLoad", (const char*)0, 0UL);
+    else
+        ans = lib_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, NO_GLYPH, "Overwrite Existing Character?",
+            qbuf, "ynq", 'n', "Yes\nNo\nQuit", (const char*)0, 0UL);
+
+    switch (ans)
+    {
+    case 'y':
+        delete_same_name_savefiles();
+        return 0;
+    case 'l':
+        plname_from_error_savefile = load_error;
+        plname_from_imported_savefile = load_imported;
+        set_savefile_name(TRUE);
+        return 'l';
+    case 'q':
+        return 'q';
+    default:
+        return 'n';
+    }
+}
+
 void lib_askname(void)
 {
     char mdbuf[BUFSZ] = "";
@@ -178,44 +249,23 @@ void lib_askname(void)
 
                         Strncpy(plname, ansbuf, PL_NSIZ - 1);
                         plname[PL_NSIZ - 1] = '\0';
-                        if (check_saved_game_exists())
+                        char ans = lib_check_existing_character(TRUE);
+                        if (ans == 'l')
                         {
-                            char qbuf[BUFSZ] = "";
-                            char ans;
-                            Sprintf(qbuf, "There is already a saved game for a character named \'%s\'. Do you want to overwrite the save file and delete the existing character?", plname);
-                            if (game_in_progress_elsewhere(plname))
-                            {
-                                show_game_already_running("This character is being played in another "
-                                                          "GnollHack window. Choose another name, or "
-                                                          "save or exit the game there first.");
-                                ans = 'n';
-                            }
-                            else
-                                ans = lib_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, NO_GLYPH, "Overwrite Existing Character?",
-                                    qbuf, "ynql", 'n', "Yes\nNo\nQuit\nLoad", (const char*)0, 0UL);
-                            if (ans == 'l')
-                            {
-                                return;
-                            }
-                            else if (ans == 'y')
-                            {
-                                set_savefile_name(TRUE);
-                                delete_character_savefiles();
-                                return;
-                            }
-                            else
-                            {
-                                *utf8buf = 0;
-                                *plname = 0;
-                                if (ans == 'n')
-                                    repeataskname = TRUE;
-                            }
+                            return;
                         }
-                        else
+                        else if (ans == 0)
                         {
                             if(!wizard)
                                 iflags.renameallowed = TRUE;
                             return;
+                        }
+                        else
+                        {
+                            *utf8buf = 0;
+                            *plname = 0;
+                            if (ans == 'n')
+                                repeataskname = TRUE;
                         }
                     }
                     else
@@ -233,23 +283,38 @@ void lib_askname(void)
     }
 #endif /* SELECTSAVED */
 
-    *utf8buf = 0;
-    res = lib_callbacks.callback_askname(modenamebuf, modedescbuf, utf8buf);
-    if (!res)
-        lib_bail((char*)0); /* quit */
-    else
+    boolean askagain;
+    do
     {
-        char ansbuf[PL_NSIZ + BUFSZ] = "";
-        copyUTF8toCP437(ansbuf, sizeof(ansbuf), utf8buf, sizeof(utf8buf));
-        ansbuf[sizeof(ansbuf) - 1] = 0;
-        int i, len = (int)strlen(ansbuf);
-        for (i = 0; i < len; i++)
-            if (ansbuf[i] > 127 || ansbuf[i] < 0)
-                ansbuf[i] = '_';
+        askagain = FALSE;
+        *utf8buf = 0;
+        res = lib_callbacks.callback_askname(modenamebuf, modedescbuf, utf8buf);
+        if (!res)
+            lib_bail((char*)0); /* quit */
+        else
+        {
+            char ansbuf[PL_NSIZ + BUFSZ] = "";
+            copyUTF8toCP437(ansbuf, sizeof(ansbuf), utf8buf, sizeof(utf8buf));
+            ansbuf[sizeof(ansbuf) - 1] = 0;
+            int i, len = (int)strlen(ansbuf);
+            for (i = 0; i < len; i++)
+                if (ansbuf[i] > 127 || ansbuf[i] < 0)
+                    ansbuf[i] = '_';
 
-        Strncpy(plname, ansbuf, PL_NSIZ - 1);
-        plname[PL_NSIZ - 1] = '\0';
-    }
+            Strncpy(plname, ansbuf, PL_NSIZ - 1);
+            plname[PL_NSIZ - 1] = '\0';
+
+            /* A rename during role selection cannot load the existing character */
+            char ans = lib_check_existing_character(!iflags.renameinprogress);
+            if (ans == 'q')
+                lib_bail((char*)0); /* quit */
+            else if (ans == 'n')
+            {
+                *plname = 0;
+                askagain = TRUE;
+            }
+        }
+    } while (askagain);
     if (!wizard)
         iflags.renameallowed = TRUE;
 }
