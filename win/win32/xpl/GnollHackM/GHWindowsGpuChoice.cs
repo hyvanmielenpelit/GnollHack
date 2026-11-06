@@ -3,8 +3,9 @@ using System.Collections.Generic;
 
 namespace GnollHackM
 {
-    /* The Windows Avalonia GPU mode of --win-gpu and GNOLLHACK_WIN_GPU, apart from "avalonia", which installs no
-       adapter selection callback */
+    /* The Windows GPU mode of --win-gpu and GNOLLHACK_WIN_GPU, apart from "default" and its synonym "avalonia",
+       which choose no adapter: no adapter selection callback on Windows Avalonia, no ANGLE pre-initialization on
+       WinUI 3 */
     public enum GHWindowsGpuMode
     {
         Auto,
@@ -22,7 +23,8 @@ namespace GnollHackM
     }
 
     /* The Windows render adapter rules without DXGI, Avalonia or GHApp: the adapter choice of the Windows Avalonia
-       selection callback, its inputs' parsing, and the rule of GHApp.InformAboutGPU */
+       selection callback and of the WinUI 3 ANGLE pre-initialization, its inputs' parsing, and the rule of
+       GHApp.InformAboutGPU */
     public static class GHWindowsGpuChoice
     {
         private const string PreferenceKey = "GpuPreference";
@@ -38,15 +40,7 @@ namespace GnollHackM
             if (adapterLuids == null || adapterLuids.Count == 0)
                 return 0;
 
-            long? wanted;
-            if (mode == GHWindowsGpuMode.Integrated)
-                wanted = minimumPowerLuid;
-            else if (mode == GHWindowsGpuMode.Dedicated)
-                wanted = highPerformanceLuid;
-            else if (preference == GHWindowsGpuPreference.Integrated)
-                wanted = minimumPowerLuid;
-            else
-                wanted = highPerformanceLuid;
+            long? wanted = WantedLuid(mode, preference, highPerformanceLuid, minimumPowerLuid);
             if (!wanted.HasValue)
                 return 0;
 
@@ -56,6 +50,54 @@ namespace GnollHackM
                     return i;
             }
             return 0;
+        }
+
+        /* The LUID the rule wants: minimum power for the Integrated mode, or Auto with the Integrated (Power saving)
+           preference; high performance otherwise; null when that LUID is unknown */
+        public static long? WantedLuid(GHWindowsGpuMode mode, GHWindowsGpuPreference preference,
+            long? highPerformanceLuid, long? minimumPowerLuid)
+        {
+            if (mode == GHWindowsGpuMode.Integrated)
+                return minimumPowerLuid;
+            if (mode == GHWindowsGpuMode.Dedicated)
+                return highPerformanceLuid;
+            if (preference == GHWindowsGpuPreference.Integrated)
+                return minimumPowerLuid;
+            return highPerformanceLuid;
+        }
+
+        /* GHApp.GetActiveGPU's text: "Integrated", "Dedicated", anything else Unset; case-insensitive, trimmed */
+        public static GHWindowsGpuPreference ParseActiveGpu(string activeGpu)
+        {
+            if (activeGpu == null)
+                return GHWindowsGpuPreference.Unset;
+            string trimmed = activeGpu.Trim();
+            if (string.Equals(trimmed, "Integrated", StringComparison.OrdinalIgnoreCase))
+                return GHWindowsGpuPreference.Integrated;
+            if (string.Equals(trimmed, "Dedicated", StringComparison.OrdinalIgnoreCase))
+                return GHWindowsGpuPreference.Dedicated;
+            return GHWindowsGpuPreference.Unset;
+        }
+
+        /* GNOLLHACK_WIN_GPU on WinUI 3: false for "default" and "avalonia" (no pre-initialization); otherwise true with
+           the mode: null or empty is Auto, an unknown word is Auto with unknown set; case-insensitive, trimmed */
+        public static bool ShouldPreinitialize(string switchText, out GHWindowsGpuMode mode, out bool unknown)
+        {
+            mode = GHWindowsGpuMode.Auto;
+            unknown = false;
+            if (switchText == null)
+                return true;
+            string trimmed = switchText.Trim();
+            if (trimmed.Length == 0)
+                return true;
+            if (string.Equals(trimmed, "default", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(trimmed, "avalonia", StringComparison.OrdinalIgnoreCase))
+                return false;
+            if (TryParseMode(trimmed, out mode))
+                return true;
+            mode = GHWindowsGpuMode.Auto;
+            unknown = true;
+            return true;
         }
 
         /* The data of the UserGpuPreferences value, such as "GpuPreference=2;" or

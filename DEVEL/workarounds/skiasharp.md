@@ -429,30 +429,45 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-06
-- Code: `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.InformAboutGPU`)
-- Remove when: SkiaSharp.Views.WinUI lets the app choose the adapter of `SKSwapChainPanel`, GnollHack renders on the high-performance adapter through it, and Verify removal passes.
+- Last checked: 2026-11-07
+- Code: `win/win32/xpl/GnollHackM/Platforms/Windows/GHAngleAdapterSelection.cs` (`GHAngleAdapterSelection`); `win/win32/xpl/GnollHackM/Platforms/Windows/WindowsSKGLViewHandler.cs` (`WindowsSKGLViewHandler.CreatePlatformView`); `win/win32/xpl/GnollHackM/App.xaml.cs` (`App`)
+- Remove when: SkiaSharp.Views.WinUI lets the app choose the adapter of `SKSwapChainPanel`, GnollHack chooses it through that option, and Verify removal passes.
 
 **Symptom.** On a hybrid-graphics laptop with no per-app Windows graphics preference, the
 WinUI 3 version draws the map on the integrated GPU, which can be too slow for it.
 
-**Cause.** A missing feature. `SKSwapChainPanel`'s `GlesContext` always creates its ANGLE
-display with `EGL_DEFAULT_DISPLAY` and Direct3D 11 attributes, so ANGLE uses the default
-adapter, the first one `IDXGIFactory1::EnumAdapters1` returns: the integrated GPU on most
-hybrid laptops unless Windows' per-app preference says High performance. The view takes no
-adapter or display attributes from the app.
+**Cause.** A missing feature. `SKSwapChainPanel`'s `GlesContext` keeps one ANGLE display for
+the process in a private static field and creates it, when the first panel loads, with
+`eglGetPlatformDisplayEXT(EGL_PLATFORM_ANGLE_ANGLE, EGL_DEFAULT_DISPLAY, ...)` and Direct3D 11
+attributes. ANGLE then uses the default adapter, the first one `IDXGIFactory1::EnumAdapters1`
+returns: the integrated GPU on most hybrid laptops unless Windows' per-app preference says
+High performance. The view takes no adapter or display attributes from the app.
 
-**Workaround.** `GHApp.InformAboutGPU` reads the default adapter through
-`GHDxgiAdapters.TryGetDefaultAdapter` and, when it is integrated and a discrete adapter
-exists, shows the one-time "Multiple GPUs" alert, which tells the player to set High
-performance for GnollHack in Windows' Graphics settings.
+**Workaround.** `GHAngleAdapterSelection.EnsureSelected`, called after `GHApp.Initialize` and
+from `WindowsSKGLViewHandler.CreatePlatformView` while GPU Acceleration is on, creates and
+initializes ANGLE's display first, with SkiaSharp's exact attribute list plus the chosen
+adapter's LUID (`EGL_PLATFORM_ANGLE_D3D_LUID_HIGH_ANGLE` / `_LOW_ANGLE`, 0x34A0 / 0x34A1). It
+chooses with the Windows Avalonia rule (`GHWindowsGpuChoice`: the high-performance adapter
+unless the per-app preference says Power saving) and does nothing when that adapter is already
+Windows' default. ANGLE leaves the LUID out of its display key and applies attributes only
+before the first `eglInitialize`, so SkiaSharp's own call returns the same initialized display.
+A LUID that matches no adapter makes ANGLE use the default adapter. The read-back of the
+display's device and a check at the first paint (`VerifyCurrentDisplay`) log whether SkiaSharp
+uses the pre-initialized display. This relies on undocumented ANGLE behavior and on
+SkiaSharp's private attribute list: a SkiaSharp or ANGLE upgrade re-runs the probe below.
 
 **Verify removal.** On a SkiaSharp release that lets the app choose the adapter:
-- Choose the adapter from `IDXGIFactory6::EnumAdapterByGpuPreference`, as the Windows
-  Avalonia flavor does, and keep the alert only for the case where Windows' per-app setting
-  says Power saving.
+- Choose it through that option with `GHWindowsGpuChoice`, and remove the pre-initialization.
 - On a hybrid laptop with no per-app preference, run the performance test in a Release build:
   its render adapter must be the discrete GPU.
 
+To re-check after an upgrade: the probe in
+`hyvanmielenpelit/GnollHack/2026-11-06/windows_avalonia_gpu_selection/winui_gpu_selection_research_A_v1.md`
+in the plans repository (pre-initialize with a LUID, call `eglGetPlatformDisplayEXT` with
+SkiaSharp's attributes, compare the handles and read the device's adapter), run against the
+shipped `libEGL.dll` and `libGLESv2.dll`; and on a hybrid laptop the developer log must show
+`Windows GPU check: SkiaSharp uses the pre-initialized display`.
+
 Checks:
 - 2026-11-06 | SkiaSharp.Views.Maui.Core 4.154.0 | still-needed | GlesContext at v4.154.0 calls eglGetPlatformDisplayEXT with EGL_DEFAULT_DISPLAY only; no adapter option.
+- 2026-11-07 | SkiaSharp.Views.Maui.Core 4.154.0 | still-needed | No adapter option at v4.154.0; a probe on the shipped ANGLE (ea1cea778c4a) confirmed that a display pre-initialized with a LUID is returned to SkiaSharp's call on that adapter.

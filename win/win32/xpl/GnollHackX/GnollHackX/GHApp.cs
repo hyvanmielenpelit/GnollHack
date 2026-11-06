@@ -2788,9 +2788,12 @@ namespace GnollHackX
                     else if (!GHDxgiAdapters.TryGetDefaultAdapter(DeviceGPUs.ToArray(), out render, out discretePresent))
                         render = null;
 #else
-                    // WORKAROUND(WA-SKIASHARP-0012): SkiaSharp.Views.WinUI cannot choose the D3D adapter
-                    /* WinUI 3: the default adapter, which SkiaSharp's ANGLE renders on */
-                    if (!GHDxgiAdapters.TryGetDefaultAdapter(DeviceGPUs.ToArray(), out render, out discretePresent))
+                    /* WinUI 3: the adapter GHAngleAdapterSelection chose, else the default adapter, which SkiaSharp's
+                       ANGLE renders on when none was chosen */
+                    List<GHRenderAdapter> all = new List<GHRenderAdapter>();
+                    if (GHAngleAdapterSelection.TryGetRenderAdapter(out render, all))
+                        discretePresent = GHDxgiAdapters.HasDiscreteAdapter(all);
+                    else if (!GHDxgiAdapters.TryGetDefaultAdapter(DeviceGPUs.ToArray(), out render, out discretePresent))
                         render = null;
 #endif
                     if (render != null && !render.IsSoftware)

@@ -6,8 +6,9 @@ using Xunit;
 namespace GnollHackX.UnitTests
 {
     /* Covers GHWindowsGpuChoice: the adapter index for each GPU mode and Windows preference, the fallbacks to
-       Avalonia's own choice, the UserGpuPreferences value, the --win-gpu mode names, the LUID bytes Avalonia
-       passes, and the rule of GHApp.InformAboutGPU. */
+       Avalonia's own choice, the wanted LUID, the UserGpuPreferences value and GHApp.GetActiveGPU's text, the
+       --win-gpu mode names, the WinUI 3 GNOLLHACK_WIN_GPU switch, the LUID bytes Avalonia passes, and the rule of
+       GHApp.InformAboutGPU. */
     public class GHWindowsGpuChoiceTests
     {
         private const long IntelLuid = 0x0000D1A3L;
@@ -185,6 +186,94 @@ namespace GnollHackX.UnitTests
         {
             Assert.Equal(0L, GHWindowsGpuChoice.LuidFromBytes(null));
             Assert.Equal(0L, GHWindowsGpuChoice.LuidFromBytes(new byte[] { 0xA3, 0xD1, 0x00, 0x00 }));
+        }
+
+        [Theory]
+        [InlineData(GHWindowsGpuMode.Auto, GHWindowsGpuPreference.Unset, true)]
+        [InlineData(GHWindowsGpuMode.Auto, GHWindowsGpuPreference.Integrated, false)]
+        [InlineData(GHWindowsGpuMode.Auto, GHWindowsGpuPreference.Dedicated, true)]
+        [InlineData(GHWindowsGpuMode.Dedicated, GHWindowsGpuPreference.Unset, true)]
+        [InlineData(GHWindowsGpuMode.Dedicated, GHWindowsGpuPreference.Integrated, true)]
+        [InlineData(GHWindowsGpuMode.Dedicated, GHWindowsGpuPreference.Dedicated, true)]
+        [InlineData(GHWindowsGpuMode.Integrated, GHWindowsGpuPreference.Unset, false)]
+        [InlineData(GHWindowsGpuMode.Integrated, GHWindowsGpuPreference.Integrated, false)]
+        [InlineData(GHWindowsGpuMode.Integrated, GHWindowsGpuPreference.Dedicated, false)]
+        public void WantedLuid_EachModeAndPreference(GHWindowsGpuMode mode, GHWindowsGpuPreference preference,
+            bool wantsHighPerformance)
+        {
+            long? wanted = GHWindowsGpuChoice.WantedLuid(mode, preference, RtxLuid, IntelLuid);
+
+            Assert.Equal((long?)(wantsHighPerformance ? RtxLuid : IntelLuid), wanted);
+        }
+
+        [Theory]
+        [InlineData(GHWindowsGpuMode.Auto, GHWindowsGpuPreference.Unset)]
+        [InlineData(GHWindowsGpuMode.Auto, GHWindowsGpuPreference.Integrated)]
+        [InlineData(GHWindowsGpuMode.Auto, GHWindowsGpuPreference.Dedicated)]
+        [InlineData(GHWindowsGpuMode.Dedicated, GHWindowsGpuPreference.Unset)]
+        [InlineData(GHWindowsGpuMode.Dedicated, GHWindowsGpuPreference.Integrated)]
+        [InlineData(GHWindowsGpuMode.Dedicated, GHWindowsGpuPreference.Dedicated)]
+        [InlineData(GHWindowsGpuMode.Integrated, GHWindowsGpuPreference.Unset)]
+        [InlineData(GHWindowsGpuMode.Integrated, GHWindowsGpuPreference.Integrated)]
+        [InlineData(GHWindowsGpuMode.Integrated, GHWindowsGpuPreference.Dedicated)]
+        public void WantedLuid_NullLuids_GiveNull(GHWindowsGpuMode mode, GHWindowsGpuPreference preference)
+        {
+            Assert.Null(GHWindowsGpuChoice.WantedLuid(mode, preference, null, null));
+        }
+
+        [Fact]
+        public void WantedLuid_UnknownWantedLuid_DoesNotFallBackToTheOther()
+        {
+            Assert.Null(GHWindowsGpuChoice.WantedLuid(GHWindowsGpuMode.Auto, GHWindowsGpuPreference.Unset,
+                null, IntelLuid));
+            Assert.Null(GHWindowsGpuChoice.WantedLuid(GHWindowsGpuMode.Integrated, GHWindowsGpuPreference.Unset,
+                RtxLuid, null));
+        }
+
+        [Theory]
+        [InlineData("Integrated", GHWindowsGpuPreference.Integrated)]
+        [InlineData("dedicated ", GHWindowsGpuPreference.Dedicated)]
+        [InlineData("Auto", GHWindowsGpuPreference.Unset)]
+        [InlineData("Not set", GHWindowsGpuPreference.Unset)]
+        [InlineData("", GHWindowsGpuPreference.Unset)]
+        [InlineData(null, GHWindowsGpuPreference.Unset)]
+        public void ParseActiveGpu_ReadsGetActiveGpuText(string activeGpu, GHWindowsGpuPreference expected)
+        {
+            Assert.Equal(expected, GHWindowsGpuChoice.ParseActiveGpu(activeGpu));
+        }
+
+        [Theory]
+        [InlineData(null, GHWindowsGpuMode.Auto, false)]
+        [InlineData("", GHWindowsGpuMode.Auto, false)]
+        [InlineData("auto", GHWindowsGpuMode.Auto, false)]
+        [InlineData("dedicated", GHWindowsGpuMode.Dedicated, false)]
+        [InlineData(" Integrated ", GHWindowsGpuMode.Integrated, false)]
+        [InlineData("bogus", GHWindowsGpuMode.Auto, true)]
+        public void ShouldPreinitialize_TrueWithMode(string switchText, GHWindowsGpuMode expectedMode,
+            bool expectedUnknown)
+        {
+            GHWindowsGpuMode mode;
+            bool unknown;
+
+            bool preinitialize = GHWindowsGpuChoice.ShouldPreinitialize(switchText, out mode, out unknown);
+
+            Assert.True(preinitialize);
+            Assert.Equal(expectedMode, mode);
+            Assert.Equal(expectedUnknown, unknown);
+        }
+
+        [Theory]
+        [InlineData("default")]
+        [InlineData("avalonia")]
+        [InlineData("DEFAULT")]
+        [InlineData(" default ")]
+        public void ShouldPreinitialize_DefaultSwitch_IsFalse(string switchText)
+        {
+            GHWindowsGpuMode mode;
+            bool unknown;
+
+            Assert.False(GHWindowsGpuChoice.ShouldPreinitialize(switchText, out mode, out unknown));
+            Assert.False(unknown);
         }
 
         [Theory]

@@ -1,6 +1,7 @@
 #if WINDOWS
 #nullable enable
 
+using GnollHackX;
 using Microsoft.Maui;
 using SkiaSharp;
 using SkiaSharp.Views.Maui;
@@ -21,12 +22,40 @@ namespace GnollHackM
 
         private WindowsTouchHandler? _touchHandler;
 
+        /* True once a panel of this handler type has painted and VerifyCurrentDisplay has run; UI thread */
+        private static bool _displayChecked = false;
+        private bool _displayCheckSubscribed = false;
+
         public WindowsSKGLViewHandler() : base(WindowsSKGLViewMapper, SKGLViewCommandMapper)
         {
         }
 
+        // WORKAROUND(WA-SKIASHARP-0012): SKSwapChainPanel cannot choose its Direct3D adapter
+        /* The adapter is chosen before the panel exists; SkiaSharp creates its display later, in the panel's Loaded */
+        protected override SKSwapChainPanel CreatePlatformView()
+        {
+            if (GHApp.UseGPU)
+                GHAngleAdapterSelection.EnsureSelected();
+            return base.CreatePlatformView();
+        }
+
+        protected override void ConnectHandler(SKSwapChainPanel platformView)
+        {
+            base.ConnectHandler(platformView);
+            if (!_displayChecked && !_displayCheckSubscribed)
+            {
+                platformView.PaintSurface += OnFirstPaintSurface;
+                _displayCheckSubscribed = true;
+            }
+        }
+
         protected override void DisconnectHandler(SKSwapChainPanel platformView)
         {
+            if (_displayCheckSubscribed)
+            {
+                platformView.PaintSurface -= OnFirstPaintSurface;
+                _displayCheckSubscribed = false;
+            }
             _touchHandler?.Detach(platformView);
             _touchHandler = null;
             base.DisconnectHandler(platformView);
@@ -58,6 +87,18 @@ namespace GnollHackM
                 y *= scale;
             }
             return new SKPoint((float)x, (float)y);
+        }
+
+        /* The first panel to paint is the map: the menu and text panels stay hidden on Windows */
+        private void OnFirstPaintSurface(object? sender, SkiaSharp.Views.Windows.SKPaintGLSurfaceEventArgs e)
+        {
+            if (sender is SKSwapChainPanel panel)
+                panel.PaintSurface -= OnFirstPaintSurface;
+            _displayCheckSubscribed = false;
+            if (_displayChecked)
+                return;
+            _displayChecked = true;
+            GHAngleAdapterSelection.VerifyCurrentDisplay();
         }
     }
 }

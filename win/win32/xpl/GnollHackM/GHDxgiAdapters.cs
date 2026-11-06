@@ -17,8 +17,8 @@ namespace GnollHackM
         public long DedicatedVideoMemoryMB;
     }
 
-    /* The machine's DXGI adapters, for the WinUI 3 render adapter probe and the Windows Avalonia adapter
-       selection. Nothing here touches GHApp: the WMI adapter list is a parameter. No public method throws;
+    /* The machine's DXGI adapters, for the WinUI 3 render adapter probe and the adapter selections of WinUI 3 and
+       Windows Avalonia. Nothing here touches GHApp: the WMI adapter list is a parameter. No public method throws;
        every failure returns false. Any thread. */
     public static class GHDxgiAdapters
     {
@@ -65,6 +65,10 @@ namespace GnollHackM
         private const int SlotFactory6EnumAdapterByGpuPreference = 29;
         private const int DXGI_GPU_PREFERENCE_MINIMUM_POWER = 1;
         private const int DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE = 2;
+
+        /* IDXGIDevice continues IDXGIObject with GetAdapter at slot 7 */
+        private static readonly Guid IID_IDXGIDevice = new Guid("54ec77fa-1377-44e6-8c32-88fd5f44c84c");
+        private const int SlotDeviceGetAdapter = 7;
 
         /* Appends one GHRenderAdapter per DXGI adapter, in EnumAdapters1 order; false when the
            factory cannot be created or the descriptor layout does not match this process's
@@ -128,6 +132,24 @@ namespace GnollHackM
             {
                 adapter = null;
                 discretePresent = false;
+                return false;
+            }
+        }
+
+        /* The LUID of the adapter a Direct3D 11 device was created on, through IDXGIDevice::GetAdapter. The device
+           reference is borrowed: it is never released here. False, with luid 0, when a query fails. */
+        public static bool TryGetDeviceAdapterLuid(IntPtr d3d11Device, out long luid)
+        {
+            luid = 0;
+            if (d3d11Device == IntPtr.Zero)
+                return false;
+            try
+            {
+                return ReadDeviceAdapterLuid(d3d11Device, out luid);
+            }
+            catch
+            {
+                luid = 0;
                 return false;
             }
         }
@@ -283,6 +305,52 @@ namespace GnollHackM
             {
                 if (adapter != IntPtr.Zero)
                     Marshal.Release(adapter);
+            }
+        }
+
+        /* IDXGIDevice from the device, its adapter, IDXGIAdapter1 from the adapter and the LUID from GetDesc1;
+           releases the three interfaces it obtains and never the device */
+        private static unsafe bool ReadDeviceAdapterLuid(IntPtr d3d11Device, out long luid)
+        {
+            luid = 0;
+            if (sizeof(DXGI_ADAPTER_DESC1) != (IntPtr.Size == 8 ? 312 : 296))
+                return false;
+
+            IntPtr dxgiDevice = IntPtr.Zero;
+            IntPtr adapter = IntPtr.Zero;
+            IntPtr adapter1 = IntPtr.Zero;
+            try
+            {
+                delegate* unmanaged[Stdcall]<IntPtr, Guid*, IntPtr*, int> deviceQueryInterface =
+                    (delegate* unmanaged[Stdcall]<IntPtr, Guid*, IntPtr*, int>)VtableSlot(d3d11Device, SlotUnknownQueryInterface);
+                Guid iidDevice = IID_IDXGIDevice;
+                if (deviceQueryInterface(d3d11Device, &iidDevice, &dxgiDevice) < 0 || dxgiDevice == IntPtr.Zero)
+                    return false;
+                delegate* unmanaged[Stdcall]<IntPtr, IntPtr*, int> getAdapter =
+                    (delegate* unmanaged[Stdcall]<IntPtr, IntPtr*, int>)VtableSlot(dxgiDevice, SlotDeviceGetAdapter);
+                if (getAdapter(dxgiDevice, &adapter) < 0 || adapter == IntPtr.Zero)
+                    return false;
+                delegate* unmanaged[Stdcall]<IntPtr, Guid*, IntPtr*, int> adapterQueryInterface =
+                    (delegate* unmanaged[Stdcall]<IntPtr, Guid*, IntPtr*, int>)VtableSlot(adapter, SlotUnknownQueryInterface);
+                Guid iidAdapter1 = IID_IDXGIAdapter1;
+                if (adapterQueryInterface(adapter, &iidAdapter1, &adapter1) < 0 || adapter1 == IntPtr.Zero)
+                    return false;
+                delegate* unmanaged[Stdcall]<IntPtr, DXGI_ADAPTER_DESC1*, int> getDesc1 =
+                    (delegate* unmanaged[Stdcall]<IntPtr, DXGI_ADAPTER_DESC1*, int>)VtableSlot(adapter1, SlotAdapter1GetDesc1);
+                DXGI_ADAPTER_DESC1 desc = default;
+                if (getDesc1(adapter1, &desc) < 0)
+                    return false;
+                luid = MakeLuid(desc.AdapterLuidLowPart, desc.AdapterLuidHighPart);
+                return true;
+            }
+            finally
+            {
+                if (adapter1 != IntPtr.Zero)
+                    Marshal.Release(adapter1);
+                if (adapter != IntPtr.Zero)
+                    Marshal.Release(adapter);
+                if (dxgiDevice != IntPtr.Zero)
+                    Marshal.Release(dxgiDevice);
             }
         }
 

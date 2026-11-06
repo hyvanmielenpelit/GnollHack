@@ -149,9 +149,10 @@ internal static class AvaloniaDesktopProgram
        draws popups inside the window. The GPU mode, from --win-gpu=<mode> else GNOLLHACK_WIN_GPU, is independent of
        these: AddGpuSelection adds GHWindowsGpuSelection's adapter callback, to new options at Avalonia's defaults when
        this returns null, for auto (the default, also for an unknown mode: the high-performance adapter unless the
-       Windows per-app preference is Power saving), dedicated and integrated; no callback for avalonia (Avalonia's
-       first adapter) or in an ARM64 process, where any callback replaces Avalonia's Adreno rule. The callback applies
-       only to ANGLE on Direct3D 11: with wgl, OpenGL first, it runs only when OpenGL is unavailable. */
+       Windows per-app preference is Power saving), dedicated and integrated; no callback for avalonia or its synonym
+       default (Avalonia's first adapter) or in an ARM64 process, where any callback replaces Avalonia's Adreno rule.
+       The callback applies only to ANGLE on Direct3D 11: with wgl, OpenGL first, it runs only when OpenGL is
+       unavailable. */
     private static Win32PlatformOptions CreateWin32PlatformOptions(string mode)
     {
         Win32RenderingMode[] angle = { Win32RenderingMode.AngleEgl, Win32RenderingMode.Software };
@@ -207,10 +208,10 @@ internal static class AvaloniaDesktopProgram
 
 #if WINDOWS_AVALONIA
     /* The options with the adapter selection callback of the requested GPU mode (see CreateWin32PlatformOptions);
-       options unchanged for avalonia and in an ARM64 process */
+       options unchanged for avalonia or default and in an ARM64 process */
     private static Win32PlatformOptions AddGpuSelection(Win32PlatformOptions options, string gpu)
     {
-        if (gpu == "avalonia")
+        if (gpu == "avalonia" || gpu == "default")
             return options;
         if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
         {

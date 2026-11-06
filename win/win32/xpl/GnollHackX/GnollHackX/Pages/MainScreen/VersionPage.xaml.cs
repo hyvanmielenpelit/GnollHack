@@ -262,8 +262,7 @@ namespace GnollHackX.Pages.MainScreen
 #if WINDOWS || WINDOWS_AVALONIA
             if (GHApp.DeviceGPUs.Count > 1)
             {
-                string activeGPU = GHApp.GetActiveGPU();
-                ActiveGPULabel.Text = activeGPU + " (" + GHApp.DeviceGPUs.Count + " GPUs)";
+                ActiveGPULabel.Text = GetActiveGPUText();
             }
             else
 #endif
@@ -318,6 +317,44 @@ namespace GnollHackX.Pages.MainScreen
             LongTitleLabel.Text = Environment.NewLine + "GnollHack Long Version Identifier:";
             LongLabel.Text = GHApp.GHVersionId;
         }
+
+#if WINDOWS || WINDOWS_AVALONIA
+        /* "<adapter in use> (Windows setting: <GetActiveGPU, or Not set>; <n> GPUs)": the adapter the GPU selection
+           chose, else the default adapter; "<GetActiveGPU> (<n> GPUs)" when no adapter is known */
+        private static string GetActiveGPUText()
+        {
+            string activeGPU = GHApp.GetActiveGPU();
+            int count = GHApp.DeviceGPUs.Count;
+            try
+            {
+                GHRenderAdapter render = null;
+#if WINDOWS_AVALONIA
+                if (!GHWindowsGpuSelection.TryGetRenderAdapter(out render, null))
+                    render = null;
+#else
+                if (!GHAngleAdapterSelection.TryGetRenderAdapter(out render, null))
+                    render = null;
+#endif
+                if (render == null)
+                {
+                    bool discretePresent;
+                    DeviceGPU[] gpus = GHApp.DeviceGPUs.ToArray();
+                    if (!GHDxgiAdapters.TryGetDefaultAdapter(gpus, out render, out discretePresent))
+                        render = null;
+                }
+                if (render != null && !string.IsNullOrWhiteSpace(render.Name))
+                {
+                    string setting = string.IsNullOrEmpty(activeGPU) ? "Not set" : activeGPU;
+                    return render.Name.Trim() + " (Windows setting: " + setting + "; " + count + " GPUs)";
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            return activeGPU + " (" + count + " GPUs)";
+        }
+#endif
 
         private async void CloseButton_Clicked(object sender, EventArgs e)
         {

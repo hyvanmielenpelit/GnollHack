@@ -329,6 +329,12 @@ public partial class App : Application
 #endif
 
         GHApp.Initialize();
+#if WINDOWS
+        // WORKAROUND(WA-SKIASHARP-0012): SKSwapChainPanel cannot choose its Direct3D adapter
+        /* Before any GL view loads, so the main menu's "Multiple GPUs" alert knows the adapter */
+        if (GHApp.UseGPU)
+            GHAngleAdapterSelection.EnsureSelected();
+#endif
 #if IOS
         GnollHackM.Platforms.iOS.StatusBarVisibility.Register();
 #endif
