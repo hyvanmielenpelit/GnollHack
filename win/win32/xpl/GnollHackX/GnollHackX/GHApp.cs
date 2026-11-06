@@ -8665,6 +8665,58 @@ namespace GnollHackX
             return res;
         }
 
+        /* Sends api/savefiletracking/use with no message box and no retry; leaves the credential flags as they are */
+        public static async Task<SendResult> SendSaveFileTrackingUseSilentlyAsync(long timeStamp, string fileName, long fileLength, string sha256hash)
+        {
+            SendResult res = new SendResult();
+            try
+            {
+                string postaddress = XlogPostAddress?.Replace("/xlogfile", "/api/savefiletracking/use");
+                if (postaddress == null || postaddress.Length <= 8 || postaddress.Substring(0, 8) != "https://" || !Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
+                {
+                    res.Message = "Save file tracking address is not available.";
+                    return res;
+                }
+
+                string encryptedId = File.ReadAllText(fileName + GHConstants.SaveFileTrackingSuffix);
+                using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromSeconds(10) })
+                using (MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary"))
+                {
+                    AddSaveFileTrackingFormField(multicontent, "EncryptedId", encryptedId);
+                    AddSaveFileTrackingFormField(multicontent, "UserName", XlogUserName);
+                    AddSaveFileTrackingFormField(multicontent, "Password", XlogPassword);
+                    AddSaveFileTrackingFormField(multicontent, "AntiForgeryToken", XlogAntiForgeryToken);
+                    AddSaveFileTrackingFormField(multicontent, "TimeStamp", timeStamp.ToString());
+                    AddSaveFileTrackingFormField(multicontent, "FileLength", fileLength.ToString());
+                    AddSaveFileTrackingFormField(multicontent, "Sha256", sha256hash);
+
+                    using (HttpResponseMessage response = await client.PostAsync(postaddress, multicontent))
+                    {
+                        res.Message = await response.Content.ReadAsStringAsync();
+                        res.IsSuccess = response.IsSuccessStatusCode;
+                        res.HasHttpStatusCode = true;
+                        res.StatusCode = response.StatusCode;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                res.IsSuccess = false;
+                res.IsException = true;
+                res.Message = ex.Message;
+            }
+            return res;
+        }
+
+        private static void AddSaveFileTrackingFormField(MultipartFormDataContent multicontent, string name, string value)
+        {
+            StringContent content = new StringContent(value ?? "", Encoding.UTF8, "text/plain");
+            ContentDispositionHeaderValue cdhv = new ContentDispositionHeaderValue("form-data");
+            cdhv.Name = name;
+            content.Headers.ContentDisposition = cdhv;
+            multicontent.Add(content);
+        }
+
         public static int GetPortSecurityLevel()
         {
             if (IsiOS || IsAndroid)

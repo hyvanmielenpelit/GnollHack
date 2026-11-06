@@ -821,6 +821,8 @@ namespace GnollHackX.Pages.MainScreen
             string uploadSessionDir = Path.Combine(uploadDir, "files-" + guid);
             
             bool createdToken = false;
+            long trackedSaveLength = 0;
+            string trackedSaveSha256 = "";
             bool isTracked = false;
             long saveTimeStamp = 0;
             BlobContainerClient containerClient = null;
@@ -1051,6 +1053,8 @@ namespace GnollHackX.Pages.MainScreen
                             throw new Exception("Failed to register tracking token on server: " + sResult.Message);
                         }
                         createdToken = true;
+                        trackedSaveLength = saveLength;
+                        trackedSaveSha256 = saveSha;
                     }
                 }
 
@@ -1309,7 +1313,7 @@ namespace GnollHackX.Pages.MainScreen
             catch (OperationCanceledException ex)
             {
                 PopupGrid.IsVisible = false;
-                await CleanUpUploadFailAsync(playerName, uploadSessionDir, isTracked && createdToken, containerClient, cloudFolder, saveTimeStamp);
+                await CleanUpUploadFailAsync(playerName, uploadSessionDir, isTracked && createdToken, trackedSaveLength, trackedSaveSha256, containerClient, cloudFolder, saveTimeStamp);
                 if (ex.Message != "SilentCancel")
                 {
                     await ShowMessagePopupAsync("Cancelled", "Save transfer was cancelled.", "OK");
@@ -1318,7 +1322,7 @@ namespace GnollHackX.Pages.MainScreen
             catch (Exception ex)
             {
                 PopupGrid.IsVisible = false;
-                await CleanUpUploadFailAsync(playerName, uploadSessionDir, isTracked && createdToken, containerClient, cloudFolder, saveTimeStamp);
+                await CleanUpUploadFailAsync(playerName, uploadSessionDir, isTracked && createdToken, trackedSaveLength, trackedSaveSha256, containerClient, cloudFolder, saveTimeStamp);
                 await GHApp.DisplayMessageBox(this, "Upload Failed", "Error during save file upload: " + ex.Message, "OK");
             }
             finally
@@ -1334,7 +1338,7 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        private async Task CleanUpUploadFailAsync(string playerName, string uploadDir, bool consumeToken, BlobContainerClient containerClient, string cloudFolder, long timeStamp)
+        private async Task CleanUpUploadFailAsync(string playerName, string uploadDir, bool consumeToken, long trackedSaveLength, string trackedSaveSha256, BlobContainerClient containerClient, string cloudFolder, long timeStamp)
         {
             try
             {
@@ -1343,10 +1347,12 @@ namespace GnollHackX.Pages.MainScreen
                     string tokenPath = Path.Combine(uploadDir, playerName);
                     if (File.Exists(tokenPath + GHConstants.SaveFileTrackingSuffix))
                     {
-                        long len = 0;
-                        string saveFile = Path.Combine(Path.Combine(GHApp.GHPath, GHConstants.SaveDirectory), playerName);
-                        if (File.Exists(saveFile)) len = new FileInfo(saveFile).Length;
-                        await GHApp.SendSaveFileTrackingLoadRequest(this, timeStamp, tokenPath, len, "", GHApp.SilentMessageValue);
+                        SendResult useResult = await GHApp.SendSaveFileTrackingUseSilentlyAsync(timeStamp, tokenPath, trackedSaveLength, trackedSaveSha256);
+                        if (useResult.IsSuccess)
+                            GHApp.MaybeWriteGHLog("Save transfer upload clean-up: tracking token used");
+                        else
+                            GHApp.MaybeWriteGHLog("Save transfer upload clean-up: tracking token not used: "
+                                + (useResult.HasHttpStatusCode ? ((int)useResult.StatusCode).ToString() : "no response") + ", " + useResult.Message);
                     }
                 }
 
