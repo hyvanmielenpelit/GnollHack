@@ -2105,14 +2105,7 @@ game_in_progress_elsewhere(const char *name)
 void
 show_game_already_running(const char *text)
 {
-    if (open_special_view && iflags.window_inited)
-    {
-        struct special_view_info info = { 0 };
-        info.viewtype = SPECIAL_VIEW_MESSAGE;
-        info.title = "Game Already Running";
-        info.text = text;
-        (void) open_special_view(info);
-    }
+    show_save_name_message("Game Already Running", text);
 }
 
 /* Tells the player why a character name cannot be used */
@@ -2389,14 +2382,14 @@ delete_save_file_tracking_file(void)
 }
 
 /* An imported save file's backup is the regular save file name plus the backup and imported
-   extensions, the order the import writes */
+   extensions, the order the import writes. An imported error save file has no backup of its own. */
 static int
 delete_imported_backup_savefile(void)
 {
     char bakbuf[FQN_MAX_FILENAME + BUFSZ];
     boolean saved_from_error = plname_from_error_savefile;
 
-    if (!sysopt.make_backup_savefiles || !plname_from_imported_savefile || !*plname)
+    if (!sysopt.make_backup_savefiles || !plname_from_imported_savefile || plname_from_error_savefile || !*plname)
         return -1;
 
     plname_from_error_savefile = FALSE;

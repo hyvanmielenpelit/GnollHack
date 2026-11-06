@@ -111,6 +111,7 @@ struct save_game_stats {
 #define SAME_NAME_SAVE_IMPORTED     0x02 /* imported save of this mode */
 #define SAME_NAME_SAVE_RUNNING      0x04 /* running or crashed game of this mode */
 #define SAME_NAME_SAVE_OTHER_MODE   0x08 /* any save or running game of the other mode */
+#define SAME_NAME_SAVE_OTHER_MODE_IMPORTED 0x10 /* with OTHER_MODE: an imported save among them */
 
 struct save_game_data {
     char* playername;

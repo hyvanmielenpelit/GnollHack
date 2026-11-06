@@ -129,11 +129,12 @@ void lib_player_selection(void)
     }
 }
 
-/* Checks plname against the existing saves before a new character takes it. Returns 0 when the
-   name is free or its saves were deleted on Yes, 'l' to load the existing character, 'n' to ask
-   for another name, and 'q' to quit. */
+/* Checks plname against the existing saves before a new character takes it; allow_load offers
+   to load the existing character, and include_running refuses the name of a crashed game of this
+   mode. Returns 0 when the name is free or its saves were deleted on Yes, 'l' to load the existing
+   character, 'n' to ask for another name, and 'q' to quit. */
 static char
-lib_check_existing_character(boolean allow_load)
+lib_check_existing_character(boolean allow_load, boolean include_running)
 {
     char qbuf[BUFSZ + PL_NSIZ] = "";
     char ans;
@@ -142,24 +143,6 @@ lib_check_existing_character(boolean allow_load)
 
     plname_from_error_savefile = FALSE;
     plname_from_imported_savefile = FALSE;
-    /* Running games of this mode recover by name, except during a rename */
-    matches = check_same_name_saves(!allow_load, &load_error, &load_imported);
-
-    if (matches & SAME_NAME_SAVE_OTHER_MODE)
-    {
-        Sprintf(qbuf, "There is already a %s character named \'%s\'. Tournament and regular characters cannot share a name, so choose another name.",
-            TournamentMode ? "regular" : "tournament", plname);
-        show_save_name_message("Name Already in Use", qbuf);
-        return 'n';
-    }
-    if (matches & SAME_NAME_SAVE_RUNNING)
-    {
-        Sprintf(qbuf, "A game for a character named \'%s\' did not end properly and can still be recovered, so choose another name.", plname);
-        show_save_name_message("Name Already in Use", qbuf);
-        return 'n';
-    }
-    if (!(matches & (SAME_NAME_SAVE_REGULAR | SAME_NAME_SAVE_IMPORTED)))
-        return 0;
 
     if (game_in_progress_elsewhere(plname))
     {
@@ -169,12 +152,37 @@ lib_check_existing_character(boolean allow_load)
         return 'n';
     }
 
+    matches = check_same_name_saves(include_running, &load_error, &load_imported);
+
+    if (matches & SAME_NAME_SAVE_OTHER_MODE)
+    {
+        if (TournamentMode && (matches & SAME_NAME_SAVE_OTHER_MODE_IMPORTED))
+            Sprintf(qbuf, "There is already an imported character named \'%s\'. Imported games cannot be played in tournament mode, so choose another name.", plname);
+        else
+            Sprintf(qbuf, "There is already a %s character named \'%s\'. Tournament and regular characters cannot share a name, so choose another name.",
+                TournamentMode ? "regular" : "tournament", plname);
+        show_save_name_message("Name Already in Use", qbuf);
+        return 'n';
+    }
+    if (matches & SAME_NAME_SAVE_RUNNING)
+    {
+        Sprintf(qbuf, "A game for a character named \'%s\' did not end properly and can still be recovered. Choose another name, or recover that game from the saved games list.", plname);
+        show_save_name_message("Name Already in Use", qbuf);
+        return 'n';
+    }
+    if (!(matches & (SAME_NAME_SAVE_REGULAR | SAME_NAME_SAVE_IMPORTED)))
+        return 0;
+
     if (!(matches & SAME_NAME_SAVE_IMPORTED))
         Sprintf(qbuf, "There is already a saved game for a character named \'%s\'. Do you want to overwrite the save file and delete the existing character?", plname);
     else if (!(matches & SAME_NAME_SAVE_REGULAR))
         Sprintf(qbuf, "There is already an imported saved game for a character named \'%s\'. Do you want to overwrite the save file and delete the existing character?", plname);
     else
+    {
         Sprintf(qbuf, "There are already saved games for characters named \'%s\', one of them imported. Do you want to overwrite the save files and delete the existing characters?", plname);
+        if (allow_load)
+            Strcat(qbuf, " Load continues the one that was not imported.");
+    }
 
     if (allow_load)
         ans = lib_yn_function_ex(YN_STYLE_GENERAL, ATR_NONE, CLR_RED, NO_GLYPH, "Overwrite Existing Character?",
@@ -192,6 +200,13 @@ lib_check_existing_character(boolean allow_load)
         plname_from_error_savefile = load_error;
         plname_from_imported_savefile = load_imported;
         set_savefile_name(TRUE);
+        if (load_imported && !confirm_imported_load())
+        {
+            plname_from_error_savefile = FALSE;
+            plname_from_imported_savefile = FALSE;
+            set_savefile_name(TRUE);
+            return 'n';
+        }
         return 'l';
     case 'q':
         return 'q';
@@ -249,7 +264,7 @@ void lib_askname(void)
 
                         Strncpy(plname, ansbuf, PL_NSIZ - 1);
                         plname[PL_NSIZ - 1] = '\0';
-                        char ans = lib_check_existing_character(TRUE);
+                        char ans = lib_check_existing_character(TRUE, TRUE);
                         if (ans == 'l')
                         {
                             return;
@@ -304,8 +319,8 @@ void lib_askname(void)
             Strncpy(plname, ansbuf, PL_NSIZ - 1);
             plname[PL_NSIZ - 1] = '\0';
 
-            /* A rename during role selection cannot load the existing character */
-            char ans = lib_check_existing_character(!iflags.renameinprogress);
+            /* A rename during role selection can neither load nor recover the existing character */
+            char ans = lib_check_existing_character(!iflags.renameinprogress, iflags.renameinprogress);
             if (ans == 'q')
                 lib_bail((char*)0); /* quit */
             else if (ans == 'n')

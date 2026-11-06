@@ -2233,14 +2233,6 @@ restore_menu(winid bannerwin)
                 plname_from_error_savefile = saved[ccg_saveno].is_error_save_file;
                 plname_from_imported_savefile = saved[ccg_saveno].is_imported_save_file;
                 repeat = FALSE;
-                if (!confirm_imported_load())
-                {
-                    *plname = 0;
-                    plname_from_error_savefile = FALSE;
-                    plname_from_imported_savefile = FALSE;
-                    ch = 0;
-                    repeat = TRUE;
-                }
             }
             else /* Start new game; something's wrong */
             {
@@ -2553,6 +2545,8 @@ check_same_name_saves(boolean include_running, boolean *error_ptr, boolean *impo
             if (is_tournament_save != (TournamentMode != 0) || (TournamentMode && saved[i].is_imported_save_file))
             {
                 res |= SAME_NAME_SAVE_OTHER_MODE;
+                if (saved[i].is_imported_save_file)
+                    res |= SAME_NAME_SAVE_OTHER_MODE_IMPORTED;
             }
             else if (saved[i].is_running)
             {
@@ -2589,16 +2583,31 @@ check_same_name_saves(boolean include_running, boolean *error_ptr, boolean *impo
 }
 
 /* TRUE if the imported save for plname may be loaded. A regular save of the same name would be
-   overwritten by it, so the player is asked first, and on Yes its file set is deleted. */
+   overwritten by it, so the player is asked first, and on Yes its file set is deleted. A crashed
+   game of the same name would be recovered into the imported save file, so the load is refused
+   while one exists. */
 boolean
 confirm_imported_load(void)
 {
     char qbuf[BUFSZ + PL_NSIZ];
     boolean saved_from_error = plname_from_error_savefile;
+    int matches;
 
     if (!plname_from_imported_savefile)
         return TRUE;
-    if (!(check_same_name_saves(FALSE, (boolean *)0, (boolean *)0) & SAME_NAME_SAVE_REGULAR))
+
+    matches = check_same_name_saves(TRUE, (boolean *)0, (boolean *)0);
+    if (matches & SAME_NAME_SAVE_RUNNING)
+    {
+        Sprintf(qbuf, "A game for \'%s\' did not end properly. Recover or delete that game first, then load the imported game.", plname);
+#ifdef GNH_MOBILE
+        show_save_name_message("Game Not Recovered", qbuf);
+#else
+        pline1(qbuf);
+#endif
+        return FALSE;
+    }
+    if (!(matches & SAME_NAME_SAVE_REGULAR))
         return TRUE;
 
     Sprintf(qbuf, "There is also a saved game for \'%s\' that was not imported. Loading the imported game replaces it, and that game and its backup will be deleted. Do you want to continue?", plname);
