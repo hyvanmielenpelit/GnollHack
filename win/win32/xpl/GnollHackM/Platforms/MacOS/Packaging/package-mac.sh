@@ -15,7 +15,7 @@
 # unlocked here with the password in --keychain-password-file.
 #
 # <input> holds publish/ (the dotnet publish output) and packaging/ (Info.plist.template, GnollHack.entitlements,
-# appicon.png, steam/*.template). Results go to <output>: the zipped app, the DMG, SHA256SUMS, BUILD-INFO,
+# appicon.png, steam/*.template). Results go to <output>: the zipped app, the DMG, their .SHA256SUMS, BUILD-INFO,
 # symbols/ and steam/, plus steam.tar and steam-content.sha256 for Build-MacPackage.ps1's copy to Windows.
 # Errors are printed as "package-mac.sh : error GNHMP1nn: ..." and end the script with exit code 1.
 
@@ -268,7 +268,7 @@ fi
     done
     if [ -n "$files" ]; then
         # shellcheck disable=SC2086
-        shasum -a 256 $files > SHA256SUMS
+        shasum -a 256 $files > "$BASE_NAME.SHA256SUMS"
     fi
 )
 {

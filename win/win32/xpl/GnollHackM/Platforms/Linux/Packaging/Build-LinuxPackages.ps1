@@ -485,7 +485,7 @@ for name in "$APPIMAGE_NAME" "$TARGZ_NAME"; do
     fi
 done
 if [ "${#sums[@]}" -gt 0 ]; then
-    sha256sum -- "${sums[@]}" > SHA256SUMS
+    sha256sum -- "${sums[@]}" > "$SUMS_NAME"
 fi
 echo "Copying the outputs to $WIN_OUT"
 mkdir -p "$WIN_OUT"
@@ -660,6 +660,7 @@ if ($BuildNumber -notmatch '^\d+$')
 $Version = "$DisplayVersion.$BuildNumber"
 $AppImageName = "GnollHack-$Version-x86_64.AppImage"
 $TarGzName = "GnollHack-$Version-linux-x64.tar.gz"
+$SumsName = "GnollHack-$Version-linux-x64.SHA256SUMS"
 $VersionOutputDir = Join-Path $OutputRootFull $Version
 
 Write-Host "Version $Version; targets: $($Targets -join ', ')"
@@ -715,6 +716,7 @@ $wslVariables = [ordered]@{
     VERSION             = $Version
     APPIMAGE_NAME       = $AppImageName
     TARGZ_NAME          = $TarGzName
+    SUMS_NAME           = $SumsName
     PUBLISH_DIR         = (ConvertTo-WslPath $PublishDir)
     PACKAGING_DIR       = (ConvertTo-WslPath $PackagingDir)
     WIN_OUT             = (ConvertTo-WslPath $VersionOutputDir)
@@ -792,7 +794,7 @@ try
         Invoke-WslScript -StepName 'Steam' -Body $BashSteam -Variables $wslVariables -Common $BashCommon -Distro $WslDistro
     }
 
-    Write-Step 'Writing SHA256SUMS and copying the outputs'
+    Write-Step "Writing $SumsName and copying the outputs"
     Invoke-WslScript -StepName 'checksums' -Body $BashFinish -Variables $wslVariables -Common $BashCommon -Distro $WslDistro
 }
 finally
@@ -824,7 +826,7 @@ if ($BuildTarGz)
 }
 if ($BuildAppImage -or $BuildTarGz)
 {
-    $outputNames += 'SHA256SUMS'
+    $outputNames += $SumsName
 }
 
 foreach ($name in $outputNames)

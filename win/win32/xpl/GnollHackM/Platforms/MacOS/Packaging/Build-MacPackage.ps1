@@ -7,7 +7,7 @@
     Publishes GnollHackM.csproj for osx-arm64 as a single file (native libraries and content left beside the
     apphost), stages the publish with the packaging files (LF copies of package-mac.sh, Info.plist.template,
     GnollHack.entitlements and the Steam templates, plus appicon.png), copies the tar file to the Mac with scp and runs
-    package-mac.sh there. The zipped app, the DMG, SHA256SUMS and BUILD-INFO are copied back to
+    package-mac.sh there. The zipped app, the DMG, their .SHA256SUMS and BUILD-INFO are copied back to
     <OutputRoot>\<version>-<build>\. With the Steam target, the depot content and its build scripts are copied back to
     its steam\ folder too, each file checked against its SHA-256 on the Mac, and stay on the Mac as well. A person
     uploads them with ContentBuilder or steamcmd from either; this script never uploads and never starts the game.
@@ -440,7 +440,7 @@ New-Item -ItemType Directory -Force $LocalResults | Out-Null
 $remoteFiles = @('BUILD-INFO')
 if ($Targets -contains 'App' -or $Targets -contains 'Dmg')
 {
-    $remoteFiles += 'SHA256SUMS'
+    $remoteFiles += ('GnollHack-{0}-macos-arm64.SHA256SUMS' -f $Version)
 }
 if ($Targets -contains 'App')
 {
