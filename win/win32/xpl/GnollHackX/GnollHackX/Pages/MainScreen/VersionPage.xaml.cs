@@ -240,6 +240,25 @@ namespace GnollHackX.Pages.MainScreen
             WinAppSDKRowDefinition.Height = 0;
 #endif
 
+#if GNH_AVALONIA
+            AvaloniaLabel.Text = !string.IsNullOrEmpty(GHApp.AvaloniaVersionString) ? GHApp.AvaloniaVersionString : "?";
+            AvaloniaMauiLabel.Text = !string.IsNullOrEmpty(GHApp.AvaloniaMauiVersionString) ? GHApp.AvaloniaMauiVersionString : "?";
+#else
+            AvaloniaLabel.Text = "";
+            AvaloniaLabel.IsVisible = false;
+            AvaloniaTitleLabel.IsVisible = false;
+            VersionInfoGrid.Children.Remove(AvaloniaLabel);
+            VersionInfoGrid.Children.Remove(AvaloniaTitleLabel);
+            AvaloniaRowDefinition.Height = 0;
+
+            AvaloniaMauiLabel.Text = "";
+            AvaloniaMauiLabel.IsVisible = false;
+            AvaloniaMauiTitleLabel.IsVisible = false;
+            VersionInfoGrid.Children.Remove(AvaloniaMauiLabel);
+            VersionInfoGrid.Children.Remove(AvaloniaMauiTitleLabel);
+            AvaloniaMauiRowDefinition.Height = 0;
+#endif
+
 #if WINDOWS || WINDOWS_AVALONIA
             if (GHApp.DeviceGPUs.Count > 1)
             {
@@ -282,7 +301,8 @@ namespace GnollHackX.Pages.MainScreen
             FMODVersionLabel.Text = GHApp.FMODVersionString;
             SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
             FrameworkVersionLabel.Text = GHApp.FrameworkVersionString;
-            UIFrameworkVersionLabel.Text = (GHApp.IsMaui ? ".NET MAUI " : "XF ") + GHApp.UIFrameworkVersionString;
+            UIFrameworkVersionLabel.Text = (GHApp.IsMaui ? ".NET MAUI " : "XF ")
+                + (!string.IsNullOrEmpty(GHApp.UIFrameworkFullVersionString) ? GHApp.UIFrameworkFullVersionString : GHApp.UIFrameworkVersionString);
             CompilerLabel.Text = GHApp.IsLLVM ? "LLVM" : GHApp.IsCoreCLR ? "Crossgen2" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT";
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;

@@ -160,6 +160,10 @@ namespace GnollHackX
             data.StringData["SkiaVersion"] = GHApp.SkiaVersionString;
             data.StringData["FrameworkVersion"] = GHApp.FrameworkVersionString;
             data.StringData["UIFrameworkVersion"] = (GHApp.IsMaui ? ".NET MAUI " : "XF ") + GHApp.UIFrameworkVersionString;
+#if GNH_AVALONIA
+            data.StringData["AvaloniaVersion"] = GHApp.AvaloniaVersionString ?? "";
+            data.StringData["AvaloniaMauiVersion"] = GHApp.AvaloniaMauiVersionString ?? "";
+#endif
             data.StringData["Compiler"] = GHApp.IsLLVM ? "LLVM" : GHApp.IsCoreCLR ? "Crossgen2" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT";
             data.StringData["RuntimeVersion"] = GHApp.RuntimeVersionString;
             data.StringData["GPUBackend"] = GHApp.GPUBackend ?? "";
@@ -4674,6 +4678,9 @@ namespace GnollHackX
         public static string FMODVersionString { get; set; }
         public static string FrameworkVersionString { get; set; }
         public static string UIFrameworkVersionString { get; set; }
+        public static string UIFrameworkFullVersionString { get; set; }
+        public static string AvaloniaVersionString { get; set; }
+        public static string AvaloniaMauiVersionString { get; set; }
         public static string RuntimeVersionString { get; set; }
 
         public static string GHPath { get; private set; } = ".";

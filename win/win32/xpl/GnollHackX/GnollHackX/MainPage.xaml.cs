@@ -1476,6 +1476,9 @@ namespace GnollHackX
             string skiasharpverstr = "?";
             string frameworkverstr = "?";
             string frameworkUIverstr = "?";
+            string frameworkUIfullverstr = "";
+            string avaloniaverstr = "";
+            string avaloniamauiverstr = "";
             string runtimeverstr = "?";
             ulong vernum = 0UL;
             ulong vercompat = 0UL;
@@ -1509,6 +1512,7 @@ namespace GnollHackX
                     {
                         pverstr = pverstr.Substring(0, plusIdx);
                     }
+                    frameworkUIfullverstr = pverstr;
                     int minusIdx = pverstr.IndexOf("-");
                     if (minusIdx > 0)
                     {
@@ -1544,6 +1548,17 @@ namespace GnollHackX
             {
                 Debug.WriteLine(ex.Message);
             }
+#if GNH_AVALONIA
+            try
+            {
+                avaloniaverstr = GetInformationalVersionWithoutMetadata(typeof(Avalonia.AvaloniaObject).Assembly);
+                avaloniamauiverstr = GetInformationalVersionWithoutMetadata(Assembly.Load(new AssemblyName("Avalonia.Controls.Maui")));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
             GHApp.GHVersionString = verstr;
             GHApp.GHVersionNumber = vernum;
             GHApp.GHVersionCompatibility = vercompat;
@@ -1554,6 +1569,9 @@ namespace GnollHackX
             GHApp.SkiaSharpVersionString = skiasharpverstr;
             GHApp.FrameworkVersionString = frameworkverstr;
             GHApp.UIFrameworkVersionString = frameworkUIverstr;
+            GHApp.UIFrameworkFullVersionString = frameworkUIfullverstr;
+            GHApp.AvaloniaVersionString = avaloniaverstr;
+            GHApp.AvaloniaMauiVersionString = avaloniamauiverstr;
             GHApp.RuntimeVersionString = runtimeverstr;
 
             //VersionLabel.Text = verid;
@@ -1642,6 +1660,18 @@ namespace GnollHackX
 
             GHApp.DebugCheckCurrentFileDescriptor("StartUpTasksFinish");
         }
+
+#if GNH_AVALONIA
+        /* The informational version without its "+<commit>" build metadata, or "?" */
+        private static string GetInformationalVersionWithoutMetadata(Assembly assembly)
+        {
+            string version = assembly?.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion;
+            if (string.IsNullOrWhiteSpace(version))
+                return "?";
+            int plusIdx = version.IndexOf('+');
+            return plusIdx > 0 ? version.Substring(0, plusIdx) : version;
+        }
+#endif
 
         private void CleanDirectories()
         {
