@@ -855,13 +855,11 @@ namespace GnollHackX.Pages.MainScreen
                 containerClient = blobServiceClient.GetBlobContainerClient(containerName);
                 await GHApp.CheckCreateSaveTransferContainer(containerName);
 
-                // Look for active locks or manifests for this player.
-                // Collect all manifest blobs first so we can prompt once for all of them
-                // rather than once per blob (FIX-U2).
+                // Look for active locks for this player. Other cloud saves of the same name are kept:
+                // each upload has its own folder, and a download asks before replacing a local save.
                 string prefix = $"{GHApp.XlogUserName}/";
                 var blobSegment = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: token);
                 var enumerator = blobSegment.GetAsyncEnumerator();
-                int existingManifestCount = 0;
                 try
                 {
                     while (await enumerator.MoveNextAsync())
@@ -891,28 +889,11 @@ namespace GnollHackX.Pages.MainScreen
                                 }
                             }
                         }
-                        else if (item.Name.Contains($"/{playerName}-") && item.Name.EndsWith(".json"))
-                        {
-                            existingManifestCount++;
-                        }
                     }
                 }
                 finally
                 {
                     await enumerator.DisposeAsync();
-                }
-
-                // Single overwrite prompt for all existing manifests (FIX-U2)
-                if (existingManifestCount > 0)
-                {
-                    string manifestMsg = existingManifestCount == 1
-                        ? "A save file for this character already exists in the cloud. It will be replaced. Proceed?"
-                        : $"{existingManifestCount} existing cloud saves for this character were found. They will all be replaced. Proceed?";
-                    bool overwrite = await ShowMessagePopupAsync("Save Already in Cloud", manifestMsg, "Yes", "No", titleColor: GHColors.Red);
-                    if (!overwrite)
-                    {
-                        throw new Exception("Transfer aborted: Overwrite declined.");
-                    }
                 }
 
                 // 3a. Cleanup before start â€” find a usable temp directory
@@ -1430,9 +1411,12 @@ namespace GnollHackX.Pages.MainScreen
                         cloudFile.ModeDescription, cloudFile.TurnCount, cloudFile.SaveFlags);
 
                     bool overwrite = await ShowMessagePopupAsync(
-                        "Local Conflict",
-                        $"A local save named '{playerName}' already exists {localInfo}.\n" +
-                        $"This will be overwritten with the cloud version {cloudInfo}.\nProceed?",
+                        "Local Conflicting Save",
+                        $"A local save named '{playerName}' already exists:\n\n" +
+                        $"{localInfo}\n\n" +
+                        "This will be overwritten with the cloud version:\n\n" +
+                        $"{cloudInfo}\n\n" +
+                        "Proceed?",
                         "Yes", "No", titleColor: GHColors.Red);
                     if (!overwrite)
                     {
@@ -1974,7 +1958,7 @@ namespace GnollHackX.Pages.MainScreen
             else 
                 parts.Add("Classic mode");
 
-            return parts.Count > 0 ? "(" + string.Join(", ", parts) + ")" : "";
+            return string.Join(", ", parts);
         }
 
         /* Gamepad focus: the save rows, the transfer mode picker, Transfer and Close; the rows are added after each
