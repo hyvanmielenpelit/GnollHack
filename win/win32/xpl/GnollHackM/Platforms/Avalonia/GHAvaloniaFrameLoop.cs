@@ -103,8 +103,9 @@ namespace GnollHackM
         }
 
         /* 0 until GHRefreshRateEstimator.MinimumCount frame deltas exist. Reflects the display while the
-           swap interval is applied, or when it is within the snap tolerance of the monitor's refresh rate;
-           otherwise it is the frame rate Avalonia's render timer delivers. */
+           swap interval is applied or Windows' render timer is vsync paced, or when it is within the snap
+           tolerance of the monitor's refresh rate; otherwise it is the frame rate Avalonia's render timer
+           delivers. */
         public static float EstimatedRefreshRate
         {
             get { return Volatile.Read(ref _estimatedRefreshRate); }
@@ -265,15 +266,48 @@ namespace GnollHackM
             }
         }
 
-        /* UI thread; 0 when unknown */
+        /* UI thread; 0 when unknown. A changed rate starts the estimate over, so that deltas from before a display
+           mode change or a move to another monitor do not mix with those after it; the previous estimate stays
+           published until the new one has enough deltas. */
         public static void SetMonitorRefreshRate(int hz)
         {
-            _estimator.MonitorRefreshRate = hz > 0 ? hz : 0;
+            int rate = hz > 0 ? hz : 0;
+            if (rate == (int)_estimator.MonitorRefreshRate)
+                return;
+            _estimator.MonitorRefreshRate = rate;
+            _estimator.Reset();
+        }
+
+        /* -1 until known: whether Avalonia's Windows render timer follows the display's vblank or the compositor's
+           clock, as DxgiConnection, WinUiCompositorConnection and DirectCompositionConnection do, unlike the
+           sleep-paced SleepLoopRenderTimer of the redirection surface */
+        private static int _windowsTimerVsyncPaced = -1;
+
+        private static bool IsWindowsTimerVsyncPaced()
+        {
+            if (_windowsTimerVsyncPaced < 0)
+            {
+                if (!OperatingSystem.IsWindows())
+                {
+                    _windowsTimerVsyncPaced = 0;
+                }
+                else
+                {
+                    string name = AvaloniaDesktopProgram.WindowsRenderTimerName;
+                    if (name == null)
+                        return false;
+                    _windowsTimerVsyncPaced = name == "DxgiConnection" || name == "WinUiCompositorConnection"
+                        || name == "DirectCompositionConnection" ? 1 : 0;
+                    GHApp.MaybeWriteGHLog("Avalonia frame loop: render timer " + name + ", "
+                        + (_windowsTimerVsyncPaced == 1 ? "vsync paced" : "not vsync paced"));
+                }
+            }
+            return _windowsTimerVsyncPaced == 1;
         }
 
         private static void UpdateEstimate(double deltaMs)
         {
-            _estimator.VsyncPaced = SwapIntervalState == GHSwapIntervalState.Applied;
+            _estimator.VsyncPaced = SwapIntervalState == GHSwapIntervalState.Applied || IsWindowsTimerVsyncPaced();
             if (!_estimator.AddDelta(deltaMs))
                 return;
 

@@ -182,13 +182,18 @@ internal static class AvaloniaDesktopProgram
         };
     }
 
+    /* Windows: the type name of the render timer Avalonia applied, such as DxgiConnection or SleepLoopRenderTimer;
+       null until Avalonia's setup is done */
+    internal static string WindowsRenderTimerName { get; private set; }
+
     /* After Avalonia's setup, when the render loop and graphics are bound: the requested mode, the render timer that
        shows which composition mode was applied, the platform graphics, and whether Steam's overlay renderer is in the
        process, now and once more after SteamOverlayRecheckMs, since Steam may inject it after the start */
     private static void LogWindowsGraphics(string requestedMode)
     {
+        WindowsRenderTimerName = GetLocatorServiceTypeName("Avalonia.Rendering.IRenderLoop, Avalonia.Base", "Timer");
         Console.Error.WriteLine("GnollHack: Windows composition request " + (requestedMode ?? "default")
-            + "; render timer " + GetLocatorServiceTypeName("Avalonia.Rendering.IRenderLoop, Avalonia.Base", "Timer")
+            + "; render timer " + WindowsRenderTimerName
             + "; platform graphics " + GetLocatorServiceTypeName("Avalonia.Platform.IPlatformGraphics, Avalonia.Base", null));
         LogSteamOverlay();
         _steamOverlayRecheck = new System.Threading.Timer(state => LogSteamOverlay(), null, SteamOverlayRecheckMs, System.Threading.Timeout.Infinite);
