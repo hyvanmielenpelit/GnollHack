@@ -112,12 +112,12 @@ Checks:
 - Component: sentry-dotnet
 - Package: Sentry, Sentry.Maui
 - Defective version: Sentry 6.12.1
-- Platforms: Windows (MAUI), Linux, macOS
+- Platforms: Windows, Linux, macOS
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-05
-- Code: `win/win32/xpl/GnollHackM/GHSentryNative.cs` (`GHSentryNative`); `win/win32/xpl/GnollHackM/GHSentryNativeScopeObserver.cs` (`GHSentryNativeScopeObserver`); `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`SentryNative`)
+- Last checked: 2026-11-06
+- Code: `win/win32/xpl/GnollHackM/GHSentryNative.cs` (`GHSentryNative`); `win/win32/xpl/GnollHackM/GHSentryNativeScopeObserver.cs` (`GHSentryNativeScopeObserver`); `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`SentryNative`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaSentry.cs` (`GHAvaloniaSentry.Init`)
 - Remove when: Sentry .NET starts its native SDK, with scope sync and crash upload, in JIT builds on Windows, Linux and macOS, GnollHack uses that release, and Verify removal passes.
 - Related: WA-SENTRY-0004
 
@@ -147,6 +147,7 @@ so Sentry .NET never starts a second sentry-native beside it.
 Checks:
 - 2026-10-23 | Sentry 6.12.1, Sentry.Maui 6.12.1 | still-needed | No upstream issue found; the comment states the SDK's native support is limited to trimmed or Native AOT builds.
 - 2026-11-05 | Sentry 6.12.1 | still-needed | macOS: the osx static library is linked only by Native AOT (Sentry.Native.targets); libgnhsentry.dylib added.
+- 2026-11-06 | Sentry 6.12.1 | still-needed | Windows (Avalonia): the flavor uses the same sentry-native path as WinUI 3, gnhsentry.dll through GHSentryNative with SentryNative=false.
 
 ## WA-SENTRY-0004: SentrySdk.CaptureEnvelope can drop native-only event fields
 

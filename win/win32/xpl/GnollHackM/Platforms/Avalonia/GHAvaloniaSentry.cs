@@ -1,13 +1,13 @@
-#if GNH_AVALONIA && (LINUX || MACOS) && SENTRY
+#if GNH_AVALONIA && (LINUX || MACOS || WINDOWS_AVALONIA) && SENTRY
 using System;
 using System.IO;
 using GnollHackX;
 
 namespace GnollHackM
 {
-    /* Sentry for the Linux and macOS builds, through the core SDK: Sentry.Maui is not used on the Avalonia backend.
-       Both also run sentry-native for native crashes, and Sentry .NET's own handler reports a terminating managed
-       exception. */
+    /* Sentry for the Linux, macOS and Windows builds, through the core SDK: Sentry.Maui is not used on the Avalonia
+       backend. All three also run sentry-native for native crashes, and Sentry .NET's own handler reports a
+       terminating managed exception. */
     internal static class GHAvaloniaSentry
     {
         public static void Init()
@@ -33,6 +33,7 @@ namespace GnollHackM
                    mount on Linux, because AppRun changes into $APPDIR/gnollhack, and / for an app started from
                    Finder on macOS */
                 string databaseDirectory = Path.Combine(GHAvaloniaPaths.DataDirectory, "sentry-native");
+                // WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT desktop builds
                 /* Before SentrySdk.Init, which reads CrashedLastRun */
                 bool nativeInitialized = GHSentryNative.Init(dsn, release, environment, debug, databaseDirectory, out bool crashedLastRun);
 
@@ -69,6 +70,9 @@ namespace GnollHackM
                         if (@event == null)
                             return null;
                         GHSentryEventFallback.Apply(@event);
+#if WINDOWS_AVALONIA
+                        NativeLibraryPreflightWindows.AddToEvent(@event);
+#endif
                         return @event;
                     });
                 });
@@ -85,11 +89,17 @@ namespace GnollHackM
                     scope.SetTag(GHConstants.SentryTagLinuxSession, session);
                     scope.SetTag(GHConstants.SentryTagLinuxGlibc, glibc);
                 });
-#else
+#elif MACOS
                 string macPackage = GetMacPackage();
                 SentrySdk.ConfigureScope(scope =>
                 {
                     scope.SetTag(GHConstants.SentryTagMacPackage, macPackage);
+                });
+#elif WINDOWS_AVALONIA
+                string windowsPackage = GetWindowsPackage();
+                SentrySdk.ConfigureScope(scope =>
+                {
+                    scope.SetTag(GHConstants.SentryTagWindowsPackage, windowsPackage);
                 });
 #endif
 
@@ -176,7 +186,7 @@ namespace GnollHackM
                 return "unknown";
             }
         }
-#else
+#elif MACOS
         /* steam when Steam started the game, bundle for an .app, unbundled for the development copy */
         private static string GetMacPackage()
         {
@@ -186,6 +196,22 @@ namespace GnollHackM
                 if (!string.IsNullOrEmpty(steamAppId) && steamAppId != "0")
                     return "steam";
                 return AppContext.BaseDirectory.IndexOf(".app/Contents/MacOS/", StringComparison.OrdinalIgnoreCase) >= 0 ? "bundle" : "unbundled";
+            }
+            catch (Exception)
+            {
+                return "unknown";
+            }
+        }
+#elif WINDOWS_AVALONIA
+        /* steam when Steam started the game, otherwise unbundled */
+        private static string GetWindowsPackage()
+        {
+            try
+            {
+                string steamAppId = Environment.GetEnvironmentVariable("SteamAppId");
+                if (!string.IsNullOrEmpty(steamAppId) && steamAppId != "0")
+                    return "steam";
+                return "unbundled";
             }
             catch (Exception)
             {

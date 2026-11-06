@@ -5,6 +5,7 @@ using GnollHackX;
 using Microsoft.Maui.ApplicationModel;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Storage;
+using AvOverlayLayer = Avalonia.Controls.Primitives.OverlayLayer;
 using AvWindow = Avalonia.Controls.Window;
 using AvWindowState = Avalonia.Controls.WindowState;
 
@@ -38,6 +39,9 @@ namespace GnollHackM
 #if MACOS
             Avalonia.Controls.NativeMenu.SetMenu(window, GHMacApplicationMenu.CreateWindowMenu());
 #endif
+#if WINDOWS_AVALONIA
+            GHAvaloniaWindowsKeyHook.Start(window);
+#endif
 
             /* Windowed Mode is read at startup; a changed setting applies after a restart, as on WinUI */
             bool fullScreen = GHApp.IsFullScreenForced || !Preferences.Get("WindowedMode", false);
@@ -69,6 +73,11 @@ namespace GnollHackM
             window.Opened += (sender, e) =>
             {
                 GHAvaloniaDeviceDisplay.Current?.OnWindowOpened(window);
+                if (OperatingSystem.IsWindows())
+                    AttachPresentKeepAlive(window);
+#if WINDOWS_AVALONIA
+                AttachFullScreenRefit(window);
+#endif
                 GHAvaloniaFrameLoop.Start(window);
                 reportTimer.Start();
             };
@@ -77,6 +86,11 @@ namespace GnollHackM
             {
                 reportTimer.Stop();
                 GHAvaloniaFrameLoop.Stop();
+                GHAvaloniaFrameLoop.SetPresentKeepAlive(null);
+#if WINDOWS_AVALONIA
+                GHAvaloniaWindowsKeyHook.Stop();
+                DetachFullScreenRefit(window);
+#endif
                 GHAvaloniaKeyboard.Detach(window);
                 GHAvaloniaFocusGuard.Detach(window);
                 GHAvaloniaKeyLog.Detach(window);
@@ -89,6 +103,132 @@ namespace GnollHackM
                     MainWindow = null;
             };
         }
+
+        /* Windows: a control in the window's overlay layer that the frame loop pulses while Steam's overlay is in the
+           process, so that Avalonia keeps presenting frames for the overlay to draw on */
+        private static void AttachPresentKeepAlive(AvWindow window)
+        {
+            try
+            {
+                AvOverlayLayer layer = AvOverlayLayer.GetOverlayLayer(window);
+                if (layer == null)
+                {
+                    GHApp.MaybeWriteGHLog("GHAvaloniaWindowHooks: no overlay layer for the present keep-alive");
+                    return;
+                }
+                GHAvaloniaPresentKeepAlive keepAlive = new GHAvaloniaPresentKeepAlive();
+                layer.Children.Add(keepAlive);
+                GHAvaloniaFrameLoop.SetPresentKeepAlive(keepAlive);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHAvaloniaWindowHooks: cannot attach the present keep-alive: " + ex.Message);
+            }
+        }
+
+#if WINDOWS_AVALONIA
+        private static Avalonia.Controls.Screens _refitScreens = null;
+        private static bool _fullScreenRefitQueued = false;
+        private static bool _fullScreenRefitPending = false;
+
+        // WORKAROUND(WA-AVALONIA-0027): A full-screen window keeps its size after a display mode change
+        /* Checked when the window opens, when the screens change and, if a change came while the window was inactive,
+           on its next activation. Setting WindowState activates the window, so an inactive window is not refitted
+           until it is active again: after Alt+Tab the game reverts the screen resolution as it loses focus. */
+        private static void AttachFullScreenRefit(AvWindow window)
+        {
+            try
+            {
+                _refitScreens = window.Screens;
+                if (_refitScreens != null)
+                    _refitScreens.Changed += OnScreensChanged;
+                window.Activated += OnRefitWindowActivated;
+                QueueFullScreenRefit();
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHAvaloniaWindowHooks: cannot watch the screens: " + ex.Message);
+            }
+        }
+
+        private static void DetachFullScreenRefit(AvWindow window)
+        {
+            if (_refitScreens != null)
+                _refitScreens.Changed -= OnScreensChanged;
+            _refitScreens = null;
+            window.Activated -= OnRefitWindowActivated;
+            _fullScreenRefitPending = false;
+        }
+
+        private static void OnScreensChanged(object sender, EventArgs e)
+        {
+            QueueFullScreenRefit();
+        }
+
+        private static void OnRefitWindowActivated(object sender, EventArgs e)
+        {
+            if (_fullScreenRefitPending)
+                QueueFullScreenRefit();
+        }
+
+        /* Posted, so that the check runs after Avalonia has updated its screen list */
+        private static void QueueFullScreenRefit()
+        {
+            if (_fullScreenRefitQueued)
+                return;
+            _fullScreenRefitQueued = true;
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                _fullScreenRefitQueued = false;
+                RefitFullScreen(MainWindow);
+            }, Avalonia.Threading.DispatcherPriority.Background);
+        }
+
+        /* Avalonia sizes a full-screen window to its screen's bounds only when it enters full screen; leaving and
+           re-entering full screen makes it take the screen's current bounds */
+        private static void RefitFullScreen(AvWindow window)
+        {
+            try
+            {
+                if (window == null || window.WindowState != AvWindowState.FullScreen)
+                {
+                    _fullScreenRefitPending = false;
+                    return;
+                }
+                Avalonia.Platform.Screen screen = window.Screens?.ScreenFromWindow(window);
+                if (screen == null)
+                    return;
+
+                Avalonia.PixelRect bounds = screen.Bounds;
+                double scaling = window.DesktopScaling;
+                int width = (int)Math.Round(window.ClientSize.Width * scaling);
+                int height = (int)Math.Round(window.ClientSize.Height * scaling);
+                Avalonia.PixelPoint position = window.Position;
+                if (Math.Abs(width - bounds.Width) <= 1 && Math.Abs(height - bounds.Height) <= 1
+                    && position.X == bounds.X && position.Y == bounds.Y)
+                {
+                    _fullScreenRefitPending = false;
+                    return;
+                }
+                if (!window.IsActive)
+                {
+                    _fullScreenRefitPending = true;
+                    return;
+                }
+
+                _fullScreenRefitPending = false;
+                GHApp.MaybeWriteGHLog("GHAvaloniaWindowHooks: full-screen window " + width + "x" + height + " at "
+                    + position.X + "," + position.Y + " refitted to its screen " + bounds.Width + "x" + bounds.Height
+                    + " at " + bounds.X + "," + bounds.Y);
+                window.WindowState = AvWindowState.Normal;
+                window.WindowState = AvWindowState.FullScreen;
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GHAvaloniaWindowHooks: cannot refit the full-screen window: " + ex.Message);
+            }
+        }
+#endif
 
         /* A close the user asked for goes through the game's own flow, as on Windows. Programmatic closes pass: they
            are the Exit button's shutdown. So does a close from the operating system, which cannot wait for a prompt;

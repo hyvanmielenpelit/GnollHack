@@ -54,6 +54,11 @@
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('linux'))">$(DefineConstants);SENTRY</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('osx'))">$(DefineConstants);MACOS</DefineConstants>
     <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('osx'))">$(DefineConstants);SENTRY</DefineConstants>
+    <!-- WINDOWS means WinUI 3; the Avalonia Windows flavor is WINDOWS_AVALONIA -->
+    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">$(DefineConstants);WINDOWS_AVALONIA</DefineConstants>
+    <DefineConstants Condition="$(RuntimeIdentifier.StartsWith('win'))">$(DefineConstants);SENTRY</DefineConstants>
+    <OutputType Condition="$(RuntimeIdentifier.StartsWith('win'))">WinExe</OutputType>
+    <ApplicationIcon Condition="$(RuntimeIdentifier.StartsWith('win'))">Platforms\WindowsAvalonia\appicon.ico</ApplicationIcon>
     <MauiActiveBackend>avalonia</MauiActiveBackend>
     <AvaloniaControlsMauiGenerateDesktopProgram>false</AvaloniaControlsMauiGenerateDesktopProgram>
     <InvariantGlobalization>true</InvariantGlobalization>
@@ -67,6 +72,7 @@
     <!-- C# code of one OS's flavor only; these folders also hold its native libraries and packaging, which are not compiled -->
     <MauiPlatformSpecificFolder Include="Platforms\Linux\" BackendIdentity="avalonia" Condition="$(RuntimeIdentifier.StartsWith('linux'))" />
     <MauiPlatformSpecificFolder Include="Platforms\MacOS\" BackendIdentity="avalonia" Condition="$(RuntimeIdentifier.StartsWith('osx'))" />
+    <MauiPlatformSpecificFolder Include="Platforms\WindowsAvalonia\" BackendIdentity="avalonia" Condition="$(RuntimeIdentifier.StartsWith('win'))" />
     <!-- Decimal, as in the -windows item group: 32000000 is 32 MB -->
     <RuntimeHostConfigurationOption Include="System.GC.Gen0MaxBudget" Value="32000000" />
   </ItemGroup>
@@ -1517,7 +1523,7 @@
     <!--<PackageReference Include="System.Text.Json" Version="10.0.10" />-->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <!-- Platform-specific packages -->
-    <PackageReference Include="System.Management" Version="10.0.14" Condition="$(TargetFramework.Contains('-windows'))" />
+    <PackageReference Include="System.Management" Version="10.0.14" Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('win')))" />
     <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.23" Condition="$(TargetFramework.Contains('-android'))" />
   </ItemGroup>
   
@@ -1558,7 +1564,7 @@
     <None Include="Platforms\Linux\licenses\sentry-native\*" Link="licenses\sentry-native\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
+  <ItemGroup Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('win')))">
     <!-- gnhsentry.dll's license: sentry-native's -->
     <None Include="Platforms\Windows\licenses\sentry-native\*" Link="licenses\sentry-native\%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
@@ -1577,7 +1583,7 @@
 
   <!-- WORKAROUND(WA-SENTRY-0003): Sentry .NET captures no native crashes in JIT desktop builds -->
   <!-- GHSentryNative runs sentry-native on these platforms; Sentry .NET must never start a second one. -->
-  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And ($(RuntimeIdentifier.StartsWith('linux')) Or $(RuntimeIdentifier.StartsWith('osx'))))">
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And ($(RuntimeIdentifier.StartsWith('linux')) Or $(RuntimeIdentifier.StartsWith('osx')) Or $(RuntimeIdentifier.StartsWith('win'))))">
     <SentryNative>false</SentryNative>
   </PropertyGroup>
 
@@ -1668,7 +1674,7 @@
        so UploadDebugInfoToSentry never sees it -->
   <!-- The PDB is uploaded only when its debug ID matches that of the gnollhackwin.dll in Platforms\Windows\libs;
        a mismatch is an error in strict builds (_GnhSentryNativeStrict) and a warning otherwise -->
-  <Target Name="UploadGnollHackWinPdbToSentry" AfterTargets="UploadDebugInfoToSentry" DependsOnTargets="GnhCheckSentryNativeBinaries" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
+  <Target Name="UploadGnollHackWinPdbToSentry" AfterTargets="UploadDebugInfoToSentry" DependsOnTargets="GnhCheckSentryNativeBinaries" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And ($(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('win')))) And '$(DesignTimeBuild)' != 'true'">
     <PropertyGroup>
       <GnollHackWinPdb>$(MSBuildProjectDirectory)\..\..\vs\symbols\Release\x64\gnollhackwin\gnollhackwin.pdb</GnollHackWinPdb>
       <_GnhWinDll>$(MSBuildProjectDirectory)\Platforms\Windows\libs\gnollhackwin.dll</_GnhWinDll>
@@ -1695,7 +1701,7 @@
   </Target>
   <!-- gnhsentry.pdb exists only on the machine that built the committed gnhsentry.dll; it is uploaded only when it
        matches the manifest -->
-  <Target Name="UploadGnhSentryPdbToSentry" AfterTargets="UploadDebugInfoToSentry" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
+  <Target Name="UploadGnhSentryPdbToSentry" AfterTargets="UploadDebugInfoToSentry" Condition="$(DefineConstants.Contains('SENTRY')) And '$(SentryUploadSymbols)' == 'true' And '$(SentryCLI)' != '' And '$(Configuration)' == 'Release' And ($(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('win')))) And '$(DesignTimeBuild)' != 'true'">
     <PropertyGroup>
       <GnhSentryPdb>$(MSBuildProjectDirectory)\..\..\vs\symbols\Release\x64\gnhsentry\gnhsentry.pdb</GnhSentryPdb>
     </PropertyGroup>

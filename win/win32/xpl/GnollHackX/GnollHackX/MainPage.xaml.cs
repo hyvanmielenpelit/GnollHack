@@ -140,6 +140,30 @@ namespace GnollHackX
             UIUtils.SetStyledToolTip(wizardModeLabel, WizardModeDescription,
                 new Microsoft.UI.Xaml.Media.SolidColorBrush(Windows.UI.Color.FromArgb(255, 173, 216, 230)));
 #elif GNH_AVALONIA
+            classicModeSwitch.HandlerChanged += (s, e) =>
+            {
+                var pv = classicModeSwitch.Handler?.PlatformView as Avalonia.Input.InputElement;
+                if (pv != null)
+                {
+                    pv.IsTabStop = false;
+                }
+            };
+            casualModeSwitch.HandlerChanged += (s, e) =>
+            {
+                var pv = casualModeSwitch.Handler?.PlatformView as Avalonia.Input.InputElement;
+                if (pv != null)
+                {
+                    pv.IsTabStop = false;
+                }
+            };
+            wizardModeSwitch.HandlerChanged += (s, e) =>
+            {
+                var pv = wizardModeSwitch.Handler?.PlatformView as Avalonia.Input.InputElement;
+                if (pv != null)
+                {
+                    pv.IsTabStop = false;
+                }
+            };
             UIUtils.SetStyledToolTip(classicModeLabel, ClassicModeDescription);
             UIUtils.SetStyledToolTip(casualModeLabel, CasualModeDescription);
             UIUtils.SetStyledToolTip(wizardModeLabel, WizardModeDescription,
@@ -1104,7 +1128,11 @@ namespace GnollHackX
                 }
                 if (GHApp.InformAboutGPU)
                 {
-                    if (GHApp.IsSteam)
+                    if (GHApp.IsWindowsAvalonia)
+                    {
+                        DisplayAlertGrid("Multiple GPUs", "GnollHack is currently not using a high-performance GPU, which may impact performance. Please switch to a high performance graphics preference in Windows Settings App at System > Display > Graphics > Add Desktop App > " + Path.Combine(AppContext.BaseDirectory, "GnollHackM.exe") + ".", "OK", GHColors.Orange);
+                    }
+                    else if (GHApp.IsSteam)
                     {
                         DisplayAlertGrid("Multiple GPUs", "GnollHack is currently not using a high-performance GPU, which may impact performance. Please switch to a high performance graphics preference in Windows Settings App at System > Display > Graphics > Add Desktop App > the .exe file under C:\\Program Files (x86)\\Steam\\steamapps\\common\\GnollHack.", "OK", GHColors.Orange);
                     }
@@ -1297,7 +1325,7 @@ namespace GnollHackX
             }
             catch (Exception ex)
             {
-#if GNH_MAUI && WINDOWS
+#if GNH_MAUI && (WINDOWS || WINDOWS_AVALONIA)
                 if (ex is DllNotFoundException || ex is BadImageFormatException)
                     NativeLibraryPreflightWindows.ReportNonFatalLoadFailure(ex, "fmod.dll", "fmodstudio.dll");
 #endif

@@ -22,10 +22,10 @@ issues at the end of the file. Never renumber or reuse an ID.
 - Upstream issue: https://github.com/microsoft/microsoft-ui-xaml/issues/12073
 - Upstream status when added: unreported
 - Upstream status: reported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-06
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.SetProcessPriority`)
 - Remove when: GnollHack uses a Windows App SDK release that fixes microsoft-ui-xaml#12073, and Verify removal passes.
-- Related: WA-WINUI-0002
+- Related: WA-WINUI-0002, WA-AVALONIA-0021
 
 **Symptom.** Where `DCompositionWaitForCompositorClock` is unavailable (every Windows 10
 system) or fails, `CompositionTarget.Rendering` ticks about every 31 ms, so the game runs
@@ -38,7 +38,10 @@ without a root cause. The bug is hidden whenever something in the process reques
 timer resolution, such as the .NET EventPipe sample profiler.
 
 **Workaround.** `SetProcessPriority`, called at startup, calls `timeBeginPeriod(1)` from
-`winmm.dll`, which sets 1 ms timer resolution for the process.
+`winmm.dll`, which sets 1 ms timer resolution for the process. The same call is compiled
+into the Windows Avalonia flavor, which has no WinUI. There it sets the timer resolution
+for Avalonia's 16 ms dispatcher timer (WA-AVALONIA-0021) and the sleep-paced modes, so
+removing this workaround must keep the call for that flavor.
 
 **Verify removal.** Remove the `timeBeginPeriod(1)` call. Then:
 - Build the Windows Release configuration.
@@ -47,6 +50,7 @@ timer resolution, such as the .NET EventPipe sample profiler.
 
 Checks:
 - 2026-10-23 | Microsoft.WindowsAppSDK.WinUI 1.8.260528001 | still-needed | microsoft-ui-xaml#12073 is open.
+- 2026-11-06 | Microsoft.WindowsAppSDK.WinUI 1.8.260528001 | unverified | microsoft-ui-xaml#12073 is open. The same `timeBeginPeriod(1)` call is now also compiled into the Windows Avalonia flavor.
 
 ## WA-WINUI-0002: CompositionTarget.Rendering allocates event-args wrappers every frame
 

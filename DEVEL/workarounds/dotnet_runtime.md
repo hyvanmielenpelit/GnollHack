@@ -95,7 +95,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/Platforms/Windows/NativeLibraryPreflightWindows.cs` (`NativeLibraryPreflightWindows`)
+- Code: `win/win32/xpl/GnollHackM/NativeLibraryPreflightWindows.cs` (`NativeLibraryPreflightWindows`)
 - Remove when: the runtime exposes the Win32 error of a failed native library load on the exception, GnollHack adopts that release, and Verify removal passes.
 
 **Symptom.** When Windows refuses to load the game library, for example under Smart App

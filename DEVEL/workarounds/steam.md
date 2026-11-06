@@ -89,3 +89,51 @@ only the Gaming Mode condition keeps the control for controller use on other des
 
 Checks:
 - 2026-10-30 | SteamOS 3.9.5 stable | still-needed | The Deck's logs show no FileChooser interface in Gaming Mode; a GTK replace prompt appeared there and could not be operated with the controller.
+
+## WA-STEAM-0003: Steam's overlay draws only on a window swap chain's Present
+
+- Status: active
+- Added: 2026-11-06
+- GnollHack version: 3.39 (439)
+- Component: Steam client, Steam overlay
+- Package: Steam client, Avalonia
+- Defective version: Steam client 1792618285, Avalonia 12.1.4
+- Platforms: Windows (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-06
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/AvaloniaDesktopProgram.cs` (`AvaloniaDesktopProgram.CreateDefaultWinComposition`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaFrameLoop.cs` (`GHAvaloniaFrameLoop.MaybePulseKeepAlive`)
+- Remove when: Avalonia's composition modes give Steam a swap chain it can hook and Steam draws its overlay without new frames from the game, or GnollHack gains a Steamworks overlay callback that can drive the keep-alive, and Verify removal passes.
+
+**Symptom.** On the Avalonia Windows flavor, Steam's overlay (Shift+Tab, notifications)
+does not appear. With Avalonia's default composition it never draws, although Steam has
+injected it. With a swap chain it draws on the map, but never on MainPage.
+
+**Cause.** Steam's Windows overlay, `GameOverlayRenderer64.dll`, draws when the game's
+window swap chain presents a frame. Avalonia's default on Windows composes through WinUI
+composition, where the overlay finds nothing to draw on. Avalonia also presents only when
+something on the page changed, so a page that is not animating, such as MainPage between
+`ImageCarousel` cross-fades, presents nothing for the overlay to draw on. A limitation of
+how the two fit together, as far as is known, rather than a defect in either.
+
+**Workaround.** The Windows composition default is `LowLatencyDxgiSwapChain`, an HWND
+flip-model swap chain, falling back to WinUI composition and then the redirection surface
+(`AvaloniaDesktopProgram.CreateDefaultWinComposition`); `--win-composition=avalonia` restores
+Avalonia's own defaults. While `GameOverlayRenderer64.dll` is in the process, the frame loop
+pulses a 1 x 1 control in the window's overlay layer whenever nothing has rendered for 33 ms
+(`GHAvaloniaFrameLoop.MaybePulseKeepAlive`), so that Avalonia presents about 30 frames a
+second on still pages. The pulse is not counted as a submitted frame, and does not run while
+the window is minimized or the app is suspended.
+
+**Verify removal.** With a newer Avalonia or Steam client, start the game from Steam:
+- With `--win-composition=avalonia`, press Shift+Tab on the map. If the overlay opens and
+  responds, the composition default can go.
+- Remove the keep-alive's tagged site, build, and start the game from Steam. On MainPage,
+  wait between carousel cross-fades and press Shift+Tab. If the overlay opens, redraws and
+  closes normally, the keep-alive can go.
+
+Checks:
+- 2026-11-06 | Steam client 1792618285, Avalonia 12.1.4 | still-needed | Round A spike, Debug build: with `--win-composition=dxgi` (`LowLatencyDxgiSwapChain`) the overlay works on the map, at a steady 37 FPS.
+- 2026-11-06 | Steam client 1792618285, Avalonia 12.1.4 | still-needed | Round A spike: with Avalonia's default (`WinUIComposition`), `GameOverlayRenderer64.dll` is loaded but the overlay never draws.
+- 2026-11-06 | Steam client 1792618285, Avalonia 12.1.4 | still-needed | Round A spike: in every mode the overlay never appears on MainPage, which presents nothing between `ImageCarousel` cross-fades.

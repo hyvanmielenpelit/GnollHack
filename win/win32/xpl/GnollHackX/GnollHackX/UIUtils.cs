@@ -2013,13 +2013,14 @@ namespace GnollHackX
         }
     }
 
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
 
     public static class DisplaySettingsHelper
     {
         private const int ENUM_CURRENT_SETTINGS = -1;
         private const int CDS_UPDATEREGISTRY = 0x01;
         private const int CDS_TEST = 0x02;
+        private const int CDS_FULLSCREEN = 0x04;
         private const int DISP_CHANGE_SUCCESSFUL = 0;
 
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -2104,7 +2105,12 @@ namespace GnollHackX
             dm.dmDisplayFrequency = refreshRate;
             dm.dmFields = 0x00080000 | 0x00100000 | 0x400000; // DM_PELSWIDTH | DM_PELSHEIGHT | DM_DISPLAYFREQUENCY
 
+#if WINDOWS_AVALONIA
+            /* A temporary mode, which Windows reverts when the process ends */
+            int result = ChangeDisplaySettings(ref dm, CDS_FULLSCREEN);
+#else
             int result = ChangeDisplaySettings(ref dm, CDS_UPDATEREGISTRY);
+#endif
             if (result == DISP_CHANGE_SUCCESSFUL)
             {
                 GHApp.CurrentScreenResolution = GetScreenResolution("Current", dm);
@@ -2173,7 +2179,9 @@ namespace GnollHackX
         }
 
     }
+#endif
 
+#if WINDOWS
     public static class WindowFocusHelper
     {
         [DllImport("user32.dll")]

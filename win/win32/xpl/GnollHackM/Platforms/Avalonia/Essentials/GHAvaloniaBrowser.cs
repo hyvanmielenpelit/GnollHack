@@ -13,18 +13,14 @@ namespace GnollHackM
        window's Avalonia launcher, on the Avalonia UI thread; the launch options are not used. Throws
        InvalidOperationException when no window is open. On Linux, where the launcher runs xdg-open,
        gio open and the BROWSER variable are tried next, and InvalidOperationException is thrown when
-       none of them can be started. On Linux with the Steam overlay in the process, a web page opens
-       in Steam's own browser through a steam://openurl link instead. */
+       none of them can be started. With the Steam overlay in the process, on Linux and Windows, a web
+       page opens in Steam's own browser through a steam://openurl link instead. */
     public sealed class GHAvaloniaBrowser : IBrowser
     {
-        private const string SteamOverlayLibrary = "gameoverlayrenderer.so";
-
-        private static readonly Lazy<bool> _hasSteamOverlay = new Lazy<bool>(DetectSteamOverlay);
-
-        /* Whether Steam has injected its overlay into this process; Linux only */
+        /* Whether Steam has injected its overlay into this process; Linux and Windows */
         public static bool HasSteamOverlay
         {
-            get { return _hasSteamOverlay.Value; }
+            get { return GHAvaloniaSteamOverlay.IsPresent; }
         }
 
         public Task<bool> OpenAsync(Uri uri, BrowserLaunchOptions options)
@@ -41,7 +37,8 @@ namespace GnollHackM
             if (topLevel == null)
                 throw new InvalidOperationException("No window is open to launch the browser from.");
 
-            if (OperatingSystem.IsLinux() && HasSteamOverlay && uri.IsAbsoluteUri && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
+            if (HasSteamOverlay && uri.IsAbsoluteUri
+                && (uri.Scheme == Uri.UriSchemeHttp || uri.Scheme == Uri.UriSchemeHttps))
             {
                 Uri steamUri = new Uri("steam://openurl/" + uri.AbsoluteUri);
                 if (await topLevel.Launcher.LaunchUriAsync(steamUri))
@@ -69,38 +66,6 @@ namespace GnollHackM
             }
 
             throw new InvalidOperationException("No program to open web pages was found. Install xdg-utils, or set the BROWSER environment variable.");
-        }
-
-        /* Steam's Linux overlay is a library Steam preloads into the game; it shows in LD_PRELOAD or, once loaded,
-           in the process's memory map */
-        private static bool DetectSteamOverlay()
-        {
-            if (!OperatingSystem.IsLinux())
-                return false;
-
-            try
-            {
-                string preload = Environment.GetEnvironmentVariable("LD_PRELOAD");
-                bool found = preload != null && preload.Contains(SteamOverlayLibrary, StringComparison.Ordinal);
-                if (!found)
-                {
-                    foreach (string line in System.IO.File.ReadLines("/proc/self/maps"))
-                    {
-                        if (line.Contains(SteamOverlayLibrary, StringComparison.Ordinal))
-                        {
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-                GnollHackX.GHApp.MaybeWriteGHLog("GHAvaloniaBrowser: Steam overlay " + (found ? "detected" : "not detected"));
-                return found;
-            }
-            catch (Exception ex)
-            {
-                GnollHackX.GHApp.MaybeWriteGHLog("GHAvaloniaBrowser: cannot check for the Steam overlay: " + ex.Message);
-                return false;
-            }
         }
 
         /* Whether the program started; it is not waited for */

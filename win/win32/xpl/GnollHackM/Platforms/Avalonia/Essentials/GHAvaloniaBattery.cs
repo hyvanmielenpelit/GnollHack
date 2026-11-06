@@ -3,8 +3,10 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using Microsoft.Maui.Devices;
-#if MACOS
+#if MACOS || WINDOWS_AVALONIA
 using System.Runtime.InteropServices;
+#endif
+#if MACOS
 using System.Text;
 #endif
 
@@ -13,18 +15,20 @@ using AvDispatcher = Avalonia.Threading.Dispatcher;
 namespace GnollHackM
 {
     /* IBattery for the Avalonia desktop target. On Linux it polls the system battery in
-       /sys/class/power_supply, on macOS the internal battery through IOKit's power sources, every 60 s,
-       and raises BatteryInfoChanged on the Avalonia UI thread when the level, state or power source
-       changes. Without a battery, and on Windows, it reports a full charge on AC with State NotPresent,
-       which keeps GHApp's battery-dependent saving enabled. Energy saver is always Off. */
+       /sys/class/power_supply, on macOS the internal battery through IOKit's power sources, on Windows
+       GetSystemPowerStatus, every 60 s, and raises BatteryInfoChanged on the Avalonia UI thread when the
+       level, state or power source changes. Without a battery it reports a full charge on AC with State
+       NotPresent, which keeps GHApp's battery-dependent saving enabled. Energy saver follows Windows's
+       battery saver, raising EnergySaverStatusChanged on the Avalonia UI thread; elsewhere it is always Off. */
     public sealed class GHAvaloniaBattery : IBattery
     {
         private readonly object _lock = new object();
         private double _chargeLevel = 1.0;
         private BatteryState _state = BatteryState.NotPresent;
         private BatteryPowerSource _powerSource = BatteryPowerSource.AC;
+        private EnergySaverStatus _energySaverStatus = EnergySaverStatus.Off;
 
-#if LINUX || MACOS
+#if LINUX || MACOS || WINDOWS_AVALONIA
         private const int PollIntervalMilliseconds = 60000;
         private readonly System.Threading.Timer _pollTimer = null;
 #endif
@@ -34,15 +38,17 @@ namespace GnollHackM
 
         public GHAvaloniaBattery()
         {
-#if LINUX || MACOS
+#if LINUX || MACOS || WINDOWS_AVALONIA
             double level;
             BatteryState state;
             BatteryPowerSource source;
-            if (TryReadBattery(out level, out state, out source))
+            EnergySaverStatus energySaver;
+            if (TryReadBattery(out level, out state, out source, out energySaver))
             {
                 _chargeLevel = level;
                 _state = state;
                 _powerSource = source;
+                _energySaverStatus = energySaver;
                 _pollTimer = new System.Threading.Timer(OnPollTimer, null,
                     PollIntervalMilliseconds, PollIntervalMilliseconds);
             }
@@ -69,14 +75,24 @@ namespace GnollHackM
             }
         }
 
-        /* Never raised */
+        private EventHandler<EnergySaverStatusChangedEventArgs> _energySaverStatusChanged;
+
+        /* Raised on Windows only */
         public event EventHandler<EnergySaverStatusChangedEventArgs> EnergySaverStatusChanged
         {
             add
             {
+                lock (_lock)
+                {
+                    _energySaverStatusChanged += value;
+                }
             }
             remove
             {
+                lock (_lock)
+                {
+                    _energySaverStatusChanged -= value;
+                }
             }
         }
 
@@ -113,9 +129,18 @@ namespace GnollHackM
             }
         }
 
-        public EnergySaverStatus EnergySaverStatus => EnergySaverStatus.Off;
+        public EnergySaverStatus EnergySaverStatus
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _energySaverStatus;
+                }
+            }
+        }
 
-#if LINUX || MACOS
+#if LINUX || MACOS || WINDOWS_AVALONIA
         /* True when a system battery was found at startup and is being polled */
         internal bool IsPolling => _pollTimer != null;
 
@@ -129,6 +154,16 @@ namespace GnollHackM
             handler?.Invoke(null, args);
         }
 
+        private void RaiseEnergySaverStatusChanged(EnergySaverStatusChangedEventArgs args)
+        {
+            EventHandler<EnergySaverStatusChangedEventArgs> handler;
+            lock (_lock)
+            {
+                handler = _energySaverStatusChanged;
+            }
+            handler?.Invoke(null, args);
+        }
+
         private void OnPollTimer(object timerState)
         {
             try
@@ -136,24 +171,37 @@ namespace GnollHackM
                 double level;
                 BatteryState state;
                 BatteryPowerSource source;
-                if (!TryReadBattery(out level, out state, out source))
+                EnergySaverStatus energySaver;
+                if (!TryReadBattery(out level, out state, out source, out energySaver))
                 {
                     level = 1.0;
                     state = BatteryState.NotPresent;
                     source = BatteryPowerSource.AC;
+                    energySaver = EnergySaverStatus.Off;
                 }
 
+                bool batteryChanged;
+                bool energySaverChanged;
                 lock (_lock)
                 {
-                    if (_chargeLevel == level && _state == state && _powerSource == source)
-                        return;
+                    batteryChanged = _chargeLevel != level || _state != state || _powerSource != source;
+                    energySaverChanged = _energySaverStatus != energySaver;
                     _chargeLevel = level;
                     _state = state;
                     _powerSource = source;
+                    _energySaverStatus = energySaver;
                 }
 
-                BatteryInfoChangedEventArgs args = new BatteryInfoChangedEventArgs(level, state, source);
-                AvDispatcher.UIThread.Post(() => RaiseBatteryInfoChanged(args));
+                if (batteryChanged)
+                {
+                    BatteryInfoChangedEventArgs args = new BatteryInfoChangedEventArgs(level, state, source);
+                    AvDispatcher.UIThread.Post(() => RaiseBatteryInfoChanged(args));
+                }
+                if (energySaverChanged)
+                {
+                    EnergySaverStatusChangedEventArgs args = new EnergySaverStatusChangedEventArgs(energySaver);
+                    AvDispatcher.UIThread.Post(() => RaiseEnergySaverStatusChanged(args));
+                }
             }
             catch (Exception ex)
             {
@@ -164,12 +212,14 @@ namespace GnollHackM
 
 #if LINUX
         /* Reads the first system battery: a power supply named BAT* or of type Battery, excluding
-           peripheral batteries (scope Device). False when there is none. */
-        private static bool TryReadBattery(out double level, out BatteryState state, out BatteryPowerSource source)
+           peripheral batteries (scope Device). False when there is none. Energy saver is always Off. */
+        private static bool TryReadBattery(out double level, out BatteryState state, out BatteryPowerSource source,
+            out EnergySaverStatus energySaver)
         {
             level = 1.0;
             state = BatteryState.NotPresent;
             source = BatteryPowerSource.AC;
+            energySaver = EnergySaverStatus.Off;
 
             string[] supplies;
             try
@@ -348,12 +398,14 @@ namespace GnollHackM
         }
 
         /* Reads the first present internal battery from IOKit's power sources. False when there is none, as on a
-           desktop Mac. */
-        private static bool TryReadBattery(out double level, out BatteryState state, out BatteryPowerSource source)
+           desktop Mac. Energy saver is always Off. */
+        private static bool TryReadBattery(out double level, out BatteryState state, out BatteryPowerSource source,
+            out EnergySaverStatus energySaver)
         {
             level = 1.0;
             state = BatteryState.NotPresent;
             source = BatteryPowerSource.AC;
+            energySaver = EnergySaverStatus.Off;
 
             try
             {
@@ -457,6 +509,76 @@ namespace GnollHackM
             if (value == IntPtr.Zero || CFGetTypeID(value) != CFNumberGetTypeID())
                 return false;
             return CFNumberGetValue(value, kCFNumberSInt64Type, out result);
+        }
+#elif WINDOWS_AVALONIA
+        private const byte AC_LINE_OFFLINE = 0;
+        private const byte AC_LINE_ONLINE = 1;
+        private const byte BATTERY_FLAG_CHARGING = 8;
+        private const byte BATTERY_FLAG_NO_BATTERY = 128;
+        private const byte BATTERY_FLAG_UNKNOWN = 255;
+        private const byte BATTERY_PERCENTAGE_UNKNOWN = 255;
+        private const byte SYSTEM_STATUS_FLAG_BATTERY_SAVER_ON = 1;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct SYSTEM_POWER_STATUS
+        {
+            public byte ACLineStatus;
+            public byte BatteryFlag;
+            public byte BatteryLifePercent;
+            public byte SystemStatusFlag;
+            public uint BatteryLifeTime;
+            public uint BatteryFullLifeTime;
+        }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool GetSystemPowerStatus(out SYSTEM_POWER_STATUS status);
+
+        /* Reads the system battery through GetSystemPowerStatus. False when there is none, or its state is unknown.
+           A level Windows does not know is reported as full. */
+        private static bool TryReadBattery(out double level, out BatteryState state, out BatteryPowerSource source,
+            out EnergySaverStatus energySaver)
+        {
+            level = 1.0;
+            state = BatteryState.NotPresent;
+            source = BatteryPowerSource.AC;
+            energySaver = EnergySaverStatus.Off;
+
+            SYSTEM_POWER_STATUS status;
+            try
+            {
+                if (!GetSystemPowerStatus(out status))
+                    return false;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            if (status.BatteryFlag == BATTERY_FLAG_UNKNOWN || (status.BatteryFlag & BATTERY_FLAG_NO_BATTERY) != 0)
+                return false;
+
+            if (status.BatteryLifePercent != BATTERY_PERCENTAGE_UNKNOWN)
+                level = Math.Clamp(status.BatteryLifePercent / 100.0, 0.0, 1.0);
+
+            if (status.ACLineStatus == AC_LINE_ONLINE)
+                source = BatteryPowerSource.AC;
+            else if (status.ACLineStatus == AC_LINE_OFFLINE)
+                source = BatteryPowerSource.Battery;
+            else
+                source = BatteryPowerSource.Unknown;
+
+            if ((status.BatteryFlag & BATTERY_FLAG_CHARGING) != 0)
+                state = BatteryState.Charging;
+            else if (source == BatteryPowerSource.Battery)
+                state = BatteryState.Discharging;
+            else if (source == BatteryPowerSource.AC)
+                state = status.BatteryLifePercent == 100 ? BatteryState.Full : BatteryState.NotCharging;
+            else
+                state = BatteryState.Unknown;
+
+            energySaver = (status.SystemStatusFlag & SYSTEM_STATUS_FLAG_BATTERY_SAVER_ON) != 0
+                ? EnergySaverStatus.On : EnergySaverStatus.Off;
+            return true;
         }
 #endif
     }

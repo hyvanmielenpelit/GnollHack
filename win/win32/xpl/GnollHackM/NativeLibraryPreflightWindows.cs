@@ -1,4 +1,4 @@
-#if WINDOWS && GNH_MAUI
+#if GNH_MAUI && (WINDOWS || WINDOWS_AVALONIA)
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -54,6 +54,8 @@ namespace GnollHackM
 
         private static string ReadSmartAppControlState()
         {
+            if (!OperatingSystem.IsWindows())
+                return "Unavailable";
             try
             {
                 using (RegistryKey key = Registry.LocalMachine.OpenSubKey(CodeIntegrityPolicyKey, writable: false))

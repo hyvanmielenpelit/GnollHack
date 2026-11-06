@@ -15,6 +15,8 @@ using Android.Content;
 using CoreAnimation;
 using Foundation;
 using System;
+#elif WINDOWS_AVALONIA
+using System.Management;
 #endif
 #else
 using Xamarin.Essentials;
@@ -1552,7 +1554,7 @@ namespace GnollHackX
 
         private static void InitializeScreenResolutions()
         {
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
             CurrentScreenResolution = DisplaySettingsHelper.GetCurrentResolution();
 
             ScreenResolutionItems.Clear();
@@ -1598,7 +1600,7 @@ namespace GnollHackX
 #endif
         }
 
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
         private static ScreenResolutionItem _currentScreenResolution = null;
         public static ScreenResolutionItem CurrentScreenResolution 
         {
@@ -1608,7 +1610,7 @@ namespace GnollHackX
 #endif
         public static void UpdateRecommendedScreenResolution(bool usingGPU)
         {
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
             uint widestWidth = 0, secondWidestWidth = 0, thirdWidestWidth = 0;
             SupportedResolutions.Sort((i1, i2) =>
             {
@@ -1719,7 +1721,7 @@ namespace GnollHackX
 
         public static void SaveScreenResolution()
         {
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
             DisplaySettingsHelper.SaveOriginalResolution();
 #endif
         }
@@ -1739,7 +1741,7 @@ namespace GnollHackX
 
         public static void ChangeScreenResolution(uint requestedWidth, uint requestedHeight, uint requestedRefreshRate)
         {
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
             try
             {
                 bool fullScreen = !WindowedMode;
@@ -1777,7 +1779,7 @@ namespace GnollHackX
 
         public static void RevertScreenResolution()
         {
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
             if (ScreenResolutionChanged)
             {
                 try
@@ -2763,7 +2765,7 @@ namespace GnollHackX
         {
             get
             {
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
                 return UseGPU && !HasInformedAboutGPU && DeviceGPUs.Count > 1 && (IsPackaged ? GetActiveGPU() != "Dedicated" : GetActiveGPU() == "Integrated");
 #else
                 return false;
@@ -4489,7 +4491,7 @@ namespace GnollHackX
 #else
             _mainGnollHackService = DependencyService.Get<IGnollHackService>();
 #endif
-#if GNH_MAUI && WINDOWS
+#if GNH_MAUI && (WINDOWS || WINDOWS_AVALONIA)
             try
             {
                 _mainGnollHackService.LoadLibrary();
@@ -4725,6 +4727,12 @@ namespace GnollHackX
 #else
             false;
 #endif
+        public static readonly bool IsWindowsAvalonia =
+#if GNH_AVALONIA && WINDOWS_AVALONIA
+            true;
+#else
+            false;
+#endif
         public static readonly bool IsMaui = true;
         public static readonly string RuntimePlatform = DeviceInfo.Platform.ToString();
 #if GNH_AVALONIA
@@ -4745,6 +4753,7 @@ namespace GnollHackX
         public static readonly bool IsDesktop = false;
         public static readonly bool IsLinux = false;
         public static readonly bool IsMacOS = false;
+        public static readonly bool IsWindowsAvalonia = false;
         public static readonly string RuntimePlatform = Device.RuntimePlatform;
         public static readonly bool IsPackaged = true;
 #endif
@@ -12210,7 +12219,11 @@ namespace GnollHackX
         public static readonly List<DeviceGPU> DeviceGPUs = new List<DeviceGPU>();
         public static void ListGPUs()
         {
-#if WINDOWS && GNH_MAUI
+#if (WINDOWS || WINDOWS_AVALONIA) && GNH_MAUI
+#if WINDOWS_AVALONIA
+            if (!OperatingSystem.IsWindows())
+                return;
+#endif
             try
             {
                 ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
@@ -12243,10 +12256,14 @@ namespace GnollHackX
 #endif
         }
 
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
         public static string GetActiveGPU()
         {
             string res = "";
+#if WINDOWS_AVALONIA
+            if (!OperatingSystem.IsWindows())
+                return res;
+#endif
             try
             {
                 string ghFilePath = Process.GetCurrentProcess()?.MainModule?.FileName;
@@ -12258,6 +12275,9 @@ namespace GnollHackX
 #pragma warning disable CA1416
                 var t2 = !IsPackaged ? ghFilePath : build >= 19041 ? Windows.ApplicationModel.AppInfo.Current.AppUserModelId : Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
 #pragma warning restore CA1416
+#elif WINDOWS_AVALONIA
+                /* Unpackaged: the preference is keyed by the executable path */
+                var t2 = ghFilePath;
 #else
                 var t2 = !IsPackaged ? ghFilePath : Windows.ApplicationModel.Package.Current.Id.FamilyName + "!App";
 #endif
@@ -14262,7 +14282,7 @@ namespace GnollHackX
         }
 
 
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
         [StructLayout(LayoutKind.Sequential)]
         struct PROCESS_POWER_THROTTLING_STATE
         {
@@ -14288,7 +14308,11 @@ namespace GnollHackX
 #endif
         private static void SetProcessPriority()
         {
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
+#if WINDOWS_AVALONIA
+            if (!OperatingSystem.IsWindows())
+                return;
+#endif
             const int PROCESS_POWER_THROTTLING_CURRENT_VERSION = 1;
             const uint PROCESS_POWER_THROTTLING_EXECUTION_SPEED = 0x1;
 

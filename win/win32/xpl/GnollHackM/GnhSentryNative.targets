@@ -113,7 +113,7 @@
   </Target>
 
   <!-- gnhsentry.dll: the Sentry package version, the sentry-native.lib it linked, the DLL itself and its sources -->
-  <Target Name="_GnhCheckGnhSentryDll" Condition="$(TargetFramework.Contains('-windows')) And '$(GnhAvalonia)' != 'true'">
+  <Target Name="_GnhCheckGnhSentryDll" Condition="($(TargetFramework.Contains('-windows')) And '$(GnhAvalonia)' != 'true') Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('win')))">
     <PropertyGroup>
       <_GnhNuGetPackageRoot>$(NuGetPackageRoot)</_GnhNuGetPackageRoot>
       <_GnhNuGetPackageRoot Condition="'$(_GnhNuGetPackageRoot)' == ''">$(UserProfile)\.nuget\packages\</_GnhNuGetPackageRoot>

@@ -30,6 +30,15 @@ namespace GnollHackX
                     }
                 }
             };
+#elif GNH_AVALONIA
+            HandlerChanged += (s, e) =>
+            {
+                var platformView = Handler?.PlatformView as Avalonia.Input.InputElement;
+                if (platformView != null)
+                {
+                    platformView.IsTabStop = false;
+                }
+            };
 #endif
             Pressed += NoTabStopButton_Pressed;
             Released += NoTabStopButton_Released;

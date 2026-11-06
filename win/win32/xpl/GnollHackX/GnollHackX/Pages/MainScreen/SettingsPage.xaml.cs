@@ -294,7 +294,7 @@ namespace GnollHackX.Pages.MainScreen
 
             ScreenScalePicker.ItemsSource = GHApp.ScreenScaleItems;
             ScreenResolutionPicker.ItemsSource = GHApp.ScreenResolutionItems;
-            if (!GHApp.IsWindows)
+            if (!GHApp.IsWindows && !GHApp.IsWindowsAvalonia)
             {
                 ScreenResolutionGrid.IsVisible = false;
             }
@@ -2190,7 +2190,7 @@ namespace GnollHackX.Pages.MainScreen
             if (engraveqstyle >= 0 && engraveqstyle < EngraveQuickPicker.Items?.Count)
                 EngraveQuickPicker.SelectedIndex = engraveqstyle;
 
-            if(!GHApp.IsWindows)
+            if(!GHApp.IsDesktop)
             {
                 RightMouseButtonGrid.IsVisible = false;
                 MiddleMouseButtonGrid.IsVisible = false;
@@ -2330,7 +2330,7 @@ namespace GnollHackX.Pages.MainScreen
             LongerMessageHistorySwitch.IsToggled = longermsghistory;
             HideMessageHistorySwitch.IsToggled = hidemsghistory;
             DisableWindowsKeySwitch.IsToggled = disablewindowskey;
-            DisableWindowsKeyGrid.IsVisible = GHApp.IsWindows;
+            DisableWindowsKeyGrid.IsVisible = GHApp.IsWindows || GHApp.IsWindowsAvalonia;
             AllowOptionKeysSwitch.IsToggled = allowoptionkeys;
             AllowOptionKeysGrid.IsVisible = GHApp.IsMacOS;
             DefaultVIKeysSwitch.IsToggled = defaultvikeys;

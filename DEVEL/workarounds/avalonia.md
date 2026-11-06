@@ -966,3 +966,42 @@ picked `.png` must appear as an attachment.
 
 Checks:
 - 2026-11-05 | Avalonia.Controls.WebView 12.1.1 | still-needed | Searched `lib/net10.0/Avalonia.Controls.WebView.dll` for the selector strings in both ASCII and UTF-16; the user's Mac run found the `+` button dead (task `mac_avalonia_readiness_review`, round A, M3). No upstream issue found.
+
+## WA-AVALONIA-0027: A full-screen window keeps its size after a display mode change
+
+- Status: active
+- Added: 2026-11-06
+- GnollHack version: 3.39 (439)
+- Component: Avalonia
+- Package: Avalonia.Win32
+- Defective version: Avalonia.Win32 12.1.4
+- Platforms: Windows (Avalonia)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-06
+- Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaWindowHooks.cs` (`GHAvaloniaWindowHooks.RefitFullScreen`)
+- Remove when: Avalonia resizes a full-screen window to its screen's new bounds after `WM_DISPLAYCHANGE`, in a release GnollHack uses, and Verify removal passes.
+
+**Symptom.** With a Screen Resolution other than the desktop's, the game's full-screen window
+keeps the size it had before the mode change. At a lower resolution the picture extends past the
+right and bottom edges, and a different aspect ratio leaves a black bar on the left.
+
+**Cause.** `WindowImpl.SetFullScreen` in Avalonia.Win32 12.1.4 sizes the window to its screen's
+`Bounds` only when it enters full screen. On `WM_DISPLAYCHANGE`, `Win32Platform.WndProc` only
+refreshes the screen list (`Screen.OnChanged`) and the render timer's rate; nothing resizes a window
+that is already full screen. WinUI 3's full-screen presenter follows the display.
+
+**Workaround.** `GHAvaloniaWindowHooks` compares the full-screen window's pixel bounds with its
+screen's when the window opens, when `Screens.Changed` is raised, and on the next activation after a
+change that came while the window was inactive. On a mismatch it sets `WindowState` to `Normal` and
+back to `FullScreen`, which reruns `SetFullScreen` with the current bounds. Setting `WindowState`
+activates the window, so an inactive window waits: on Alt+Tab the game reverts the resolution while
+losing focus.
+
+**Verify removal.** Remove the `AttachFullScreenRefit` call, build `win-x64`, set a Screen
+Resolution lower than the desktop's with Windowed Mode off, and restart: the picture must fill the
+screen exactly, and again after Alt+Tab away and back.
+
+Checks:
+- 2026-11-06 | Avalonia.Win32 12.1.4 | still-needed | Round B M3 of `windows_avalonia_parity_research` failed as described; decompiled `WindowImpl.SetFullScreen` and `Win32Platform.WndProc` confirm the cause. No upstream issue found.

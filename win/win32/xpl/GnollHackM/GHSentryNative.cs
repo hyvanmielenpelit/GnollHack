@@ -1,4 +1,4 @@
-#if SENTRY && (WINDOWS || (GNH_AVALONIA && (LINUX || MACOS)))
+#if SENTRY && (WINDOWS || (GNH_AVALONIA && (LINUX || MACOS || WINDOWS_AVALONIA)))
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,7 +28,7 @@ namespace GnollHackM
             public ulong Bits;
         }
 
-#if WINDOWS || MACOS
+#if WINDOWS || MACOS || WINDOWS_AVALONIA
         private const string LibraryName = "gnhsentry";
 #else
         private const string LibraryName = "sentry";
@@ -74,7 +74,7 @@ namespace GnollHackM
         [DllImport(LibraryName)]
         private static extern void sentry_options_set_auto_session_tracking(IntPtr options, int value);
 
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
         [DllImport(LibraryName, CharSet = CharSet.Unicode)]
         private static extern void sentry_options_set_database_pathw(IntPtr options, string path);
 #else
@@ -142,6 +142,21 @@ namespace GnollHackM
         [DllImport(LibraryName)]
         internal static extern void sentry_remove_user();
 
+#if WINDOWS || WINDOWS_AVALONIA
+        /* Before sentry_init: records the current unhandled-exception filter */
+        [DllImport(LibraryName)]
+        private static extern int gnh_crash_prepare();
+
+        /* After sentry_init: puts the filter wrapper in front of sentry-native's filter and adds the vectored handler;
+           0 when sentry-native's filter is not the current one */
+        [DllImport(LibraryName)]
+        private static extern int gnh_crash_install();
+
+        /* Before sentry_close */
+        [DllImport(LibraryName)]
+        private static extern void gnh_crash_uninstall();
+#endif
+
         /* Once, before SentrySdk.Init; false when native capture is unavailable, and the game then runs without it. A
            repeated call returns the outcome of the first one. */
         internal static bool Init(string dsn, string release, string environment, bool debug, string databaseDirectory, out bool crashedLastRun)
@@ -186,15 +201,15 @@ namespace GnollHackM
                     sentry_options_set_debug(options, debug ? 1 : 0);
                     /* Sentry .NET keeps the one release-health session */
                     sentry_options_set_auto_session_tracking(options, 0);
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
                     sentry_options_set_database_pathw(options, databaseDirectory);
 #else
                     sentry_options_set_database_path(options, databaseDirectory);
 #endif
                     sentry_options_set_transport(options, sentry_transport_new(&SendEnvelope));
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
                     /* Records the current unhandled-exception filter, which the wrapper keeps in the chain */
-                    WindowsSentryNative.gnh_crash_prepare();
+                    gnh_crash_prepare();
 #elif LINUX
                     GHAvaloniaSentryNative.ConfigureOptions(options);
 #endif
@@ -217,10 +232,10 @@ namespace GnollHackM
                 try
                 {
                     _crashedLastRun = sentry_get_crashed_last_run() == 1;
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
                     /* Unwrapped, sentry-native's filter would replace the runtime's and swallow unhandled managed
                        exceptions */
-                    if (WindowsSentryNative.gnh_crash_install() == 0)
+                    if (gnh_crash_install() == 0)
                     {
                         Log("GHSentryNative: cannot install the crash handlers in front of sentry-native's filter; native crash capture is off");
                         Close();
@@ -258,10 +273,10 @@ namespace GnollHackM
             if (Interlocked.Exchange(ref _closed, 1) != 0)
                 return;
 
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
             try
             {
-                WindowsSentryNative.gnh_crash_uninstall();
+                gnh_crash_uninstall();
             }
             catch (Exception ex)
             {

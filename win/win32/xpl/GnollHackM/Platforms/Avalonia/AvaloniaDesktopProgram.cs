@@ -11,8 +11,8 @@ internal static class AvaloniaDesktopProgram
 {
     private const string WinCompositionArgument = "--win-composition=";
     private const string WinCompositionVariable = "GNOLLHACK_WIN_COMPOSITION";
-    private const string SteamOverlayRendererWindows = "GameOverlayRenderer64.dll";
-    private const int SteamOverlayRecheckMs = 10000;
+    /* Past the detector's own recheck interval, so that the second log line reflects a new check */
+    private const int SteamOverlayRecheckMs = GHAvaloniaSteamOverlay.RecheckIntervalMs + 1000;
 
     private static string[] _args = Array.Empty<string>();
     private static System.Threading.Timer _steamOverlayRecheck = null;
@@ -21,6 +21,15 @@ internal static class AvaloniaDesktopProgram
     public static int Main(string[] args)
     {
         _args = args ?? Array.Empty<string>();
+#if WINDOWS_AVALONIA
+        /* Before anything loads gnollhackwin.dll, whose static CRT takes the standard handles when it loads */
+        GHWindowsStderrLog.Install();
+        if (!GHAvaloniaInstanceLock.TryAcquire())
+        {
+            GHAvaloniaInstanceLock.ReportAlreadyRunning();
+            return 0;
+        }
+#endif
 #if LINUX
         /* CEF starts its renderer, GPU and utility processes from this executable; they exit here, before anything
            else of the game is initialized */
@@ -52,6 +61,9 @@ internal static class AvaloniaDesktopProgram
         int exitCode = BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
         /* The lifetime can end with a game running, for example when the desktop session ends */
         GHAvaloniaShutdown.SaveGameBeforeExit();
+#if WINDOWS_AVALONIA
+        GnollHackX.GHApp.RevertScreenResolution();
+#endif
 #if LINUX
         GHCefRuntime.ShutdownIfInitialized();
 #endif
@@ -99,7 +111,7 @@ internal static class AvaloniaDesktopProgram
         return builder;
     }
 
-    /* --win-composition=<mode>, else GNOLLHACK_WIN_COMPOSITION; null for Avalonia's defaults */
+    /* --win-composition=<mode>, else GNOLLHACK_WIN_COMPOSITION; null for the default */
     private static string GetRequestedWinComposition()
     {
         foreach (string arg in _args)
@@ -111,10 +123,12 @@ internal static class AvaloniaDesktopProgram
         return string.IsNullOrWhiteSpace(variable) ? null : variable.Trim().ToLowerInvariant();
     }
 
-    /* Windows composition modes, for finding which ones the Steam overlay can draw over: winui, dcomp, dxgi (an HWND
-       flip-model swap chain paced by vblank), redirect (the window's redirection surface, paced by a sleep loop) and
-       wgl (OpenGL on the redirection surface). Each falls back to the redirection surface, and every mode draws popups
-       inside the window. Null, Avalonia's defaults, for no mode or an unknown one. */
+    /* Windows composition. The default, for no mode or an unknown one, is an HWND flip-model swap chain paced by
+       vblank (LowLatencyDxgiSwapChain), falling back to WinUI composition and then the window's redirection surface,
+       with ANGLE. The modes, for testing: winui, dcomp, dxgi (the swap chain without the WinUI fallback), redirect (the
+       redirection surface, paced by a sleep loop), wgl (OpenGL on the redirection surface), and avalonia, which
+       returns null for Avalonia's own defaults. The other modes fall back to the redirection surface, and every one
+       draws popups inside the window. */
     private static Win32PlatformOptions CreateWin32PlatformOptions(string mode)
     {
         Win32RenderingMode[] angle = { Win32RenderingMode.AngleEgl, Win32RenderingMode.Software };
@@ -123,6 +137,9 @@ internal static class AvaloniaDesktopProgram
         switch (mode)
         {
         case null:
+            composition = CreateDefaultWinComposition();
+            break;
+        case "avalonia":
             return null;
         case "winui":
             composition = new[] { Win32CompositionMode.WinUIComposition, Win32CompositionMode.RedirectionSurface };
@@ -141,14 +158,27 @@ internal static class AvaloniaDesktopProgram
             rendering = new[] { Win32RenderingMode.Wgl, Win32RenderingMode.AngleEgl, Win32RenderingMode.Software };
             break;
         default:
-            Console.Error.WriteLine("GnollHack: unknown Windows composition mode \"" + mode + "\"; using Avalonia's defaults");
-            return null;
+            Console.Error.WriteLine("GnollHack: unknown Windows composition mode \"" + mode + "\"; using the default");
+            composition = CreateDefaultWinComposition();
+            break;
         }
         return new Win32PlatformOptions
         {
             RenderingMode = rendering,
             CompositionMode = composition,
             OverlayPopups = true,
+        };
+    }
+
+    // WORKAROUND(WA-STEAM-0003): Steam's overlay draws only on a window swap chain's Present
+    /* Steam's overlay draws when a window swap chain presents; over WinUI composition it draws nothing */
+    private static Win32CompositionMode[] CreateDefaultWinComposition()
+    {
+        return new[]
+        {
+            Win32CompositionMode.LowLatencyDxgiSwapChain,
+            Win32CompositionMode.WinUIComposition,
+            Win32CompositionMode.RedirectionSurface,
         };
     }
 
@@ -166,15 +196,8 @@ internal static class AvaloniaDesktopProgram
 
     private static void LogSteamOverlay()
     {
-        try
-        {
-            bool loaded = GetModuleHandleW(SteamOverlayRendererWindows) != IntPtr.Zero;
-            Console.Error.WriteLine("GnollHack: Steam overlay renderer " + (loaded ? "loaded" : "not loaded"));
-        }
-        catch (Exception ex)
-        {
-            Console.Error.WriteLine("GnollHack: cannot check for the Steam overlay renderer: " + ex.Message);
-        }
+        bool present = GHAvaloniaSteamOverlay.IsPresent;
+        Console.Error.WriteLine("GnollHack: Steam overlay renderer " + (present ? "loaded" : "not loaded"));
     }
 
     /* The type name of an AvaloniaLocator service, or of its property; AvaloniaLocator is internal in the reference
@@ -203,9 +226,6 @@ internal static class AvaloniaDesktopProgram
             return "unknown (" + inner.GetType().Name + ": " + inner.Message + ")";
         }
     }
-
-    [DllImport("kernel32.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
-    private static extern IntPtr GetModuleHandleW(string lpModuleName);
 
     /* The FMOD wrappers import "fmod" and "fmodstudio". libfmodstudio.so.14 loads its core library by soname,
        libfmod.so.14, from its own directory; loading the core under any other file name would create a

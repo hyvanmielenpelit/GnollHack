@@ -8,16 +8,23 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Maui.Storage;
+#if WINDOWS_AVALONIA
+using System.Runtime.InteropServices;
+#endif
 
 namespace GnollHackM
 {
-    /* ISecureStorage over securestore.bin in the data directory: one AES-GCM encrypted JSON object
-       of all keys and values. The key is derived with HKDF-SHA256 from the machine id
-       (/etc/machine-id on Linux, the hardware UUID on macOS, the machine name elsewhere) and a fixed
-       application salt, so this is obfuscation-level protection only: any process of the same user can
-       derive the same key. On Linux and macOS the file is created with mode 0600. A file that cannot be decrypted or parsed, for
-       example after the machine id changed, is kept as securestore.bin.corrupt and the store starts
-       empty. File layout: "GHS1", 12-byte nonce, 16-byte tag, ciphertext. */
+    /* ISecureStorage over securestore.bin in the data directory: one encrypted JSON object of all keys
+       and values.
+       Linux and macOS: AES-GCM with a key derived with HKDF-SHA256 from the machine id (/etc/machine-id on
+       Linux, the hardware UUID on macOS) and a fixed application salt, so this is obfuscation-level
+       protection only: any process of the same user can derive the same key. The file is created with
+       mode 0600. File layout: "GHS1", 12-byte nonce, 16-byte tag, ciphertext.
+       Windows: DPAPI (CryptProtectData) for the current user, with a fixed application entropy. File
+       layout: "GHS2", the DPAPI blob. A "GHS1" file, encrypted as above with a key derived from the
+       machine name, is read and rewritten as "GHS2".
+       A file that cannot be decrypted or parsed, for example after the machine id changed or the user's
+       DPAPI master key was lost, is kept as securestore.bin.corrupt and the store starts empty. */
     public sealed class GHAvaloniaSecureStorage : ISecureStorage
     {
         private const string FileName = "securestore.bin";
@@ -27,6 +34,10 @@ namespace GnollHackM
         private static readonly byte[] _fileMagic = { (byte)'G', (byte)'H', (byte)'S', (byte)'1' };
         private static readonly byte[] _keySalt = Encoding.UTF8.GetBytes("GnollHack.Avalonia.SecureStorage.v1");
         private static readonly byte[] _keyInfo = Encoding.UTF8.GetBytes(FileName);
+#if WINDOWS_AVALONIA
+        private static readonly byte[] _windowsFileMagic = { (byte)'G', (byte)'H', (byte)'S', (byte)'2' };
+        private static readonly byte[] _windowsEntropy = Encoding.UTF8.GetBytes("GnollHack.Avalonia.SecureStorage.v2");
+#endif
 
         private readonly object _lock = new object();
 
@@ -136,12 +147,13 @@ namespace GnollHackM
             _filePath = Path.Combine(GHAvaloniaPaths.DataDirectory, FileName);
             _key = DeriveKey();
             Dictionary<string, string> values = new Dictionary<string, string>(StringComparer.Ordinal);
+            bool rewrite = false;
 
             if (File.Exists(_filePath))
             {
                 try
                 {
-                    byte[] plaintext = Decrypt(File.ReadAllBytes(_filePath));
+                    byte[] plaintext = ReadStore(File.ReadAllBytes(_filePath), out rewrite);
                     try
                     {
                         Dictionary<string, string> loaded = JsonSerializer.Deserialize(plaintext,
@@ -162,11 +174,41 @@ namespace GnollHackM
                 catch (Exception ex)
                 {
                     values.Clear();
+                    rewrite = false;
                     PreserveCorruptFile(ex);
                 }
             }
 
             _values = values;
+            if (rewrite)
+            {
+                try
+                {
+                    Save();
+                }
+                catch (Exception ex)
+                {
+                    /* The old format stays readable; the next save writes the current one */
+                    Debug.WriteLine("GHAvaloniaSecureStorage: rewriting " + _filePath + " failed: " + ex.Message);
+                }
+            }
+        }
+
+        /* The serialized store from the file's contents; rewrite is true when the file is in an older format.
+           Windows reads "GHS2", and "GHS1" for rewriting; elsewhere "GHS1". */
+        private byte[] ReadStore(byte[] data, out bool rewrite)
+        {
+#if WINDOWS_AVALONIA
+            if (HasMagic(data, _windowsFileMagic))
+            {
+                rewrite = false;
+                return Unprotect(data);
+            }
+            rewrite = true;
+#else
+            rewrite = false;
+#endif
+            return Decrypt(data);
         }
 
         /* Called with _lock held */
@@ -212,6 +254,9 @@ namespace GnollHackM
 
         private byte[] Encrypt(byte[] plaintext)
         {
+#if WINDOWS_AVALONIA
+            return Protect(plaintext);
+#else
             byte[] result = new byte[_fileMagic.Length + NonceSize + TagSize + plaintext.Length];
             Span<byte> output = result;
             _fileMagic.CopyTo(output);
@@ -224,6 +269,7 @@ namespace GnollHackM
                 aes.Encrypt(nonce, plaintext, ciphertext, tag, _fileMagic);
             }
             return result;
+#endif
         }
 
         private byte[] Decrypt(byte[] data)
@@ -311,6 +357,99 @@ namespace GnollHackM
             }
             return "GnollHack";
         }
+
+#if WINDOWS_AVALONIA
+        private const int CRYPTPROTECT_UI_FORBIDDEN = 0x1;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct DataBlob
+        {
+            public int cbData;
+            public IntPtr pbData;
+        }
+
+        [DllImport("crypt32.dll", CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CryptProtectData(ref DataBlob pDataIn, string szDataDescr,
+            ref DataBlob pOptionalEntropy, IntPtr pvReserved, IntPtr pPromptStruct, int dwFlags, out DataBlob pDataOut);
+
+        [DllImport("crypt32.dll", ExactSpelling = true, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool CryptUnprotectData(ref DataBlob pDataIn, IntPtr ppszDataDescr,
+            ref DataBlob pOptionalEntropy, IntPtr pvReserved, IntPtr pPromptStruct, int dwFlags, out DataBlob pDataOut);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr LocalFree(IntPtr hMem);
+
+        private static bool HasMagic(byte[] data, byte[] magic)
+        {
+            return data != null && data.Length >= magic.Length && data.AsSpan(0, magic.Length).SequenceEqual(magic);
+        }
+
+        /* "GHS2" and the DPAPI blob of the plaintext, for the current user */
+        private static byte[] Protect(byte[] plaintext)
+        {
+            byte[] blob = RunDpapi(plaintext, 0, plaintext.Length, true);
+            byte[] result = new byte[_windowsFileMagic.Length + blob.Length];
+            _windowsFileMagic.CopyTo(result, 0);
+            blob.CopyTo(result, _windowsFileMagic.Length);
+            return result;
+        }
+
+        /* The plaintext of a "GHS2" file; throws CryptographicException when DPAPI cannot decrypt it */
+        private static byte[] Unprotect(byte[] data)
+        {
+            return RunDpapi(data, _windowsFileMagic.Length, data.Length - _windowsFileMagic.Length, false);
+        }
+
+        /* CryptProtectData or CryptUnprotectData on count bytes of input from offset, never showing any UI. The
+           output is copied into a managed array, cleared when it is plaintext, and freed with LocalFree. */
+        private static byte[] RunDpapi(byte[] input, int offset, int count, bool protect)
+        {
+            if (count <= 0)
+                throw new CryptographicException("The secure store holds no protected data.");
+
+            GCHandle inputHandle = GCHandle.Alloc(input, GCHandleType.Pinned);
+            GCHandle entropyHandle = GCHandle.Alloc(_windowsEntropy, GCHandleType.Pinned);
+            DataBlob output = new DataBlob();
+            try
+            {
+                DataBlob inputBlob = new DataBlob();
+                inputBlob.cbData = count;
+                inputBlob.pbData = inputHandle.AddrOfPinnedObject() + offset;
+                DataBlob entropyBlob = new DataBlob();
+                entropyBlob.cbData = _windowsEntropy.Length;
+                entropyBlob.pbData = entropyHandle.AddrOfPinnedObject();
+
+                bool ok;
+                if (protect)
+                    ok = CryptProtectData(ref inputBlob, null, ref entropyBlob, IntPtr.Zero, IntPtr.Zero,
+                        CRYPTPROTECT_UI_FORBIDDEN, out output);
+                else
+                    ok = CryptUnprotectData(ref inputBlob, IntPtr.Zero, ref entropyBlob, IntPtr.Zero, IntPtr.Zero,
+                        CRYPTPROTECT_UI_FORBIDDEN, out output);
+                if (!ok)
+                    throw new CryptographicException(Marshal.GetLastWin32Error());
+                if (output.pbData == IntPtr.Zero || output.cbData < 0)
+                    throw new CryptographicException("DPAPI returned no data.");
+
+                byte[] result = new byte[output.cbData];
+                Marshal.Copy(output.pbData, result, 0, output.cbData);
+                return result;
+            }
+            finally
+            {
+                if (output.pbData != IntPtr.Zero)
+                {
+                    if (!protect && output.cbData > 0)
+                        Marshal.Copy(new byte[output.cbData], 0, output.pbData, output.cbData);
+                    LocalFree(output.pbData);
+                }
+                entropyHandle.Free();
+                inputHandle.Free();
+            }
+        }
+#endif
 
 #if MACOS
         [System.Runtime.InteropServices.StructLayout(System.Runtime.InteropServices.LayoutKind.Sequential)]

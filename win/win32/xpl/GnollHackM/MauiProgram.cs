@@ -69,7 +69,7 @@ public static class MauiProgram
         GHAvaloniaGamepadScroll.Register();
 #endif
         GHApp.TryReadSecrets();
-#if GNH_AVALONIA && (LINUX || MACOS) && SENTRY
+#if GNH_AVALONIA && (LINUX || MACOS || WINDOWS_AVALONIA) && SENTRY
         GHAvaloniaSentry.Init();
 #endif
 #if SENTRY && WINDOWS

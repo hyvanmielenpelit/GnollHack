@@ -210,21 +210,6 @@ namespace GnollHackX.Pages.MainScreen
             //string winAppSDKAssemblyVersion = typeof(Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap)?.Assembly?.GetName()?.Version?.ToString();
             string winAppSDKAssemblyVersion = Microsoft.Windows.ApplicationModel.WindowsAppRuntime.ReleaseInfo.AsString;
             WinAppSDKLabel.Text = !string.IsNullOrEmpty(winAppSDKAssemblyVersion) ? winAppSDKAssemblyVersion : "?";
-
-            if (GHApp.DeviceGPUs.Count > 1)
-            {
-                string activeGPU = GHApp.GetActiveGPU();
-                ActiveGPULabel.Text = activeGPU + " (" + GHApp.DeviceGPUs.Count + " GPUs)";
-            }
-            else
-            {
-                ActiveGPULabel.Text = "";
-                ActiveGPULabel.IsVisible = false;
-                ActiveGPUTitleLabel.IsVisible = false;
-                VersionInfoGrid.Children.Remove(ActiveGPULabel);
-                VersionInfoGrid.Children.Remove(ActiveGPUTitleLabel);
-                ActiveGPURowDefinition.Height = 0;
-            }
 #else
             WinRTLabel.Text = "";
             WinRTLabel.IsVisible = false;
@@ -253,14 +238,24 @@ namespace GnollHackX.Pages.MainScreen
             VersionInfoGrid.Children.Remove(WinAppSDKLabel);
             VersionInfoGrid.Children.Remove(WinAppSDKTitleLabel);
             WinAppSDKRowDefinition.Height = 0;
-
-            ActiveGPULabel.Text = "";
-            ActiveGPULabel.IsVisible = false;
-            ActiveGPUTitleLabel.IsVisible = false;
-            VersionInfoGrid.Children.Remove(ActiveGPULabel);
-            VersionInfoGrid.Children.Remove(ActiveGPUTitleLabel);
-            ActiveGPURowDefinition.Height = 0;
 #endif
+
+#if WINDOWS || WINDOWS_AVALONIA
+            if (GHApp.DeviceGPUs.Count > 1)
+            {
+                string activeGPU = GHApp.GetActiveGPU();
+                ActiveGPULabel.Text = activeGPU + " (" + GHApp.DeviceGPUs.Count + " GPUs)";
+            }
+            else
+#endif
+            {
+                ActiveGPULabel.Text = "";
+                ActiveGPULabel.IsVisible = false;
+                ActiveGPUTitleLabel.IsVisible = false;
+                VersionInfoGrid.Children.Remove(ActiveGPULabel);
+                VersionInfoGrid.Children.Remove(ActiveGPUTitleLabel);
+                ActiveGPURowDefinition.Height = 0;
+            }
 
             PortVersionLabel.Text = GHApp.GetPortVersionString();
             PortBuildLabel.Text = GHApp.GetPortBuildString();

@@ -45,6 +45,13 @@ namespace GnollHackM
         /* Set when a canvas control renders on the UI thread, which happens in the render pass that
            commits; read and cleared by the next frame callback */
         private static bool _frameSubmitted = false;
+        /* Stopwatch ticks of the last canvas control render; 0 before the first */
+        private static long _lastSubmitTicks = 0;
+
+        /* The Steam overlay keep-alive, Windows only: about 30 Hz, pulsed when nothing else rendered for this long */
+        private const double KeepAliveIntervalMs = 33.0;
+        private static GHAvaloniaPresentKeepAlive _presentKeepAlive = null;
+        private static long _lastKeepAlivePulseTicks = 0;
 
         /* Refresh-rate estimate from the recent frame deltas */
         private static readonly GHRefreshRateEstimator _estimator = new GHRefreshRateEstimator();
@@ -143,6 +150,7 @@ namespace GnollHackM
             /* Re-armed first: the callback runs before the compositor's update pass */
             _frameRequested = true;
             topLevel.RequestAnimationFrame(_onFrame);
+            MaybePulseKeepAlive(topLevel);
 
             if (_hasLastFrameTime)
             {
@@ -215,6 +223,46 @@ namespace GnollHackM
         public static void NoteFrameSubmitted()
         {
             _frameSubmitted = true;
+            _lastSubmitTicks = Stopwatch.GetTimestamp();
+        }
+
+        /* The control the frame loop pulses while Steam's overlay is in the process, or null; UI thread */
+        public static void SetPresentKeepAlive(GHAvaloniaPresentKeepAlive keepAlive)
+        {
+            _presentKeepAlive = keepAlive;
+            _lastKeepAlivePulseTicks = 0;
+        }
+
+        // WORKAROUND(WA-STEAM-0003): Steam's overlay draws only on a window swap chain's Present
+        /* Windows, with Steam's overlay in the process: when no canvas control has rendered and no pulse has run for
+           KeepAliveIntervalMs, pulses the keep-alive so that Avalonia presents a frame the overlay can draw on, also
+           on a page that is not animating. Not while the window is minimized or the app is suspended. A pulse is
+           not a submitted frame and leaves the refresh rate estimate alone. */
+        private static void MaybePulseKeepAlive(Avalonia.Controls.TopLevel topLevel)
+        {
+            GHAvaloniaPresentKeepAlive keepAlive = _presentKeepAlive;
+            if (keepAlive == null || !OperatingSystem.IsWindows() || GHApp.IsSuspended)
+                return;
+            Avalonia.Controls.Window window = topLevel as Avalonia.Controls.Window;
+            if (window != null && window.WindowState == Avalonia.Controls.WindowState.Minimized)
+                return;
+
+            long now = Stopwatch.GetTimestamp();
+            long last = Math.Max(_lastSubmitTicks, _lastKeepAlivePulseTicks);
+            if (last != 0 && (now - last) * 1000.0 / Stopwatch.Frequency < KeepAliveIntervalMs)
+                return;
+            if (!GHAvaloniaSteamOverlay.IsPresent)
+                return;
+
+            _lastKeepAlivePulseTicks = now;
+            try
+            {
+                keepAlive.Pulse();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         /* UI thread; 0 when unknown */

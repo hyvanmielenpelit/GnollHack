@@ -22,19 +22,6 @@ namespace GnollHackM
         internal static bool NativeInitialized { get; private set; }
         internal static bool CrashedLastRun { get; private set; }
 
-        /* Before sentry_init: records the current unhandled-exception filter */
-        [DllImport("gnhsentry")]
-        internal static extern int gnh_crash_prepare();
-
-        /* After sentry_init: puts the filter wrapper in front of sentry-native's filter and adds the vectored handler;
-           0 when sentry-native's filter is not the current one */
-        [DllImport("gnhsentry")]
-        internal static extern int gnh_crash_install();
-
-        /* Before sentry_close */
-        [DllImport("gnhsentry")]
-        internal static extern void gnh_crash_uninstall();
-
         /* Never throws; native crash capture stays off when it cannot start */
         internal static void Init()
         {

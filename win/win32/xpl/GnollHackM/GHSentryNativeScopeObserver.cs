@@ -1,4 +1,4 @@
-#if SENTRY && (WINDOWS || (GNH_AVALONIA && (LINUX || MACOS)))
+#if SENTRY && (WINDOWS || (GNH_AVALONIA && (LINUX || MACOS || WINDOWS_AVALONIA)))
 using System;
 using System.Globalization;
 using System.Text.Json;
