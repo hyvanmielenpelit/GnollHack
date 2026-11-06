@@ -244,6 +244,65 @@ namespace GnollHackX.UnitTests
             Assert.Equal(GHDiagnosisHealth.Poor, GHPerformanceDiagnosis.Diagnose(f).Health);
         }
 
+        /* A Windows Avalonia run held to the tick cadence by the GPU: a 60 fps target,
+           ticks at 40 Hz on a 120 Hz display mode, 40 fps displayed, no WMI maximum */
+        private static GHDiagnosisFacts GpuBoundTickFacts()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.TargetFps = 60f;
+            f.MeasuredRefreshHz = 40f;
+            f.DisplayMaxRefreshHz = float.NaN;
+            f.DisplayModeRefreshHz = 120f;
+            f.DisplayedFps = 40f;
+            return f;
+        }
+
+        [Fact]
+        public void Health_JudgedAgainstDisplayModeRefresh_WhenKnown()
+        {
+            GHDiagnosisFacts f = GpuBoundTickFacts();
+
+            Assert.Equal(60.0, GHPerformanceDiagnosis.EffectiveTargetFps(f), 3);
+            Assert.Equal(GHDiagnosisHealth.Poor, GHPerformanceDiagnosis.Diagnose(f).Health);
+        }
+
+        [Fact]
+        public void Health_JudgedAgainstMeasuredRefresh_WhenDisplayModeUnknown()
+        {
+            GHDiagnosisFacts f = GpuBoundTickFacts();
+            f.DisplayModeRefreshHz = float.NaN;
+
+            Assert.Equal(40.0, GHPerformanceDiagnosis.EffectiveTargetFps(f), 3);
+            Assert.Equal(GHDiagnosisHealth.Healthy, GHPerformanceDiagnosis.Diagnose(f).Health);
+        }
+
+        /* A 120 fps target on a 60 Hz display mode: judged against 60 */
+        [Fact]
+        public void Health_JudgedAgainstLowerDisplayModeRefresh()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.TargetFps = 120f;
+            f.DisplayModeRefreshHz = 60f;
+            f.MeasuredRefreshHz = 60f;
+            f.DisplayedFps = 59f;
+
+            Assert.Equal(60.0, GHPerformanceDiagnosis.EffectiveTargetFps(f), 3);
+            Assert.Equal(GHDiagnosisHealth.Healthy, GHPerformanceDiagnosis.Diagnose(f).Health);
+        }
+
+        /* The display mode rate never stands in for the WMI maximum */
+        [Fact]
+        public void RefreshBelowMax_SilentWithOnlyDisplayModeRefresh()
+        {
+            GHDiagnosisFacts f = GpuBoundTickFacts();
+            AssertSilent(f, GHPerformanceDiagnosis.CodeRefreshBelowMax);
+
+            f.TargetFps = 120f;
+            f.MeasuredRefreshHz = 60f;
+            f.DisplayedFps = 59f;
+            AssertSilent(f, GHPerformanceDiagnosis.CodeRefreshBelowMax);
+        }
+
         [Fact]
         public void Health_UnknownWindowFacts_JudgedAsBefore()
         {
@@ -1756,6 +1815,69 @@ namespace GnollHackX.UnitTests
             f.MeasuredRefreshHz = 59.94f;
 
             Assert.Equal("Result: HEALTHY  59.5 of 60 target fps, hitches 1.0 ms/s", ResultLineOf(Report(f)));
+        }
+
+        /* The cap names the display mode rate the verdict used, not the measured one */
+        [Fact]
+        public void ResultLine_ShowsDisplayModeCap()
+        {
+            GHDiagnosisFacts f = HealthyFacts();
+            f.TargetFps = 120f;
+            f.DisplayModeRefreshHz = 60f;
+            f.MeasuredRefreshHz = 60f;
+            f.DisplayedFps = 59f;
+            string line = ResultLineOf(Report(f));
+            Assert.EndsWith("(display 60 Hz)", line);
+
+            f.MeasuredRefreshHz = 40f;
+            line = ResultLineOf(Report(f));
+            Assert.EndsWith("(display 60 Hz)", line);
+        }
+
+        [Fact]
+        public void Report_DisplayModeRefresh_OnlyWhenKnown()
+        {
+            GHDiagnosisFacts f = GpuBoundTickFacts();
+            string report = Report(f);
+            Assert.Contains("\n  Refresh: measured 40.0 Hz, display max n/a Hz, display mode 120.0 Hz,\n"
+                + "    pacing rate ok\n", report);
+            Assert.Contains("refresh 40.0 Hz (display mode 120.0 Hz)\n", report);
+            Assert.Contains("\n  displayModeRefreshHz=120\n", report);
+
+            f.DisplayModeRefreshHz = float.NaN;
+            report = Report(f);
+            Assert.DoesNotContain("display mode", report);
+            Assert.Contains("\n  Refresh: measured 40.0 Hz, display max n/a Hz, pacing rate ok\n", report);
+            Assert.Contains("\n  displayModeRefreshHz=n/a\n", report);
+        }
+
+        /* The longer Refresh line wraps instead of being cut, whatever the rates */
+        [Theory]
+        [InlineData(40f, float.NaN, 120f, false)]
+        [InlineData(40f, 60f, 120f, false)]
+        [InlineData(144f, 144f, 144f, true)]
+        [InlineData(float.NaN, float.NaN, 60f, false)]
+        public void Report_DisplayModeRefresh_FitsWidthAndKeepsPacingRate(float measured, float max, float mode,
+            bool mismatch)
+        {
+            GHDiagnosisFacts f = GpuBoundTickFacts();
+            f.MeasuredRefreshHz = measured;
+            f.DisplayMaxRefreshHz = max;
+            f.DisplayModeRefreshHz = mode;
+            f.AssumedRefreshMismatch = mismatch;
+            string report = Report(f);
+
+            Assert.Contains(mismatch ? "pacing rate mismatch" : "pacing rate ok", report);
+            string[] lines = Lines(report);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                if (lines[i] == "Frame detail:")
+                    break;
+                Assert.True(lines[i].Length <= GHPerformanceTextReport.MaxLineWidth,
+                    "line " + i + " is " + lines[i].Length + " wide: " + lines[i]);
+                Assert.False(lines[i].EndsWith("...", StringComparison.Ordinal) && lines[i].Contains("Refresh:"),
+                    "Refresh line cut: " + lines[i]);
+            }
         }
 
         [Fact]

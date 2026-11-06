@@ -1285,7 +1285,7 @@ namespace GnollHackM
             {
                 GHRenderAdapter render;
                 if (GHRenderAdapterProbeWindows.TryGetLast(out render, null))
-                    PutFingerprint(fingerprint, "hardware.renderAdapter", GHRenderAdapterProbeWindows.FingerprintValue(render));
+                    PutFingerprint(fingerprint, "hardware.renderAdapter", GHDxgiAdapters.FingerprintValue(render));
             }
             catch
             {

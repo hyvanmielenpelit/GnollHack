@@ -2770,7 +2770,39 @@ namespace GnollHackX
             get
             {
 #if WINDOWS || WINDOWS_AVALONIA
-                return UseGPU && !HasInformedAboutGPU && DeviceGPUs.Count > 1 && (IsPackaged ? GetActiveGPU() != "Dedicated" : GetActiveGPU() == "Integrated");
+                if (!UseGPU || HasInformedAboutGPU || DeviceGPUs.Count <= 1)
+                    return false;
+                /* From the adapter that renders when it is known and not a software one; otherwise the registry rule
+                   of GHWindowsGpuChoice.ShouldInformAboutGpu decides */
+                bool? renderIsIntegrated = null;
+                bool discretePresent = false;
+                try
+                {
+                    GHRenderAdapter render = null;
+#if WINDOWS_AVALONIA
+                    /* Windows Avalonia: the adapter the selection callback chose, else the default adapter, Avalonia's
+                       own choice */
+                    List<GHRenderAdapter> all = new List<GHRenderAdapter>();
+                    if (GHWindowsGpuSelection.TryGetRenderAdapter(out render, all))
+                        discretePresent = GHDxgiAdapters.HasDiscreteAdapter(all);
+                    else if (!GHDxgiAdapters.TryGetDefaultAdapter(DeviceGPUs.ToArray(), out render, out discretePresent))
+                        render = null;
+#else
+                    // WORKAROUND(WA-SKIASHARP-0012): SkiaSharp.Views.WinUI cannot choose the D3D adapter
+                    /* WinUI 3: the default adapter, which SkiaSharp's ANGLE renders on */
+                    if (!GHDxgiAdapters.TryGetDefaultAdapter(DeviceGPUs.ToArray(), out render, out discretePresent))
+                        render = null;
+#endif
+                    if (render != null && !render.IsSoftware)
+                        renderIsIntegrated = render.IsIntegrated;
+                }
+                catch (Exception ex)
+                {
+                    renderIsIntegrated = null;
+                    discretePresent = false;
+                    Debug.WriteLine(ex);
+                }
+                return GHWindowsGpuChoice.ShouldInformAboutGpu(renderIsIntegrated, discretePresent, IsPackaged, GetActiveGPU());
 #else
                 return false;
 #endif

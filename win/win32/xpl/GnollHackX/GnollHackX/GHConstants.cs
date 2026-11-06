@@ -454,10 +454,10 @@ namespace GnollHackX
 #else
             false;
 #endif
-        /* On by default only on Windows. On Android it appeared to add stuttering, probably
-           from extra GL-thread work; iOS has less memory to spare. */
+        /* On by default only on Windows, WinUI 3 and Avalonia. On Android it appeared to add
+           stuttering, probably from extra GL-thread work; iOS has less memory to spare. */
         public const bool DefaultTextBlobCaching =
-#if WINDOWS
+#if WINDOWS || WINDOWS_AVALONIA
             true;
 #else
             false;

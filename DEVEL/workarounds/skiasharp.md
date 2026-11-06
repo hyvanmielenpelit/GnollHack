@@ -416,3 +416,43 @@ painted.
 
 Checks:
 - 2026-10-29 | SkiaSharp 4.153.1 | still-needed | Reproduced in a scratch app on 4.153.1 and 3.119.4; no issue found in mono/SkiaSharp.
+
+## WA-SKIASHARP-0012: SKSwapChainPanel cannot choose its Direct3D adapter
+
+- Status: active
+- Added: 2026-11-06
+- GnollHack version: 3.39 (439)
+- Component: SkiaSharp
+- Package: SkiaSharp.Views.Maui.Core (SkiaSharp.Views.WinUI)
+- Defective version: SkiaSharp.Views.Maui.Core 4.154.0
+- Platforms: Windows (MAUI)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-06
+- Code: `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.InformAboutGPU`)
+- Remove when: SkiaSharp.Views.WinUI lets the app choose the adapter of `SKSwapChainPanel`, GnollHack renders on the high-performance adapter through it, and Verify removal passes.
+
+**Symptom.** On a hybrid-graphics laptop with no per-app Windows graphics preference, the
+WinUI 3 version draws the map on the integrated GPU, which can be too slow for it.
+
+**Cause.** A missing feature. `SKSwapChainPanel`'s `GlesContext` always creates its ANGLE
+display with `EGL_DEFAULT_DISPLAY` and Direct3D 11 attributes, so ANGLE uses the default
+adapter, the first one `IDXGIFactory1::EnumAdapters1` returns: the integrated GPU on most
+hybrid laptops unless Windows' per-app preference says High performance. The view takes no
+adapter or display attributes from the app.
+
+**Workaround.** `GHApp.InformAboutGPU` reads the default adapter through
+`GHDxgiAdapters.TryGetDefaultAdapter` and, when it is integrated and a discrete adapter
+exists, shows the one-time "Multiple GPUs" alert, which tells the player to set High
+performance for GnollHack in Windows' Graphics settings.
+
+**Verify removal.** On a SkiaSharp release that lets the app choose the adapter:
+- Choose the adapter from `IDXGIFactory6::EnumAdapterByGpuPreference`, as the Windows
+  Avalonia flavor does, and keep the alert only for the case where Windows' per-app setting
+  says Power saving.
+- On a hybrid laptop with no per-app preference, run the performance test in a Release build:
+  its render adapter must be the discrete GPU.
+
+Checks:
+- 2026-11-06 | SkiaSharp.Views.Maui.Core 4.154.0 | still-needed | GlesContext at v4.154.0 calls eglGetPlatformDisplayEXT with EGL_DEFAULT_DISPLAY only; no adapter option.

@@ -524,9 +524,19 @@ namespace GnollHackX.Performance
 
         /* GHApp.DeviceGPUs (Windows WMI; empty elsewhere): whether a discrete adapter is
            present, the adapter lines when the adapter probe gives none, and on Windows the
-           display's maximum refresh when exactly one adapter drives a display */
+           display's maximum refresh when exactly one adapter drives a display. On Windows
+           Avalonia, also the window's monitor's current display mode rate
+           (GHAvaloniaDeviceDisplay.MonitorRefreshRate) as DisplayModeRefreshHz: the
+           measured rate there is the DXGI tick cadence, which falls to a fraction of the
+           display rate when the GPU is the limit, and DisplayMaxRefreshHz stays the WMI
+           maximum that REFRESH_BELOW_MAX compares with. */
         private static void FillDeviceGpuFacts(GHDiagnosisFacts f)
         {
+#if GNH_MAUI && WINDOWS_AVALONIA
+            int hz = GHAvaloniaDeviceDisplay.Current?.MonitorRefreshRate ?? 0;
+            if (hz > 0)
+                f.DisplayModeRefreshHz = hz;
+#endif
             List<DeviceGPU> gpus = GHApp.DeviceGPUs;
             if (gpus == null || gpus.Count == 0)
                 return;
@@ -562,18 +572,24 @@ namespace GnollHackX.Performance
 #endif
         }
 
-        /* Thread pool only. The adapter facts are the probe's last result, which the run
-           record's EndWindowAndSave has just refreshed; none when no probe of this process
-           has named a render adapter. */
+        /* Thread pool only. The adapter facts are, on WinUI 3, the probe's last result,
+           which the run record's EndWindowAndSave has just refreshed, and on Windows
+           Avalonia the adapter the GPU selection callback chose
+           (GHWindowsGpuSelection.TryGetRenderAdapter); none when neither has named a
+           render adapter in this process. */
         private static PostWindowData CollectPostWindow()
         {
             PostWindowData d = new PostWindowData();
-#if GNH_MAUI && WINDOWS
+#if GNH_MAUI && (WINDOWS || WINDOWS_AVALONIA)
             try
             {
                 List<GHRenderAdapter> all = new List<GHRenderAdapter>();
                 GHRenderAdapter render;
+#if WINDOWS
                 bool known = GHRenderAdapterProbeWindows.TryGetLast(out render, all);
+#else
+                bool known = GHWindowsGpuSelection.TryGetRenderAdapter(out render, all);
+#endif
                 if (known && render != null)
                 {
                     d.RenderAdapterName = render.Name;

@@ -85,6 +85,10 @@ namespace GnollHackX.Performance
         public float TargetFps = float.NaN;
         public float MeasuredRefreshHz = float.NaN;
         public float DisplayMaxRefreshHz = float.NaN;
+        /* The current display mode's rate, where the platform reads it and its measured
+           rate is a tick cadence that can fall below it (Windows Avalonia); unknown
+           elsewhere */
+        public float DisplayModeRefreshHz = float.NaN;
         public bool AssumedRefreshMismatch;
         public float DisplayedFps = float.NaN;
         public float HitchRatioMsPerSec = float.NaN;
@@ -503,16 +507,28 @@ namespace GnollHackX.Performance
             return GHDiagnosisHealth.Degraded;
         }
 
-        /* The frame rate health is judged against: TargetFps, or the measured refresh rate
-           when that is known and lower. NaN when TargetFps is unknown. */
+        /* The frame rate health is judged against: TargetFps, or the display rate
+           (DisplayCapHz) when that is known and lower. NaN when TargetFps is unknown. */
         public static double EffectiveTargetFps(GHDiagnosisFacts f)
         {
             if (f == null || !Known(f.TargetFps))
                 return double.NaN;
             double target = f.TargetFps;
-            if (Known(f.MeasuredRefreshHz) && f.MeasuredRefreshHz > 0f && f.MeasuredRefreshHz < target)
-                target = f.MeasuredRefreshHz;
+            double cap = DisplayCapHz(f);
+            if (!double.IsNaN(cap) && cap < target)
+                target = cap;
             return target;
+        }
+
+        /* The display rate that caps the target: DisplayModeRefreshHz when it is known,
+           else MeasuredRefreshHz; NaN when neither is known and positive */
+        private static double DisplayCapHz(GHDiagnosisFacts f)
+        {
+            if (Known(f.DisplayModeRefreshHz) && f.DisplayModeRefreshHz > 0f)
+                return f.DisplayModeRefreshHz;
+            if (Known(f.MeasuredRefreshHz) && f.MeasuredRefreshHz > 0f)
+                return f.MeasuredRefreshHz;
+            return double.NaN;
         }
 
         /* Runs the rule catalog over f. Findings are sorted by CompareFindings. Primary is
@@ -1400,7 +1416,9 @@ namespace GnollHackX.Performance
                 if (Known(f.MeasuredRefreshHz))
                 {
                     string max = Known(f.DisplayMaxRefreshHz) ? " of max " + F1(f.DisplayMaxRefreshHz) + " Hz" : "";
-                    parts.Add("refresh " + F1(f.MeasuredRefreshHz) + " Hz" + max);
+                    string mode = Known(f.DisplayModeRefreshHz)
+                        ? " (display mode " + F1(f.DisplayModeRefreshHz) + " Hz)" : "";
+                    parts.Add("refresh " + F1(f.MeasuredRefreshHz) + " Hz" + max + mode);
                 }
                 break;
             case GHFindingArea.Settings:
@@ -1631,7 +1649,7 @@ namespace GnollHackX.Performance
             string tail = ", hitches " + F1(f.HitchRatioMsPerSec) + " ms/s";
             double effective = EffectiveTargetFps(f);
             if (!double.IsNaN(effective) && f.TargetFps > 0f && effective < MapFpsCapFraction * f.TargetFps)
-                tail += " (display " + Fps(f.MeasuredRefreshHz) + " Hz)";
+                tail += " (display " + Fps(DisplayCapHz(f)) + " Hz)";
             string line = head + " target fps" + tail;
             if (line.Length > GHPerformanceTextReport.MaxLineWidth)
                 line = head + " fps" + tail;
@@ -1653,8 +1671,20 @@ namespace GnollHackX.Performance
             Line(sb, "  Window: " + F1(f.WindowSeconds) + " s, target " + Fps(f.TargetFps) + " fps, displayed "
                 + F1(f.DisplayedFps) + " fps");
             AppendWrapped(sb, "  Scene: ", "    ", SceneText(f.SceneBefore));
-            Line(sb, "  Refresh: measured " + F1(f.MeasuredRefreshHz) + " Hz, display max " + F1(f.DisplayMaxRefreshHz)
-                + " Hz, pacing rate " + (f.AssumedRefreshMismatch ? "mismatch" : "ok"));
+            string pacing = "pacing rate " + (f.AssumedRefreshMismatch ? "mismatch" : "ok");
+            if (Known(f.DisplayModeRefreshHz))
+            {
+                /* Too long for one line: the pacing rate follows on a line of its own, so the
+                   wrap never splits it */
+                AppendWrapped(sb, "  Refresh: ", "    ", "measured " + F1(f.MeasuredRefreshHz) + " Hz, display max "
+                    + F1(f.DisplayMaxRefreshHz) + " Hz, display mode " + F1(f.DisplayModeRefreshHz) + " Hz,");
+                Line(sb, "    " + pacing);
+            }
+            else
+            {
+                Line(sb, "  Refresh: measured " + F1(f.MeasuredRefreshHz) + " Hz, display max " + F1(f.DisplayMaxRefreshHz)
+                    + " Hz, " + pacing);
+            }
             Line(sb, "  Hitches: " + Int(f.HitchCount) + ", " + F1(f.HitchRatioMsPerSec) + " ms/s, pacing error RMS "
                 + F2(f.PacingErrorRmsMs) + " ms");
             Line(sb, "  Paint: P50 " + F2(f.PaintP50Ms) + " ms, P99 " + F2(f.PaintP99Ms) + " ms");
@@ -1841,6 +1871,7 @@ namespace GnollHackX.Performance
             Fact(sb, "targetFps", Num(f.TargetFps));
             Fact(sb, "measuredRefreshHz", Num(f.MeasuredRefreshHz));
             Fact(sb, "displayMaxRefreshHz", Num(f.DisplayMaxRefreshHz));
+            Fact(sb, "displayModeRefreshHz", Num(f.DisplayModeRefreshHz));
             Fact(sb, "assumedRefreshMismatch", Bool(f.AssumedRefreshMismatch));
             Fact(sb, "displayedFps", Num(f.DisplayedFps));
             Fact(sb, "hitchRatioMsPerSec", Num(f.HitchRatioMsPerSec));

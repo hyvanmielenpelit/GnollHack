@@ -11,6 +11,8 @@ internal static class AvaloniaDesktopProgram
 {
     private const string WinCompositionArgument = "--win-composition=";
     private const string WinCompositionVariable = "GNOLLHACK_WIN_COMPOSITION";
+    private const string WinGpuArgument = "--win-gpu=";
+    private const string WinGpuVariable = "GNOLLHACK_WIN_GPU";
     /* Past the detector's own recheck interval, so that the second log line reflects a new check */
     private const int SteamOverlayRecheckMs = GHAvaloniaSteamOverlay.RecheckIntervalMs + 1000;
 
@@ -103,12 +105,28 @@ internal static class AvaloniaDesktopProgram
         if (OperatingSystem.IsWindows())
         {
             string mode = GetRequestedWinComposition();
+            string gpu = GetRequestedWinGpu();
             Win32PlatformOptions win32Options = CreateWin32PlatformOptions(mode);
+#if WINDOWS_AVALONIA
+            win32Options = AddGpuSelection(win32Options, gpu);
+#endif
             if (win32Options != null)
                 builder = builder.With(win32Options);
-            builder = builder.AfterSetup(b => LogWindowsGraphics(mode));
+            builder = builder.AfterSetup(b => LogWindowsGraphics(mode, gpu));
         }
         return builder;
+    }
+
+    /* --win-gpu=<mode>, else GNOLLHACK_WIN_GPU; null for the default */
+    private static string GetRequestedWinGpu()
+    {
+        foreach (string arg in _args)
+        {
+            if (arg != null && arg.StartsWith(WinGpuArgument, StringComparison.OrdinalIgnoreCase))
+                return arg.Substring(WinGpuArgument.Length).Trim().ToLowerInvariant();
+        }
+        string variable = Environment.GetEnvironmentVariable(WinGpuVariable);
+        return string.IsNullOrWhiteSpace(variable) ? null : variable.Trim().ToLowerInvariant();
     }
 
     /* --win-composition=<mode>, else GNOLLHACK_WIN_COMPOSITION; null for the default */
@@ -128,7 +146,12 @@ internal static class AvaloniaDesktopProgram
        with ANGLE. The modes, for testing: winui, dcomp, dxgi (the swap chain without the WinUI fallback), redirect (the
        redirection surface, paced by a sleep loop), wgl (OpenGL on the redirection surface), and avalonia, which
        returns null for Avalonia's own defaults. The other modes fall back to the redirection surface, and every one
-       draws popups inside the window. */
+       draws popups inside the window. The GPU mode, from --win-gpu=<mode> else GNOLLHACK_WIN_GPU, is independent of
+       these: AddGpuSelection adds GHWindowsGpuSelection's adapter callback, to new options at Avalonia's defaults when
+       this returns null, for auto (the default, also for an unknown mode: the high-performance adapter unless the
+       Windows per-app preference is Power saving), dedicated and integrated; no callback for avalonia (Avalonia's
+       first adapter) or in an ARM64 process, where any callback replaces Avalonia's Adreno rule. The callback applies
+       only to ANGLE on Direct3D 11: with wgl, OpenGL first, it runs only when OpenGL is unavailable. */
     private static Win32PlatformOptions CreateWin32PlatformOptions(string mode)
     {
         Win32RenderingMode[] angle = { Win32RenderingMode.AngleEgl, Win32RenderingMode.Software };
@@ -182,19 +205,50 @@ internal static class AvaloniaDesktopProgram
         };
     }
 
+#if WINDOWS_AVALONIA
+    /* The options with the adapter selection callback of the requested GPU mode (see CreateWin32PlatformOptions);
+       options unchanged for avalonia and in an ARM64 process */
+    private static Win32PlatformOptions AddGpuSelection(Win32PlatformOptions options, string gpu)
+    {
+        if (gpu == "avalonia")
+            return options;
+        if (RuntimeInformation.ProcessArchitecture == Architecture.Arm64)
+        {
+            Console.Error.WriteLine("GnollHack: Windows GPU selection off on ARM64; using Avalonia's choice");
+            return options;
+        }
+        GHWindowsGpuMode gpuMode = GHWindowsGpuMode.Auto;
+        if (gpu != null && !GHWindowsGpuChoice.TryParseMode(gpu, out gpuMode))
+        {
+            Console.Error.WriteLine("GnollHack: unknown Windows GPU mode \"" + gpu + "\"; using auto");
+            gpuMode = GHWindowsGpuMode.Auto;
+        }
+        if (options == null)
+            options = new Win32PlatformOptions();
+        options.GraphicsAdapterSelectionCallback = GHWindowsGpuSelection.CreateCallback(gpuMode);
+        return options;
+    }
+#endif
+
     /* Windows: the type name of the render timer Avalonia applied, such as DxgiConnection or SleepLoopRenderTimer;
        null until Avalonia's setup is done */
     internal static string WindowsRenderTimerName { get; private set; }
 
     /* After Avalonia's setup, when the render loop and graphics are bound: the requested mode, the render timer that
-       shows which composition mode was applied, the platform graphics, and whether Steam's overlay renderer is in the
-       process, now and once more after SteamOverlayRecheckMs, since Steam may inject it after the start */
-    private static void LogWindowsGraphics(string requestedMode)
+       shows which composition mode was applied, the platform graphics, on Windows Avalonia the requested GPU mode and
+       the adapter GHWindowsGpuSelection chose ("not selected" when its callback has not run), and whether Steam's
+       overlay renderer is in the process, now and once more after SteamOverlayRecheckMs, since Steam may inject it
+       after the start */
+    private static void LogWindowsGraphics(string requestedMode, string requestedGpu)
     {
         WindowsRenderTimerName = GetLocatorServiceTypeName("Avalonia.Rendering.IRenderLoop, Avalonia.Base", "Timer");
-        Console.Error.WriteLine("GnollHack: Windows composition request " + (requestedMode ?? "default")
+        string line = "GnollHack: Windows composition request " + (requestedMode ?? "default")
             + "; render timer " + WindowsRenderTimerName
-            + "; platform graphics " + GetLocatorServiceTypeName("Avalonia.Platform.IPlatformGraphics, Avalonia.Base", null));
+            + "; platform graphics " + GetLocatorServiceTypeName("Avalonia.Platform.IPlatformGraphics, Avalonia.Base", null);
+#if WINDOWS_AVALONIA
+        line += "; GPU request " + (requestedGpu ?? "default") + "; GPU " + GHWindowsGpuSelection.Summary;
+#endif
+        Console.Error.WriteLine(line);
         LogSteamOverlay();
         _steamOverlayRecheck = new System.Threading.Timer(state => LogSteamOverlay(), null, SteamOverlayRecheckMs, System.Threading.Timeout.Infinite);
     }

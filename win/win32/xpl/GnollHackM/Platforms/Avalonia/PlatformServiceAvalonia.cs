@@ -287,6 +287,26 @@ namespace GnollHackM
             catch
             {
             }
+#if WINDOWS_AVALONIA
+            /* As on WinUI 3: settings.gpuPreference, the app's Windows graphics preference, and
+               hardware.renderAdapter, the adapter GHWindowsGpuSelection chose; absent when its callback has not run */
+            try
+            {
+                PutFingerprint(fingerprint, "settings.gpuPreference", GHApp.GetActiveGPU());
+            }
+            catch
+            {
+            }
+            try
+            {
+                GHRenderAdapter render;
+                if (GHWindowsGpuSelection.TryGetRenderAdapter(out render, null))
+                    PutFingerprint(fingerprint, "hardware.renderAdapter", GHDxgiAdapters.FingerprintValue(render));
+            }
+            catch
+            {
+            }
+#endif
         }
     }
 }

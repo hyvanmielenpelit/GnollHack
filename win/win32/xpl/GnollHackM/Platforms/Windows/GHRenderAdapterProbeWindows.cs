@@ -7,17 +7,6 @@ using GnollHackX;
 
 namespace GnollHackM
 {
-    /* One DXGI adapter. Luid is ((long)HighPart << 32) | LowPart, the value PDH writes as
-       "luid_0x<HighPart>_0x<LowPart>" in GPU Engine instance names. */
-    public sealed class GHRenderAdapter
-    {
-        public string Name;
-        public long Luid;
-        public bool IsSoftware;
-        public bool? IsIntegrated;
-        public long DedicatedVideoMemoryMB;
-    }
-
     /* The adapter this process renders on. Begin opens a PDH query on this process's GPU
        engine instances and takes the first sample; End takes the second, sums the 3D engine
        utilization per adapter LUID, and names the busiest adapter through DXGI. Both run on
@@ -64,40 +53,6 @@ namespace GnollHackM
         private const uint PDH_CSTATUS_NEW_DATA = 0x00000001;
         private const uint PDH_MORE_DATA = 0x800007D2;
         private const string AllGpuEngineCounterPath = @"\GPU Engine(*)\Utilization Percentage";
-
-        /* DXGI through raw vtable calls. Slot numbers follow dxgi.h: IUnknown 0-2,
-           IDXGIObject 3-6 (SetPrivateData, SetPrivateDataInterface, GetPrivateData,
-           GetParent), IDXGIFactory 7-11 (EnumAdapters, MakeWindowAssociation,
-           GetWindowAssociation, CreateSwapChain, CreateSoftwareAdapter), IDXGIFactory1 12-13
-           (EnumAdapters1, IsCurrent); IDXGIAdapter 7-9 (EnumOutputs, GetDesc,
-           CheckInterfaceSupport), IDXGIAdapter1 10 (GetDesc1). */
-        [StructLayout(LayoutKind.Sequential)]
-        private unsafe struct DXGI_ADAPTER_DESC1
-        {
-            public fixed ushort Description[128];
-            public uint VendorId;
-            public uint DeviceId;
-            public uint SubSysId;
-            public uint Revision;
-            public nuint DedicatedVideoMemory;
-            public nuint DedicatedSystemMemory;
-            public nuint SharedSystemMemory;
-            public uint AdapterLuidLowPart;
-            public int AdapterLuidHighPart;
-            public uint Flags;
-        }
-
-        [DllImport("dxgi.dll")]
-        private static extern int CreateDXGIFactory1(ref Guid riid, out IntPtr ppFactory);
-
-        private static readonly Guid IID_IDXGIFactory1 = new Guid("770aae78-f26f-4dba-a829-253c83d1b387");
-        private const int SlotFactory1EnumAdapters1 = 12;
-        private const int SlotAdapter1GetDesc1 = 10;
-        private const int DXGI_ERROR_NOT_FOUND = unchecked((int)0x887A0002);
-        private const uint DXGI_ADAPTER_FLAG_SOFTWARE = 2;
-        private const int AdapterDescriptionLength = 128;
-        private const uint MaxAdapters = 64;
-        private const long IntegratedMaxDedicatedMB = 512;
 
         private static readonly object _lock = new object();
         private static IntPtr _query = IntPtr.Zero;
@@ -190,7 +145,7 @@ namespace GnollHackM
                     bool enumerated;
                     try
                     {
-                        enumerated = EnumerateAdapters(adapters);
+                        enumerated = GHDxgiAdapters.Enumerate(adapters, SnapshotDeviceGpus());
                     }
                     catch
                     {
@@ -205,8 +160,8 @@ namespace GnollHackM
                         {
                             List<GHRenderAdapter> copies = new List<GHRenderAdapter>(adapters.Count);
                             for (int j = 0; j < adapters.Count; j++)
-                                copies.Add(CopyAdapter(adapters[j]));
-                            GHRenderAdapter renderCopy = CopyAdapter(adapters[i]);
+                                copies.Add(GHDxgiAdapters.Copy(adapters[j]));
+                            GHRenderAdapter renderCopy = GHDxgiAdapters.Copy(adapters[i]);
                             lock (_lastLock)
                             {
                                 _lastRender = renderCopy;
@@ -243,9 +198,9 @@ namespace GnollHackM
                     if (all != null)
                     {
                         for (int i = 0; i < _lastAdapters.Count; i++)
-                            all.Add(CopyAdapter(_lastAdapters[i]));
+                            all.Add(GHDxgiAdapters.Copy(_lastAdapters[i]));
                     }
-                    render = CopyAdapter(_lastRender);
+                    render = GHDxgiAdapters.Copy(_lastRender);
                     return true;
                 }
             }
@@ -254,34 +209,6 @@ namespace GnollHackM
                 render = null;
                 return false;
             }
-        }
-
-        /* The fingerprint's hardware.renderAdapter value: "<Name> (software)", "<Name>
-           (integrated)", "<Name> (discrete)", or "<Name>" when IsIntegrated is unknown;
-           software wins over integrated. Null for a null adapter or an empty name. */
-        public static string FingerprintValue(GHRenderAdapter a)
-        {
-            if (a == null || string.IsNullOrWhiteSpace(a.Name))
-                return null;
-            string name = a.Name.Trim();
-            if (a.IsSoftware)
-                return name + " (software)";
-            if (a.IsIntegrated == true)
-                return name + " (integrated)";
-            if (a.IsIntegrated == false)
-                return name + " (discrete)";
-            return name;
-        }
-
-        private static GHRenderAdapter CopyAdapter(GHRenderAdapter a)
-        {
-            GHRenderAdapter copy = new GHRenderAdapter();
-            copy.Name = a.Name;
-            copy.Luid = a.Luid;
-            copy.IsSoftware = a.IsSoftware;
-            copy.IsIntegrated = a.IsIntegrated;
-            copy.DedicatedVideoMemoryMB = a.DedicatedVideoMemoryMB;
-            return copy;
         }
 
         private static void CloseQuery()
@@ -426,7 +353,7 @@ namespace GnollHackM
             uint high, low;
             if (!TryParseHex(text.AsSpan(0, separator), out high) || !TryParseHex(text.AsSpan(separator + 1), out low))
                 return false;
-            luid = MakeLuid(low, unchecked((int)high));
+            luid = GHDxgiAdapters.MakeLuid(low, unchecked((int)high));
             return true;
         }
 
@@ -436,99 +363,6 @@ namespace GnollHackM
             if (text.Length < 3 || text[0] != '0' || (text[1] != 'x' && text[1] != 'X'))
                 return false;
             return uint.TryParse(text.Slice(2), NumberStyles.AllowHexSpecifier, CultureInfo.InvariantCulture, out value);
-        }
-
-        private static long MakeLuid(uint lowPart, int highPart)
-        {
-            return ((long)highPart << 32) | lowPart;
-        }
-
-        /* Appends one GHRenderAdapter per DXGI adapter; false when the factory cannot be
-           created or the descriptor layout does not match this process's pointer size. */
-        private static unsafe bool EnumerateAdapters(List<GHRenderAdapter> adapters)
-        {
-            if (sizeof(DXGI_ADAPTER_DESC1) != (IntPtr.Size == 8 ? 312 : 296))
-                return false;
-
-            DeviceGPU[] gpus = SnapshotDeviceGpus();
-            IntPtr factory = IntPtr.Zero;
-            try
-            {
-                Guid iid = IID_IDXGIFactory1;
-                if (CreateDXGIFactory1(ref iid, out factory) < 0 || factory == IntPtr.Zero)
-                    return false;
-                delegate* unmanaged[Stdcall]<IntPtr, uint, IntPtr*, int> enumAdapters1 =
-                    (delegate* unmanaged[Stdcall]<IntPtr, uint, IntPtr*, int>)VtableSlot(factory, SlotFactory1EnumAdapters1);
-
-                for (uint i = 0; i < MaxAdapters; i++)
-                {
-                    IntPtr adapter = IntPtr.Zero;
-                    try
-                    {
-                        int hr = enumAdapters1(factory, i, &adapter);
-                        if (hr == DXGI_ERROR_NOT_FOUND || hr < 0 || adapter == IntPtr.Zero)
-                            break;
-                        delegate* unmanaged[Stdcall]<IntPtr, DXGI_ADAPTER_DESC1*, int> getDesc1 =
-                            (delegate* unmanaged[Stdcall]<IntPtr, DXGI_ADAPTER_DESC1*, int>)VtableSlot(adapter, SlotAdapter1GetDesc1);
-                        DXGI_ADAPTER_DESC1 desc = default;
-                        if (getDesc1(adapter, &desc) < 0)
-                            continue;
-                        adapters.Add(MakeAdapter(&desc, gpus));
-                    }
-                    finally
-                    {
-                        if (adapter != IntPtr.Zero)
-                            Marshal.Release(adapter);
-                    }
-                }
-                return true;
-            }
-            finally
-            {
-                if (factory != IntPtr.Zero)
-                    Marshal.Release(factory);
-            }
-        }
-
-        private static unsafe void* VtableSlot(IntPtr comObject, int slot)
-        {
-            void** vtable = *(void***)comObject;
-            return vtable[slot];
-        }
-
-        /* IsIntegrated comes from the WMI adapter list (GHApp.DeviceGPUs) when a description
-           matches; otherwise a hardware adapter with under 512 MB of dedicated memory counts
-           as integrated. */
-        private static unsafe GHRenderAdapter MakeAdapter(DXGI_ADAPTER_DESC1* desc, DeviceGPU[] gpus)
-        {
-            int length = 0;
-            while (length < AdapterDescriptionLength && desc->Description[length] != 0)
-                length++;
-            string name = new string((char*)desc->Description, 0, length).Trim();
-
-            GHRenderAdapter adapter = new GHRenderAdapter();
-            adapter.Name = name;
-            adapter.Luid = MakeLuid(desc->AdapterLuidLowPart, desc->AdapterLuidHighPart);
-            adapter.IsSoftware = (desc->Flags & DXGI_ADAPTER_FLAG_SOFTWARE) != 0;
-            adapter.DedicatedVideoMemoryMB = (long)((ulong)desc->DedicatedVideoMemory / (1024UL * 1024UL));
-
-            bool? integrated = null;
-            if (name.Length > 0)
-            {
-                for (int i = 0; i < gpus.Length; i++)
-                {
-                    DeviceGPU gpu = gpus[i];
-                    if (gpu != null && gpu.Description != null && string.Equals(gpu.Description.Trim(), name, StringComparison.OrdinalIgnoreCase))
-                    {
-                        integrated = gpu.IsIntegratedGraphics;
-                        break;
-                    }
-                }
-            }
-            if (integrated == null)
-                integrated = !adapter.IsSoftware && adapter.DedicatedVideoMemoryMB < IntegratedMaxDedicatedMB;
-            adapter.IsIntegrated = integrated;
-            return adapter;
         }
 
         /* GHApp.DeviceGPUs has no lock; it is filled once at startup */
