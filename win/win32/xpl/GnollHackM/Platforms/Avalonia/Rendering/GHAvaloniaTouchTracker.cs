@@ -7,8 +7,8 @@ namespace GnollHackM
 {
     // WORKAROUND(WA-AVALONIA-0019): ACM Skia controls drop touches without Released or Cancelled
     /* The touches an ACM Skia control has raised Pressed for, by pointer. ACM forgets a pointer without
-       raising an action when the pointer loses capture or is pressed again; Cancel raises Cancelled
-       for it instead. UI thread only. */
+       raising an action when the pointer loses capture, and raises Pressed again when it is pressed
+       again; Cancel raises Cancelled for it first. UI thread only. */
     internal sealed class GHAvaloniaTouchTracker
     {
         private struct PressedTouch

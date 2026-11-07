@@ -703,7 +703,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-05
+- Last checked: 2026-11-07
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaTouchTracker.cs` (`GHAvaloniaTouchTracker`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaCanvasControl.cs` (`GHAvaloniaCanvasControl.OnPointerPressed`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/Rendering/GHAvaloniaGLControl.cs` (`GHAvaloniaGLControl.OnPointerPressed`)
 - Remove when: ACM's Skia controls raise Released or Cancelled for every touch they raised Pressed for, in a release GnollHack uses, and Verify removal passes.
 - Related: WA-AVALONIA-0009, WA-WINUI-0004, WA-SKIASHARP-0010
@@ -712,15 +712,15 @@ Checks:
 "stuck" on the main canvas: nothing can be clicked any more, and every drag pans or
 zooms the map.
 
-**Cause.** ACM's `SKCanvasViewControl` and `SKGLViewControl` keep a private pointer-to-id
-map. `OnPointerCaptureLost` removes a pointer from it without raising an action, and
-`OnPointerPressed` on a pointer that is already pressed replaces its id without releasing
-the old one. Avalonia raises capture loss before or instead of a release in several
-cases: a touch cancel, a touch end that X11 turns into a cancel while a transient child
-window is active, a disabled window, a gesture recognizer taking the pointer, and the
-control leaving the visual tree with a finger down. A second mouse button pressed while
-the first is held re-presses the same pointer. GamePage's touch dictionary then keeps the
-orphaned id forever.
+**Cause.** ACM's `SKCanvasViewControl` and `SKGLViewControl` keep a set of pressed
+pointers and report each touch with the pointer's own id. `OnPointerCaptureLost` removes a
+pointer from the set without raising an action, and `OnPointerPressed` on a pointer that is
+already pressed raises `Pressed` again for the same id, without a `Released` between them.
+Avalonia raises capture loss before or instead of a release in several cases: a touch
+cancel, a touch end that X11 turns into a cancel while a transient child window is active,
+a disabled window, a gesture recognizer taking the pointer, and the control leaving the
+visual tree with a finger down. A second mouse button pressed while the first is held
+re-presses the same pointer. GamePage's touch dictionary then keeps an orphaned id.
 
 **Workaround.** GnollHack's canvas and GL controls wrap `TouchAction` during
 `OnPointerPressed` to record the id ACM raises `Pressed` for, and raise `Cancelled` for it
@@ -729,7 +729,7 @@ when the pointer loses capture without a release or is pressed again.
 **Verify removal.** Delete `GHAvaloniaTouchTracker.cs` and the three pointer overrides and
 the `_touchTracker` field in both controls. Build the Avalonia flavor. In a headless
 Avalonia harness, or on a device, check that every `Pressed` is followed by `Released` or
-`Cancelled` for the same id in each of these cases:
+`Cancelled` for the same id, before that id is pressed again, in each of these cases:
 - the second of two fingers loses capture
 - the control is removed from its window while a finger is down
 - a mouse's left button is held while the right is clicked
@@ -737,6 +737,7 @@ Avalonia harness, or on a device, check that every `Pressed` is followed by `Rel
 Checks:
 - 2026-10-27 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | still-needed | Reproduced in Avalonia.Headless 12.1.4: stock controls leave the touch open in all three cases. No upstream issue found.
 - 2026-11-05 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.2.26287.618 | unverified | The macOS flavor of the Avalonia port runs this code too; not reproduced on macOS.
+- 2026-11-07 | Avalonia.Controls.Maui.SkiaSharp.Views 11.0.0-rc.3.26301.1434 | still-needed | Since PR 247 the touch id is the pointer's id. Capture loss still removes the pointer without an action, and a pointer pressed again raises a second `Pressed` with the same id. Source read, not a run.
 
 ## WA-AVALONIA-0020: ACM modal overlays do not trap keyboard focus
 

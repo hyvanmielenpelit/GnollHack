@@ -275,7 +275,7 @@ namespace GnollHackM
                 return;
             }
 
-            /* ACM gives a pointer pressed again a new id without releasing the old one */
+            /* ACM raises Pressed again for a pointer pressed again, without releasing it first */
             Avalonia.Input.IPointer pointer = e.Pointer;
             _touchTracker.Cancel(pointer, touchAction);
 
