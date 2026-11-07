@@ -26,7 +26,7 @@
 <a href="https://store.steampowered.com/app/3558190/GnollHack/"><img src="https://wiki.gnollhack.com/uploads/Download/steam-q90.webp" height="46" alt="Available on Steam" /></a>&nbsp;&nbsp;
 <a href="https://play.google.com/store/apps/details?id=com.soundmindentertainment.gnollhack"><img src="https://wiki.gnollhack.com/uploads/Download/google-play-q90.webp" height="46" alt="Get it on Google Play" /></a>&nbsp;&nbsp;
 <a href="https://apps.apple.com/app/gnollhack/id1626979951"><img src="https://wiki.gnollhack.com/uploads/Download/app-store-q90.webp" height="46" alt="Download on the App Store" /></a>&nbsp;&nbsp;
-<a href="https://github.com/hyvanmielenpelit/GnollHack/releases"><img src="https://wiki.gnollhack.com/uploads/Download/github-q90.webp" height="46" alt="Get Release on GitHub" /></a>
+<a href="https://github.com/hyvanmielenpelit/GnollHack/releases"><img src="https://wiki.gnollhack.com/uploads/Download/github-download-q90.webp" height="46" alt="Download on GitHub" /></a>
 
 </div>
 
