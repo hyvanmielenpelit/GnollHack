@@ -46,30 +46,24 @@ namespace GnollHackX
             return !IsMeta(c) ? c : (c & ~0x80);
         }
 
-        private static StringBuilder _stringBuilder = new StringBuilder(50);
+        /* Called from both the UI thread and the game thread, so it must not share a buffer between calls */
+        private static string GetShortcutPrefix(bool btnCtrl, bool btnMeta)
+        {
+            if (btnMeta)
+                return btnCtrl ? "Alt+Ctrl+" : "Alt+";
+            return btnCtrl ? "Ctrl+" : "";
+        }
         public static string ConstructShortcutText(char btnLetter, bool btnCtrl, bool btnMeta)
         {
             if (btnLetter == (char)0)
                 return GHApp.IsiOS ? " " : "";
-            _stringBuilder.Clear();
-            if (btnMeta)
-                _stringBuilder.Append("Alt+");
-            if (btnCtrl)
-                _stringBuilder.Append("Ctrl+");
-            _stringBuilder.Append(btnLetter);
-            return _stringBuilder.ToString();
+            return GetShortcutPrefix(btnCtrl, btnMeta) + btnLetter.ToString();
         }
         public static string ConstructShortcutText(string btnLetterString, bool btnCtrl, bool btnMeta)
         {
             if (string.IsNullOrEmpty(btnLetterString))
                 return GHApp.IsiOS ? " " : "";
-            _stringBuilder.Clear();
-            if (btnMeta)
-                _stringBuilder.Append("Alt+");
-            if (btnCtrl)
-                _stringBuilder.Append("Ctrl+");
-            _stringBuilder.Append(btnLetterString);
-            return _stringBuilder.ToString();
+            return GetShortcutPrefix(btnCtrl, btnMeta) + btnLetterString;
         }
 
         public static string ConstructShortcutText(int command)
