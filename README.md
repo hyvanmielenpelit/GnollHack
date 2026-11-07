@@ -88,6 +88,9 @@ GnollHack/
         ├── gnollhackwin/    # Native Windows C library project (gnollhackwin.dll)
         ├── gnollhackdroid/  # Native Android C library project (libgnollhackdroid.so via WSL)
         ├── gnollhackios/    # Native iOS C library project (libgnollhackios.a via macOS build host)
+        ├── gnollhackmac/    # Native macOS C library project (libgnollhackmac.dylib via macOS build host)
+        ├── gnollhacklinux/  # Native Linux C library project (libgnollhacklinux.so via Linux build host)
+        ├── libapple/        # Shared build scripts for the iOS and macOS engine libraries
         └── libshare/        # C native bridge connecting the C core to the C# frontend
 ```
 
