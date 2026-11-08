@@ -815,7 +815,7 @@ LibGetCharacterClickAction(void)
 DLLEXPORT void
 LibSetMetricSystem(int new_value)
 {
-    flags.metric_system = new_value != 0;
+    iflags.metric_system = new_value != 0;
 }
 
 DLLEXPORT void

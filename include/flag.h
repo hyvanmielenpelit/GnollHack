@@ -70,7 +70,7 @@ struct flag {
     boolean partylinecolor;     /* use fixed partyline coloring */
     boolean partydetails;     /* print additional info like AC and MC for all party members */
     boolean partymultiline;     /* print each party member on its own line */
-    boolean metric_system;   /* use the metric system (kilograms) instead of avoirdupois pounds and ounces */
+    boolean free_boolean1;   /* used to be metric_system; holds that value in older saves */
     boolean inventory_weights_last; /* inventory weights are shown after the name of the item rather first, as normal */
     boolean inventory_obj_cmd; /* list object commands in inventory */
     boolean classic_statue_symbol; /* statue is shown as rock */
@@ -617,6 +617,7 @@ struct instance_flags {
 
     struct monst* spell_target_monster;
     uint64_t found_manuals;
+    boolean metric_system;   /* use the metric system (kilograms) instead of avoirdupois pounds and ounces */
     boolean show_dice_as_ranges;
     boolean show_damage_formula;
     boolean worn_shows_equipment;

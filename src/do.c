@@ -656,7 +656,7 @@ void
 printweight(char *buf, int weight_in_ounces, boolean weight_fixed_width, boolean unit_fixed_width, boolean allow_long)
 {
     double weight_in_pounds = ((double)weight_in_ounces) / 16;
-    if (flags.metric_system)
+    if (iflags.metric_system)
     {
         double avoirdupois_pound_in_kg = 0.45359237;
         double weight_in_kg = weight_in_pounds * avoirdupois_pound_in_kg;

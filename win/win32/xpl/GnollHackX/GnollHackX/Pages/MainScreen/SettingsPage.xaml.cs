@@ -935,12 +935,11 @@ namespace GnollHackX.Pages.MainScreen
             else
                 Preferences.Set("CharacterClickAction", CharacterClickActionSwitch.IsToggled);
 
-            /* This is flags, saved in save file */
+            /* This is an iflag, not saved in the save file */
             GHApp.MirroredMetricSystem = MetricSystemSwitch.IsToggled;
-            if (_gamePage != null) /* During game only doubles as the option; outside of game sets the default */
+            Preferences.Set("MetricSystem", MetricSystemSwitch.IsToggled);
+            if (_gamePage != null)
                 _gamePage.SetMetricSystem(MetricSystemSwitch.IsToggled);
-            else
-                Preferences.Set("MetricSystem", MetricSystemSwitch.IsToggled);
 
             /* There's an iflag but not a corresponding option; iflag just need to be set always to the same value as here */
             GHApp.MirroredDiceAsRanges = DiceAsRangesSwitch.IsToggled;

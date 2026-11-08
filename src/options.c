@@ -215,7 +215,7 @@ static struct Bool_Opt {
 #else
     { "menu_overlay", "menus overlay and align to right", (boolean *) 0, FALSE, SET_IN_FILE },
 #endif
-    { "metric_system", "use the metric system for weights", &flags.metric_system, FALSE, SET_IN_GAME },
+    { "metric_system", "use the metric system for weights", &iflags.metric_system, FALSE, SET_IN_GAME },
     { "monpolycontrol", "control monster polymorphs", &iflags.mon_polycontrol, FALSE, SET_IN_WIZGAME },
     { "multishot_always_fire", "attack always as many times as possible", &flags.multishot_always_fire, FALSE, SET_IN_GAME },
 #ifdef NEWS
@@ -983,7 +983,7 @@ init_options(void)
         flags.self_click_action = initial_flags.click_action_value;
 
     if (initial_flags.metric_system_set)
-        flags.metric_system = initial_flags.metric_system_value;
+        iflags.metric_system = initial_flags.metric_system_value;
 
     if (initial_flags.dice_as_ranges_set)
         iflags.show_dice_as_ranges = initial_flags.dice_as_ranges_value;
@@ -5499,9 +5499,9 @@ parseoptions(char *opts, boolean tinitial, boolean tfrom_file)
             {
                 issue_boolean_gui_command(GUI_CMD_TOGGLE_CHARACTER_CLICK_ACTION, flags.self_click_action);
             }
-            else if (boolopt[i].addr == &flags.metric_system)
+            else if (boolopt[i].addr == &iflags.metric_system)
             {
-                issue_boolean_gui_command(GUI_CMD_TOGGLE_METRIC_SYSTEM, flags.metric_system);
+                issue_boolean_gui_command(GUI_CMD_TOGGLE_METRIC_SYSTEM, iflags.metric_system);
             }
             else if (boolopt[i].addr == &iflags.worn_shows_equipment)
             {
