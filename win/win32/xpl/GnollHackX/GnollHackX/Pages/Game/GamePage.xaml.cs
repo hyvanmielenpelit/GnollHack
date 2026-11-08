@@ -965,6 +965,10 @@ namespace GnollHackX.Pages.Game
         private float _usedTileHeight;
         private float _mapWidth;
         private float _mapHeight;
+        /* Tile size and font ascent per unit of map font size, from the last paint; 0 until the first paint */
+        private float _tileWidthPerFontSize;
+        private float _tileHeightPerFontSize;
+        private float _mapFontAscentPerFontSize;
 
         private float _mapFontAscent = 0.0f;
         private float UsedMapFontAscent { get { return Interlocked.CompareExchange(ref _mapFontAscent, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _mapFontAscent, value); } }
@@ -7886,14 +7890,14 @@ namespace GnollHackX.Pages.Game
             return ntile;
         }
 
-        private void GetMapOffsetsLocal(float canvaswidth, float canvasheight, float mapwidth, float mapheight, float width, float height, out float offsetX, out float offsetY, out float usedOffsetX, out float usedOffsetY)
+        private void GetMapOffsetsLocal(float canvaswidth, float canvasheight, float mapwidth, float mapheight, float width, float height, out float offsetX, out float offsetY, out float usedOffsetX, out float usedOffsetY, bool zoomMiniMode)
         {
             offsetX = (canvaswidth - mapwidth) / 2;
             offsetY = (canvasheight - mapheight) / 2;
             usedOffsetX = _localMapOffsetX;
             usedOffsetY = _localMapOffsetY;
 
-            if (ZoomMiniMode)
+            if (zoomMiniMode)
             {
                 usedOffsetX = _localMapMiniOffsetX;
                 usedOffsetY = _localMapMiniOffsetY;
@@ -7968,6 +7972,11 @@ namespace GnollHackX.Pages.Game
         private float _localMapOffsetY = 0;
         private float _localMapMiniOffsetX = 0;
         private float _localMapMiniOffsetY = 0;
+        /* Taken with the map offsets in one snapshot, so a frame never mixes an old offset with a new zoom */
+        private bool _localZoomAlternateMode = false;
+        private float _localMapFontSize = GHConstants.MapFontDefaultSize;
+        private float _localMapFontAlternateSize = GHConstants.MapFontDefaultSize * GHConstants.MapFontRelativeAlternateSize;
+        private float _localMapFontMiniRelativeSize = 1.0f;
         private readonly List<GHPetDataItem> _localPetData = new List<GHPetDataItem>(8);
         private readonly List<SKRect> _localPetRects = new List<SKRect>(8);
         private readonly List<ContextMenuButton> _localContextMenuData = new List<ContextMenuButton>(10);
@@ -8299,6 +8308,10 @@ namespace GnollHackX.Pages.Game
                     _localMapOffsetY = _mapOffsetY;
                     _localMapMiniOffsetX = _mapMiniOffsetX;
                     _localMapMiniOffsetY = _mapMiniOffsetY;
+                    _localZoomAlternateMode = ZoomAlternateMode;
+                    _localMapFontSize = MapFontSize;
+                    _localMapFontAlternateSize = MapFontAlternateSize;
+                    _localMapFontMiniRelativeSize = MapFontMiniRelativeSize;
                 }
             }
             finally
@@ -8591,7 +8604,7 @@ namespace GnollHackX.Pages.Game
                 textPaint.Typeface = GHApp.LatoRegular;
 
                 /* Map */
-                float usedFontSize = ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
+                float usedFontSize = _localZoomAlternateMode ? _localMapFontAlternateSize : _localMapFontSize;
                 textPaint.Typeface = GHApp.DejaVuSansMonoTypeface;
                 textPaint.TextSize = usedFontSize;
                 if (zoomMiniMode)
@@ -8613,7 +8626,7 @@ namespace GnollHackX.Pages.Game
                     float yscale = tmpmapheight > 0 ? canvasheight / tmpmapheight : 0;
                     float cscale = Math.Min(xscale, yscale);
                     usedFontSize = Math.Max(2.0f, usedFontSize * cscale);
-                    usedFontSize = usedFontSize * MapFontMiniRelativeSize;
+                    usedFontSize = usedFontSize * _localMapFontMiniRelativeSize;
                     textPaint.TextSize = usedFontSize;
                 }
 
@@ -8632,6 +8645,7 @@ namespace GnollHackX.Pages.Game
 
                 float mapwidth = width * (GHConstants.MapCols - 1);
                 float mapheight = height * (GHConstants.MapRows);
+                float mapFontAscent = textPaint.FontMetrics.Ascent;
 
                 //lock (_tileSizeLock)
                 try
@@ -8643,6 +8657,12 @@ namespace GnollHackX.Pages.Game
                         _usedTileHeight = height;
                         _mapWidth = mapwidth;
                         _mapHeight = mapheight;
+                        if (usedFontSize > 0)
+                        {
+                            _tileWidthPerFontSize = width / usedFontSize;
+                            _tileHeightPerFontSize = height / usedFontSize;
+                            _mapFontAscentPerFontSize = mapFontAscent / usedFontSize;
+                        }
                     }
                 }
                 finally
@@ -8652,7 +8672,6 @@ namespace GnollHackX.Pages.Game
                 }
                 lockTaken = false;
 
-                float mapFontAscent = textPaint.FontMetrics.Ascent;
                 UsedMapFontAscent = mapFontAscent;
                 float targetscale = height / (float)GHConstants.TileHeight;
                 if (targetscale == 0f)
@@ -8682,7 +8701,7 @@ namespace GnollHackX.Pages.Game
                 float offsetY;
                 float usedOffsetX;
                 float usedOffsetY;
-                GetMapOffsetsLocal(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
+                GetMapOffsetsLocal(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY, zoomMiniMode);
 
                 int mapHoverX = 0, mapHoverY = 0;
                 bool hasMapHoverLocation = false;
@@ -17333,8 +17352,10 @@ namespace GnollHackX.Pages.Game
 
         private void SetZoomFontSize(float newfontsize, SKPoint curloc, SKPoint prevloc, SKPoint otherloc)
         {
-            float curfontsize = ZoomMiniMode ? MapFontMiniRelativeSize : ZoomAlternateMode ? MapFontAlternateSize : MapFontSize;
-            if (ZoomMiniMode)
+            bool zoomMiniMode = ZoomMiniMode;
+            bool zoomAlternateMode = ZoomAlternateMode;
+            float curfontsize = zoomMiniMode ? MapFontMiniRelativeSize : zoomAlternateMode ? MapFontAlternateSize : MapFontSize;
+            if (zoomMiniMode)
             {
                 if (newfontsize > GHConstants.MaximumMapMiniRelativeFontSize)
                     newfontsize = GHConstants.MaximumMapMiniRelativeFontSize;
@@ -17350,30 +17371,37 @@ namespace GnollHackX.Pages.Game
             }
 
             float newratio = newfontsize / Math.Max(0.0001f, curfontsize);
-            float mapFontAscent = UsedMapFontAscent;
-            if (ZoomMiniMode)
-                MapFontMiniRelativeSize = newfontsize;
-            else if (ZoomAlternateMode)
-                MapFontAlternateSize = newfontsize;
-            else
-                MapFontSize = newfontsize;
 
+            /* Tile size for curfontsize; the last paint may have used an older font size */
             float usedTileWidth;
             float usedTileHeight;
+            float mapFontAscent;
             float mapWidth;
             float mapHeight;
             lock (_tileSizeLock)
             {
-                usedTileWidth = _usedTileWidth;
-                usedTileHeight = _usedTileHeight;
+                if (!zoomMiniMode && _tileWidthPerFontSize > 0 && _tileHeightPerFontSize > 0)
+                {
+                    usedTileWidth = _tileWidthPerFontSize * curfontsize;
+                    usedTileHeight = _tileHeightPerFontSize * curfontsize;
+                    mapFontAscent = _mapFontAscentPerFontSize * curfontsize;
+                }
+                else
+                {
+                    usedTileWidth = _usedTileWidth;
+                    usedTileHeight = _usedTileHeight;
+                    mapFontAscent = UsedMapFontAscent;
+                }
                 mapWidth = _mapWidth;
                 mapHeight = _mapHeight;
             }
 
-            if (ZoomMiniMode)
+            /* The font size and the map offset change together under _mapOffsetLock, which the paint snapshots */
+            if (zoomMiniMode)
             {
                 lock (_mapOffsetLock)
                 {
+                    MapFontMiniRelativeSize = newfontsize;
                     _mapMiniOffsetX *= newratio;
                     _mapMiniOffsetY *= newratio;
                     if (mapWidth > 0 && Math.Abs(_mapMiniOffsetX) > 1 * mapWidth)
@@ -17400,7 +17428,16 @@ namespace GnollHackX.Pages.Game
                     canvasheight = _savedCanvasHeight;
                 }
                 if (canvaswidth <= 0 || canvasheight <= 0)
+                {
+                    lock (_mapOffsetLock)
+                    {
+                        if (zoomAlternateMode)
+                            MapFontAlternateSize = newfontsize;
+                        else
+                            MapFontSize = newfontsize;
+                    }
                     return;
+                }
 
                 float offsetX, offsetY, usedOffsetX, usedOffsetY;
                 GetMapOffsets(canvaswidth, canvasheight, mapwidth, mapheight, width, height, out offsetX, out offsetY, out usedOffsetX, out usedOffsetY);
@@ -17420,6 +17457,10 @@ namespace GnollHackX.Pages.Game
 
                 lock (_mapOffsetLock)
                 {
+                    if (zoomAlternateMode)
+                        MapFontAlternateSize = newfontsize;
+                    else
+                        MapFontSize = newfontsize;
                     _mapOffsetX = newTotalOffsetX - newOffsetX;
                     _mapOffsetY = newTotalOffsetY - newOffsetY - newMapFontAscent;
                     if (mapWidth > 0 && Math.Abs(_mapOffsetX) > 10 * mapWidth)
@@ -18546,16 +18587,19 @@ namespace GnollHackX.Pages.Game
             if (_performanceSuiteMode && sender == ToggleZoomAlternateButton)
                 return;
             GHApp.PlayMenuSelectSound();
-            ZoomAlternateMode = !ZoomAlternateMode;
-            if (ZoomAlternateMode)
+            bool newZoomAlternateMode = !ZoomAlternateMode;
+            if (newZoomAlternateMode)
             {
                 ToggleZoomAlternateButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-altmap-on.png";
                 lock (_mapOffsetLock)
                 {
-                    if(MapFontSize > 0)
+                    ZoomAlternateMode = true;
+                    float fontSize = MapFontSize;
+                    float alternateFontSize = MapFontAlternateSize;
+                    if (fontSize > 0)
                     {
-                        _mapOffsetX = _mapOffsetX * MapFontAlternateSize / MapFontSize;
-                        _mapOffsetY = _mapOffsetY * MapFontAlternateSize / MapFontSize;
+                        _mapOffsetX = _mapOffsetX * alternateFontSize / fontSize;
+                        _mapOffsetY = _mapOffsetY * alternateFontSize / fontSize;
                     }
                 }
             }
@@ -18564,10 +18608,13 @@ namespace GnollHackX.Pages.Game
                 ToggleZoomAlternateButton.ImgSourcePath = "resource://" + GHApp.AppResourceName + ".Assets.UI.stone-altmap-off.png";
                 lock (_mapOffsetLock)
                 {
-                    if (MapFontAlternateSize > 0)
+                    ZoomAlternateMode = false;
+                    float fontSize = MapFontSize;
+                    float alternateFontSize = MapFontAlternateSize;
+                    if (alternateFontSize > 0)
                     {
-                        _mapOffsetX = _mapOffsetX * MapFontSize / MapFontAlternateSize;
-                        _mapOffsetY = _mapOffsetY * MapFontSize / MapFontAlternateSize;
+                        _mapOffsetX = _mapOffsetX * fontSize / alternateFontSize;
+                        _mapOffsetY = _mapOffsetY * fontSize / alternateFontSize;
                     }
                 }
 
@@ -24673,11 +24720,11 @@ namespace GnollHackX.Pages.Game
                 ToggleZoomAlternateButton_Clicked(null, null);
             if (MapNoClipMode)
                 ToggleAutoCenterModeButton_Clicked(null, null);
-            MapFontSize = DefaultMapFontSize;
-            MapFontAlternateSize = DefaultMapFontSize * GHConstants.MapFontRelativeAlternateSize;
-            MapFontMiniRelativeSize = 1.0f;
             lock (_mapOffsetLock)
             {
+                MapFontSize = DefaultMapFontSize;
+                MapFontAlternateSize = DefaultMapFontSize * GHConstants.MapFontRelativeAlternateSize;
+                MapFontMiniRelativeSize = 1.0f;
                 _mapOffsetX = 0;
                 _mapOffsetY = 0;
                 _mapMiniOffsetX = 0;
