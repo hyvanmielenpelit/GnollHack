@@ -20,7 +20,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label x:Name="HeaderLabel" Text="Version" Grid.Row="0" HorizontalOptions="Center" VerticalOptions="Start" HorizontalTextAlignment="Center" FontSize="23" TextColor="Black" FontFamily="Immortal"/>
-                <Grid Grid.Row="1" x:Name="TextScrollGrid" WidthRequest  ="400" HorizontalOptions  ="Center" VerticalOptions="Fill">
+                <Grid Grid.Row="1" x:Name="TextScrollGrid" WidthRequest  ="540" HorizontalOptions  ="Center" VerticalOptions="Fill">
                     <ScrollView x:Name="TextScrollView" HorizontalOptions="Fill" VerticalOptions="Fill" BackgroundColor="Transparent">
                         <StackLayout Spacing="6" >
                             <Grid x:Name="VersionInfoGrid" RowSpacing="0" ColumnSpacing="1" >
