@@ -429,6 +429,7 @@ switch and file, so the code also builds on `net10.0`.
 
 Checks:
 - 2026-11-08 | Microsoft.WindowsAppSDK.Foundation 2.3.5 | still-needed | Seen as GNOLLHACK-J7 on the first .NET 11 RC3 WinUI 3 run; with Windows App SDK 1.8 the call worked. The fix was merged to main on 2026-09-03. Foundation 2.3.12 (2026-09-17) and 2.6.x were published after that; whether they contain it is not verified, so the status is the conservative one.
+- 2026-11-08 | Microsoft.WindowsAppSDK.Foundation 2.3.5 | still-needed | With the workaround, About > Version opens on the WinUI 3 Debug x64 build, reported by the user.
 
 <!-- known-issues -->
 
