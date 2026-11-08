@@ -84,7 +84,7 @@ goes above it.
 |-------|--------|
 | GnollHack version | `ApplicationDisplayVersion` and `ApplicationVersion` in `win/win32/xpl/GnollHackM/GnollHackM.csproj`, written `<display> (<build>)`. For history before that file existed, `VERSION_MAJOR`, `VERSION_MINOR`, `PATCHLEVEL` and `EDITLEVEL` in `include/patchlevel.h`, written `game <major>.<minor>.<patch>-<edit>` |
 | NuGet packages | The `PackageReference` in `GnollHackM.csproj`. MAUI, SkiaSharp and Avalonia have several references selected by conditions (`GnhAvalonia`, `SKIASHARP_3119`, the target framework); record the one in effect for the affected platform; `Sentry` and `Sentry.Maui` take their version from the `GnhSentryVersion` property |
-| .NET SDK | The `global.json` that applies: `win/win32/xpl/GnollHackM/global.json`, or `win/win32/xpl/GnollHackM/Platforms/Avalonia/global.json` for the Avalonia flavor |
+| .NET SDK | `win/win32/xpl/GnollHackM/global.json` for GnollHackM, every flavor included; `win/win32/xpl/GnollHackTests/global.json` for the tests |
 | Workloads (android, ios, maui-windows) | `dotnet workload list`, run in `win/win32/xpl/GnollHackM` |
 | WinUI / Windows App SDK | `Microsoft.WindowsAppSDK.WinUI` in `win/win32/xpl/GnollHackM/obj/project.assets.json` after a Windows restore |
 | FMOD | `VERSION.number` in `win/win32/xpl/GnollHackX/GnollHackX.FMOD/fmod.cs`, a hexadecimal `0x00MMmmpp` |

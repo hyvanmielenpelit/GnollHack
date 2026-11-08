@@ -83,7 +83,7 @@ GnollHack/
 └── win/win32/           # Solutions, native wrappers, and cross-platform frontend code
     ├── vs/              # GnollHack.sln — C engine, build utilities, and native platform libraries
     └── xpl/             # Cross-platform client
-        ├── GnollHackM/      # GnollHackM.sln — .NET 10 MAUI client (Android, iOS, Windows WinUI 3)
+        ├── GnollHackM/      # GnollHackM.sln — .NET MAUI client (Android, iOS, Windows WinUI 3)
         ├── GnollHackX/      # Shared C# game client logic, SkiaSharp renderer, and XAML sources
         ├── gnollhackwin/    # Native Windows C library project (gnollhackwin.dll)
         ├── gnollhackdroid/  # Native Android C library project (libgnollhackdroid.so via WSL)

@@ -1118,7 +1118,7 @@ machine for up to `-MaxQuietWaitSeconds` (default 120); see
 
 ### Mono GC log (Android)
 
-Android runs the Mono runtime, whose SGen collector logs every collection when asked to.
+Android builds up to the .NET 10 releases run the Mono runtime, whose SGen collector logs every collection when asked to. .NET 11 builds run CoreCLR on Android, where this log does not apply; it stays for reading a .NET 10 baseline.
 `Capture-AndroidGcLog.ps1` has three modes:
 
 ```powershell
@@ -1167,7 +1167,7 @@ dotnet test GnollHackTests.sln -c Release
 ```
 
 ```powershell
-$a = 'win\win32\xpl\GnollHackTests\GnollHack.PerformanceAnalyzer\bin\Release\net10.0\GnollHack.PerformanceAnalyzer.exe'
+$a = 'win\win32\xpl\GnollHackTests\GnollHack.PerformanceAnalyzer\bin\Release\net11.0\GnollHack.PerformanceAnalyzer.exe'
 & $a smoothness run_20260926_101500_123_manual_dump.json --presentmon presentmon.csv --process GnollHackM --out smoothness.md
 & $a smoothness run_20260926_101500_123_manual_dump.json --perfetto C:\performance\idle\01_GPU\gfxinfo --out smoothness.md
 & $a compare --a runsA --b runsB --label-a GPU --label-b CPU --series smoothness --out report_smoothness.md

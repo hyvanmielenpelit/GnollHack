@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" package="com.soundmindentertainment.gnollhack">
+	<uses-sdk android:targetSdkVersion="36" />
 	<!-- allowBackup stays on so game settings and progress are backed up. The backup
 	     rules exclude only the secure credential store; see the two files under
 	     Resources/xml for the reasoning. -->

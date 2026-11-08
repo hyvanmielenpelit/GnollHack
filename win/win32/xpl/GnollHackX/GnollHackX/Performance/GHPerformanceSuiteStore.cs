@@ -99,7 +99,7 @@ namespace GnollHackX.Performance
        Every public member catches its own exceptions and fails soft (null, false, or an
        empty result) rather than throwing; manifest reads, edits and writes are serialized
        through one static lock, shared by every suite. Must compile under C# 7.3 (the
-       legacy netstandard2.0 project) and under net10 MAUI alike. */
+       legacy netstandard2.0 project) and under MAUI alike. */
     public static class GHPerformanceSuiteStore
     {
         public const int CurrentManifestVersion = 1;

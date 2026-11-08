@@ -53,7 +53,7 @@ When in wizard mode, special commands become available:
 ## Testing the MAUI App
 - Build and run the Windows app locally:
   ```powershell
-  dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -t:Run -f net10.0-windows10.0.19041.0
+  dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -t:Run -f net11.0-windows10.0.19041.0
   ```
   > **Note:** The exact target framework moniker may change over time. Check `GnollHackM.csproj` for the current value.
 - The Avalonia port (Linux and Windows flavors) is built and run differently, from `Platforms/Avalonia` with `-p:GnhAvalonia=true`; see the Avalonia section of `build_pipeline`.
