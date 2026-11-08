@@ -208,7 +208,9 @@ namespace GnollHackX.Pages.MainScreen
             WinSDKLabel.Text = !string.IsNullOrEmpty(winSDKAssemblyVersion) ? winSDKAssemblyVersion : "?";
 
             //string winAppSDKAssemblyVersion = typeof(Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap)?.Assembly?.GetName()?.Version?.ToString();
-            string winAppSDKAssemblyVersion = Microsoft.Windows.ApplicationModel.WindowsAppRuntime.ReleaseInfo.AsString;
+            // WORKAROUND(WA-WINUI-0010): ReleaseInfo throws in self-contained apps
+            string winAppSDKAssemblyVersion = global::Microsoft.WindowsAppSDK.Release.Major + "." + global::Microsoft.WindowsAppSDK.Release.Minor + "."
+                + global::Microsoft.WindowsAppSDK.Release.Patch + global::Microsoft.WindowsAppSDK.Release.FormattedVersionTag;
             WinAppSDKLabel.Text = !string.IsNullOrEmpty(winAppSDKAssemblyVersion) ? winAppSDKAssemblyVersion : "?";
 #else
             WinRTLabel.Text = "";

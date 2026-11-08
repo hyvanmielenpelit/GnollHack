@@ -171,6 +171,8 @@
     <WindowsPackageType Condition="'$(GNHWindowsPackageType)' != 'MSIX'">None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
+    <!-- WORKAROUND(WA-WINUI-0010): ReleaseInfo throws in self-contained apps; the version comes from build-time constants -->
+    <WindowsAppSdkIncludeVersionInfo>true</WindowsAppSdkIncludeVersionInfo>
   <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
   </PropertyGroup>
 
