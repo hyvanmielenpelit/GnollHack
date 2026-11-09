@@ -193,7 +193,7 @@ Build from `win\win32\xpl\GnollHackM`, then the user runs it from Visual Studio,
 There is no deploy step.
 
 ```powershell
-dotnet build GnollHackM.csproj -c Debug -f net10.0-windows10.0.19041.0
+dotnet build GnollHackM.csproj -c Debug -f net11.0-windows10.0.19041.0
 ```
 
 The numbered checks for the change are a `TEST` session in the task's Developer Runbook, as for the

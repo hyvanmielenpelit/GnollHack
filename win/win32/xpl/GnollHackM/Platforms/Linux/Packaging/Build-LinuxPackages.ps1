@@ -676,7 +676,7 @@ if ($SkipPublish)
 else
 {
     Write-Step 'Publishing GnollHackM for linux-x64 (Release, self-contained)'
-    # Platforms\Avalonia holds the global.json that pins the SDK
+    # GnollHackM\global.json, one level up, pins the SDK
     Push-Location -LiteralPath $AvaloniaDir
     try
     {

@@ -182,7 +182,7 @@ function Resolve-PerformanceAnalyzer {
     param([string] $RepoRoot)
     $proj = Join-Path $RepoRoot 'win\win32\xpl\GnollHackTests\GnollHack.PerformanceAnalyzer\GnollHack.PerformanceAnalyzer.csproj'
     if (-not (Test-Path -LiteralPath $proj)) { throw "Analyzer project not found at $proj" }
-    $exe = Join-Path $RepoRoot 'win\win32\xpl\GnollHackTests\GnollHack.PerformanceAnalyzer\bin\Release\net10.0\GnollHack.PerformanceAnalyzer.exe'
+    $exe = Join-Path $RepoRoot 'win\win32\xpl\GnollHackTests\GnollHack.PerformanceAnalyzer\bin\Release\net11.0\GnollHack.PerformanceAnalyzer.exe'
     if (-not (Test-Path -LiteralPath $exe)) {
         Write-PerformanceLog 'Building GnollHack.PerformanceAnalyzer (Release)'
         & dotnet build $proj -c Release --nologo -v q | Out-Null

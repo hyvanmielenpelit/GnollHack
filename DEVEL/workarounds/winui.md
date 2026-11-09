@@ -387,6 +387,50 @@ input, so a mouse click gets Windows' dialog.
 Checks:
 - 2026-11-01 | Microsoft.Web.WebView2 1.0.4258.31 | still-needed | The protocol route worked in a spike against WebView2 runtime 156 on 2026-10-30; the app's own use is not yet tested. One issue search found nothing.
 
+## WA-WINUI-0010: ReleaseInfo throws in self-contained apps
+
+- Status: active
+- Added: 2026-11-08
+- GnollHack version: 3.40 (440)
+- Component: Windows App SDK
+- Package: Microsoft.WindowsAppSDK.Foundation
+- Defective version: Microsoft.WindowsAppSDK.Foundation 2.3.5 (via Microsoft.WindowsAppSDK 2.3.1, from Microsoft.Maui.Controls 11.0.0-rc.2.26505.5); reported upstream from 1.8.260222000 and 2.0.1
+- Platforms: Windows (MAUI)
+- Upstream issue: https://github.com/microsoft/WindowsAppSDK/issues/6387
+- Upstream status when added: fixed-unreleased
+- Upstream status: fixed-unreleased
+- Fixed upstream in: https://github.com/microsoft/WindowsAppSDK/pull/6725
+- Last checked: 2026-11-08
+- Code: `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`WindowsAppSdkIncludeVersionInfo`); `win/win32/xpl/GnollHackX/GnollHackX/Pages/MainScreen/VersionPage.xaml.cs` (`VersionPage`); `win/win32/xpl/GnollHackM/Platforms/Windows/PlatformServiceWindows.cs` (`component.windowsAppSdk`)
+- Remove when: GnollHack's Windows App SDK contains the fix from microsoft/WindowsAppSDK#6725, `ReleaseInfo.AsString` returns a version in a self-contained build, and Verify removal passes.
+- Related: GNOLLHACK-J7
+
+**Symptom.** The Version page does not open on WinUI 3. `ReleaseInfo.AsString` throws
+`COMException` 0x8007007E, "The specified module could not be found. Unable to load resource
+dll. Microsoft.WindowsAppRuntime.Insights.Resource.dll", from the page's constructor. The
+performance suite's environment fingerprint silently loses `component.windowsAppSdk` the same
+way.
+
+**Cause.** `Microsoft.WindowsAppRuntime.dll` loads `Microsoft.WindowsAppRuntime.Insights.Resource.dll`
+for `ReleaseInfo` and `RuntimeInfo`. The Foundation NuGet package does not carry that DLL, so a
+self-contained app, which gets the runtime from the packages rather than the framework MSIX, cannot
+load it.
+
+**Workaround.** `WindowsAppSdkIncludeVersionInfo` makes the Windows App SDK Runtime package compile
+its `WindowsAppSDK-VersionInfo.cs` into GnollHackM. The Version page and the fingerprint format
+`Microsoft.WindowsAppSDK.Release` as `Major.Minor.Patch` plus `FormattedVersionTag`. In a
+self-contained app the build-time version is the shipped one. The 1.8 Runtime package has the same
+switch and file, so the code also builds on `net10.0`.
+
+**Verify removal.** On a Windows App SDK release containing the fix:
+- Remove the property and use `ReleaseInfo.AsString` again at both sites.
+- Build the WinUI 3 Debug x64 app, and open About, then Version.
+- The page must open, and `AppSDK Version:` must show the release version.
+
+Checks:
+- 2026-11-08 | Microsoft.WindowsAppSDK.Foundation 2.3.5 | still-needed | Seen as GNOLLHACK-J7 on the first .NET 11 RC3 WinUI 3 run; with Windows App SDK 1.8 the call worked. The fix was merged to main on 2026-09-03. Foundation 2.3.12 (2026-09-17) and 2.6.x were published after that; whether they contain it is not verified, so the status is the conservative one.
+- 2026-11-08 | Microsoft.WindowsAppSDK.Foundation 2.3.5 | still-needed | With the workaround, About > Version opens on the WinUI 3 Debug x64 build, reported by the user.
+
 <!-- known-issues -->
 
 ## KI-WINUI-0001: TrackMemory forces blocking gen2 collections on the UI thread

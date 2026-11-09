@@ -1,5 +1,7 @@
 {
-    "sdk": {
-      "version": "10.0.403"
-    }
+  "sdk": {
+    "version": "11.0.100-rc.3.26522.148",
+    "allowPrerelease": true,
+    "workloadVersion": "11.0.100-rc.3.26524.4"
+  }
 }

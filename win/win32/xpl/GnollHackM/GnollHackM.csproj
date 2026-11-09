@@ -2,12 +2,12 @@
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
-    <TargetFrameworks>net10.0-android;net10.0-ios</TargetFrameworks>
+    <TargetFrameworks>net11.0-android;net11.0-ios</TargetFrameworks>
     <!-- Uncomment to also build the MacCatalyst app. -->
-    <!-- <TargetFrameworks>$(TargetFrameworks);net10.0-maccatalyst</TargetFrameworks> -->
-    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net10.0-windows10.0.19041.0</TargetFrameworks>
+    <!-- <TargetFrameworks>$(TargetFrameworks);net11.0-maccatalyst</TargetFrameworks> -->
+    <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net11.0-windows10.0.19041.0</TargetFrameworks>
     <!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-    <!-- <TargetFrameworks>$(TargetFrameworks);net10.0-tizen</TargetFrameworks> -->
+    <!-- <TargetFrameworks>$(TargetFrameworks);net11.0-tizen</TargetFrameworks> -->
     <OutputType>Exe</OutputType>
     <RootNamespace>GnollHackM</RootNamespace>
     <UseMaui>true</UseMaui>
@@ -171,6 +171,8 @@
     <WindowsPackageType Condition="'$(GNHWindowsPackageType)' != 'MSIX'">None</WindowsPackageType>
     <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
     <SelfContained>true</SelfContained>
+    <!-- WORKAROUND(WA-WINUI-0010): ReleaseInfo throws in self-contained apps; the version comes from build-time constants -->
+    <WindowsAppSdkIncludeVersionInfo>true</WindowsAppSdkIncludeVersionInfo>
   <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
   </PropertyGroup>
 
@@ -1516,20 +1518,23 @@
   <ItemGroup>
     <PackageReference Include="Azure.Identity" Version="1.15.0" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.25.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.14" />
     <!--<PackageReference Include="System.Text.Json" Version="10.0.10" />-->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <!-- Platform-specific packages -->
-    <PackageReference Include="System.Management" Version="10.0.14" Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('win')))" />
     <PackageReference Include="Xamarin.Google.Android.Play.Core" Version="1.10.3.23" Condition="$(TargetFramework.Contains('-android'))" />
   </ItemGroup>
   
+  <!-- Packages versioned with the .NET release -->
   <ItemGroup Condition="$(TargetFramework.StartsWith('net10.0'))">
     <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.120" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.14" />
+    <PackageReference Include="System.Management" Version="10.0.14" Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('win')))" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net11.0'))">
     <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-rc.2.26505.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0-rc.3.26522.148" />
+    <PackageReference Include="System.Management" Version="11.0.0-rc.3.26522.148" Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('win')))" />
   </ItemGroup>
 
   <!-- Avalonia target packages, pinned together with Microsoft.Maui.Controls above.

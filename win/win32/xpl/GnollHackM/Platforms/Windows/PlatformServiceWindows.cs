@@ -1072,7 +1072,9 @@ namespace GnollHackM
 
             try
             {
-                PutFingerprint(d, "component.windowsAppSdk", global::Microsoft.Windows.ApplicationModel.WindowsAppRuntime.ReleaseInfo.AsString);
+                // WORKAROUND(WA-WINUI-0010): ReleaseInfo throws in self-contained apps
+                PutFingerprint(d, "component.windowsAppSdk", global::Microsoft.WindowsAppSDK.Release.Major + "." + global::Microsoft.WindowsAppSDK.Release.Minor + "."
+                    + global::Microsoft.WindowsAppSDK.Release.Patch + global::Microsoft.WindowsAppSDK.Release.FormattedVersionTag);
             }
             catch
             {
