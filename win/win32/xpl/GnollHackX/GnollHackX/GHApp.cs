@@ -431,6 +431,17 @@ namespace GnollHackX
                 Preferences.Set("GNH430Build19AiSnapshotFix", true);
             }
 #endif
+#if ANDROID
+            /* Tile batching and text caching return to their Android defaults once */
+            if (!Preferences.Get("GNH430AndroidBatchingCachingDefaults", false))
+            {
+                if (Preferences.ContainsKey("UseTileBatching"))
+                    Preferences.Remove("UseTileBatching");
+                if (Preferences.ContainsKey("UseTextBlobCaching"))
+                    Preferences.Remove("UseTextBlobCaching");
+                Preferences.Set("GNH430AndroidBatchingCachingDefaults", true);
+            }
+#endif
         }
 
         /* Map FPS: enum index in MapRefreshRate to frames per second in MapRefreshFPS, the retired default level to -1.

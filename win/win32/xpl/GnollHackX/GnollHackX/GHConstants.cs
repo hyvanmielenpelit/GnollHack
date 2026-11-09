@@ -449,15 +449,14 @@ namespace GnollHackX
 #endif
         public const bool DefaultRuntimeEffects = false;
         public const bool DefaultTileBatching =
-#if WINDOWS || GNH_AVALONIA
+#if WINDOWS || GNH_AVALONIA || ANDROID
             true;
 #else
             false;
 #endif
-        /* On by default only on Windows, WinUI 3 and Avalonia. On Android it appeared to add
-           stuttering, probably from extra GL-thread work; iOS has less memory to spare. */
+        /* On by default on Windows, WinUI 3, Windows Avalonia and Android; iOS has less memory to spare. */
         public const bool DefaultTextBlobCaching =
-#if WINDOWS || WINDOWS_AVALONIA
+#if WINDOWS || WINDOWS_AVALONIA || ANDROID
             true;
 #else
             false;
