@@ -316,7 +316,7 @@ Checks:
 - Upstream status when added: reported
 - Upstream status: fixed-unreleased
 - Fixed upstream in: https://github.com/mono/SkiaSharp/pull/5352
-- Last checked: 2026-10-23
+- Last checked: 2026-11-09
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/AvaloniaDesktopProgram.cs` (`AvaloniaDesktopProgram.Main`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/AvaloniaDesktopProgram.cs` (`AvaloniaDesktopProgram.PreloadHarfBuzzSharp`)
 - Remove when: GnollHack uses a SkiaSharp and HarfBuzzSharp release containing PR 5352, and Verify removal passes.
 
@@ -340,6 +340,7 @@ library first; HarfBuzzSharp's own load later gets the same handle.
 
 Checks:
 - 2026-10-23 | SkiaSharp.NativeAssets.Linux 4.153.1 | still-needed | Fix merged on main 2026-10-17; no release tag contains it (no backport found).
+- 2026-11-09 | SkiaSharp.NativeAssets.Linux 4.155.0 | still-needed | PR 5352 (18300df2ab) is not in v4.155.0; the first tag containing it is v4.156.0-rc.1.26553.11, with no stable release yet.
 
 ## WA-SKIASHARP-0010: Android touch cancel reaches only one pointer
 
@@ -389,7 +390,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-29
+- Last checked: 2026-11-09
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/Gamepad/GHGamepadFocusGlow.cs` (`GHGamepadFocusGlow.DrawRowGlow`)
 - Remove when: the SkiaSharp release GnollHack uses draws nothing inside the shape with `SKBlurStyle.Outer` on a rounded rectangle, and Verify removal passes.
 
@@ -416,6 +417,7 @@ painted.
 
 Checks:
 - 2026-10-29 | SkiaSharp 4.153.1 | still-needed | Reproduced in a scratch app on 4.153.1 and 3.119.4; no issue found in mono/SkiaSharp.
+- 2026-11-09 | SkiaSharp 4.155.0 | still-needed | Verify removal's scratch app on a raster surface: interior alpha non-zero at all four sizes. Skia m155's blur code has only an std::array rewrite.
 
 ## WA-SKIASHARP-0012: SKSwapChainPanel cannot choose its Direct3D adapter
 
@@ -429,7 +431,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-07
+- Last checked: 2026-11-09
 - Code: `win/win32/xpl/GnollHackM/Platforms/Windows/GHAngleAdapterSelection.cs` (`GHAngleAdapterSelection`); `win/win32/xpl/GnollHackM/Platforms/Windows/WindowsSKGLViewHandler.cs` (`WindowsSKGLViewHandler.CreatePlatformView`); `win/win32/xpl/GnollHackM/App.xaml.cs` (`App`)
 - Remove when: SkiaSharp.Views.WinUI lets the app choose the adapter of `SKSwapChainPanel`, GnollHack chooses it through that option, and Verify removal passes.
 
@@ -471,3 +473,4 @@ shipped `libEGL.dll` and `libGLESv2.dll`; and on a hybrid laptop the developer l
 Checks:
 - 2026-11-06 | SkiaSharp.Views.Maui.Core 4.154.0 | still-needed | GlesContext at v4.154.0 calls eglGetPlatformDisplayEXT with EGL_DEFAULT_DISPLAY only; no adapter option.
 - 2026-11-07 | SkiaSharp.Views.Maui.Core 4.154.0 | still-needed | No adapter option at v4.154.0; a probe on the shipped ANGLE (ea1cea778c4a) confirmed that a display pre-initialized with a LUID is returned to SkiaSharp's call on that adapter.
+- 2026-11-09 | SkiaSharp.Views.Maui.Core 4.155.0 | still-needed | No adapter option at v4.155.0. GlesContext's EGL calls now take pointers, but the display attribute lists and EGL_DEFAULT_DISPLAY are unchanged; ANGLE is still chromium/6275, with rebuilt DLLs. The probe was not re-run.
