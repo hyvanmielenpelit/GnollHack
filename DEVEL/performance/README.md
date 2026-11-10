@@ -52,15 +52,7 @@ record per callback:
   overlay visible, reentrant, ...), with the paint's thread, start, lock, draw end and flush
   end;
 - GC counts, and the process's total GC pause time (`GC.GetTotalPauseDuration`; the Mono
-  runtime on Android and iOS may not report it, and a record then says so);
-- JIT compilation time from `System.Runtime.JitInfo`: the process's total (`JitMs`), which
-  includes background tiering on other threads; the UI thread's total (`UiJitMs`); the game
-  threads' total (`GameJitMs`), which the game thread publishes when it waits for input or
-  events, so it lags by up to one wait and stays empty in replays and Performance Suite
-  runs; the paint thread's time between the start and end of each paint (`PaintJitMs`), the
-  one figure that can explain a dropped frame; and the number of methods the process has
-  compiled (`JitMethods`). Precompiled (ReadyToRun) code is not counted, including what it
-  costs to bind on first use, and on iOS the figures are the interpreter's compile time.
+  runtime on Android and iOS may not report it, and a record then says so).
 
 A measurement window (a suite run or a window command) may be at most as long as the ring
 holds at the current refresh rate: 90 % of its capacity divided by the refresh rate, counted
@@ -513,7 +505,7 @@ at the start and end of every batch.
 |----------|------|-------|
 | `meta` | `meta.fingerprintVersion` (`1`), `meta.capturedUtc` | Never diffed |
 | `code` | `code.appVersion`, `code.gitCommit`, `code.buildConfiguration`, `code.portVersion`, `code.portBuild`, `code.renderSubscription`; Windows: `code.assemblyMvid` (the first 12 hex characters of the app assembly's module version id, which changes whenever the compiled code does); Android: `code.mapSurface` | In-app |
-| `toolchain` | `toolchain.runtime`, `toolchain.framework`, `toolchain.compiler`, `toolchain.sdk` (the build's SDK, assembly metadata `GHBuildSdkVersion`), `toolchain.packaging`; `toolchain.readyToRun` (assembly metadata `GHReadyToRunMode`, absent in builds without it); MAUI: `toolchain.tieredPGO` and `toolchain.tieredCompilation` (the `System.Runtime.TieredPGO` and `System.Runtime.TieredCompilation` runtime properties, `default` when not set), `toolchain.writeXorExecute` (`off` when `DOTNET_EnableWriteXorExecute` is `0`, `default` when it is not set, its value otherwise); script: `toolchain.dotnetSdk` (the host's `dotnet --version` in `GnollHackTests`) | |
+| `toolchain` | `toolchain.runtime`, `toolchain.framework`, `toolchain.compiler`, `toolchain.sdk` (the build's SDK, assembly metadata `GHBuildSdkVersion`), `toolchain.packaging`; script: `toolchain.dotnetSdk` (the host's `dotnet --version` in `GnollHackTests`) | |
 | `component` | `component.<assembly name>` for every loaded assembly except those starting with `System`, `mscorlib`, `netstandard`, `Microsoft.CSharp`, `Microsoft.VisualBasic`, `Microsoft.Win32` or `GnollHack`; `component.native.skia`, `component.native.fmod`; Windows: `component.windowsAppSdk`, `component.winui` | In-app; e.g. `component.SkiaSharp`, `component.Microsoft.Maui.Controls` |
 | `os` | `os.platform`, `os.version`, `os.build` (Windows `26200.6584`), `os.displayVersion`, `os.edition`, `os.pendingReboot`; Android: `os.securityPatch`, `os.fingerprint`; script, Windows: `os.latestHotfix` | |
 | `driver` | `driver.gpu<N>.version`, `driver.gpu<N>.date` (Windows, `<N>` 0-based in WMI order); script, Android: `driver.gles` | |

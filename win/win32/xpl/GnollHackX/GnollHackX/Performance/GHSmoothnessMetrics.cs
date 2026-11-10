@@ -94,12 +94,6 @@ namespace GnollHackX.Performance
         public double ForcedGcHitchMs;      /* their time beyond target, part of the hitch time */
         public double GcPauseMs;            /* total GC pause over the window */
         public bool GcPauseDataAvailable;   /* the runtime reported pause time; else GC is judged by counts */
-        public bool JitDataAvailable;       /* the runtime reported JIT compilation time */
-        public double JitMs;                /* JIT time of the process over the window, background tiering included */
-        public double PaintJitMs;           /* JIT time on the paint thread inside paints */
-        public double UiJitMs;              /* JIT time on the UI thread */
-        public double GameJitMs;            /* JIT time on the game threads as published; 0 when not published */
-        public long JitMethods;             /* methods compiled over the window */
         public GHPresentSource PresentSource;    /* Measured only when every displayed frame was measured */
         public GHPerformanceStatistics.PacingMetrics OnScreenPacing;
         public readonly int[] CauseCount = new int[GHSmoothnessMetrics.CauseCount];
@@ -957,45 +951,10 @@ namespace GnollHackX.Performance
             }
             s.ForcedGcCount = forcedGcCount;
             s.GcPauseMs = pauseAvailable ? TicksToMs(Math.Max(0, records[n - 1].GcPauseTicks - records[0].GcPauseTicks)) : 0;
-            ComputeJit(records, n, s);
             s.PresentSource = d == 0 ? GHPresentSource.None : (allMeasured ? GHPresentSource.Measured : GHPresentSource.Estimated);
             s.OnScreenPacing = GHPerformanceStatistics.ComputePacing(gapsMs.ToArray(), TicksToMs(targetPeriodMode), TicksToMs(period));
             s.UnattributedShare = hitchMs > 0 ? s.CauseMs[(int)GHHitchCause.Unattributed] / hitchMs : 0;
             return s;
-        }
-
-        /* JIT time over the window, judged only when the runtime reported some. The process,
-           UI-thread and method figures are totals at each tick, so the window's share is last
-           minus first; the game-thread total stays 0 until published and never decreases, so
-           its share runs from the first published value; paint JIT is per paint and summed. */
-        private static void ComputeJit(GHFrameRecord[] records, int n, GHSmoothnessSummary s)
-        {
-            bool jitAvailable = false;
-            for (int i = 0; i < n && !jitAvailable; i++)
-                jitAvailable = records[i].JitTicks != 0;
-            s.JitDataAvailable = jitAvailable;
-            if (!jitAvailable)
-                return;
-            s.JitMs = TicksToMs(Math.Max(0, records[n - 1].JitTicks - records[0].JitTicks));
-            s.UiJitMs = TicksToMs(Math.Max(0, records[n - 1].UiJitTicks - records[0].UiJitTicks));
-            s.JitMethods = Math.Max(0, records[n - 1].JitMethodCount - records[0].JitMethodCount);
-            long firstGame = 0;
-            long lastGame = 0;
-            int gameCount = 0;
-            long paintJit = 0;
-            for (int i = 0; i < n; i++)
-            {
-                paintJit += records[i].PaintJitTicks;
-                if (records[i].GameJitTicks != 0)
-                {
-                    if (gameCount == 0)
-                        firstGame = records[i].GameJitTicks;
-                    lastGame = records[i].GameJitTicks;
-                    gameCount++;
-                }
-            }
-            s.PaintJitMs = TicksToMs(paintJit);
-            s.GameJitMs = gameCount >= 2 ? TicksToMs(Math.Max(0, lastGame - firstGame)) : 0;
         }
 
         private static double Percentile(List<double> values, double p)

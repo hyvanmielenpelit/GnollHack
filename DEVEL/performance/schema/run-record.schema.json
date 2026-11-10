@@ -288,12 +288,6 @@
         "forcedGcHitchMs": { "type": "number", "minimum": 0, "description": "Time beyond target of those hitches, part of the hitch time" },
         "gcPauseMs": { "type": "number", "description": "Total GC pause over the window; 0 when not reported" },
         "gcPauseDataAvailable": { "type": "boolean", "description": "The runtime reported GC pause time; when false, GC attribution uses the collection counts" },
-        "jitMs": { "type": "number", "minimum": 0, "description": "Total JIT compilation time over the window, background tiering included; on iOS the interpreter's compile time" },
-        "paintJitMs": { "type": "number", "minimum": 0, "description": "JIT compilation time on the paint thread inside paints, summed over the window" },
-        "uiJitMs": { "type": "number", "minimum": 0, "description": "JIT compilation time on the UI thread over the window" },
-        "gameJitMs": { "type": "number", "minimum": 0, "description": "JIT compilation time on the game threads over the window, as they published it at input and event waits; 0 when they published none, as in replays" },
-        "jitMethods": { "type": "integer", "minimum": 0, "description": "Methods the process compiled over the window" },
-        "jitDataAvailable": { "type": "boolean", "description": "The runtime reported JIT compilation time; when false, every JIT figure is 0. Absent in older records" },
         "presentSource": { "type": "string", "enum": ["None", "Estimated", "Measured"] },
         "unattributedShare": { "type": "number" },
         "causes": {

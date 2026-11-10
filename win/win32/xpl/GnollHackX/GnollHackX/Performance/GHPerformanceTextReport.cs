@@ -120,10 +120,6 @@ namespace GnollHackX.Performance
             - (RunColW + FpsColW + HitchColW + PaceColW + JudderColW + DropColW
                + GcColW + GcMsColW + BgColW + TurnColW);
 
-        /* JIT by run column widths */
-        private const int JitColW = 9;
-        private const int JitMethodsColW = 8;
-
         /* Width of the category name in the environment section */
         private const int CategoryColW = 11;
         private const int MaxSuspects = 3;
@@ -248,7 +244,6 @@ namespace GnollHackX.Performance
                     ? summary.ForcedGcCount.ToString(CultureInfo.InvariantCulture) + " forced by the app, " : "")
                 + "pause "
                 + (summary.GcPauseDataAvailable ? Fmt(summary.GcPauseMs) + " ms" : "n/a"), MaxLineWidth));
-            AppendJitSummary(sb, summary);
             Line(sb, summary.PresentSource == GHPresentSource.Measured
                 ? "Display times: measured" : "Display times: estimated (first vsync after ready)");
             if (summary.CompositorCoverage >= 0)
@@ -270,7 +265,7 @@ namespace GnollHackX.Performance
                 markFrameIds, markUtcTicks, markCount);
             Line(sb, "");
             AppendWorstHitches(sb, records, recordCount, displayed, displayedCount, spanEnd,
-                summary.GcPauseDataAvailable, summary.JitDataAvailable);
+                summary.GcPauseDataAvailable);
             Line(sb, "");
             AppendRecentCauseTotals(sb, displayed, displayedCount);
             return sb.ToString();
@@ -588,57 +583,6 @@ namespace GnollHackX.Performance
             Line(sb, BuildRunHeader());
             for (int i = 0; i < suite.Runs.Count; i++)
                 AppendRunRow(sb, suite.Runs[i]);
-            AppendJitRunTable(sb, suite);
-        }
-
-        /* JIT times of each run, after the run table and only when some run has JIT data */
-        private static void AppendJitRunTable(StringBuilder sb, GHReportSuite suite)
-        {
-            bool any = false;
-            for (int i = 0; i < suite.Runs.Count && !any; i++)
-                any = suite.Runs[i].Summary != null && suite.Runs[i].Summary.JitDataAvailable;
-            if (!any)
-                return;
-            Line(sb, "JIT by run (ms):");
-            Line(sb, PadR("Run", RunColW) + PadR("Paint", JitColW) + PadR("UI", JitColW)
-                + PadR("Game", JitColW) + PadR("Process", JitColW) + PadR("Methods", JitMethodsColW));
-            for (int i = 0; i < suite.Runs.Count; i++)
-            {
-                GHReportRun run = suite.Runs[i];
-                string runLabel = run.IsWarmUp ? "W" : run.Index.ToString(CultureInfo.InvariantCulture);
-                GHSmoothnessSummary s = run.Summary;
-                if (s == null || !s.JitDataAvailable)
-                {
-                    Line(sb, PadR(runLabel, RunColW) + PadR("n/a", JitColW) + PadR("n/a", JitColW)
-                        + PadR("n/a", JitColW) + PadR("n/a", JitColW) + PadR("n/a", JitMethodsColW));
-                    continue;
-                }
-                Line(sb, PadR(runLabel, RunColW) + PadR(Fmt(s.PaintJitMs), JitColW)
-                    + PadR(Fmt(s.UiJitMs), JitColW) + PadR(GameJitText(s), JitColW)
-                    + PadR(Fmt(s.JitMs), JitColW)
-                    + PadR(s.JitMethods.ToString(CultureInfo.InvariantCulture), JitMethodsColW));
-            }
-        }
-
-        /* The game threads' JIT time, or n/a when no game thread published one */
-        private static string GameJitText(GHSmoothnessSummary s)
-        {
-            return s.GameJitMs > 0 ? Fmt(s.GameJitMs) : "n/a";
-        }
-
-        /* The JIT lines of a summary: per thread, then for the process */
-        private static void AppendJitSummary(StringBuilder sb, GHSmoothnessSummary summary)
-        {
-            if (!summary.JitDataAvailable)
-            {
-                Line(sb, "JIT: n/a");
-                return;
-            }
-            string game = summary.GameJitMs > 0 ? Fmt(summary.GameJitMs) + " ms" : "n/a";
-            Line(sb, Truncate("JIT: paint " + Fmt(summary.PaintJitMs) + " ms, UI " + Fmt(summary.UiJitMs)
-                + " ms, game " + game, MaxLineWidth));
-            Line(sb, Truncate("JIT, process: " + Fmt(summary.JitMs) + " ms, "
-                + summary.JitMethods.ToString(CultureInfo.InvariantCulture) + " methods", MaxLineWidth));
         }
 
         private static string BuildRunHeader()
@@ -1401,10 +1345,9 @@ namespace GnollHackX.Performance
         }
 
         /* The WorstHitchCount largest hitches: the gap, the paint stages of the tick that
-           ended it, the request work and collections during it, its JIT time when the
-           runtime reports one, and its content events */
+           ended it, the request work and collections during it, and its content events */
         private static void AppendWorstHitches(StringBuilder sb, GHFrameRecord[] records, int recordCount,
-            GHDisplayedFrame[] displayed, int displayedCount, long spanEnd, bool pauseAvailable, bool jitAvailable)
+            GHDisplayedFrame[] displayed, int displayedCount, long spanEnd, bool pauseAvailable)
         {
             Line(sb, "Worst hitches (largest gap first):");
             List<int> hitches = new List<int>();
@@ -1428,10 +1371,6 @@ namespace GnollHackX.Performance
                 Line(sb, Truncate(DetailIndent
                     + StageText(records, displayed[j - 1].RecordIndex, displayed[j].RecordIndex, pauseAvailable),
                     MaxLineWidth));
-                if (jitAvailable)
-                    Line(sb, Truncate(DetailIndent
-                        + JitStageText(records, displayed[j - 1].RecordIndex, displayed[j].RecordIndex),
-                        MaxLineWidth));
                 AppendEventNames(sb, displayed[j].ContentEvents);
             }
         }
@@ -1463,18 +1402,6 @@ namespace GnollHackX.Performance
                 gc = "yes";
             return "draw " + draw + "  flush " + flush + "  swap " + swap + "  requests " + Fmt(TicksToMs(requestTicks)) + " ms"
                 + "  GC " + gc;
-        }
-
-        /* JIT time inside the paint of the tick that ended a gap, and on the UI thread and
-           in the process during the gap */
-        private static string JitStageText(GHFrameRecord[] records, int prevIdx, int curIdx)
-        {
-            GHFrameRecord r = records[curIdx];
-            GHFrameRecord p = records[prevIdx];
-            long uiTicks = Math.Max(0, r.UiJitTicks - p.UiJitTicks);
-            long processTicks = Math.Max(0, r.JitTicks - p.JitTicks);
-            return "JIT paint " + Fmt(TicksToMs(r.PaintJitTicks)) + " ms  UI " + Fmt(TicksToMs(uiTicks))
-                + " ms  proc " + Fmt(TicksToMs(processTicks)) + " ms";
         }
 
         /* "events:" and the content events of a gap, wrapped at MaxLineWidth */

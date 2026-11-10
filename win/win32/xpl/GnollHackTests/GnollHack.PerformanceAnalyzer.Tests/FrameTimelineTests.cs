@@ -14,22 +14,6 @@ namespace GnollHack.PerformanceAnalyzer.Tests
             return ticks * 1000.0 / Stopwatch.Frequency;
         }
 
-        private const string JitColumns = ",JitMs,PaintJitMs,UiJitMs,GameJitMs,JitMethods";
-
-        /* A capture from before the JIT columns, with LF line ends, as the writer renders it:
-           the five columns appended to the header and left empty in every row */
-        private static string WithEmptyJitColumns(string text)
-        {
-            string[] lines = text.Replace("\r\n", "\n").Split('\n');
-            for (int i = 0; i < lines.Length; i++)
-            {
-                if (lines[i].Length == 0 || lines[i].StartsWith("#"))
-                    continue;
-                lines[i] += lines[i].StartsWith("FrameId,") ? JitColumns : ",,,,,";
-            }
-            return string.Join("\n", lines);
-        }
-
         [Fact]
         public void Read_ParsesRecordsOnTheLocalClock()
         {
@@ -104,8 +88,7 @@ namespace GnollHack.PerformanceAnalyzer.Tests
                 Assert.Equal(a.Clock.OriginDeviceTicks, b.Clock.OriginDeviceTicks);
                 for (int i = 0; i < a.Count; i++)
                     Assert.Equal(a.Records[i], b.Records[i]);
-                Assert.Equal(WithEmptyJitColumns(File.ReadAllText(TestPaths.Run1Timeline)),
-                    File.ReadAllText(tmp).Replace("\r\n", "\n"));
+                Assert.Equal(File.ReadAllText(TestPaths.Run1Timeline).Replace("\r\n", "\n"), File.ReadAllText(tmp).Replace("\r\n", "\n"));
             }
             finally
             {
@@ -114,8 +97,7 @@ namespace GnollHack.PerformanceAnalyzer.Tests
         }
 
         /* A capture from before GcPauseMs and CallbackPeriodMs: both read as 0, so the
-           analysis has no pause data and judges GC by the counts; the JIT columns, newer
-           still, read as 0 too and leave the analysis without JIT data */
+           analysis has no pause data and judges GC by the counts */
         [Fact]
         public void Read_WithoutPauseAndCallbackColumns_ReadsZeros()
         {
@@ -130,19 +112,10 @@ namespace GnollHack.PerformanceAnalyzer.Tests
                 Assert.Equal(40, t.Count);
                 Assert.All(t.Records.Take(t.Count), r => Assert.Equal(0, r.GcPauseTicks));
                 Assert.All(t.Records.Take(t.Count), r => Assert.Equal(0, r.CallbackPeriodTicks));
-                Assert.All(t.Records.Take(t.Count), r =>
-                {
-                    Assert.Equal(0, r.JitTicks);
-                    Assert.Equal(0, r.PaintJitTicks);
-                    Assert.Equal(0, r.UiJitTicks);
-                    Assert.Equal(0, r.GameJitTicks);
-                    Assert.Equal(0, r.JitMethodCount);
-                });
                 GHDisplayedFrame[] displayed = new GHDisplayedFrame[t.Count];
                 GHSmoothnessSummary s = GHSmoothnessMetrics.Analyze(t.Records, t.Count, null, 0, displayed, out int n);
                 Assert.False(s.GcPauseDataAvailable);
                 Assert.Equal(0.0, s.CallbackRefreshHz);
-                Assert.False(s.JitDataAvailable);
             }
             finally
             {
@@ -158,11 +131,6 @@ namespace GnollHack.PerformanceAnalyzer.Tests
             {
                 a.Records[i].GcPauseTicks = a.Clock.MsToTicks(100.0 + i) - a.Clock.MsToTicks(0);
                 a.Records[i].CallbackPeriodTicks = a.Records[i].RefreshPeriodTicks * 2;
-                a.Records[i].JitTicks = a.Clock.MsToTicks(200.0 + 0.5 * i) - a.Clock.MsToTicks(0);
-                a.Records[i].PaintJitTicks = i % 4 == 0 ? a.Clock.MsToTicks(1.25) - a.Clock.MsToTicks(0) : 0;
-                a.Records[i].UiJitTicks = a.Clock.MsToTicks(50.0 + 0.25 * i) - a.Clock.MsToTicks(0);
-                a.Records[i].GameJitTicks = i >= 10 ? a.Clock.MsToTicks(20.0 + 0.1 * i) - a.Clock.MsToTicks(0) : 0;
-                a.Records[i].JitMethodCount = 1000 + 3 * i;
             }
             string tmp = TestPaths.TempFile(".csv");
             try
@@ -173,11 +141,6 @@ namespace GnollHack.PerformanceAnalyzer.Tests
                 {
                     Assert.Equal(LocalMs(a.Records[i].GcPauseTicks), LocalMs(b.Records[i].GcPauseTicks), 3);
                     Assert.Equal(LocalMs(a.Records[i].CallbackPeriodTicks), LocalMs(b.Records[i].CallbackPeriodTicks), 3);
-                    Assert.Equal(LocalMs(a.Records[i].JitTicks), LocalMs(b.Records[i].JitTicks), 3);
-                    Assert.Equal(LocalMs(a.Records[i].PaintJitTicks), LocalMs(b.Records[i].PaintJitTicks), 3);
-                    Assert.Equal(LocalMs(a.Records[i].UiJitTicks), LocalMs(b.Records[i].UiJitTicks), 3);
-                    Assert.Equal(LocalMs(a.Records[i].GameJitTicks), LocalMs(b.Records[i].GameJitTicks), 3);
-                    Assert.Equal(a.Records[i].JitMethodCount, b.Records[i].JitMethodCount);
                 }
             }
             finally
@@ -210,7 +173,7 @@ namespace GnollHack.PerformanceAnalyzer.Tests
                 Assert.Equal(500.0, FrameTimelineCsv.MsAtUtc(a, expected.AddMilliseconds(500)), 6);
 
                 FrameTimelineCsv.Write(tmp2, a);
-                Assert.Equal(WithEmptyJitColumns(File.ReadAllText(tmp)), File.ReadAllText(tmp2).Replace("\r\n", "\n"));
+                Assert.Equal(File.ReadAllText(tmp).Replace("\r\n", "\n"), File.ReadAllText(tmp2).Replace("\r\n", "\n"));
 
                 /* a timeline with no source lines writes the line from its metadata */
                 a.MetadataLines.Clear();

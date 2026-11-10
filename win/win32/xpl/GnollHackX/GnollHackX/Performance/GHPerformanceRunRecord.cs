@@ -1273,12 +1273,6 @@ namespace GnollHackX.Performance
             j.ForcedGcHitchMs = R(s.ForcedGcHitchMs);
             j.GcPauseMs = R(s.GcPauseMs);
             j.GcPauseDataAvailable = s.GcPauseDataAvailable;
-            j.JitMs = R(s.JitMs);
-            j.PaintJitMs = R(s.PaintJitMs);
-            j.UiJitMs = R(s.UiJitMs);
-            j.GameJitMs = R(s.GameJitMs);
-            j.JitMethods = s.JitMethods;
-            j.JitDataAvailable = s.JitDataAvailable;
             j.PresentSource = s.PresentSource.ToString();
             j.UnattributedShare = R(s.UnattributedShare);
 
@@ -1949,28 +1943,6 @@ namespace GnollHackX.Performance
             /* False when the runtime reports no pause time; GC attribution then uses counts */
             [JsonProperty("gcPauseDataAvailable")]
             public bool GcPauseDataAvailable;
-
-            /* JIT compilation time over the window: the process's, background tiering included, inside paints, on the
-               UI thread and on the game threads (0 when they published none); on iOS the interpreter's compile time */
-            [JsonProperty("jitMs")]
-            public double JitMs;
-
-            [JsonProperty("paintJitMs")]
-            public double PaintJitMs;
-
-            [JsonProperty("uiJitMs")]
-            public double UiJitMs;
-
-            [JsonProperty("gameJitMs")]
-            public double GameJitMs;
-
-            /* Methods the process compiled over the window */
-            [JsonProperty("jitMethods")]
-            public long JitMethods;
-
-            /* False when the runtime reports no JIT data; every JIT figure is then 0 */
-            [JsonProperty("jitDataAvailable")]
-            public bool JitDataAvailable;
 
             [JsonProperty("presentSource")]
             public string PresentSource;

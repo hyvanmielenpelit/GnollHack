@@ -204,10 +204,6 @@
     <AndroidEnableProfiledAot Condition="'$(IsMonoRuntime)' == 'true'">false</AndroidEnableProfiledAot>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>partial</TrimMode>
-    <MauiEnableFullReadyToRun>true</MauiEnableFullReadyToRun>
-    <!--<TieredPGO>false</TieredPGO>-->
-    <!-- Arm W: W^X off, a hardening measure; never in a shipping build -->
-    <!--<GnhWriteXorExecute>false</GnhWriteXorExecute>-->
   </PropertyGroup>
 
   <!-- GENERAL PROPERTIES -->
@@ -242,12 +238,6 @@
   <!-- Build SDK version, read by the performance environment fingerprint -->
   <ItemGroup>
     <AssemblyMetadata Include="GHBuildSdkVersion" Value="$(NETCoreSdkVersion)" />
-  </ItemGroup>
-
-  <!-- ReadyToRun mode of an Android CoreCLR Release build, for the performance fingerprint -->
-  <ItemGroup Condition="'$(Configuration)' == 'Release' and $(TargetFramework.Contains('-android')) and '$(IsMonoRuntime)' != 'true'">
-    <AssemblyMetadata Include="GHReadyToRunMode" Value="Full" Condition="'$(MauiEnableFullReadyToRun)' == 'true'" />
-    <AssemblyMetadata Include="GHReadyToRunMode" Value="Partial" Condition="'$(MauiEnableFullReadyToRun)' != 'true'" />
   </ItemGroup>
 
   <ItemGroup>
@@ -540,7 +530,6 @@
     <None Remove="Assets\UI\zoom.png" />
     <None Remove="Platforms\Android\EnvironmentMono.txt" />
     <None Remove="Platforms\Android\EnvironmentCoreCLR.txt" />
-    <None Remove="Platforms\Android\EnvironmentCoreCLRNoWriteXorExecute.txt" />
     <None Remove="Platforms\Android\libs\x86_64\libc++_shared.so" />
     <None Remove="Platforms\Android\libs\x86_64\libfmod.so" />
     <None Remove="Platforms\Android\libs\x86_64\libfmodstudio.so" />
@@ -1207,8 +1196,6 @@
 
   <ItemGroup Condition="'$(IsMonoRuntime)' != 'true'">
     <AndroidEnvironment Include="Platforms\Android\EnvironmentCoreCLR.txt" />
-    <!-- Experiment only: -p:GnhWriteXorExecute=false turns off W^X, a hardening measure; never set in a shipping build -->
-    <AndroidEnvironment Include="Platforms\Android\EnvironmentCoreCLRNoWriteXorExecute.txt" Condition="'$(GnhWriteXorExecute)' == 'false'" />
   </ItemGroup>
 
   <ItemGroup>
