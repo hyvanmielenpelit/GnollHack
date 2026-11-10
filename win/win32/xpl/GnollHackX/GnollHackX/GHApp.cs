@@ -4568,6 +4568,10 @@ namespace GnollHackX
             _mainGnollHackService.Test();
 #endif
 #if GNH_MAUI
+            /* Qualified: GHApp's GnollHackService property hides the class name here */
+            global::GnollHackM.GnollHackService.StartPrelinkInBackground();
+#endif
+#if GNH_MAUI
             _fmodService = new FmodService();
             _platformService = new PlatformService();
 #else

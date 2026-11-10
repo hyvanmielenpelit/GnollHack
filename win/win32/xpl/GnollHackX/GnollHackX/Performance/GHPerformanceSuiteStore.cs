@@ -1158,6 +1158,12 @@ namespace GnollHackX.Performance
             j.ForcedGcHitchMs = R(s.ForcedGcHitchMs);
             j.GcPauseMs = R(s.GcPauseMs);
             j.GcPauseDataAvailable = s.GcPauseDataAvailable;
+            j.JitMs = R(s.JitMs);
+            j.PaintJitMs = R(s.PaintJitMs);
+            j.UiJitMs = R(s.UiJitMs);
+            j.GameJitMs = R(s.GameJitMs);
+            j.JitMethods = s.JitMethods;
+            j.JitDataAvailable = s.JitDataAvailable;
             j.MeasuredRefreshHz = R(s.MeasuredRefreshHz);
             j.TargetFps = R(s.TargetFps);
             j.CompositorReportsLost = s.CompositorReportsLost;
@@ -1444,6 +1450,12 @@ namespace GnollHackX.Performance
             s.ForcedGcHitchMs = j.ForcedGcHitchMs;
             s.GcPauseMs = j.GcPauseMs;
             s.GcPauseDataAvailable = j.GcPauseDataAvailable;
+            s.JitMs = j.JitMs;
+            s.PaintJitMs = j.PaintJitMs;
+            s.UiJitMs = j.UiJitMs;
+            s.GameJitMs = j.GameJitMs;
+            s.JitMethods = j.JitMethods;
+            s.JitDataAvailable = j.JitDataAvailable;
             s.MeasuredRefreshHz = j.MeasuredRefreshHz;
             s.TargetFps = j.TargetFps;
             s.CompositorReportsLost = j.CompositorReportsLost;
@@ -2354,6 +2366,25 @@ namespace GnollHackX.Performance
 
             [JsonProperty("gcPauseDataAvailable")]
             public bool GcPauseDataAvailable;
+
+            /* The JIT fields are absent in older summaries, which reads as no JIT data */
+            [JsonProperty("jitMs")]
+            public double JitMs;
+
+            [JsonProperty("paintJitMs")]
+            public double PaintJitMs;
+
+            [JsonProperty("uiJitMs")]
+            public double UiJitMs;
+
+            [JsonProperty("gameJitMs")]
+            public double GameJitMs;
+
+            [JsonProperty("jitMethods")]
+            public long JitMethods;
+
+            [JsonProperty("jitDataAvailable")]
+            public bool JitDataAvailable;
 
             [JsonProperty("measuredRefreshHz")]
             public double MeasuredRefreshHz;
