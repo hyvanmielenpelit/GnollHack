@@ -205,7 +205,7 @@
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>partial</TrimMode>
     <MauiEnableFullReadyToRun>true</MauiEnableFullReadyToRun>
-    <TieredPGO>false</TieredPGO>
+    <!--<TieredPGO>false</TieredPGO>-->
     <!-- Arm W: W^X off, a hardening measure; never in a shipping build -->
     <!--<GnhWriteXorExecute>false</GnhWriteXorExecute>-->
   </PropertyGroup>
