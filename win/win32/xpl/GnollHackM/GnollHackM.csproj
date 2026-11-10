@@ -204,12 +204,10 @@
     <AndroidEnableProfiledAot Condition="'$(IsMonoRuntime)' == 'true'">false</AndroidEnableProfiledAot>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>partial</TrimMode>
-  </PropertyGroup>
-
-  <!-- ReadyToRun mode of an Android CoreCLR Release build, for the performance fingerprint; -p:MauiEnableFullReadyToRun=true gives Full -->
-  <PropertyGroup Condition="'$(Configuration)' == 'Release' and $(TargetFramework.Contains('-android')) and '$(IsMonoRuntime)' != 'true'">
-    <_GnhReadyToRunMode Condition="'$(MauiEnableFullReadyToRun)' == 'true'">Full</_GnhReadyToRunMode>
-    <_GnhReadyToRunMode Condition="'$(MauiEnableFullReadyToRun)' != 'true'">Partial</_GnhReadyToRunMode>
+    <MauiEnableFullReadyToRun>true</MauiEnableFullReadyToRun>
+    <TieredPGO>false</TieredPGO>
+    <!-- Arm W: W^X off, a hardening measure; never in a shipping build -->
+    <!--<GnhWriteXorExecute>false</GnhWriteXorExecute>-->
   </PropertyGroup>
 
   <!-- GENERAL PROPERTIES -->
@@ -244,7 +242,12 @@
   <!-- Build SDK version, read by the performance environment fingerprint -->
   <ItemGroup>
     <AssemblyMetadata Include="GHBuildSdkVersion" Value="$(NETCoreSdkVersion)" />
-    <AssemblyMetadata Include="GHReadyToRunMode" Value="$(_GnhReadyToRunMode)" Condition="'$(_GnhReadyToRunMode)' != ''" />
+  </ItemGroup>
+
+  <!-- ReadyToRun mode of an Android CoreCLR Release build, for the performance fingerprint -->
+  <ItemGroup Condition="'$(Configuration)' == 'Release' and $(TargetFramework.Contains('-android')) and '$(IsMonoRuntime)' != 'true'">
+    <AssemblyMetadata Include="GHReadyToRunMode" Value="Full" Condition="'$(MauiEnableFullReadyToRun)' == 'true'" />
+    <AssemblyMetadata Include="GHReadyToRunMode" Value="Partial" Condition="'$(MauiEnableFullReadyToRun)' != 'true'" />
   </ItemGroup>
 
   <ItemGroup>

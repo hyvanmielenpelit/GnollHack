@@ -215,6 +215,7 @@ namespace GnollHackX
 
             VersionTracking.Track();
             GetDependencyServices();
+            StartPrelinkingNativeInterface();
             PlatformService.InitializePlatform();
             GHPath = GnollHackService.GetGnollHackPath();
             ProcessEnvironment();
@@ -4568,15 +4569,21 @@ namespace GnollHackX
             _mainGnollHackService.Test();
 #endif
 #if GNH_MAUI
-            /* Qualified: GHApp's GnollHackService property hides the class name here */
-            global::GnollHackM.GnollHackService.StartPrelinkInBackground();
-#endif
-#if GNH_MAUI
             _fmodService = new FmodService();
             _platformService = new PlatformService();
 #else
             _fmodService = DependencyService.Get<IFmodService>();
             _platformService = DependencyService.Get<IPlatformService>();
+#endif
+        }
+
+        /* Generates the native interface's marshaling stubs on a background thread; needs the native library loaded by
+           GetDependencyServices */
+        public static void StartPrelinkingNativeInterface()
+        {
+#if GNH_MAUI
+            /* Qualified: GHApp's GnollHackService property hides the class name here */
+            global::GnollHackM.GnollHackService.StartPrelinkInBackground();
 #endif
         }
 
