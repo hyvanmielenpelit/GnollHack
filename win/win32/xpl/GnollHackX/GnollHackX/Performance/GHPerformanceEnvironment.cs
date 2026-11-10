@@ -43,6 +43,7 @@ namespace GnollHackX.Performance
     public static class GHPerformanceEnvironment
     {
         public const string BuildSdkMetadataKey = "GHBuildSdkVersion";
+        public const string ReadyToRunMetadataKey = "GHReadyToRunMode";
 
         /* Assembly name prefixes left out of the component.* fingerprint keys */
         private static readonly string[] ExcludedComponentPrefixes =
@@ -200,6 +201,12 @@ namespace GnollHackX.Performance
             AddIfMissing(fp, "toolchain.compiler",
                 () => GHApp.IsLLVM ? "LLVM" : GHApp.IsCoreCLR ? "Crossgen2" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT");
             AddIfMissing(fp, "toolchain.sdk", ReadBuildSdkVersion);
+            AddIfMissing(fp, "toolchain.readyToRun", () => ReadAssemblyMetadata(ReadyToRunMetadataKey));
+#if GNH_MAUI
+            AddIfMissing(fp, "toolchain.tieredPGO", () => ReadRuntimeProperty("System.Runtime.TieredPGO"));
+            AddIfMissing(fp, "toolchain.tieredCompilation",
+                () => ReadRuntimeProperty("System.Runtime.TieredCompilation"));
+#endif
             AddIfMissing(fp, "toolchain.packaging", () => GHApp.IsPackaged ? "Packaged" : "Unpackaged");
             AddIfMissing(fp, GHEnvironmentFingerprint.SettingsKey("gpuCacheSize"), () => GHEnvironmentFingerprint.FormatValue(f.GpuCacheSize));
             AddIfMissing(fp, GHEnvironmentFingerprint.SettingsKey("mainCanvasUsesGpu"), () => GHEnvironmentFingerprint.FormatValue(f.MainCanvasUsesGpu));
@@ -318,6 +325,23 @@ namespace GnollHackX.Performance
            assembly that carries it, or null. */
         private static string ReadBuildSdkVersion()
         {
+            return ReadAssemblyMetadata(BuildSdkMetadataKey);
+        }
+
+#if GNH_MAUI
+        /* An AppContext runtime property as a string, "default" when it is not set */
+        private static string ReadRuntimeProperty(string name)
+        {
+            object value = AppContext.GetData(name);
+            string text = value != null ? value.ToString() : null;
+            return string.IsNullOrEmpty(text) ? "default" : text;
+        }
+#endif
+
+        /* The key's assembly metadata of the first loaded GnollHack assembly that
+           carries it, or null. */
+        private static string ReadAssemblyMetadata(string key)
+        {
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
             for (int i = 0; i < assemblies.Length; i++)
             {
@@ -333,7 +357,7 @@ namespace GnollHackX.Performance
                     for (int j = 0; j < attributes.Length; j++)
                     {
                         AssemblyMetadataAttribute metadata = attributes[j] as AssemblyMetadataAttribute;
-                        if (metadata != null && metadata.Key == BuildSdkMetadataKey && !string.IsNullOrEmpty(metadata.Value))
+                        if (metadata != null && metadata.Key == key && !string.IsNullOrEmpty(metadata.Value))
                             return metadata.Value;
                     }
                 }

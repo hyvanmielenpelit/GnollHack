@@ -280,6 +280,12 @@ namespace GnollHack.PerformanceAnalyzer.Commands
             Row(md, "Hitches after a forced GC", s.ForcedGcHitchCount.ToString(CultureInfo.InvariantCulture), app, "forcedGcHitchCount");
             Row(md, "Forced-GC hitch ms", F(s.ForcedGcHitchMs, 1), app, "forcedGcHitchMs");
             Row(md, "GC pause (ms, total)", s.GcPauseDataAvailable ? F(s.GcPauseMs, 1) : "not reported", app, "gcPauseMs");
+            Row(md, "JIT in paint (ms, total)", s.JitDataAvailable ? F(s.PaintJitMs, 1) : "not reported", app, "paintJitMs");
+            Row(md, "JIT on UI thread (ms, total)", s.JitDataAvailable ? F(s.UiJitMs, 1) : "not reported", app, "uiJitMs");
+            Row(md, "JIT on game thread (ms, total)", s.JitDataAvailable ? F(s.GameJitMs, 1) : "not reported", app, "gameJitMs");
+            Row(md, "JIT, process (ms, total)", s.JitDataAvailable ? F(s.JitMs, 1) : "not reported", app, "jitMs");
+            Row(md, "Methods compiled", s.JitDataAvailable ? s.JitMethods.ToString(CultureInfo.InvariantCulture) : "not reported",
+                app, "jitMethods");
             Row(md, "Measured refresh (Hz)", F(s.MeasuredRefreshHz), app, "measuredRefreshHz");
             Row(md, "Callback rate (Hz)", s.CallbackRefreshHz > 0 ? F(s.CallbackRefreshHz) : "not recorded", app, "callbackRefreshHz");
             Row(md, "Assumed refresh (Hz)", F(s.AssumedRefreshHz, 0), app, "assumedRefreshHz");

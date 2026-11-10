@@ -217,6 +217,9 @@ namespace GnollHackX.Performance
             Interlocked.Exchange(ref _pendingContentEvents, 0);
             Interlocked.Exchange(ref _pendingRequestTicks, 0);
             Interlocked.Exchange(ref _lastPaintedMapGeneration, -1);
+            Interlocked.Exchange(ref _gameThreadJitTicks, 0);
+            _gameJitThreadId = 0;
+            _gameJitLastThreadTicks = 0;
             _periodDeltaCount = 0;
             _periodDeltaIndex = 0;
             Interlocked.Exchange(ref _measuredPeriodTicks, 0);
@@ -363,6 +366,101 @@ namespace GnollHackX.Performance
 #endif
         }
 
+#if GNH_MAUI
+        /* 0: not yet read, 1: the runtime reports JIT data, -1: reading it threw */
+        private static int _jitInfoState = 0;
+#endif
+
+        /* Whether ReadJitTicks and ReadJitMethodCount can still return a reading */
+        private static bool IsJitInfoReadable
+        {
+            get
+            {
+#if GNH_MAUI
+                return _jitInfoState >= 0;
+#else
+                return false;
+#endif
+            }
+        }
+
+        /* JIT compilation time so far, in Stopwatch ticks, of the calling thread or of the
+           whole process; 0 when the runtime does not report it. After the first failed read
+           it is not read again. */
+        private static long ReadJitTicks(bool currentThread)
+        {
+#if GNH_MAUI
+            if (_jitInfoState < 0)
+                return 0;
+            try
+            {
+                long ticks = TimeSpanTicksToTicks(System.Runtime.JitInfo.GetCompilationTime(currentThread).Ticks);
+                _jitInfoState = 1;
+                return ticks;
+            }
+            catch
+            {
+                _jitInfoState = -1;
+                return 0;
+            }
+#else
+            return 0;
+#endif
+        }
+
+        /* Methods the process has compiled so far; 0 when the runtime does not report it */
+        private static long ReadJitMethodCount()
+        {
+#if GNH_MAUI
+            if (_jitInfoState < 0)
+                return 0;
+            try
+            {
+                long count = System.Runtime.JitInfo.GetCompiledMethodCount(false);
+                _jitInfoState = 1;
+                return count;
+            }
+            catch
+            {
+                _jitInfoState = -1;
+                return 0;
+            }
+#else
+            return 0;
+#endif
+        }
+
+        /* Game-thread JIT: a running total over all game threads so far, and the thread and
+           reading it was last advanced from. Each game runs on a new thread, whose own total
+           starts at 0. */
+        private static long _gameThreadJitTicks = 0;
+        private static int _gameJitThreadId = 0;
+        private static long _gameJitLastThreadTicks = 0;
+        /* Set on a thread once it has called NoteGameThreadJit: a new thread can be given
+           the managed thread id of one that has ended */
+        [ThreadStatic] private static bool _isNotedGameThread;
+
+        /* Called on the game thread only, when it asks for input or events: a thread's JIT
+           time can only be read on that thread. Publishes a running total over all game
+           threads so far, which never decreases */
+        public static void NoteGameThreadJit()
+        {
+            if (!IsEnabled)
+                return;
+            int threadId = Environment.CurrentManagedThreadId;
+            long now = ReadJitTicks(true);
+            if (threadId != _gameJitThreadId || !_isNotedGameThread)
+            {
+                _gameJitThreadId = threadId;
+                _gameJitLastThreadTicks = 0;
+                _isNotedGameThread = true;
+            }
+            long delta = now - _gameJitLastThreadTicks;
+            _gameJitLastThreadTicks = now;
+            if (delta > 0)
+                Interlocked.Add(ref _gameThreadJitTicks, delta);
+        }
+
         /* ---- Tick (UI thread) ---- */
 
         public static long BeginTick()
@@ -392,6 +490,10 @@ namespace GnollHackX.Performance
             r.GcCount1 = GC.CollectionCount(1);
             r.GcCount2 = GC.CollectionCount(2);
             r.GcPauseTicks = ReadGcPauseTicks();
+            r.JitTicks = ReadJitTicks(false);
+            r.UiJitTicks = ReadJitTicks(true);
+            r.GameJitTicks = Interlocked.Read(ref _gameThreadJitTicks);
+            r.JitMethodCount = ReadJitMethodCount();
             if (_pendingVsyncIsLatestVblank)
                 r.Flags |= GHFrameFlags.VsyncIsLatestVblank;
             if (Interlocked.Exchange(ref _pendingLifecycleBreak, 0) != 0)
@@ -657,6 +759,12 @@ namespace GnollHackX.Performance
             if (_ring[idx].FrameId != id)
                 return 0;
             _ring[idx].PaintStartTicks = now;
+            /* A fresh paint thread legitimately reads 0, so PaintJitStarted marks the reading */
+            if (takeOver && IsJitInfoReadable)
+            {
+                _ring[idx].PaintJitStartTicks = ReadJitTicks(true);
+                _ring[idx].PaintJitStarted = true;
+            }
             _ring[idx].PaintOnUiThread = onUiThread;
             _ring[idx].Paint = outcome;
             if (ticketed)
@@ -718,6 +826,8 @@ namespace GnollHackX.Performance
             if (_ring[idx].FrameId != frameId)
                 return;
             _ring[idx].FlushEndTicks = Stopwatch.GetTimestamp();
+            if (_ring[idx].PaintJitStarted)
+                _ring[idx].PaintJitTicks = Math.Max(0, ReadJitTicks(true) - _ring[idx].PaintJitStartTicks);
             _ring[idx].PaintedMainCounter = paintedMainCounter;
             _ring[idx].PaintedGeneralCounter = paintedGeneralCounter;
             _ring[idx].PaintedMapGeneration = paintedMapGeneration;
@@ -903,8 +1013,9 @@ namespace GnollHackX.Performance
 
         /* One row per tick. Times are milliseconds since the first retained tick's callback
            start; PlatformFrame keeps the platform's epoch and is relative to its own first
-           value. GcPause is the process's total GC pause so far. Lines starting with '#'
-           carry metadata. */
+           value. GcPause is the process's total GC pause so far; Jit, UiJit and GameJit are
+           totals so far in the same way, PaintJit is the paint's own and JitMethods the
+           process's compiled method count. Lines starting with '#' carry metadata. */
         public static void DumpToCsv(string path)
         {
             GHFrameRecord[] records = new GHFrameRecord[Capacity];
@@ -945,7 +1056,8 @@ namespace GnollHackX.Performance
                     + "TargetFps,AssumedRefreshHz,Pacing,MainCounter,GeneralCounter,Invalidate,InvalidateMs,"
                     + "Paint,PaintOnUiThread,PaintStartMs,LockAttemptMs,LockResultMs,LockAcquired,DrawEndMs,FlushEndMs,"
                     + "PaintedMainCounter,PaintedGeneralCounter,PaintedMapGeneration,DisplayedAtMs,PresentSource,Flags,Gc0,Gc1,Gc2,"
-                    + "RequestMs,ContentEvents,GcPauseMs,CallbackPeriodMs");
+                    + "RequestMs,ContentEvents,GcPauseMs,CallbackPeriodMs,"
+                    + "JitMs,PaintJitMs,UiJitMs,GameJitMs,JitMethods");
                 if (n == 0)
                     return;
 
@@ -993,7 +1105,12 @@ namespace GnollHackX.Performance
                         r.RequestTicks == 0 ? "" : Ms(r.RequestTicks),
                         ((int)r.ContentEvents).ToString(CultureInfo.InvariantCulture),
                         Ms(r.GcPauseTicks),
-                        Ms(r.CallbackPeriodTicks)
+                        Ms(r.CallbackPeriodTicks),
+                        Ms(r.JitTicks),
+                        Ms(r.PaintJitTicks),
+                        Ms(r.UiJitTicks),
+                        Ms(r.GameJitTicks),
+                        r.JitMethodCount == 0 ? "" : r.JitMethodCount.ToString(CultureInfo.InvariantCulture)
                     }));
                 }
             }

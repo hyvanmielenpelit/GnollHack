@@ -235,11 +235,6 @@
     <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
 
-  <!-- Build SDK version, read by the performance environment fingerprint -->
-  <ItemGroup>
-    <AssemblyMetadata Include="GHBuildSdkVersion" Value="$(NETCoreSdkVersion)" />
-  </ItemGroup>
-
   <ItemGroup>
     <None Remove="..\GnollHackX\GnollHackX\BackgroundView.cs" />
     <None Remove="..\GnollHackX\GnollHackX\FrameTimeProfiler.cs" />
@@ -1629,6 +1624,18 @@
   <PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
     <DefineConstants>$(DefineConstants);CORECLR</DefineConstants>
   </PropertyGroup>
+
+  <!-- PERFORMANCE FINGERPRINT METADATA -->
+  <!-- Build SDK version, read by the performance environment fingerprint -->
+  <ItemGroup>
+    <AssemblyMetadata Include="GHBuildSdkVersion" Value="$(NETCoreSdkVersion)" />
+  </ItemGroup>
+
+  <!-- ReadyToRun mode of an Android CoreCLR Release build, for the performance fingerprint -->
+  <ItemGroup Condition="'$(Configuration)' == 'Release' and $(TargetFramework.Contains('-android')) and '$(IsMonoRuntime)' != 'true'">
+    <AssemblyMetadata Include="GHReadyToRunMode" Value="Full" Condition="'$(MauiEnableFullReadyToRun)' == 'true'" />
+    <AssemblyMetadata Include="GHReadyToRunMode" Value="Partial" Condition="'$(MauiEnableFullReadyToRun)' != 'true'" />
+  </ItemGroup>
 
   <!-- IMPORTED TARGET PROJECTS -->
   <!-- WORKAROUND(WA-RUNTIME-0001): Mono LLVM AOT breaks System.Net.Sockets on Android -->

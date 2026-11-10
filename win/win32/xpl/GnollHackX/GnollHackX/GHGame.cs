@@ -1304,6 +1304,7 @@ namespace GnollHackX
 
         public void ClientCallback_get_nh_event()
         {
+            GHFrameTimeline.NoteGameThreadJit();
             Debug.WriteLine("ClientCallback_get_nh_event");
             if (IsRecording)
             {
@@ -1430,6 +1431,7 @@ namespace GnollHackX
 
         public int ClientCallback_nh_poskey(out int x, out int y, out int mod)
         {
+            GHFrameTimeline.NoteGameThreadJit();
             Debug.WriteLine("ClientCallback_nh_poskey");
             WriteFunctionCallsAndCheckEnd();
 

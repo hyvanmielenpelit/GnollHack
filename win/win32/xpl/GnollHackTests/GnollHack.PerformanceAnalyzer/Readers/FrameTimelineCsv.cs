@@ -8,7 +8,8 @@ namespace GnollHack.PerformanceAnalyzer.Readers
     /* Reads and writes the app's frametimeline*.csv (GHFrameTimeline.DumpToCsv). Columns are
        found by header name, so a reordered or extended file still reads; a missing column
        reads as zero, so a capture from before GcPauseMs and CallbackPeriodMs has no pause
-       data and no separate callback period. Times come back as ticks of this machine's
+       data and no separate callback period, and one from before the JIT columns no JIT
+       data. Times come back as ticks of this machine's
        Stopwatch (TimelineClock). An optional "# OriginUtc utc=<o> stopwatchTicks=<n>" line
        gives the first record's wall-clock time (OriginUtc); unknown '#' lines are kept as
        metadata and otherwise ignored.
@@ -20,7 +21,8 @@ namespace GnollHack.PerformanceAnalyzer.Readers
             + "TargetFps,AssumedRefreshHz,Pacing,MainCounter,GeneralCounter,Invalidate,InvalidateMs,"
             + "Paint,PaintOnUiThread,PaintStartMs,LockAttemptMs,LockResultMs,LockAcquired,DrawEndMs,FlushEndMs,"
             + "PaintedMainCounter,PaintedGeneralCounter,PaintedMapGeneration,DisplayedAtMs,PresentSource,Flags,Gc0,Gc1,Gc2,"
-            + "RequestMs,ContentEvents,GcPauseMs,CallbackPeriodMs";
+            + "RequestMs,ContentEvents,GcPauseMs,CallbackPeriodMs,"
+            + "JitMs,PaintJitMs,UiJitMs,GameJitMs,JitMethods";
 
         /* Metadata keys of the "# OriginUtc utc=... stopwatchTicks=..." line */
         public const string OriginUtcKey = "OriginUtc.utc";
@@ -103,6 +105,11 @@ namespace GnollHack.PerformanceAnalyzer.Readers
                 r.ContentEvents = (GHContentEvent)Long(f, c, "ContentEvents");
                 r.GcPauseTicks = Duration(f, c, "GcPauseMs", t.Clock);
                 r.CallbackPeriodTicks = Duration(f, c, "CallbackPeriodMs", t.Clock);
+                r.JitTicks = Duration(f, c, "JitMs", t.Clock);
+                r.PaintJitTicks = Duration(f, c, "PaintJitMs", t.Clock);
+                r.UiJitTicks = Duration(f, c, "UiJitMs", t.Clock);
+                r.GameJitTicks = Duration(f, c, "GameJitMs", t.Clock);
+                r.JitMethodCount = Long(f, c, "JitMethods");
                 records.Add(r);
             }
             /* GHSmoothnessMetrics wants FrameId order, which is the order the app writes */
@@ -182,7 +189,12 @@ namespace GnollHack.PerformanceAnalyzer.Readers
                     r.RequestTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.RequestTicks)),
                     ((int)r.ContentEvents).ToString(CultureInfo.InvariantCulture),
                     r.GcPauseTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.GcPauseTicks)),
-                    r.CallbackPeriodTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.CallbackPeriodTicks))
+                    r.CallbackPeriodTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.CallbackPeriodTicks)),
+                    r.JitTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.JitTicks)),
+                    r.PaintJitTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.PaintJitTicks)),
+                    r.UiJitTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.UiJitTicks)),
+                    r.GameJitTicks == 0 ? "" : MsText(clock.DurationTicksToMs(r.GameJitTicks)),
+                    r.JitMethodCount == 0 ? "" : r.JitMethodCount.ToString(CultureInfo.InvariantCulture)
                 })).Append(Csv.Crlf);
             }
             File.WriteAllText(path, sb.ToString(), new UTF8Encoding(false));
