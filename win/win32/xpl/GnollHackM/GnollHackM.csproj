@@ -206,6 +206,12 @@
     <TrimMode>partial</TrimMode>
   </PropertyGroup>
 
+  <!-- ReadyToRun mode of an Android CoreCLR Release build, for the performance fingerprint; -p:MauiEnableFullReadyToRun=true gives Full -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' and $(TargetFramework.Contains('-android')) and '$(IsMonoRuntime)' != 'true'">
+    <_GnhReadyToRunMode Condition="'$(MauiEnableFullReadyToRun)' == 'true'">Full</_GnhReadyToRunMode>
+    <_GnhReadyToRunMode Condition="'$(MauiEnableFullReadyToRun)' != 'true'">Partial</_GnhReadyToRunMode>
+  </PropertyGroup>
+
   <!-- GENERAL PROPERTIES -->
   <ItemGroup>
     <!-- MauiIcon -->
@@ -238,6 +244,7 @@
   <!-- Build SDK version, read by the performance environment fingerprint -->
   <ItemGroup>
     <AssemblyMetadata Include="GHBuildSdkVersion" Value="$(NETCoreSdkVersion)" />
+    <AssemblyMetadata Include="GHReadyToRunMode" Value="$(_GnhReadyToRunMode)" Condition="'$(_GnhReadyToRunMode)' != ''" />
   </ItemGroup>
 
   <ItemGroup>
@@ -530,6 +537,7 @@
     <None Remove="Assets\UI\zoom.png" />
     <None Remove="Platforms\Android\EnvironmentMono.txt" />
     <None Remove="Platforms\Android\EnvironmentCoreCLR.txt" />
+    <None Remove="Platforms\Android\EnvironmentCoreCLRNoWriteXorExecute.txt" />
     <None Remove="Platforms\Android\libs\x86_64\libc++_shared.so" />
     <None Remove="Platforms\Android\libs\x86_64\libfmod.so" />
     <None Remove="Platforms\Android\libs\x86_64\libfmodstudio.so" />
@@ -1196,6 +1204,8 @@
 
   <ItemGroup Condition="'$(IsMonoRuntime)' != 'true'">
     <AndroidEnvironment Include="Platforms\Android\EnvironmentCoreCLR.txt" />
+    <!-- Experiment only: -p:GnhWriteXorExecute=false turns off W^X, a hardening measure; never set in a shipping build -->
+    <AndroidEnvironment Include="Platforms\Android\EnvironmentCoreCLRNoWriteXorExecute.txt" Condition="'$(GnhWriteXorExecute)' == 'false'" />
   </ItemGroup>
 
   <ItemGroup>

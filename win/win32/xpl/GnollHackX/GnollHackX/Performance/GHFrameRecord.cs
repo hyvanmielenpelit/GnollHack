@@ -134,6 +134,17 @@ namespace GnollHackX.Performance
         public int GcCount0;
         public int GcCount1;
         public int GcCount2;
+
+        /* JIT compilation time, in Stopwatch ticks, as System.Runtime.JitInfo reports it; on iOS,
+           the interpreter's compile time. 0 when unknown. */
+        public long JitTicks;               /* the process's total at the callback start, background tiering included */
+        public long UiJitTicks;             /* the UI thread's total at the callback start */
+        public long GameJitTicks;           /* the game threads' total as last published; 0 until it is */
+        public long JitMethodCount;         /* methods the process has compiled, at the callback start */
+        public long PaintJitStartTicks;     /* the paint thread's total at paint start; not exported */
+        public bool PaintJitStarted;        /* PaintJitStartTicks was read; a fresh thread legitimately reads 0 */
+        public long PaintJitTicks;          /* on the paint thread between BeginPaint and EndPaint */
+
         public short TargetFps;
         public short AssumedRefreshHz;      /* the refresh rate the pacing logic believed in */
 

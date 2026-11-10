@@ -495,6 +495,80 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void Jit_IsSampledPerTick()
+        {
+            Restart();
+            GHFrameTimeline.BeginTick();
+            GHFrameTimeline.BeginTick();
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(2, n);
+            /* The test host has JIT-compiled code on this thread and in the process by now */
+            Assert.True(r[0].JitTicks > 0);
+            Assert.True(r[0].UiJitTicks > 0);
+            Assert.True(r[1].JitTicks >= r[0].JitTicks, r[0].JitTicks + " -> " + r[1].JitTicks);
+            Assert.True(r[0].JitMethodCount > 0);
+        }
+
+        [Fact]
+        public void PaintJit_IsMeasuredBetweenBeginPaintAndEndPaint()
+        {
+            Restart();
+            long id = RenderedTick(1);
+            long painted = GHFrameTimeline.BeginPaint(false);
+            Assert.Equal(id, painted);
+            GHFrameTimeline.EndPaint(painted, 1, 0, 0);
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.True(r[0].PaintJitStarted);
+            Assert.True(r[0].PaintJitTicks >= 0);
+        }
+
+        /* Runs body on a new thread, as a new game's thread would. Each caller passes its own
+           lambda, which the new thread compiles before it runs, so that thread's JIT time is
+           above 0 even when everything it calls is compiled already. */
+        private static void RunOnNewThread(ThreadStart body)
+        {
+            Thread t = new Thread(body);
+            t.Start();
+            t.Join();
+        }
+
+        [Fact]
+        public void GameThreadJit_IsCopiedIntoTheNextTick()
+        {
+            Restart();
+            GHFrameTimeline.BeginTick();
+            RunOnNewThread(() => GHFrameTimeline.NoteGameThreadJit());
+            GHFrameTimeline.BeginTick();
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(2, n);
+            Assert.Equal(0, r[0].GameJitTicks);
+            Assert.True(r[1].GameJitTicks > 0);
+        }
+
+        [Fact]
+        public void GameThreadJit_FromANewGameThread_NeverDecreases()
+        {
+            Restart();
+            GHFrameTimeline.BeginTick();
+            RunOnNewThread(() => GHFrameTimeline.NoteGameThreadJit());
+            GHFrameTimeline.BeginTick();
+            RunOnNewThread(() => GHFrameTimeline.NoteGameThreadJit());
+            GHFrameTimeline.BeginTick();
+
+            int n;
+            GHFrameRecord[] r = Snapshot(out n);
+            Assert.Equal(3, n);
+            Assert.True(r[1].GameJitTicks > 0);
+            Assert.True(r[2].GameJitTicks >= r[1].GameJitTicks, r[1].GameJitTicks + " -> " + r[2].GameJitTicks);
+        }
+
+        [Fact]
         public void RepeatedPlatformFrameTime_IsFlaggedAsDuplicate()
         {
             Restart();

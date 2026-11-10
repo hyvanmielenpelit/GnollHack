@@ -191,6 +191,12 @@ namespace GnollHackX
         {
             StartFlags = startFlags;
 
+            unsafe
+            {
+                Debug.Assert(Marshal.SizeOf<Obj>() == sizeof(Obj), "Obj is read by pointer and must stay blittable");
+                Debug.Assert(Marshal.SizeOf<ObjClassData>() == sizeof(ObjClassData), "ObjClassData is read by pointer and must stay blittable");
+            }
+
             lock (_mapDataBufferLock)
             {
                 for (int i = 0; i < GHConstants.MapCols; i++)
@@ -654,8 +660,13 @@ namespace GnollHackX
 
         public int ClientCallback_CreateGHWindow(int wintype, int style, int glyph, byte dataflags, IntPtr objdata_ptr, IntPtr otypdata_ptr)
         {
-            Obj objdata = objdata_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(objdata_ptr, typeof(Obj));
-            ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
+            Obj objdata;
+            ObjClassData otypdata;
+            unsafe
+            {
+                objdata = objdata_ptr == IntPtr.Zero ? new Obj() : *(Obj*)objdata_ptr;
+                otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : *(ObjClassData*)otypdata_ptr;
+            }
 
             if (IsRecording)
             {
@@ -1304,6 +1315,7 @@ namespace GnollHackX
 
         public void ClientCallback_get_nh_event()
         {
+            GHFrameTimeline.NoteGameThreadJit();
             Debug.WriteLine("ClientCallback_get_nh_event");
             if (IsRecording)
             {
@@ -1430,6 +1442,7 @@ namespace GnollHackX
 
         public int ClientCallback_nh_poskey(out int x, out int y, out int mod)
         {
+            GHFrameTimeline.NoteGameThreadJit();
             Debug.WriteLine("ClientCallback_nh_poskey");
             WriteFunctionCallsAndCheckEnd();
 
@@ -2158,8 +2171,13 @@ namespace GnollHackX
             IntPtr otmpdata_ptr, IntPtr otypdata_ptr, IntPtr attrs_ptr, IntPtr colors_ptr)
         {
             GHApp.DebugWriteProfilingStopwatchTimeAndStart("AddExtendedMenu");
-            Obj otmpdata = otmpdata_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(otmpdata_ptr, typeof(Obj));
-            ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
+            Obj otmpdata;
+            ObjClassData otypdata;
+            unsafe
+            {
+                otmpdata = otmpdata_ptr == IntPtr.Zero ? new Obj() : *(Obj*)otmpdata_ptr;
+                otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : *(ObjClassData*)otypdata_ptr;
+            }
             byte[] attrs = null;
             byte[] colors = null;
             int attrs_colors_size = text?.Length + 1 ?? 0;
@@ -2460,8 +2478,13 @@ namespace GnollHackX
 
         public void ClientCallback_SendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
         {
-            Obj otmp = otmp_ptr == IntPtr.Zero ? new Obj() : (Obj)Marshal.PtrToStructure(otmp_ptr, typeof(Obj));
-            ObjClassData otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : (ObjClassData)Marshal.PtrToStructure(otypdata_ptr, typeof(ObjClassData));
+            Obj otmp;
+            ObjClassData otypdata;
+            unsafe
+            {
+                otmp = otmp_ptr == IntPtr.Zero ? new Obj() : *(Obj*)otmp_ptr;
+                otypdata = otypdata_ptr == IntPtr.Zero ? new ObjClassData() : *(ObjClassData*)otypdata_ptr;
+            }
 
             if (IsRecording)
             {

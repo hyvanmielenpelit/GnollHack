@@ -15,6 +15,12 @@ using System.Threading.Tasks;
 using GnollHackX;
 using System.Diagnostics;
 using System.Globalization;
+#if GNH_MAUI
+using System.Threading;
+#endif
+#if CORECLR
+using System.Runtime.CompilerServices;
+#endif
 
 #if __IOS__
 using Foundation;
@@ -121,7 +127,11 @@ namespace GnollHackX.Unknown
             ClipAroundCallback callback_cliparound,
             /* If positionbar is on */
             UpdatePositionBarCallback callback_update_positionbar,
+#if CORECLR
+            IntPtr callback_print_glyph,        /* NativePrintGlyph */
+#else
             PrintGlyphCallback callback_print_glyph,
+#endif
             IssueGuiCommandCallback callback_issue_gui_command,
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
@@ -185,7 +195,11 @@ namespace GnollHackX.Unknown
             FreeMemoryCallback callback_free_memory,
             ReportPlayerNameCallback callback_report_player_name,
             ReportPlayTimeCallback callback_report_play_time,
+#if CORECLR
+            IntPtr callback_send_object_data,   /* NativeSendObjectData */
+#else
             SendObjectDataCallback callback_send_object_data,
+#endif
             SendMonsterDataCallback callback_send_monster_data,
             SendEngravingDataCallback callback_send_engraving_data
         );
@@ -279,19 +293,35 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetAutoDrawArraySize(int glyph);
 
+#if GNH_MAUI
+        [SuppressGCTransition]
+#endif
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetTileAnimationIndexFromGlyph(int glyph);
 
 
+#if GNH_MAUI
+        [SuppressGCTransition]
+#endif
         [DllImport(PlatformConstants.dll)]
         public static extern byte LibGlyphIsExplosion(int glyph);
+#if GNH_MAUI
+        [SuppressGCTransition]
+#endif
         [DllImport(PlatformConstants.dll)]
         public static extern byte LibGlyphIsZap(int glyph);
         [DllImport(PlatformConstants.dll)]
         public static extern byte LibGlyphIsAnyDying(int glyph);
+#if GNH_MAUI
+        [SuppressGCTransition]
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibMaybeGetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
+        public static extern unsafe int LibMaybeGetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,
+            int* frame_idx_ptr, int* main_tile_idx_ptr, sbyte* mapAnimated, int* autodraw_ptr);
+#else
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibMaybeGetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr);
+#endif
         [DllImport(PlatformConstants.dll)]
         public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
         [DllImport(PlatformConstants.dll)]
@@ -977,8 +1007,23 @@ namespace GnollHackX.Unknown
             //frame_idx_ptr = main_tile_idx_ptr = autodraw_ptr = 0;
             //mapAnimated = 0;
 
+#if GNH_MAUI
+            int frame = 0, mainTile = 0, autodraw = autodraw_ptr;
+            int res;
+            unsafe
+            {
+                /* No caller uses mapAnimated; null makes the engine skip it */
+                res = LibMaybeGetAnimatedTile(ntile, tile_animation_idx, play_type, interval_counter, &frame, &mainTile, null, &autodraw);
+            }
+            frame_idx_ptr = frame;
+            main_tile_idx_ptr = mainTile;
+            mapAnimated = 0;
+            autodraw_ptr = autodraw;
+            return res;
+#else
             return LibMaybeGetAnimatedTile(ntile, tile_animation_idx, play_type, interval_counter,
                 out frame_idx_ptr, out main_tile_idx_ptr, out mapAnimated, ref autodraw_ptr);
+#endif
         }
 
         public int ZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir)
@@ -1295,6 +1340,104 @@ namespace GnollHackX.Unknown
             LibUpdateGameMusic();
         }
 
+#if GNH_MAUI
+        private static int _prelinkStarted;
+
+        /* Generates the marshaling stubs of the P/Invokes crossgen2 cannot precompile, on a background thread, once per
+           process; it does not bind native symbols, except for the [SuppressGCTransition] ones */
+        public static void StartPrelinkInBackground()
+        {
+            if (Interlocked.Exchange(ref _prelinkStarted, 1) != 0)
+                return;
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    Stopwatch stopwatch = Stopwatch.StartNew();
+                    int linked = 0;
+                    int failed = 0;
+                    MethodInfo[] methods = typeof(GnollHackService).GetMethods(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+                    foreach (MethodInfo m in methods)
+                    {
+                        if ((m.Attributes & MethodAttributes.PinvokeImpl) == 0)
+                            continue;
+                        try
+                        {
+                            Marshal.Prelink(m);
+                            linked++;
+                        }
+                        catch (Exception ex)
+                        {
+                            GHApp.MaybeWriteGHLog("Prelink " + m.Name + ": " + ex.Message);
+                            failed++;
+                        }
+                    }
+                    stopwatch.Stop();
+                    long ms = stopwatch.ElapsedMilliseconds;
+                    GHApp.MaybeWriteGHLog("Prelinked " + linked + " P/Invokes in " + ms + " ms, " + failed + " failed");
+                }
+                catch (Exception ex)
+                {
+                    GHApp.ReportCaughtException(ex);
+                }
+            });
+        }
+#endif
+
+#if CORECLR
+        /* The game whose native core is running; set by StartGnollHack, cleared by its exit_hack. The game thread ends
+           inside native code after exit_hack, so RunGnollHack does not return when a game ends */
+        private static GHGame _nativeGame;
+
+        /* Exceptions caught in the native entry points during the current game; only the first is reported */
+        private static int _nativeCallbackFailures;
+
+        /* Native entry point of print_glyph */
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativePrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, ulong special, IntPtr layers_ptr)
+        {
+            try
+            {
+                GHGame game = _nativeGame;
+                if (game != null)
+                    game.ClientCallback_PrintGlyph(winHandle, x, y, glyph, bkglyph, symbol, ocolor, special, layers_ptr);
+            }
+            catch (Exception ex)
+            {
+                if (Interlocked.Increment(ref _nativeCallbackFailures) == 1)
+                    GHApp.ReportCaughtException(ex);
+            }
+        }
+
+        /* Native entry point of send_object_data */
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeSendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
+        {
+            try
+            {
+                GHGame game = _nativeGame;
+                if (game != null)
+                    game.ClientCallback_SendObjectData(x, y, otmp_ptr, cmdtype, where, otypdata_ptr, oflags);
+            }
+            catch (Exception ex)
+            {
+                if (Interlocked.Increment(ref _nativeCallbackFailures) == 1)
+                    GHApp.ReportCaughtException(ex);
+            }
+        }
+
+        private static unsafe IntPtr PrintGlyphEntryPoint
+        {
+            get { return (IntPtr)(delegate* unmanaged[Stdcall]<int, int, int, int, int, int, int, ulong, IntPtr, void>)&NativePrintGlyph; }
+        }
+
+        private static unsafe IntPtr SendObjectDataEntryPoint
+        {
+            get { return (IntPtr)(delegate* unmanaged[Stdcall]<int, int, IntPtr, int, int, IntPtr, ulong, void>)&NativeSendObjectData; }
+        }
+#endif
+
         public int StartGnollHack(GHGame ghGame)
         {
             GHApp.AddSentryBreadcrumb("StartGnollHack", GHConstants.SentryGnollHackGeneralCategoryName);
@@ -1341,6 +1484,19 @@ namespace GnollHackX.Unknown
             ulong foundManuals = GHApp.FoundManuals;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;
 
+#if CORECLR
+            Interlocked.Exchange(ref _nativeCallbackFailures, 0);
+            _nativeGame = ghGame;
+            /* The core draws nothing after exit_hack. Cleared before ClientCallback_ExitHack, which may start the next
+               game; only this game's reference is cleared */
+            VoidIntCallback exitHack = status =>
+            {
+                Interlocked.CompareExchange(ref _nativeGame, null, ghGame);
+                ghGame.ClientCallback_ExitHack(status);
+            };
+            try
+            {
+#endif
             return RunGnollHack(
                 filesdir,
                 "",
@@ -1383,7 +1539,11 @@ namespace GnollHackX.Unknown
                 ghGame.ClientCallback_Cliparound,
                 /* If positionbar is on */
                 ghGame.ClientCallback_VoidCharDummy,
+#if CORECLR
+                PrintGlyphEntryPoint,
+#else
                 ghGame.ClientCallback_PrintGlyph,
+#endif
                 ghGame.ClientCallback_IssueGuiCommand,
                 ghGame.ClientCallback_RawPrint,
                 ghGame.ClientCallback_RawPrintBold,
@@ -1440,16 +1600,32 @@ namespace GnollHackX.Unknown
                 ghGame.ClientCallback_DisplayGUIEffect,
                 ghGame.ClientCallback_UpdateCursor,
                 ghGame.ClientCallback_UIHasInput,
+#if CORECLR
+                exitHack,
+#else
                 ghGame.ClientCallback_ExitHack,
+#endif
                 ghGame.ClientCallback_GetCwd,
                 ghGame.ClientCallback_MessageBox,
                 ghGame.ClientCallback_FreeMemory,
                 ghGame.ClientCallback_ReportPlayerName,
                 ghGame.ClientCallback_ReportPlayTime,
+#if CORECLR
+                SendObjectDataEntryPoint,
+#else
                 ghGame.ClientCallback_SendObjectData,
+#endif
                 ghGame.ClientCallback_SendMonsterData,
                 ghGame.ClientCallback_SendEngravingData
                 );
+#if CORECLR
+            }
+            finally
+            {
+                /* Reached only when RunGnollHack returns early, before the game starts */
+                Interlocked.CompareExchange(ref _nativeGame, null, ghGame);
+            }
+#endif
 
         }
     }

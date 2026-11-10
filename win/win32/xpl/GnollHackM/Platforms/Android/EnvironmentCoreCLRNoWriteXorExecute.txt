@@ -1,0 +1,2 @@
+# Experiment arm only, added by -p:GnhWriteXorExecute=false: executable memory without write-xor-execute double mapping.
+DOTNET_EnableWriteXorExecute=0
