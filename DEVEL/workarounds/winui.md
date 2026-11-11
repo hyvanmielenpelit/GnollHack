@@ -431,6 +431,49 @@ Checks:
 - 2026-11-08 | Microsoft.WindowsAppSDK.Foundation 2.3.5 | still-needed | Seen as GNOLLHACK-J7 on the first .NET 11 RC3 WinUI 3 run; with Windows App SDK 1.8 the call worked. The fix was merged to main on 2026-09-03. Foundation 2.3.12 (2026-09-17) and 2.6.x were published after that; whether they contain it is not verified, so the status is the conservative one.
 - 2026-11-08 | Microsoft.WindowsAppSDK.Foundation 2.3.5 | still-needed | With the workaround, About > Version opens on the WinUI 3 Debug x64 build, reported by the user.
 
+## WA-WINUI-0011: Unpackaged publish leaves out the Assets folder
+
+- Status: active
+- Added: 2026-11-11
+- GnollHack version: 3.40 (440)
+- Component: Windows App SDK
+- Package: Microsoft.WindowsAppSDK.WinUI
+- Defective version: Microsoft.WindowsAppSDK.WinUI 2.3.9 (via Microsoft.WindowsAppSDK 2.5.1); reported upstream on Windows App SDK 1.4
+- Platforms: Windows (MAUI)
+- Upstream issue: https://github.com/microsoft/WindowsAppSDK/issues/4233
+- Upstream status when added: wontfix
+- Upstream status: wontfix
+- Last checked: 2026-11-11
+- Code: `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`Content Update="Assets\**\*.*"`)
+- Remove when: never (upstream declined), unless the Windows App SDK starts publishing default `Content` items of unpackaged apps and Verify removal passes.
+
+**Symptom.** A folder publish of the unpackaged WinUI 3 app has no `Assets\` folder, although
+the build output has one. Styled tooltips lose their `uwch.ttf` font, which
+`UIUtils.SetStyledToolTip` loads from `ms-appx:///Assets/`, and `DisplayFilePage` loses the files
+its HTML base URL, `<app folder>\Assets`, points to.
+
+**Cause.** `Microsoft.WinUI.props` adds `Assets/**/*.*` as `Content` items. For an unpackaged
+app, the `AddProcessedXamlFilesToCopyLocal` target in `Microsoft.WinUI.NET.Markup.Compiler.targets`
+gives them `CopyToOutputDirectory` but not `CopyToPublishDirectory`, so a build copies them and a
+publish does not. Upstream closed the report as not a bug, advising that the app set the copy
+metadata itself.
+
+**Workaround.** `GnollHackM.csproj` updates those `Content` items with
+`CopyToPublishDirectory="PreserveNewest"` on the Windows target framework, except when
+`GNHWindowsPackageType` is `MSIX`, so that the MSIX payload is not changed. It is in the project,
+not the `Steam-win-x64` profile: Visual Studio's publish applies a profile's properties but ignores
+its items.
+
+**Verify removal.** Remove the `ItemGroup` from the project. From
+`win/win32/xpl/GnollHackM`, publish with
+`dotnet publish GnollHackM.csproj -f net11.0-windows10.0.19041.0 -p:PublishProfile=Steam-win-x64 -p:GnhSentryUpload=false`
+and compare its folder with the build output beside it: every file under the build output's
+`Assets\` must be in the publish folder.
+
+Checks:
+- 2026-11-11 | Microsoft.WindowsAppSDK.WinUI 2.3.9 | still-needed | Without the item update the Steam profile publish lacked all 348 files under `Assets\`; with it, the publish had all 1,056 files of the build output.
+- 2026-11-11 | Microsoft.WindowsAppSDK.WinUI 2.3.9 | still-needed | A Visual Studio publish with the update in the profile had no `Assets\` (708 files), reported by the user; the update moved to the project.
+
 <!-- known-issues -->
 
 ## KI-WINUI-0001: TrackMemory forces blocking gen2 collections on the UI thread

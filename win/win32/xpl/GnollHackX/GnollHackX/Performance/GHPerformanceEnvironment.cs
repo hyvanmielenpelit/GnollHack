@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 #if GNH_MAUI
 using GnollHackM;
@@ -201,7 +202,7 @@ namespace GnollHackX.Performance
             AddIfMissing(fp, "toolchain.compiler",
                 () => GHApp.IsLLVM ? "LLVM" : GHApp.IsCoreCLR ? "Crossgen2" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT");
             AddIfMissing(fp, "toolchain.sdk", ReadBuildSdkVersion);
-            AddIfMissing(fp, "toolchain.readyToRun", () => ReadAssemblyMetadata(ReadyToRunMetadataKey));
+            AddIfMissing(fp, "toolchain.readyToRun", ReadReadyToRunMode);
 #if GNH_MAUI
             AddIfMissing(fp, "toolchain.tieredPGO", () => ReadRuntimeProperty("System.Runtime.TieredPGO"));
             AddIfMissing(fp, "toolchain.tieredCompilation",
@@ -326,6 +327,27 @@ namespace GnollHackX.Performance
         private static string ReadBuildSdkVersion()
         {
             return ReadAssemblyMetadata(BuildSdkMetadataKey);
+        }
+
+        /* The build's ReadyToRunMetadataKey metadata (Android), else the ReadyToRun state of this
+           assembly's file in the application folder, else null: a single-file bundle has no such
+           file. */
+        private static string ReadReadyToRunMode()
+        {
+            string mode = ReadAssemblyMetadata(ReadyToRunMetadataKey);
+            if (mode != null)
+                return mode;
+            try
+            {
+                string name = typeof(GHPerformanceEnvironment).Assembly.GetName().Name;
+                if (string.IsNullOrEmpty(name))
+                    return null;
+                return GHReadyToRunProbe.ModeOfFile(Path.Combine(AppContext.BaseDirectory, name + ".dll"));
+            }
+            catch
+            {
+                return null;
+            }
         }
 
 #if GNH_MAUI

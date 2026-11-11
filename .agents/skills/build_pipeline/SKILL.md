@@ -236,6 +236,22 @@ dotnet build win/win32/xpl/GnollHackM/GnollHackM.csproj -c Debug -f net11.0-ios 
 
 > Check `GnollHackM.csproj` for current target framework monikers — they change over time.
 
+### WinUI 3 release builds
+
+Release builds for players are **published**, never copied from `bin\Release`: ReadyToRun
+precompilation runs only in a publish, so a plain build ships every method as IL. Both profiles are
+in `win/win32/xpl/GnollHackM/Properties/PublishProfiles/` and publish self-contained `win-x64` with
+`PublishReadyToRun`; `GnollHackM.csproj` leaves the Windows SDK projection (`Microsoft.Windows.SDK.NET.dll`) as IL.
+
+- **Microsoft Store**: `MSIX-win-x64`, from Visual Studio after **Build > Clean Solution**.
+- **Steam**: `Steam-win-x64`, unpackaged; upload `win/win32/xpl/GnollHackM/bin/Publish/Steam-win-x64/`, which must
+  contain `Assets\` (`WA-WINUI-0011`). Delete that folder before publishing, so no stale file is uploaded.
+  From the command line, in `GnollHackM`: `dotnet publish GnollHackM.csproj -f net11.0-windows10.0.19041.0 -p:PublishProfile=Steam-win-x64`
+  (add `-p:GnhSentryUpload=false` to skip the symbol upload). The build half of the same publish, in
+  `bin\Release\net11.0-windows10.0.19041.0\win-x64\`, is the same code as IL, for comparisons.
+
+The Avalonia flavors publish with ReadyToRun in Release too (`GnollHackM.csproj`).
+
 ## Avalonia Port (Linux, Windows and macOS)
 
 `GnollHackM.csproj` with `-p:GnhAvalonia=true` targets `net11.0` on Avalonia.Controls.Maui instead of the platform backends. The runtime identifier defaults to the host's, so a build on Windows is the `win-x64` flavor (`WINDOWS_AVALONIA` and `SENTRY` defined; not shipped yet; `Platforms/Windows` libs and `gnh`, data in `%LOCALAPPDATA%\GnollHack-Avalonia`; see [Windows flavor](#windows-flavor)), `-r linux-x64` is the shipped Linux flavor (`LINUX` and `SENTRY` defined), and `-r osx-arm64` is the macOS flavor (`MACOS` and `SENTRY` defined; packaged as a signed, notarized `GnollHack.app`, not released yet; see [macOS flavor](#macos-flavor)). All take the tilesets from `win/win32/tileset` and the Desktop banks from `win/win32/bank/Desktop` directly, so neither needs staged assets. Human-facing walkthroughs: wiki pages `Development/Avalonia Port`, `Development/Build Instructions for Avalonia Linux Version on Windows`, `Development/Build Instructions for Avalonia Windows Version on Windows`, `Development/Build Instructions for Avalonia macOS Version on Windows`.

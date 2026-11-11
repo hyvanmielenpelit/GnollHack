@@ -65,6 +65,7 @@
     <Version>$(ApplicationDisplayVersion).$(ApplicationVersion)</Version>
     <EnableMauiImageProcessing>false</EnableMauiImageProcessing>
     <ApplicationManifest>Platforms\Avalonia\app.manifest</ApplicationManifest>
+    <PublishReadyToRun Condition="'$(PublishReadyToRun)' == '' And '$(Configuration)' == 'Release'">true</PublishReadyToRun>
   </PropertyGroup>
 
   <ItemGroup Condition="'$(GnhAvalonia)' == 'true'">
@@ -175,6 +176,16 @@
     <WindowsAppSdkIncludeVersionInfo>true</WindowsAppSdkIncludeVersionInfo>
   <!--<DefineConstants>$(DefineConstants);SKIASHARP_3119</DefineConstants>-->
   </PropertyGroup>
+
+  <!-- The Windows SDK projection stays IL: GnollHack calls little of it, and precompiling it all costs more than it saves -->
+  <ItemGroup Condition="$(TargetFramework.Contains('-windows'))">
+    <PublishReadyToRunExclude Include="Microsoft.Windows.SDK.NET.dll" />
+  </ItemGroup>
+
+  <!-- WORKAROUND(WA-WINUI-0011): Unpackaged publish leaves out the Assets folder -->
+  <ItemGroup Condition="$(TargetFramework.Contains('-windows')) And '$(GNHWindowsPackageType)' != 'MSIX'">
+    <Content Update="Assets\**\*.*" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
 
   <!-- CONFIGURATION + FRAMEWORK SPECIFIC PROPERTIES -->
   <PropertyGroup Condition="'$(Configuration)'=='Debug' and $(TargetFramework.Contains('-ios'))">
@@ -350,6 +361,7 @@
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceDiagnosticRunner.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceDiagnosticSupport.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceEnvironment.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Performance\GHReadyToRunProbe.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceRunRecord.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceStatistics.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteRunner.cs" />
@@ -662,6 +674,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceDiagnosticRunner.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceDiagnosticSupport.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceEnvironment.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Performance\GHReadyToRunProbe.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceRunRecord.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceStatistics.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteRunner.cs" />
