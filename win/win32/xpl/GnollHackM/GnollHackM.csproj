@@ -204,6 +204,7 @@
     <AndroidEnableProfiledAot Condition="'$(IsMonoRuntime)' == 'true'">false</AndroidEnableProfiledAot>
     <PublishTrimmed>true</PublishTrimmed>
     <TrimMode>partial</TrimMode>
+    <MauiEnableFullReadyToRun Condition="'$(IsMonoRuntime)' != 'true'">true</MauiEnableFullReadyToRun>
   </PropertyGroup>
 
   <!-- GENERAL PROPERTIES -->
