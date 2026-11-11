@@ -304,7 +304,13 @@ namespace GnollHackX.Pages.MainScreen
             FrameworkVersionLabel.Text = GHApp.FrameworkVersionString;
             UIFrameworkVersionLabel.Text = (GHApp.IsMaui ? ".NET MAUI " : "XF ")
                 + (!string.IsNullOrEmpty(GHApp.UIFrameworkFullVersionString) ? GHApp.UIFrameworkFullVersionString : GHApp.UIFrameworkVersionString);
+#if WINDOWS || GNH_AVALONIA
+            string readyToRunMode = GnollHackX.Performance.GHPerformanceEnvironment.ReadReadyToRunMode();
+            CompilerLabel.Text = readyToRunMode == "Full" ? "Crossgen2 R2R" : readyToRunMode == "Partial" ? "Crossgen2 R2R Partial"
+                : readyToRunMode == "None" ? "RyuJIT" : "CoreCLR";
+#else
             CompilerLabel.Text = GHApp.IsLLVM ? "LLVM" : GHApp.IsCoreCLR ? "Crossgen2" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT";
+#endif
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;

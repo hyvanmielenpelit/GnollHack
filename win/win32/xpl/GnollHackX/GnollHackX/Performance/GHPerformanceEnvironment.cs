@@ -331,8 +331,8 @@ namespace GnollHackX.Performance
 
         /* The build's ReadyToRunMetadataKey metadata (Android), else the ReadyToRun state of this
            assembly's file in the application folder, else null: a single-file bundle has no such
-           file. */
-        private static string ReadReadyToRunMode()
+           file. Never throws. */
+        public static string ReadReadyToRunMode()
         {
             string mode = ReadAssemblyMetadata(ReadyToRunMetadataKey);
             if (mode != null)
