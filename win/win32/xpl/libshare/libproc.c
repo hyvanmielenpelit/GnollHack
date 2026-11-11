@@ -1710,6 +1710,48 @@ void lib_exit_platform(int status)
     thread_lock_destroy();
 }
 
+/* Calls one callback of each delegate type that the start of a game can leave uncalled, so that its first call
+   during play does not compile its native-to-managed stub. The arguments do nothing, or the callback returns at
+   once between the start and end commands */
+void lib_warm_up_callbacks(void)
+{
+    struct obj warmup_obj = zeroobj;
+    struct objclassdata warmup_ocdata = { 0 };
+    struct monst_info warmup_mi = { 0 };
+    uint64_t warmup_sound_id = 0UL;
+
+    if (!lib_callbacks.callback_issue_gui_command)
+        return;
+
+    lib_callbacks.callback_issue_gui_command(GUI_CMD_CALLBACK_WARM_UP_START, 0, 0, (const char*)0);
+
+    lib_callbacks.callback_add_extended_menu(-1, NO_GLYPH, 0, 0, 0, ATR_NONE, NO_COLOR, (const char*)0, 0, 0,
+        0UL, 0UL, 0, 0, 0UL, 0, 0, &warmup_obj, &warmup_ocdata, (const char*)0, (const char*)0);
+    (void)lib_callbacks.callback_open_special_view(SPECIAL_VIEW_HELP_DIR, (const char*)0, (const char*)0, ATR_NONE, NO_COLOR, 0);
+    lib_callbacks.callback_send_monster_data(1, 0, 0, &warmup_mi, 0UL);
+    lib_callbacks.callback_send_engraving_data(1, 0, 0, (const char*)0, 0, 0UL, 0UL);
+    (void)lib_callbacks.callback_add_ambient_ghsound(0, (const char*)0, 0, 0.0, 0.0, &warmup_sound_id);
+    (void)lib_callbacks.callback_set_ambient_ghsound_volume(0UL, 0.0);
+    (void)lib_callbacks.callback_delete_ambient_ghsound(0UL);
+    (void)lib_callbacks.callback_stop_all_sounds(STOP_SOUNDS_FLAGS_ONLY_DIALOGUE_MID, 0);
+    (void)lib_callbacks.callback_play_ghsound_occupation_ambient(0, (const char*)0, 0, 0.0, 0.0);
+    (void)lib_callbacks.callback_play_ghsound_effect_ambient(0, (const char*)0, 0, 0.0, 0.0);
+    (void)lib_callbacks.callback_set_effect_ambient_volume(0.0);
+    lib_callbacks.callback_toggle_animation_timer(ANIMATION_TIMER_GENERAL, 0, 0, 0, 0, 0, 0UL);
+    (void)lib_callbacks.callback_play_immediate_ghsound(0, (const char*)0, 0, 0.0, 0.0, (const char**)0, (float*)0, 0, 0, 0, 0U, 0U);
+    lib_callbacks.callback_display_screen_text((const char*)0, (const char*)0, (const char*)0, 0, 0, 0, 0UL);
+    lib_callbacks.callback_display_floating_text(0, 0, (const char*)0, 0, 0, 0, 0UL);
+    lib_callbacks.callback_display_gui_effect(0, 0, 0, 0, 0, 0, 0UL);
+    lib_callbacks.callback_update_cursor(0, 0, 0);
+    lib_callbacks.callback_add_context_menu(0, 0, 0, 0, (const char*)0, (const char*)0, 0, 0);
+    (void)lib_callbacks.callback_yn_function_ex(0, 0, 0, 0, (const char*)0, (const char*)0, (const char*)0, (const char*)0,
+        (const char*)0, (const char*)0, 0UL);
+    (void)lib_callbacks.callback_getlin_ex(0, 0, 0, (const char*)0, (const char*)0, (const char*)0, (const char*)0, (char*)0);
+    lib_callbacks.callback_display_popup_text((const char*)0, (const char*)0, 0, 0, 0, 0, 0UL);
+
+    lib_callbacks.callback_issue_gui_command(GUI_CMD_CALLBACK_WARM_UP_END, 0, 0, (const char*)0);
+}
+
 
 
 

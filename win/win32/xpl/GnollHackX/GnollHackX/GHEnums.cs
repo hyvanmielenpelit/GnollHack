@@ -1116,6 +1116,8 @@ namespace GnollHackX
         GUI_CMD_TOGGLE_DAMAGE_FORMULA,
         GUI_CMD_CLEAR_TEXT_CACHES,
         GUI_CMD_REPORT_ROLE_CLICK_COMMAND,
+        GUI_CMD_CALLBACK_WARM_UP_START,
+        GUI_CMD_CALLBACK_WARM_UP_END,
     }
 
     public enum gui_achievement_categories

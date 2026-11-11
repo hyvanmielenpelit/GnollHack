@@ -1256,6 +1256,7 @@ DLLEXPORT int RunGnollHack(char* gnhdir, char* cmdlineargs, char* engrave_quickt
     }
 
     /* Start GnollHack by calling main */
+    lib_warm_up_callbacks();
     return GnollHackStart(cmdbuf);
 }
 

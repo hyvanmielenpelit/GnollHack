@@ -101,6 +101,7 @@ void lib_exit_hack(int status);
 void lib_bail(const char* mesg);
 void lib_init_platform(void);
 void lib_exit_platform(int);
+void lib_warm_up_callbacks(void);
 void libdef_raw_print(const char*);
 void libdef_raw_print_bold(const char*);
 void libdef_wait_synch(void);

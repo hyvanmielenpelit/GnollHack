@@ -494,6 +494,7 @@ namespace GnollHackX
         public void ClientCallback_InitWindows()
         {
             Debug.WriteLine("ClientCallback_InitWindows");
+            _isWarmingUpCallbacks = false; /* The warm-up has ended by the first callback of the game */
             int animoff = 0, enloff = 0, reoff = 0, general_tile_off = 0, hit_tile_off = 0, ui_tile_off = 0, spell_tile_off = 0, skill_tile_off = 0, command_tile_off = 0, buff_tile_off = 0, cursor_off = 0;
 
             if (!PlayingReplay)
@@ -1511,6 +1512,9 @@ namespace GnollHackX
 
         public int ClientCallback_YnFunction(int style, int attr, int color, int glyph, string title, string question, string responses, string def, string descriptions, string introline, ulong ynflags)
         {
+            if (_isWarmingUpCallbacks)
+                return 0;
+
             if (question != null)
                 RawPrintEx(question, attr, color, false);
 
@@ -2933,6 +2937,9 @@ namespace GnollHackX
 
         public int ClientCallback_GetLine(int style, int attr, int color, string query, string placeholder, string linesuffix, string introline, IntPtr out_string_ptr)
         {
+            if (_isWarmingUpCallbacks)
+                return 0;
+
             return GetLine(style, attr, color, query, placeholder, linesuffix, introline, out_string_ptr, null);
         }
 
@@ -3001,6 +3008,9 @@ namespace GnollHackX
 
         public void ClientCallback_AddContextMenu(int cmd_def_char, int cmd_cur_char, int style, int glyph, string cmd_text, string target_text, int attr, int color)
         {
+            if (_isWarmingUpCallbacks)
+                return;
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.AddContextMenu, cmd_def_char, cmd_cur_char, style, glyph, cmd_text, target_text, attr, color);
@@ -3214,6 +3224,9 @@ namespace GnollHackX
 
         public void ClientCallback_DisplayFloatingText(int x, int y, string text, int style, int attr, int color, ulong tflags)
         {
+            if (_isWarmingUpCallbacks)
+                return;
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.DisplayFloatingText, x, y, text, style, attr, color, tflags);
@@ -3232,6 +3245,9 @@ namespace GnollHackX
 
         public void ClientCallback_DisplayScreenText(string text, string supertext, string subtext, int style, int attr, int color, ulong tflags)
         {
+            if (_isWarmingUpCallbacks)
+                return;
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.DisplayScreenText, text, supertext, subtext, style, attr, color, tflags);
@@ -3299,6 +3315,9 @@ namespace GnollHackX
 
         public void ClientCallback_DisplayPopupText(string text, string title, int style, int attr, int color, int glyph, ulong tflags)
         {
+            if (_isWarmingUpCallbacks)
+                return;
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.DisplayPopupText, text, title, style, attr, color, glyph, tflags);
@@ -3323,6 +3342,9 @@ namespace GnollHackX
 
         public void ClientCallback_DisplayGUIEffect(int style, int subtype, int x, int y, int x2, int y2, ulong tflags)
         {
+            if (_isWarmingUpCallbacks)
+                return;
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.DisplayGUIEffect, style, subtype, x, y, x2, y2, tflags);
@@ -3341,6 +3363,9 @@ namespace GnollHackX
 
         public void ClientCallback_UpdateCursor(int style, int force_paint, int show_on_u)
         {
+            if (_isWarmingUpCallbacks)
+                return;
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.UpdateCursor, style, force_paint, show_on_u);
@@ -3362,6 +3387,9 @@ namespace GnollHackX
 
         public int ClientCallback_PlayImmediateSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, string[] parameterNames, float[] parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, uint play_flags)
         {
+            if (_isWarmingUpCallbacks)
+                return 1;
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.PlayImmediateSound, ghsound, eventPath, bankid, eventVolume, soundVolume, parameterNames, parameterValues, arraysize, sound_type, play_group, dialogue_mid, play_flags);
@@ -3425,6 +3453,9 @@ namespace GnollHackX
 
         public int ClientCallback_PlayOccupationAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
+            if (_isWarmingUpCallbacks)
+                return 1;
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.PlayOccupationAmbient, ghsound, eventPath, bankid, eventVolume, soundVolume);
@@ -3440,6 +3471,9 @@ namespace GnollHackX
 
         public int ClientCallback_PlayEffectAmbient(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume)
         {
+            if (_isWarmingUpCallbacks)
+                return 1;
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.PlayEffectAmbient, ghsound, eventPath, bankid, eventVolume, soundVolume);
@@ -3455,6 +3489,9 @@ namespace GnollHackX
 
         public int ClientCallback_SetEffectAmbientVolume(double soundVolume)
         {
+            if (_isWarmingUpCallbacks)
+                return 1;
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.SetEffectAmbientVolume, soundVolume);
@@ -3470,6 +3507,12 @@ namespace GnollHackX
 
         public int ClientCallback_AddAmbientSound(int ghsound, string eventPath, int bankid, double eventVolume, double soundVolume, out UInt64 soundSourceId)
         {
+            if (_isWarmingUpCallbacks)
+            {
+                soundSourceId = 0;
+                return 1;
+            }
+
             if (GHApp.FmodService != null)
             {
                 int res = GHApp.FmodService.AddAmbientSound(ghsound, eventPath, bankid, (float)eventVolume, (float)soundVolume, out soundSourceId);
@@ -3488,6 +3531,9 @@ namespace GnollHackX
         }
         public int ClientCallback_DeleteAmbientSound(UInt64 soundSourceId)
         {
+            if (_isWarmingUpCallbacks)
+                return 1;
+
             if (GHApp.FmodService != null)
             {
                 int res = GHApp.FmodService.DeleteAmbientSound(soundSourceId);
@@ -3506,6 +3552,9 @@ namespace GnollHackX
         }
         public int ClientCallback_SetAmbientSoundVolume(UInt64 soundSourceId, double soundVolume)
         {
+            if (_isWarmingUpCallbacks)
+                return 1;
+
             if (GHApp.FmodService != null)
             {
                 int res = GHApp.FmodService.SetAmbientSoundVolume(soundSourceId, (float)soundVolume);
@@ -3525,6 +3574,9 @@ namespace GnollHackX
 
         public int ClientCallback_StopAllSounds(uint flags, uint dialogue_mid)
         {
+            if (_isWarmingUpCallbacks)
+                return 1;
+
             if (GHApp.FmodService != null)
             {
                 int res = GHApp.FmodService.StopAllGameSounds(flags, dialogue_mid);
@@ -3544,7 +3596,9 @@ namespace GnollHackX
 
         public void ClientCallback_IssueGuiCommand(int cmd_id, int cmd_param, int cmd_param2, string cmd_str)
         {
-            if(cmd_id != (int)gui_command_types.GUI_CMD_LOAD_GLYPHS)
+            if (cmd_id != (int)gui_command_types.GUI_CMD_LOAD_GLYPHS
+                && cmd_id != (int)gui_command_types.GUI_CMD_CALLBACK_WARM_UP_START
+                && cmd_id != (int)gui_command_types.GUI_CMD_CALLBACK_WARM_UP_END)
             {
                 if (IsRecording)
                 {
@@ -4274,10 +4328,49 @@ namespace GnollHackX
                     if (!PlayingReplay)
                         GHApp.AddPendingAchievement(cmd_param);
                     break;
+                case (int)gui_command_types.GUI_CMD_CALLBACK_WARM_UP_START:
+                    _isWarmingUpCallbacks = true;
+                    BeginCallbackWarmUpMeasurement();
+                    break;
+                case (int)gui_command_types.GUI_CMD_CALLBACK_WARM_UP_END:
+                    _isWarmingUpCallbacks = false;
+                    EndCallbackWarmUpMeasurement();
+                    break;
 
                 default:
                     break;
             }
+        }
+
+        private void BeginCallbackWarmUpMeasurement()
+        {
+#if GNH_MAUI
+            try
+            {
+                _warmUpJitTicksAtStart = System.Runtime.JitInfo.GetCompilationTime(true).Ticks;
+                _warmUpJitMethodsAtStart = System.Runtime.JitInfo.GetCompiledMethodCount(true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
+        }
+
+        private void EndCallbackWarmUpMeasurement()
+        {
+#if GNH_MAUI
+            try
+            {
+                double milliseconds = (System.Runtime.JitInfo.GetCompilationTime(true).Ticks - _warmUpJitTicksAtStart) / (double)TimeSpan.TicksPerMillisecond;
+                long methods = System.Runtime.JitInfo.GetCompiledMethodCount(true) - _warmUpJitMethodsAtStart;
+                GHApp.MaybeWriteGHLog("Callback warm-up: " + methods + " methods compiled in " + milliseconds.ToString("F1") + " ms");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
         }
 
         public void ClientCallback_OutRip(int winid, string plname, int points, string killer, string time)
@@ -4851,7 +4944,15 @@ namespace GnollHackX
         }
 
         private List<GHRecordedFunctionCall> _recordedFunctionCalls = new List<GHRecordedFunctionCall>();
-        private bool IsRecording => GHApp.RecordGame && !PlayingReplay;
+
+        /* Set on the game thread between the native callback warm-up's start and end commands; the guarded callbacks return at once while it is set */
+        private bool _isWarmingUpCallbacks = false;
+#if GNH_MAUI
+        private long _warmUpJitTicksAtStart = 0;
+        private long _warmUpJitMethodsAtStart = 0;
+#endif
+
+        private bool IsRecording => GHApp.RecordGame && !PlayingReplay && !_isWarmingUpCallbacks;
 
         private void RecordFunctionCall(RecordedFunctionID functionID, params object[] args)
         {
