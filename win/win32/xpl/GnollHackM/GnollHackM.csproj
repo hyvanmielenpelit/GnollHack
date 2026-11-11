@@ -1527,9 +1527,9 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net11.0'))">
-    <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0-rc.2.26505.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0-rc.3.26522.148" />
-    <PackageReference Include="System.Management" Version="11.0.0-rc.3.26522.148" Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('win')))" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0" />
+    <PackageReference Include="System.Management" Version="11.0.0" Condition="$(TargetFramework.Contains('-windows')) Or ('$(GnhAvalonia)' == 'true' And $(RuntimeIdentifier.StartsWith('win')))" />
   </ItemGroup>
 
   <!-- Avalonia target packages, pinned together with Microsoft.Maui.Controls above.
