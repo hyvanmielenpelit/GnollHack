@@ -308,6 +308,20 @@ namespace GnollHackX.Pages.MainScreen
             string readyToRunMode = GnollHackX.Performance.GHPerformanceEnvironment.ReadReadyToRunMode();
             CompilerLabel.Text = readyToRunMode == "Full" ? "Crossgen2 R2R" : readyToRunMode == "Partial" ? "Crossgen2 R2R Partial"
                 : readyToRunMode == "None" ? "RyuJIT" : "CoreCLR";
+#elif GNH_MAUI && CORECLR
+            /* Android JITs what is not precompiled; iOS cannot JIT and interprets it */
+            string readyToRunMode = GnollHackX.Performance.GHPerformanceEnvironment.ReadReadyToRunMode();
+            string fallback = GHApp.IsiOS ? "Interpreter" : "RyuJIT";
+            if (readyToRunMode == "Full" || readyToRunMode == "Partial")
+                CompilerLabel.Text = "Crossgen2 R2R" + (readyToRunMode == "Partial" ? " Partial" : "")
+                    + (GnollHackX.Performance.GHPerformanceEnvironment.ReadReadyToRunComposite() ? " Composite" : "")
+                    + (GHApp.IsiOS ? " + " + fallback : "");
+            else if (readyToRunMode == "None")
+                CompilerLabel.Text = fallback;
+            else
+                CompilerLabel.Text = "CoreCLR";
+#elif GNH_MAUI
+            CompilerLabel.Text = GHApp.IsLLVM ? "Mono AOT LLVM" : GHApp.IsAndroid && GHApp.IsDebug ? "Mono JIT" : "Mono AOT";
 #else
             CompilerLabel.Text = GHApp.IsLLVM ? "LLVM" : GHApp.IsCoreCLR ? "Crossgen2" : GHApp.IsiOS ? "Clang" : GHApp.IsWindows ? "Standard" : "Mono AOT";
 #endif

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -1645,10 +1645,14 @@
     <AssemblyMetadata Include="GHBuildSdkVersion" Value="$(NETCoreSdkVersion)" />
   </ItemGroup>
 
-  <!-- ReadyToRun mode of an Android CoreCLR Release build, for the performance fingerprint -->
-  <ItemGroup Condition="'$(Configuration)' == 'Release' and $(TargetFramework.Contains('-android')) and '$(IsMonoRuntime)' != 'true'">
-    <AssemblyMetadata Include="GHReadyToRunMode" Value="Full" Condition="'$(MauiEnableFullReadyToRun)' == 'true'" />
-    <AssemblyMetadata Include="GHReadyToRunMode" Value="Partial" Condition="'$(MauiEnableFullReadyToRun)' != 'true'" />
+  <!-- ReadyToRun mode of an Android or iOS CoreCLR build, for the performance fingerprint and the Version page.
+       Read from the final SDK values: MAUI compiles Android Release partially unless MauiEnableFullReadyToRun is set,
+       and iOS always fully. -->
+  <ItemGroup Condition="($(TargetFramework.Contains('-android')) or $(TargetFramework.Contains('-ios'))) and '$(IsMonoRuntime)' != 'true'">
+    <AssemblyMetadata Include="GHReadyToRunMode" Value="None" Condition="'$(PublishReadyToRun)' != 'true'" />
+    <AssemblyMetadata Include="GHReadyToRunMode" Value="Partial" Condition="'$(PublishReadyToRun)' == 'true' and $(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release' and '$(MauiEnableFullReadyToRun)' != 'true'" />
+    <AssemblyMetadata Include="GHReadyToRunMode" Value="Full" Condition="'$(PublishReadyToRun)' == 'true' and !($(TargetFramework.Contains('-android')) and '$(Configuration)' == 'Release' and '$(MauiEnableFullReadyToRun)' != 'true')" />
+    <AssemblyMetadata Include="GHReadyToRunComposite" Value="true" Condition="'$(PublishReadyToRun)' == 'true' and '$(PublishReadyToRunComposite)' == 'true'" />
   </ItemGroup>
 
   <!-- ReadyToRun mode of an Avalonia single-file publish (macOS), whose app assembly has no file of its own to read -->

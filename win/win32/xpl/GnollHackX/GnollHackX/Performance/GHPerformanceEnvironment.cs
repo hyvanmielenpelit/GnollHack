@@ -45,6 +45,7 @@ namespace GnollHackX.Performance
     {
         public const string BuildSdkMetadataKey = "GHBuildSdkVersion";
         public const string ReadyToRunMetadataKey = "GHReadyToRunMode";
+        public const string ReadyToRunCompositeMetadataKey = "GHReadyToRunComposite";
 
         /* Assembly name prefixes left out of the component.* fingerprint keys */
         private static readonly string[] ExcludedComponentPrefixes =
@@ -327,6 +328,12 @@ namespace GnollHackX.Performance
         private static string ReadBuildSdkVersion()
         {
             return ReadAssemblyMetadata(BuildSdkMetadataKey);
+        }
+
+        /* Whether the build stamped a composite ReadyToRun image (Android and iOS CoreCLR). Never throws. */
+        public static bool ReadReadyToRunComposite()
+        {
+            return ReadAssemblyMetadata(ReadyToRunCompositeMetadataKey) == "true";
         }
 
         /* The build's ReadyToRunMetadataKey metadata (Android), else the ReadyToRun state of this
