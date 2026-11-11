@@ -305,19 +305,19 @@ namespace GnollHackX.Pages.MainScreen
             UIFrameworkVersionLabel.Text = (GHApp.IsMaui ? ".NET MAUI " : "XF ")
                 + (!string.IsNullOrEmpty(GHApp.UIFrameworkFullVersionString) ? GHApp.UIFrameworkFullVersionString : GHApp.UIFrameworkVersionString);
 #if WINDOWS || GNH_AVALONIA
+            /* Desktop has more space, so can use non-abbreviated strings */
             string readyToRunMode = GnollHackX.Performance.GHPerformanceEnvironment.ReadReadyToRunMode();
             CompilerLabel.Text = readyToRunMode == "Full" ? "Crossgen2 R2R" : readyToRunMode == "Partial" ? "Crossgen2 R2R Partial"
                 : readyToRunMode == "None" ? "RyuJIT" : "CoreCLR";
 #elif GNH_MAUI && CORECLR
             /* Android JITs what is not precompiled; iOS cannot JIT and interprets it */
             string readyToRunMode = GnollHackX.Performance.GHPerformanceEnvironment.ReadReadyToRunMode();
-            string fallback = GHApp.IsiOS ? "Interpreter" : "RyuJIT";
             if (readyToRunMode == "Full" || readyToRunMode == "Partial")
-                CompilerLabel.Text = "Crossgen2 R2R" + (readyToRunMode == "Partial" ? " Partial" : "")
-                    + (GnollHackX.Performance.GHPerformanceEnvironment.ReadReadyToRunComposite() ? " Composite" : "")
-                    + (GHApp.IsiOS ? " + " + fallback : "");
+                CompilerLabel.Text = "Crossgen2 R2R" + (readyToRunMode == "Partial" ? " P" : "")
+                    + (GnollHackX.Performance.GHPerformanceEnvironment.ReadReadyToRunComposite() ? " C" : "")
+                    + (GHApp.IsiOS ? " + " + (GHApp.IsiOS ? "I" : "RJ") : "");
             else if (readyToRunMode == "None")
-                CompilerLabel.Text = fallback;
+                CompilerLabel.Text = GHApp.IsiOS ? "Interpreter" : "RyuJIT";
             else
                 CompilerLabel.Text = "CoreCLR";
 #elif GNH_MAUI
