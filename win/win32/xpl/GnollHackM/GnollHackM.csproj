@@ -149,6 +149,8 @@
     <JavaMaximumHeapSize>2G</JavaMaximumHeapSize>
     <RuntimeIdentifiers>android-arm64;android-x64</RuntimeIdentifiers>
     <!--<AndroidEnableProfiler>true</AndroidEnableProfiler>-->
+    <!-- WORKAROUND(WA-BUILD-0007): Visual Studio deploys a stale Android build -->
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">

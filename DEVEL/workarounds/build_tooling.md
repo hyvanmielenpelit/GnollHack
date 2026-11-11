@@ -222,3 +222,42 @@ Developer ID identity. If signing succeeds, remove the workaround.
 
 Checks:
 - 2026-11-05 | macOS 26.6 | still-needed | Signing failed with errSecInternalComponent until the signing keychain was first in the search list.
+
+## WA-BUILD-0007: Visual Studio deploys a stale Android build
+
+- Status: active
+- Added: 2026-11-11
+- GnollHack version: 3.40 (440)
+- Component: Visual Studio
+- Package: Visual Studio
+- Defective version: Visual Studio 2026 18.12.0
+- Platforms: Android
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-11
+- Code: `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`DisableFastUpToDateCheck`)
+- Remove when: Visual Studio's up-to-date check notices edits to GnollHackM's linked sources on Android, and Verify removal passes.
+
+**Symptom.** F5 on the Android target deploys the previous APK: an edited source file is not
+compiled. On 2026-11-11 `VersionPage.xaml.cs` was saved at 17:12:46, and the following F5 wrote
+no new `GnollHackM.dll` or APK; only the signing step's `android_debug_keystore.flag` changed,
+and the phone ran the build of 16:49.
+
+**Cause.** Not proven. Visual Studio's fast up-to-date check judged the project up to date and
+skipped MSBuild, so only the deploy ran. Its input list comes from design-time builds, which
+had been disturbed that day by a package update, NuGet restores and a cleaned `obj`; the edited
+file is linked from `GnollHackX`, outside the project folder.
+
+**Workaround.** The Android target framework sets `DisableFastUpToDateCheck`, so Visual Studio
+always runs MSBuild, whose own incremental build detects the change. It costs a few seconds per
+F5 when nothing changed.
+
+**Verify removal.** Remove the property. In Visual Studio set Tools > Options > Projects and
+Solutions > SDK-Style Projects > Up to Date Checks > Logging Level to Verbose. Build and deploy
+the Android target, edit a file under `win/win32/xpl/GnollHackX/GnollHackX`, and press F5 again,
+several times over a day of normal work. The Build output must never report the project
+up to date after such an edit, and the app must show the change.
+
+Checks:
+- 2026-11-11 | Visual Studio 2026 18.12.0 | still-needed | Seen once by the user; the cause was inferred from file timestamps, and the check's own log was not captured. One search of dotnet/project-system found no matching issue.
