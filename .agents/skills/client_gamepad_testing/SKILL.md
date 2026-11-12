@@ -232,7 +232,7 @@ says so.
 
 ## Controller on Avalonia macOS
 
-The macOS flavor has not been released yet. Its controller code, the GameController backend, is tested on the Mac with a real
+The macOS flavor's controller code, the GameController backend, is tested on the Mac with a real
 controller (Xbox or PlayStation, paired in System Settings, Bluetooth, or by USB) and needs no Deck.
 
 1. Publish from `win\win32\xpl\GnollHackM\Platforms\Avalonia` and copy the build to the Mac over SSH as "macOS flavor"
