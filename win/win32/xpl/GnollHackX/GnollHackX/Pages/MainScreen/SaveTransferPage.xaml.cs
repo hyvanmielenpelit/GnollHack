@@ -783,6 +783,11 @@ namespace GnollHackX.Pages.MainScreen
                 using (var tcp = new System.Net.Sockets.TcpClient())
                 {
                     var connectTask = tcp.ConnectAsync(host, 443);
+                    /* WhenAny does not observe a fault, and the task may also fault after the timeout disposes the client */
+                    _ = connectTask.ContinueWith(t =>
+                    {
+                        Exception ignored = t.Exception;
+                    }, TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
                     var delayTask = Task.Delay(3000); // 3 sec timeout
                     var completedTask = await Task.WhenAny(connectTask, delayTask);
                     if (completedTask == connectTask)
