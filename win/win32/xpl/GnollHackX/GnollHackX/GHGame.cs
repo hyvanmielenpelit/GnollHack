@@ -1351,6 +1351,9 @@ namespace GnollHackX
                     break;
                 default:
                 case (int)exit_hack_types.EXITHACK_NORMAL: /* Normal case; return to main menu */
+                    /* A saved game never reaches GUI_CMD_GAME_ENDED, so its last snapshot is cleared here */
+                    if (!PlayingReplay)
+                        GHApp.ClearSentryCrashContextScope();
                     GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0);
                     GHApp.FmodService?.ResetGameState();
                     GHApp.ProcessDiscoveredMusic();
