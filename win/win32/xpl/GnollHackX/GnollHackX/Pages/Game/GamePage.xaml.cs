@@ -8216,29 +8216,17 @@ namespace GnollHackX.Pages.Game
                     bmp.Dispose();
                 _savedAutoDrawBitmaps.Clear();
 
-                /* Move the GC to main thread just in case */
+                /* Collected on the thread pool; see GHApp.CollectGarbageForMemoryPressure */
                 switch (clearCacheLevel)
                 {
                     default:
                         break;
                     case (int)MemoryPressureLevel.Critical:
                     case (int)MemoryPressureLevel.Background:
-                        MainThread.BeginInvokeOnMainThread(() => 
-                        {
-                            if (!GHApp.SavingGame)
-                            {
-                                FrameTimeProfiler.MarkGcBefore();
-                                GC.Collect();
-                                FrameTimeProfiler.MarkGcAfter();
-                            }
-                        });
+                        GHApp.CollectGarbageForMemoryPressure(false);
                         break;
                     case (int)MemoryPressureLevel.Complete:
-                        MainThread.BeginInvokeOnMainThread(() => 
-                        { 
-                            if (!GHApp.SavingGame) 
-                                GHApp.CollectGarbage(); 
-                        });
+                        GHApp.CollectGarbageForMemoryPressure(true);
                         break;
                 }
             }

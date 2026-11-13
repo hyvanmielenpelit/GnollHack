@@ -872,8 +872,7 @@ namespace GnollHackX
                         ulong TotalMemInMB = TotalMemory / (1024 * 1024);
                         long UsedMemInBytes = GetUsedMemoryInBytes();
                         long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
-                        if (!SavingGame) /* Due to backgrounding must be done first */
-                            CollectGarbage();
+                        CollectGarbageForMemoryPressure(true); /* Due to backgrounding must be done first */
                         CurrentGamePage?.RequestClearCaches((int)level);
                         AddSentryBreadcrumb("MemoryWarning at " + level.ToString() + " (" + UsedMemInMB + " / " + TotalMemInMB + " MB)", GHConstants.SentryGnollHackGeneralCategoryName);
                     }
@@ -884,8 +883,7 @@ namespace GnollHackX
                         ulong TotalMemInMB = TotalMemory / (1024 * 1024);
                         long UsedMemInBytes = GetUsedMemoryInBytes();
                         long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
-                        if (!SavingGame)
-                            CollectGarbage(); /* Do this already here too, as we may not be able to wait until after clearing caches */
+                        CollectGarbageForMemoryPressure(true); /* Do this already here too, as we may not be able to wait until after clearing caches */
                         CurrentGamePage?.RequestClearCaches((int)level);
                         AddSentryBreadcrumb("MemoryWarning at " + level.ToString() + " (" + UsedMemInMB + " / " + TotalMemInMB + " MB)", GHConstants.SentryGnollHackGeneralCategoryName);
                     }
@@ -3234,6 +3232,50 @@ namespace GnollHackX
             FrameTimeProfiler.MarkGcBefore();
             GC.Collect();
             FrameTimeProfiler.MarkGcAfter();
+        }
+
+        private static int _memoryPressureCollectionRunning = 0;
+
+        /* Runs a collection requested by a memory warning on the thread pool, so that the UI thread neither
+           runs it nor waits for finalizers. While the app is suspended, a full request is reduced to one
+           collection without the finalizer wait. One runs at a time; a request made while one runs, or found
+           while a save is under way, is dropped. */
+        public static void CollectGarbageForMemoryPressure(bool full)
+        {
+            if (Interlocked.Exchange(ref _memoryPressureCollectionRunning, 1) != 0)
+            {
+                MaybeWriteGHLog("Memory pressure collection skipped: another is running", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                return;
+            }
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    if (SavingGame)
+                    {
+                        MaybeWriteGHLog("Memory pressure collection skipped: saving", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                        return;
+                    }
+                    bool suspended = IsSuspended;
+                    bool runFull = full && !suspended;
+                    long start = Stopwatch.GetTimestamp();
+                    if (runFull)
+                        CollectGarbage();
+                    else
+                        CollectGarbageNonBlocking();
+                    long elapsedMs = (Stopwatch.GetTimestamp() - start) * 1000L / Stopwatch.Frequency;
+                    MaybeWriteGHLog("Memory pressure collection (" + (runFull ? "full" : "single") + (suspended ? ", suspended" : "") + ") took " + elapsedMs + " ms", true, GHConstants.SentryGnollHackGeneralCategoryName);
+                }
+                catch (Exception ex)
+                {
+                    ReportCaughtException(ex);
+                }
+                finally
+                {
+                    Interlocked.Exchange(ref _memoryPressureCollectionRunning, 0);
+                }
+            });
         }
 
         public static bool IsAutoSaveUponSwitchingAppsOn

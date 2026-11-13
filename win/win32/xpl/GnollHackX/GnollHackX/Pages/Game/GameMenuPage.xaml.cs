@@ -357,6 +357,11 @@ namespace GnollHackX.Pages.Game
             btnDevAnalyzeHitches.IsVisible = GHApp.IsFrameTimeProfilerOn;
             btnDevTestPerformance.IsVisible = GHApp.IsFrameTimeProfilerOn;
             btnDevAiSnapshot.IsVisible = GHApp.DebugLogMessages;
+            if (btnDevGC.IsEnabled)
+            {
+                btnDevGC.Text = "Collect Garbage";
+                btnDevGC.TextColor = GHColors.White;
+            }
             DeveloperPopupGrid.IsEnabled = true;
             DeveloperPopupGrid.IsVisible = true;
             _gamepadDevFocus.SetFocus(0);
@@ -379,18 +384,33 @@ namespace GnollHackX.Pages.Game
             CloseDeveloperPopup();
         }
 
-        private void btnGC_Clicked(object sender, EventArgs e)
+        private async void btnGC_Clicked(object sender, EventArgs e)
         {
+            try
+            {
+                await btnGC_ClickedAsync();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+                btnDevGC.IsEnabled = true;
+            }
+        }
+
+        private async Task btnGC_ClickedAsync()
+        {
+            btnDevGC.IsEnabled = false;
             GHApp.PlayButtonClickedSound();
             btnDevGC.Text = "Collecting...";
             btnDevGC.TextColor = GHColors.Yellow;
 
             GHApp.DebugWriteRestart("Garbage Collection Start");
-            GHApp.CollectGarbage();
+            await Task.Run(() => GHApp.CollectGarbage());
             GHApp.DebugWriteProfilingStopwatchTimeAndStop("Garbage Collection End");
 
             btnDevGC.Text = "Done";
             btnDevGC.TextColor = GHColors.Red;
+            btnDevGC.IsEnabled = true;
         }
 
         private async void btnTips_Clicked(object sender, EventArgs e)
