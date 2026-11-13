@@ -2542,6 +2542,14 @@ get_obj_location(struct obj *obj, xchar *xp, xchar *yp, int locflags)
         if (locflags & CONTAINED_TOO)
             return get_obj_location(obj->ocontainer, xp, yp, locflags);
         break;
+    case OBJ_MEMORY:
+        if (locflags & MEMORY_TOO)
+        {
+            *xp = obj->ox;
+            *yp = obj->oy;
+            return TRUE;
+        }
+        break;
     case OBJ_MAGIC:
     {
         struct obj* otmp;

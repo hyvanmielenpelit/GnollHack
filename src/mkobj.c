@@ -1150,8 +1150,15 @@ memory_dummy_object(struct obj *otmp)
     dummy->timed = 0;
     set_obj_lamplit(dummy, 0);
     set_obj_makingsound(dummy, 0);
+    set_obj_unpaid(dummy, 0);
     if (is_obj_lamplit(otmp))
+    {
+        int64_t burnleft = obj_light_burn_time_left(otmp);
+
         dummy->item_flags |= ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT;
+        if (burnleft > 0)
+            dummy->age = burnleft; /* fuel left as seen; a copy has no burn timer */
+    }
     /* Insurance not to copy insane bits */
     set_obj_in_use(dummy, 0);
     set_obj_bypass(dummy, 0);
@@ -1214,8 +1221,15 @@ add_memory_object_contents(struct obj *memory_obj, struct obj *orig_obj)
         dummy->timed = 0;
         set_obj_lamplit(dummy, 0);
         set_obj_makingsound(dummy, 0);
+        set_obj_unpaid(dummy, 0);
         if (is_obj_lamplit(otmp))
+        {
+            int64_t burnleft = obj_light_burn_time_left(otmp);
+
             dummy->item_flags |= ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT;
+            if (burnleft > 0)
+                dummy->age = burnleft; /* fuel left as seen; a copy has no burn timer */
+        }
         copy_oextra(dummy, otmp);
         if (has_omid(dummy))
             free_omid(dummy); /* only one association with m_id*/

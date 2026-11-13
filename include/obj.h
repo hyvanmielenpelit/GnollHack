@@ -46,6 +46,7 @@
 #define is_obj_unpaid(obj) (((obj)->bitflags & OBJFLAG_UNPAID) != 0)
 #define set_obj_unpaid(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_UNPAID) : ((obj)->bitflags &= ~OBJFLAG_UNPAID))
 #define toggle_obj_unpaid(obj) ((obj)->bitflags ^= OBJFLAG_UNPAID)
+#define is_memory_object(obj) ((obj)->o_id_memory != 0 || (obj)->m_id_memory != 0)
 #define is_obj_no_charge(obj) (((obj)->bitflags & OBJFLAG_NO_CHARGE) != 0)
 #define set_obj_no_charge(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_NO_CHARGE) : ((obj)->bitflags &= ~OBJFLAG_NO_CHARGE))
 #define toggle_obj_no_charge(obj) ((obj)->bitflags ^= OBJFLAG_NO_CHARGE)
@@ -76,6 +77,8 @@
 #define is_obj_lamplit(obj) (((obj)->bitflags & OBJFLAG_LAMPLIT) != 0)
 #define set_obj_lamplit(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_LAMPLIT) : ((obj)->bitflags &= ~OBJFLAG_LAMPLIT))
 #define toggle_obj_lamplit(obj) ((obj)->bitflags ^= OBJFLAG_LAMPLIT)
+#define is_obj_seen_lamplit(obj) \
+    (is_obj_lamplit(obj) || ((obj)->item_flags & ITEM_FLAGS_MEMORY_OBJECT_LAMPLIT) != 0)
 #define is_obj_makingsound(obj) (((obj)->bitflags & OBJFLAG_MAKINGSOUND) != 0)
 #define set_obj_makingsound(obj, val) ((val) ? ((obj)->bitflags |= OBJFLAG_MAKINGSOUND) : ((obj)->bitflags &= ~OBJFLAG_MAKINGSOUND))
 #define toggle_obj_makingsound(obj) ((obj)->bitflags ^= OBJFLAG_MAKINGSOUND)
@@ -1389,6 +1392,7 @@ enum manual_types
 /* Flags for get_obj_location(). */
 #define CONTAINED_TOO 0x1
 #define BURIED_TOO 0x2
+#define MEMORY_TOO 0x4
 
 /* object erosion types */
 #define ERODE_BURN 0

@@ -977,8 +977,6 @@ obfree(struct obj *obj, struct obj *merge)
 
     //int had_contents = Has_contents(obj);
 
-    if (obj->otyp == LEASH && obj->leashmon)
-        o_unleash(obj);
     if (obj->oclass == FOOD_CLASS)
         food_disappears(obj);
     if (obj->oclass == SPBOOK_CLASS)
@@ -987,86 +985,92 @@ obfree(struct obj *obj, struct obj *merge)
         delete_contents(obj);
     if (Is_container(obj))
         maybe_reset_pick(obj);
-    
-    shkp = 0;
-    if (is_obj_unpaid(obj)) 
-    {
-        /* look for a shopkeeper who owns this object */
-        debugprint_pos();
-        for (shkp = next_shkp(fmon, TRUE); shkp; shkp = next_shkp(shkp->nmon, TRUE))
-            if (onbill(obj, shkp, TRUE))
-                break;
-    }
-    /* sanity check, in case obj is on bill but not marked 'unpaid' */
-    if (!shkp)
-    {
-        shkp = shop_keeper(*u.ushops);
-    }
-    /*
-     * Note:  `shkp = shop_keeper(*u.ushops)' used to be
-     *    unconditional.  But obfree() is used all over
-     *    the place, so making its behavior be dependent
-     *    upon player location doesn't make much sense.
-     */
 
-    debugprint_pos();
-    if ((bp = onbill(obj, shkp, FALSE)) != 0) {
-        if (!merge) {
-            bp->useup = 1;
-            set_obj_unpaid(obj, 0); /* only for doinvbill */
-            /* if obj is an active light or sound source, remove
-               those registrations now; obj is about to become
-               OBJ_ONBILL which obj_is_local() doesn't handle,
-               and stale entries would cause a panic during
-               savebones() -> savelev() */
-            if (obj_sheds_light(obj))
-                del_light_source(LS_OBJECT, obj_to_any(obj));
-            if (obj_has_sound_source(obj))
-                del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(obj));
-            add_to_billobjs(obj);
-            return;
+    if (!is_memory_object(obj))
+    {
+        if (obj->otyp == LEASH && obj->leashmon)
+            o_unleash(obj);
+
+        shkp = 0;
+        if (is_obj_unpaid(obj)) 
+        {
+            /* look for a shopkeeper who owns this object */
+            debugprint_pos();
+            for (shkp = next_shkp(fmon, TRUE); shkp; shkp = next_shkp(shkp->nmon, TRUE))
+                if (onbill(obj, shkp, TRUE))
+                    break;
         }
-        debugprint_pos();
-        bpm = onbill(merge, shkp, FALSE);
-        if (!bpm) {
-            /* this used to be a rename */
-            impossible("obfree: not on bill??");
-            return;
-        } else {
-            /* this was a merger */
-            bpm->bquan += bp->bquan;
-            ESHK(shkp)->billct--;
-#ifdef DUMB
-            {
-                /* DRS/NS 2.2.6 messes up -- Peter Kendell */
-                int indx = ESHK(shkp)->billct;
+        /* sanity check, in case obj is on bill but not marked 'unpaid' */
+        if (!shkp)
+        {
+            shkp = shop_keeper(*u.ushops);
+        }
+        /*
+         * Note:  `shkp = shop_keeper(*u.ushops)' used to be
+         *    unconditional.  But obfree() is used all over
+         *    the place, so making its behavior be dependent
+         *    upon player location doesn't make much sense.
+         */
 
-                *bp = ESHK(shkp)->bill_p[indx];
+        debugprint_pos();
+        if ((bp = onbill(obj, shkp, FALSE)) != 0) {
+            if (!merge) {
+                bp->useup = 1;
+                set_obj_unpaid(obj, 0); /* only for doinvbill */
+                /* if obj is an active light or sound source, remove
+                   those registrations now; obj is about to become
+                   OBJ_ONBILL which obj_is_local() doesn't handle,
+                   and stale entries would cause a panic during
+                   savebones() -> savelev() */
+                if (obj_sheds_light(obj))
+                    del_light_source(LS_OBJECT, obj_to_any(obj));
+                if (obj_has_sound_source(obj))
+                    del_sound_source(SOUNDSOURCE_OBJECT, obj_to_any(obj));
+                add_to_billobjs(obj);
+                return;
             }
+            debugprint_pos();
+            bpm = onbill(merge, shkp, FALSE);
+            if (!bpm) {
+                /* this used to be a rename */
+                impossible("obfree: not on bill??");
+                return;
+            } else {
+                /* this was a merger */
+                bpm->bquan += bp->bquan;
+                ESHK(shkp)->billct--;
+#ifdef DUMB
+                {
+                    /* DRS/NS 2.2.6 messes up -- Peter Kendell */
+                    int indx = ESHK(shkp)->billct;
+
+                    *bp = ESHK(shkp)->bill_p[indx];
+                }
 #else
-            *bp = ESHK(shkp)->bill_p[ESHK(shkp)->billct];
+                *bp = ESHK(shkp)->bill_p[ESHK(shkp)->billct];
 #endif
+            }
+        } else {
+            /* not on bill; if the item is being merged away rather than
+               just deleted and has a higher price adjustment than the stack
+               being merged into, give the latter the former's obj->o_id so
+               that the merged stack takes on higher price; matters if hero
+               eventually buys them from a shop, but doesn't matter if hero
+               owns them and intends to sell (unless he subsequently buys
+               them back) or if no shopping activity ever involves them */
+            if (merge && (oid_price_adjustment(obj, obj->o_id)
+                          > oid_price_adjustment(merge, merge->o_id)))
+                merge->o_id = obj->o_id;
         }
-    } else {
-        /* not on bill; if the item is being merged away rather than
-           just deleted and has a higher price adjustment than the stack
-           being merged into, give the latter the former's obj->o_id so
-           that the merged stack takes on higher price; matters if hero
-           eventually buys them from a shop, but doesn't matter if hero
-           owns them and intends to sell (unless he subsequently buys
-           them back) or if no shopping activity ever involves them */
-        if (merge && (oid_price_adjustment(obj, obj->o_id)
-                      > oid_price_adjustment(merge, merge->o_id)))
-            merge->o_id = obj->o_id;
-    }
-    if (obj->owornmask) {
-        impossible("obfree: deleting worn obj (%d: %ld)", obj->otyp,
-                   obj->owornmask);
-        /* unfortunately at this point we don't know whether worn mask
-           applied to hero or a monster or perhaps something bogus, so
-           can't call remove_worn_item() to get <X>_off() side-effects */
-        if (setnotworn(obj))
-            return;
+        if (obj->owornmask) {
+            impossible("obfree: deleting worn obj (%d: %ld)", obj->otyp,
+                       obj->owornmask);
+            /* unfortunately at this point we don't know whether worn mask
+               applied to hero or a monster or perhaps something bogus, so
+               can't call remove_worn_item() to get <X>_off() side-effects */
+            if (setnotworn(obj))
+                return;
+        }
     }
     dealloc_obj(obj);
 }
@@ -2214,23 +2218,25 @@ get_cost_of_shop_item(struct obj *obj, int *nochrg)
     struct monst *shkp;
     struct obj *top;
     xchar x, y;
-    boolean freespot;
+    boolean freespot, top_on_floor;
     int64_t cost = 0L;
 
     *nochrg = -1; /* assume 'not applicable' */
     debugprint_pos();
     if (*u.ushops && obj->oclass != COIN_CLASS
         && obj != uball && obj != uchain
-        && get_obj_location(obj, &x, &y, CONTAINED_TOO)
+        && get_obj_location(obj, &x, &y, CONTAINED_TOO | MEMORY_TOO)
         && *in_rooms(x, y, SHOPBASE) == *u.ushops
         && (shkp = shop_keeper(inside_shop(x, y))) != 0 && inhishop(shkp)) {
         for (top = obj; top->where == OBJ_CONTAINED; top = top->ocontainer)
             continue;
-        freespot = (top->where == OBJ_FLOOR
+        /* a memory object stands for the floor object the hero saw */
+        top_on_floor = (top->where == OBJ_FLOOR || top->where == OBJ_MEMORY);
+        freespot = (top_on_floor
                     && x == ESHK(shkp)->shk.x && y == ESHK(shkp)->shk.y);
         /* no_charge is only set for floor items inside shop proper;
            items on freespot are implicitly 'no charge' */
-        *nochrg = (top->where == OBJ_FLOOR && (is_obj_no_charge(obj) || freespot));
+        *nochrg = (top_on_floor && (is_obj_no_charge(obj) || freespot));
 
         if (carried(top) ? (int) is_obj_unpaid(obj) : !*nochrg)
             cost = obj->quan * get_cost(obj, shkp);
@@ -2324,7 +2330,7 @@ get_cost(struct obj *obj, struct monst *shkp)
             }
             tmp = objects[i].oc_cost;
         }
-        else if (oid_price_adjustment(obj, obj->o_id) > 0) 
+        else if (oid_price_adjustment(obj, obj->o_id_memory ? obj->o_id_memory : obj->o_id) > 0)
         {
             /* unid'd, arbitrarily impose surcharge: tmp *= 4/3 */
             multiplier *= 4L;
@@ -2404,8 +2410,8 @@ contained_cost(struct obj *obj, struct monst *shkp, int64_t price, boolean usell
     /* pick_obj() removes item from floor, adds it to shop bill, then
        puts it in inventory; behave as if it is still on the floor
        during the add-to-bill portion of that situation */
-    on_floor = (top->where == OBJ_FLOOR || top->where == OBJ_FREE);
-    if (top->where == OBJ_FREE || !get_obj_location(top, &x, &y, 0))
+    on_floor = (top->where == OBJ_FLOOR || top->where == OBJ_FREE || top->where == OBJ_MEMORY);
+    if (top->where == OBJ_FREE || !get_obj_location(top, &x, &y, MEMORY_TOO))
         x = u.ux, y = u.uy;
     freespot = (on_floor && x == ESHK(shkp)->shk.x && y == ESHK(shkp)->shk.y);
 

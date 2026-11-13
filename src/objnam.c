@@ -1984,7 +1984,7 @@ weapon_here:
 
             if (lit_in_front)
             {
-                if(is_obj_lamplit(obj))
+                if(is_obj_seen_lamplit(obj))
                     Strcat(prefix, "lit ");
 
                 if (burnleftset)
@@ -1997,7 +1997,7 @@ weapon_here:
                 if (burnleftset)
                     Sprintf(burnbuf, ", %lld turn%s left", (long long)burnleft, plur(burnleft));
                 Sprintf(eos(bp), " (%s candle%s%s%s)", tmpbuf, plur(obj->special_quality),
-                    !is_obj_lamplit(obj) ? " attached" : ", lit", burnbuf);
+                    !is_obj_seen_lamplit(obj) ? " attached" : ", lit", burnbuf);
             }
             break;
         } 
@@ -2010,7 +2010,7 @@ weapon_here:
                 )
                 Strcat(prefix, "partly used ");
 
-            if (is_obj_lamplit(obj))
+            if (is_obj_seen_lamplit(obj))
             {
                 if (lit_in_front)
                 {
@@ -2043,7 +2043,7 @@ weapon_here:
     case POTION_CLASS:
         if (obj->otyp == POT_OIL)
         {
-            if (is_obj_lamplit(obj))
+            if (is_obj_seen_lamplit(obj))
             {
                 if (lit_in_front)
                 {
@@ -2278,7 +2278,7 @@ weapon_here:
     {
         ; /* don't attempt to obtain any stop pricing, even if 'with_price' */
     }
-    else if (is_unpaid(obj) && !hide_unpaid) 
+    else if (!is_memory_object(obj) && is_unpaid(obj) && !hide_unpaid)
     { /* in inventory or in container in invent */
         int64_t quotedprice = unpaid_cost(obj, TRUE);
 
