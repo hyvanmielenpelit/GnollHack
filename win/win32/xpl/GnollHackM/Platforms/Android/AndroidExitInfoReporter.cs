@@ -9,11 +9,33 @@ using GnollHackX;
 namespace GnollHackM;
 
 // WORKAROUND(WA-SENTRY-0010): Sentry's Android ANR events omit the ApplicationExitInfo description
-/* Reports each ANR exit that Android recorded since the last report as a Sentry message with the
-   exit description and the trace header, which Sentry's own ANR event for that exit lacks */
+/* Reports the ANR exits and the other foreground process deaths that Android recorded since the last
+   report, each as a Sentry message. The ANR messages carry the exit description and trace header that
+   Sentry's own ANR event lacks. */
 public static class AndroidExitInfoReporter
 {
     private const string LastReportedTimestampKey = "AndroidExitInfoLastReportedAnrTimestamp";
+    private const string LastReportedExitTimestampKey = "AndroidExitInfoLastReportedExitTimestamp";
+    /* Set as the process state summary just before CloseApplication kills the process */
+    private const string CloseApplicationStateSummary = "gnh-close-application";
+
+    /* ApplicationExitInfo.REASON_* values; a reason not named here is reported by number */
+    private const int ReasonExitSelf = 1;
+    private const int ReasonSignaled = 2;
+    private const int ReasonLowMemory = 3;
+    private const int ReasonCrash = 4;
+    private const int ReasonCrashNative = 5;
+    private const int ReasonAnr = 6;
+    private const int ReasonInitializationFailure = 7;
+    private const int ReasonPermissionChange = 8;
+    private const int ReasonExcessiveResourceUsage = 9;
+    private const int ReasonUserRequested = 10;
+    private const int ReasonUserStopped = 11;
+    private const int ReasonDependencyDied = 12;
+    private const int ReasonOther = 13;
+    private const int ReasonFreezer = 14;
+    private const int ReasonPackageStateChange = 15;
+    private const int ReasonPackageUpdated = 16;
     private const long FirstRunLookbackMilliseconds = 7L * 24L * 60L * 60L * 1000L;
     private const int MaxExitInfosRead = 16;
     private const int MaxReportsPerLaunch = 5;
@@ -34,12 +56,28 @@ public static class AndroidExitInfoReporter
         Task.Run(() =>
         {
             if (OperatingSystem.IsAndroidVersionAtLeast(30))
-                ReportNewAnrs(appContext);
+                ReportNewExitInfos(appContext);
         });
     }
 
+    /* Called on the UI thread just before CloseApplication ends the process, so that exit is not reported */
+    public static void MarkCloseApplication()
+    {
+        if (!OperatingSystem.IsAndroidVersionAtLeast(30))
+            return;
+        try
+        {
+            ActivityManager activityManager = Android.App.Application.Context.GetSystemService(Context.ActivityService) as ActivityManager;
+            activityManager?.SetProcessStateSummary(Encoding.ASCII.GetBytes(CloseApplicationStateSummary));
+        }
+        catch (Exception ex)
+        {
+            GHApp.MaybeWriteGHLog("AndroidExitInfoReporter mark: " + ex.Message);
+        }
+    }
+
     [SupportedOSPlatform("android30.0")]
-    private static void ReportNewAnrs(Context context)
+    private static void ReportNewExitInfos(Context context)
     {
         try
         {
@@ -54,29 +92,152 @@ public static class AndroidExitInfoReporter
             if (exitInfos == null || exitInfos.Count == 0)
                 return;
 
-            long lastReported = Preferences.Get(LastReportedTimestampKey, 0L);
-            long cutoff = lastReported > 0 ? lastReported : Java.Lang.JavaSystem.CurrentTimeMillis() - FirstRunLookbackMilliseconds;
-            List<ApplicationExitInfo> anrs = new List<ApplicationExitInfo>();
-            foreach (ApplicationExitInfo exitInfo in exitInfos)
+            try
             {
-                if (exitInfo != null && exitInfo.Reason == (int)ApplicationExitInfoReason.Anr && exitInfo.Timestamp > cutoff)
-                    anrs.Add(exitInfo);
+                ReportNewAnrs(exitInfos);
             }
-            if (anrs.Count == 0)
-                return;
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("AndroidExitInfoReporter: " + ex.Message);
+            }
 
-            /* Oldest first; only the newest MaxReportsPerLaunch are sent */
-            anrs.Sort((a, b) => a.Timestamp.CompareTo(b.Timestamp));
-            int i;
-            for (i = Math.Max(0, anrs.Count - MaxReportsPerLaunch); i < anrs.Count; i++)
+            try
             {
-                ReportAnr(anrs[i]);
+                ReportNewProcessDeaths(exitInfos);
             }
-            Preferences.Set(LastReportedTimestampKey, anrs[anrs.Count - 1].Timestamp);
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("AndroidExitInfoReporter deaths: " + ex.Message);
+            }
         }
         catch (Exception ex)
         {
             GHApp.MaybeWriteGHLog("AndroidExitInfoReporter: " + ex.Message);
+        }
+    }
+
+    [SupportedOSPlatform("android30.0")]
+    private static void ReportNewAnrs(IList<ApplicationExitInfo> exitInfos)
+    {
+        long lastReported = Preferences.Get(LastReportedTimestampKey, 0L);
+        long cutoff = lastReported > 0 ? lastReported : Java.Lang.JavaSystem.CurrentTimeMillis() - FirstRunLookbackMilliseconds;
+        List<ApplicationExitInfo> anrs = new List<ApplicationExitInfo>();
+        foreach (ApplicationExitInfo exitInfo in exitInfos)
+        {
+            if (exitInfo != null && exitInfo.Reason == (int)ApplicationExitInfoReason.Anr && exitInfo.Timestamp > cutoff)
+                anrs.Add(exitInfo);
+        }
+        if (anrs.Count == 0)
+            return;
+
+        /* Oldest first; only the newest MaxReportsPerLaunch are sent */
+        anrs.Sort((a, b) => a.Timestamp.CompareTo(b.Timestamp));
+        int i;
+        for (i = Math.Max(0, anrs.Count - MaxReportsPerLaunch); i < anrs.Count; i++)
+        {
+            ReportAnr(anrs[i]);
+        }
+        Preferences.Set(LastReportedTimestampKey, anrs[anrs.Count - 1].Timestamp);
+    }
+
+    // WORKAROUND(WA-SENTRY-0012): Sentry reports no Android process deaths other than native crashes and ANRs
+    /* Reports each process death in the foreground or visible state that Android recorded since the
+       last report, other than ANRs, user and package actions, clean exits, and CloseApplication */
+    [SupportedOSPlatform("android30.0")]
+    private static void ReportNewProcessDeaths(IList<ApplicationExitInfo> exitInfos)
+    {
+        long lastReported = Preferences.Get(LastReportedExitTimestampKey, 0L);
+        long cutoff = lastReported > 0 ? lastReported : Java.Lang.JavaSystem.CurrentTimeMillis() - FirstRunLookbackMilliseconds;
+        List<ApplicationExitInfo> deaths = new List<ApplicationExitInfo>();
+        foreach (ApplicationExitInfo exitInfo in exitInfos)
+        {
+            if (exitInfo != null && exitInfo.Timestamp > cutoff && IsReportedProcessDeath(exitInfo))
+                deaths.Add(exitInfo);
+        }
+        if (deaths.Count == 0)
+            return;
+
+        /* Oldest first; only the newest MaxReportsPerLaunch are sent */
+        deaths.Sort((a, b) => a.Timestamp.CompareTo(b.Timestamp));
+        int i;
+        for (i = Math.Max(0, deaths.Count - MaxReportsPerLaunch); i < deaths.Count; i++)
+        {
+            ReportProcessDeath(deaths[i]);
+        }
+        Preferences.Set(LastReportedExitTimestampKey, deaths[deaths.Count - 1].Timestamp);
+    }
+
+    [SupportedOSPlatform("android30.0")]
+    private static bool IsReportedProcessDeath(ApplicationExitInfo exitInfo)
+    {
+        switch (exitInfo.Reason)
+        {
+            case ReasonAnr:
+            case ReasonUserRequested:
+            case ReasonUserStopped:
+            case ReasonPermissionChange:
+            case ReasonPackageStateChange:
+            case ReasonPackageUpdated:
+                return false;
+            case ReasonExitSelf:
+                if (exitInfo.Status == 0)
+                    return false;
+                break;
+            default:
+                break;
+        }
+        if (exitInfo.Importance > (int)Importance.Visible)
+            return false;
+        byte[] summary = exitInfo.GetProcessStateSummary();
+        if (summary != null && Encoding.ASCII.GetString(summary) == CloseApplicationStateSummary)
+            return false;
+        return true;
+    }
+
+    [SupportedOSPlatform("android30.0")]
+    private static void ReportProcessDeath(ApplicationExitInfo exitInfo)
+    {
+        string reason = ReasonName(exitInfo.Reason);
+        string status = exitInfo.Status.ToString(CultureInfo.InvariantCulture);
+        string importance = exitInfo.Importance.ToString(CultureInfo.InvariantCulture);
+        string exitTime = DateTimeOffset.FromUnixTimeMilliseconds(exitInfo.Timestamp).UtcDateTime
+            .ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+        /* A signal's number separates kills (9) from faults (6, 11), so each gets its own issue */
+        string issueKey = exitInfo.Reason == ReasonSignaled ? reason + " " + status : reason;
+
+        SentrySdk.CaptureMessage("Android process exit info: " + issueKey, scope =>
+        {
+            scope.Fingerprint = new[] { "android-process-exit-info", issueKey };
+            scope.SetTag("exit.reason", reason);
+            scope.SetTag("exit.status", status);
+            scope.SetTag("exit.importance", importance);
+            scope.SetTag("exit.time", exitTime);
+            /* No null extras: see WA-SENTRY-0008 */
+            scope.SetExtra("Exit Description", Shorten(exitInfo.Description));
+            scope.SetExtra("Exit Status", status);
+            scope.SetExtra("Exit Importance", importance);
+            scope.SetExtra("Exit Time", exitTime);
+            scope.SetExtra("Exit Pss KB", exitInfo.Pss.ToString(CultureInfo.InvariantCulture));
+            scope.SetExtra("Exit Rss KB", exitInfo.Rss.ToString(CultureInfo.InvariantCulture));
+            scope.SetExtra("Exit Process Name", Shorten(exitInfo.ProcessName));
+        }, SentryLevel.Warning);
+    }
+
+    private static string ReasonName(int reason)
+    {
+        switch (reason)
+        {
+            case ReasonExitSelf: return "exit-self";
+            case ReasonSignaled: return "signaled";
+            case ReasonLowMemory: return "low-memory";
+            case ReasonCrash: return "crash";
+            case ReasonCrashNative: return "crash-native";
+            case ReasonInitializationFailure: return "initialization-failure";
+            case ReasonExcessiveResourceUsage: return "excessive-resource-usage";
+            case ReasonDependencyDied: return "dependency-died";
+            case ReasonOther: return "other";
+            case ReasonFreezer: return "freezer";
+            default: return "reason-" + reason.ToString(CultureInfo.InvariantCulture);
         }
     }
 

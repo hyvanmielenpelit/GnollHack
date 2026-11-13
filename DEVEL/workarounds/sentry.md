@@ -461,3 +461,45 @@ build.
 
 Checks:
 - 2026-11-05 | Sentry 6.12.1 | still-needed | Sentry.targets:198-199 limits dsym to ios and maccatalyst.
+
+## WA-SENTRY-0012: Sentry reports no Android process deaths other than native crashes and ANRs
+
+- Status: active
+- Added: 2026-11-14
+- GnollHack version: 3.40 (440)
+- Component: sentry-java
+- Package: Sentry
+- Defective version: Sentry 6.12.1 (sentry-android 8.60.0)
+- Platforms: Android
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-14
+- Code: `win/win32/xpl/GnollHackM/Platforms/Android/AndroidExitInfoReporter.cs` (`AndroidExitInfoReporter.ReportNewProcessDeaths`); `win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs` (`PlatformService.CloseApplication`)
+- Remove when: Sentry reports Android process deaths for low memory, signals and nonzero self-exits, GnollHack uses that release, and Verify removal passes.
+- Related: WA-SENTRY-0010, WA-MAUI-0017
+
+**Symptom.** When Android kills the app in the foreground for low memory, the process dies from a
+signal without a tombstone, or it exits with a nonzero status, nothing reaches Sentry or Play Console.
+The player sees the app close, and no report says why.
+
+**Cause.** sentry-android's `ApplicationExitInfoHistoryDispatcher` reports an exit only through its
+policies, and they match only `REASON_CRASH_NATIVE` (TombstoneIntegration), `REASON_ANR`
+(AnrV2Integration) and its own MemoryLimiter deaths. No policy matches `REASON_LOW_MEMORY`,
+`REASON_SIGNALED`, `REASON_EXIT_SELF` or the other reasons.
+
+**Workaround.** `AndroidExitInfoReporter.ReportNewProcessDeaths`, started from `MainActivity.OnCreate`,
+reads the exits Android recorded since the last report and sends each foreground or visible one,
+other than ANRs, user and package actions and clean exits, as a warning message
+`Android process exit info: <reason>` with the status, importance, description, memory and exit time.
+`PlatformService.CloseApplication` sets a process state summary before it kills the process
+(WA-MAUI-0017), and exits that carry it are skipped.
+
+**Verify removal.** With a Sentry release expected to report such deaths:
+- Build an Android Debug build without the two tagged sites.
+- Start a game, kill the process with `adb shell run-as <package> kill -9 <pid>`, and relaunch it.
+- Confirm that Sentry has its own event for the death, with the reason and status, and none for an
+  exit through the app's Exit button.
+
+Checks:
+- 2026-11-14 | Sentry 6.12.1 (sentry-android 8.60.0) | still-needed | In sentry-android-core 8.60.0, the only ApplicationExitInfoPolicy implementations are TombstonePolicy (reason 5), AnrV2Policy (6) and MemoryLimiterPolicy (17, or 13 with "MemoryLimiter:").

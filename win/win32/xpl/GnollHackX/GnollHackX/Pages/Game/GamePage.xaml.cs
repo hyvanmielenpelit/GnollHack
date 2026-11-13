@@ -92,7 +92,11 @@ namespace GnollHackX.Pages.Game
 
         private int _isMainCanvasOn = 0;
         private int _isMainCanvasDrawing = 0;
-        public bool IsMainCanvasOn 
+        /* Set while the menu, text or command canvas paints, which can be off the UI thread */
+        private int _isMenuCanvasDrawing = 0;
+        private int _isTextCanvasDrawing = 0;
+        private int _isCommandCanvasDrawing = 0;
+        public bool IsMainCanvasOn
         { 
             get
             {
@@ -1281,20 +1285,33 @@ namespace GnollHackX.Pages.Game
             DisposePaintResources();
         }
 
-        /* Waits for a map paint in progress before disposing the resources it draws with */
+        /* Waits for map, menu, text and command paints in progress before disposing the resources they draw with */
         public async Task CleanupAsync()
         {
             if (Interlocked.CompareExchange(ref _isCleanedUp, 1, 0) != 0) return;
 
             ShutDownCanvasViews();
 
-            /* Held from here on, so any later map paint returns as reentrant */
+            /* Each flag is kept once taken, so any later paint of that canvas returns at once */
+            bool mapTaken = false, menuTaken = false, textTaken = false, commandTaken = false;
             int waitedMs = 0;
-            while (Interlocked.CompareExchange(ref _isMainCanvasDrawing, 1, 0) != 0)
+            while (true)
             {
+                if (!mapTaken)
+                    mapTaken = Interlocked.CompareExchange(ref _isMainCanvasDrawing, 1, 0) == 0;
+                if (!menuTaken)
+                    menuTaken = Interlocked.CompareExchange(ref _isMenuCanvasDrawing, 1, 0) == 0;
+                if (!textTaken)
+                    textTaken = Interlocked.CompareExchange(ref _isTextCanvasDrawing, 1, 0) == 0;
+                if (!commandTaken)
+                    commandTaken = Interlocked.CompareExchange(ref _isCommandCanvasDrawing, 1, 0) == 0;
+                if (mapTaken && menuTaken && textTaken && commandTaken)
+                    break;
                 if (waitedMs >= CleanupPaintWaitMaxMs)
                 {
-                    GHApp.MaybeWriteGHLog("GamePage.CleanupAsync: Map paint still in progress, resources left undisposed");
+                    GHApp.MaybeWriteGHLog("GamePage.CleanupAsync: Paint still in progress ("
+                        + (mapTaken ? "" : "map ") + (menuTaken ? "" : "menu ") + (textTaken ? "" : "text ")
+                        + (commandTaken ? "" : "command") + "), resources left undisposed");
                     return;
                 }
                 await Task.Delay(CleanupPaintWaitIntervalMs);
@@ -1302,6 +1319,22 @@ namespace GnollHackX.Pages.Game
             }
 
             DisposePaintResources();
+        }
+
+        /* Never waits: false if the page is cleaned up or the canvas is already painting */
+        private bool TryBeginAuxiliaryPaint(ref int paintFlag)
+        {
+            if (Interlocked.CompareExchange(ref _isCleanedUp, 0, 0) != 0)
+                return false;
+            if (Interlocked.CompareExchange(ref paintFlag, 1, 0) != 0)
+                return false;
+            if (Interlocked.CompareExchange(ref _isCleanedUp, 0, 0) != 0)
+            {
+                /* Cleanup started in between and is waiting for this flag */
+                Interlocked.Exchange(ref paintFlag, 0);
+                return false;
+            }
+            return true;
         }
 
         private void DisposePaintResources()
@@ -1312,14 +1345,16 @@ namespace GnollHackX.Pages.Game
             try
             {
                 /* Dispose of all cached bitmaps */
-                _paintBitmap?.Dispose();
+                /* UI thread; waits at most for one jar draw on a paint thread */
+                lock (_saveAutoDrawLock)
+                {
+                    _paintBitmap?.Dispose();
+                    ClearAutoDrawCache();
+                }
                 _tempBitmap?.Dispose();
                 foreach (SKImage bmp in _savedRects.Values)
                     bmp?.Dispose();
                 _savedRects.Clear();
-                foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
-                    bmp?.Dispose();
-                _savedAutoDrawBitmaps.Clear();
             }
             catch (Exception ex)
             {
@@ -8212,9 +8247,20 @@ namespace GnollHackX.Pages.Game
                 foreach (SKImage bmp in _savedRects.Values)
                     bmp.Dispose();
                 _savedRects.Clear();
-                foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
-                    bmp.Dispose();
-                _savedAutoDrawBitmaps.Clear();
+                bool clearLockTaken = false;
+                try
+                {
+                    Monitor.TryEnter(_saveAutoDrawLock, ref clearLockTaken);
+                    if (clearLockTaken)
+                        ClearAutoDrawCache();
+                    else
+                        Interlocked.Exchange(ref _autoDrawClearRequested, 1);
+                }
+                finally
+                {
+                    if (clearLockTaken)
+                        Monitor.Exit(_saveAutoDrawLock);
+                }
 
                 /* Collected on the thread pool; see GHApp.CollectGarbageForMemoryPressure */
                 switch (clearCacheLevel)
@@ -14041,8 +14087,21 @@ namespace GnollHackX.Pages.Game
                  | (stage & 0x3);
         }
 
-        //private readonly object _saveAutoDrawLock = new object();
+        /* Guards _savedAutoDrawBitmaps and _paintBitmap, which the map, menu and glyph image paints use from
+           different threads. Paints only TryEnter it and fall back to a bitmap of their own; only
+           DisposePaintResources, on the UI thread, waits for it. Held until a cached bitmap has been drawn. */
+        private readonly object _saveAutoDrawLock = new object();
+        /* Set when a memory-warning clear found the lock busy; the next holder clears the cache */
+        private int _autoDrawClearRequested = 0;
         Dictionary<int, SKBitmap> _savedAutoDrawBitmaps = new Dictionary<int, SKBitmap>();
+
+        /* Caller holds _saveAutoDrawLock */
+        private void ClearAutoDrawCache()
+        {
+            foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
+                bmp?.Dispose();
+            _savedAutoDrawBitmaps.Clear();
+        }
 
         public void DrawAutoDraw(int autodraw, SKCanvas canvas, bool delayedDraw, SKPaint paint, ObjectDataItem otmp_round,
             int layer_idx, int mapx, int mapy,
@@ -14751,270 +14810,184 @@ namespace GnollHackX.Pages.Game
                     double fill_percentage = (max_charge > 0 ? (double)otmp_round.ObjData.charges / (double)max_charge : 0.0);
                     if (fill_percentage >= 0.0)
                     {
-                        SKRect source_rt = new SKRect();
-                        SKRect target_rt = new SKRect();
-                        float jar_width = GHConstants.TileWidth;
-                        float jar_height = GHConstants.TileHeight / 2;
-
-                        float dest_x, dest_y;
-                        dest_x = tx + scaled_x_padding;
-                        dest_y = ty + scaled_y_padding + extra_y_padding;
-
-                        /* First, background */
-                        int source_glyph = GHApp._autodraws[autodraw].source_glyph;
-                        int atile = GHApp.Glyph2Tile[source_glyph];
-                        int a_sheet_idx = GHApp.TileSheetIdx(atile);
-                        //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
-                        //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
-                        int at_x, at_y;
-                        GHApp.TileSheetXY(atile, out at_x, out at_y);
-
-                        int source_glyph2 = GHApp._autodraws[autodraw].source_glyph2;
-                        int atile2 = GHApp.Glyph2Tile[source_glyph2];
-                        int a2_sheet_idx = GHApp.TileSheetIdx(atile2);
-                        //int a2t_x = GHApp.TileSheetX(atile2, a2_sheet_idx);
-                        //int a2t_y = GHApp.TileSheetY(atile2, a2_sheet_idx);
-                        int a2t_x, a2t_y;
-                        GHApp.TileSheetXY(atile2, out a2t_x, out a2t_y);
-
-                        source_rt.Left = at_x;
-                        source_rt.Right = source_rt.Left + jar_width;
-                        source_rt.Top = at_y;
-                        source_rt.Bottom = source_rt.Top + jar_height;
-
-                        target_rt.Left = 0;
-                        target_rt.Right = jar_width * scale * targetscale;
-                        target_rt.Top = 0;
-                        target_rt.Bottom = jar_height * scale * targetscale;
-
-                        canvas.Save();
+                        bool cacheLockTaken = false;
+                        SKBitmap ownScratch = null;
                         try
                         {
-                            canvas.Translate(dest_x, dest_y);
-                            paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
-                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL, fixRects, fixFiltering);
-                            canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt,
-#if GNH_MAUI
-                                new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
+#if GNH_FORCE_AUTODRAW_FALLBACK
+                            cacheLockTaken = false;
+#else
+                            Monitor.TryEnter(_saveAutoDrawLock, ref cacheLockTaken);
 #endif
-                                paint);
-                        }
-                        finally
-                        {
-                            canvas.Restore();
-                        }
+                            /* Without the lock, or after cleanup, this jar is drawn through its own bitmap and not cached */
+                            bool useCache = cacheLockTaken && Interlocked.CompareExchange(ref _isCleanedUp, 0, 0) == 0;
+                            if (useCache && Interlocked.Exchange(ref _autoDrawClearRequested, 0) != 0)
+                                ClearAutoDrawCache();
+                            SKBitmap scratch = useCache ? _paintBitmap : (ownScratch = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight));
 
-                        /* Color */
-                        ulong draw_color = GHApp._autodraws[autodraw].parameter1;
-                        byte blue = (byte)(draw_color & 0xFFUL);
-                        byte green = (byte)((draw_color & 0xFF00UL) >> 8);
-                        byte red = (byte)((draw_color & 0xFF0000UL) >> 16);
-                        SKColor fillcolor = new SKColor(red, green, blue);
+                            SKRect source_rt = new SKRect();
+                            SKRect target_rt = new SKRect();
+                            float jar_width = GHConstants.TileWidth;
+                            float jar_height = GHConstants.TileHeight / 2;
 
-                        double semi_transparency;
-                        SKBlendMode oldbm;
-                        SKColorFilter oldcf;
-                        if (fill_percentage > 0.0)
-                        {
-                            /* Second, contents */
+                            float dest_x, dest_y;
+                            dest_x = tx + scaled_x_padding;
+                            dest_y = ty + scaled_y_padding + extra_y_padding;
+
+                            /* First, background */
+                            int source_glyph = GHApp._autodraws[autodraw].source_glyph;
+                            int atile = GHApp.Glyph2Tile[source_glyph];
+                            int a_sheet_idx = GHApp.TileSheetIdx(atile);
+                            //int at_x = GHApp.TileSheetX(atile, a_sheet_idx);
+                            //int at_y = GHApp.TileSheetY(atile, a_sheet_idx);
+                            int at_x, at_y;
+                            GHApp.TileSheetXY(atile, out at_x, out at_y);
+
+                            int source_glyph2 = GHApp._autodraws[autodraw].source_glyph2;
+                            int atile2 = GHApp.Glyph2Tile[source_glyph2];
+                            int a2_sheet_idx = GHApp.TileSheetIdx(atile2);
+                            //int a2t_x = GHApp.TileSheetX(atile2, a2_sheet_idx);
+                            //int a2t_y = GHApp.TileSheetY(atile2, a2_sheet_idx);
+                            int a2t_x, a2t_y;
+                            GHApp.TileSheetXY(atile2, out a2t_x, out a2t_y);
+
                             source_rt.Left = at_x;
-                            source_rt.Right = source_rt.Left + GHConstants.TileWidth;
-                            source_rt.Top = at_y + GHConstants.TileHeight / 2;
-                            source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
-                            float source_width = source_rt.Right - source_rt.Left;
-                            float source_height = source_rt.Bottom - source_rt.Top;
+                            source_rt.Right = source_rt.Left + jar_width;
+                            source_rt.Top = at_y;
+                            source_rt.Bottom = source_rt.Top + jar_height;
 
                             target_rt.Left = 0;
-                            target_rt.Right = source_width;
+                            target_rt.Right = jar_width * scale * targetscale;
                             target_rt.Top = 0;
-                            target_rt.Bottom = source_height;
+                            target_rt.Bottom = jar_height * scale * targetscale;
 
-                            /* Draw to _paintBitmap */
-                            semi_transparency = 0.0;
-
-                            int cachekey = ComputeAutodrawCacheKey(autodraw, fill_percentage, 0);
-                            SKBitmap usedContentsBitmap = null;
-                            SKBitmap cachedBitmap = null;
-                            bool getsuccessful1;
-                            //lock (_saveAutoDrawLock)
-                            {
-                                getsuccessful1 = _savedAutoDrawBitmaps.TryGetValue(cachekey, out cachedBitmap);
-                            }
-                            if (getsuccessful1 && cachedBitmap != null)
-                            {
-                                usedContentsBitmap = cachedBitmap;
-                            }
-                            else
-                            {
-                                oldbm = paint.BlendMode;
-                                /* The intermediate is cached without darkening or highlighting; the cache key
-                                   carries neither, and the filter is applied when it is drawn to the canvas. */
-                                oldcf = paint.ColorFilter;
-                                paint.ColorFilter = null;
-                                using (SKCanvas _paintCanvas = new SKCanvas(_paintBitmap))
-                                {
-                                    _paintCanvas.Clear(SKColors.Transparent);
-                                    paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                                    _paintCanvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt,
-#if GNH_MAUI
-                                        new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
-#endif
-                                        paint);
-                                    if ((GHApp._autodraws[autodraw].parameter3 & 1) != 0)
-                                    {
-                                        paint.BlendMode = SKBlendMode.Modulate;
-                                        paint.Color = fillcolor;
-                                        _paintCanvas.DrawRect(target_rt, paint);
-                                    }
-                                }
-                                paint.BlendMode = oldbm;
-                                paint.ColorFilter = oldcf;
-                                paint.Color = SKColors.Black;
-                                bool containskey1;
-                                //lock (_saveAutoDrawLock)
-                                {
-                                    containskey1 = _savedAutoDrawBitmaps.ContainsKey(cachekey);
-                                }
-                                if (!containskey1)
-                                {
-                                    SKBitmap newbmp = null;
-                                    try
-                                    {
-                                        newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                        _paintBitmap.CopyTo(newbmp);
-                                        newbmp.SetImmutable();
-                                        usedContentsBitmap = newbmp;
-                                        //lock (_saveAutoDrawLock)
-                                        {
-                                            if (_savedAutoDrawBitmaps.Count >= GHConstants.MaxBitmapCacheSize)
-                                            {
-                                                foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
-                                                    bmp.Dispose();
-                                                _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
-                                            }
-                                            _savedAutoDrawBitmaps.Add(cachekey, newbmp);
-                                            newbmp = null; /* Ownership transferred to cache */
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        newbmp?.Dispose();
-                                        Debug.WriteLine(ex.Message);
-                                        usedContentsBitmap = _paintBitmap;
-                                    }
-                                }
-                                else
-                                    usedContentsBitmap = _paintBitmap;
-                            }
-
-                            /* Bottom contents */
-                            int bottom_x = 20; // 21;
-                            int bottom_y = 40; // 38;
-                            int bottom_width = 23; // 21;
-                            int bottom_height = 7; // 10;
-
-                            int bottom_tx = 20; // 21;
-                            int bottom_ty = 38; // 35;
-
-                            source_rt.Left = bottom_x;
-                            source_rt.Right = source_rt.Left + bottom_width;
-                            source_rt.Top = bottom_y;
-                            source_rt.Bottom = source_rt.Top + bottom_height;
-
-                            target_rt.Left = bottom_tx * scale * targetscale;
-                            target_rt.Right = (bottom_tx + bottom_width) * scale * targetscale;
-                            target_rt.Top = bottom_ty * scale * targetscale;
-                            target_rt.Bottom = (bottom_ty + bottom_height) * scale * targetscale;
-
-                            semi_transparency = 0.0;
-                            paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
                             canvas.Save();
                             try
                             {
                                 canvas.Translate(dest_x, dest_y);
-                                canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
-#if GNH_MAUI && !SKIASHARP_3119
-                                    , SKSamplingOptions.Default
-#endif
-                                    , paint);
+                                paint.Color = paint.Color.WithAlpha((byte)(0xFF * opaqueness));
+                                GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL, fixRects, fixFiltering);
+                                canvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt,
+    #if GNH_MAUI
+                                    new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
+    #endif
+                                    paint);
                             }
                             finally
                             {
                                 canvas.Restore();
                             }
 
-                            /* Middle contents */
-                            int full_y = 17; // 11;
-                            int empty_y = 38; // 35;
-                            int fill_pixel_top = (int)((double)(empty_y - full_y) * (1.0 - fill_percentage)) + full_y;
-                            int fill_pixels = empty_y - fill_pixel_top;
-                            if (fill_pixels > 0)
+                            /* Color */
+                            ulong draw_color = GHApp._autodraws[autodraw].parameter1;
+                            byte blue = (byte)(draw_color & 0xFFUL);
+                            byte green = (byte)((draw_color & 0xFF00UL) >> 8);
+                            byte red = (byte)((draw_color & 0xFF0000UL) >> 16);
+                            SKColor fillcolor = new SKColor(red, green, blue);
+
+                            double semi_transparency;
+                            SKBlendMode oldbm;
+                            SKColorFilter oldcf;
+                            if (fill_percentage > 0.0)
                             {
-                                int middle_x = 18; // 21;
-                                int middle_y = 15; // 15;
-                                int middle_width = 27; //  21;
-                                int middle_height = 22; // 17;
+                                /* Second, contents */
+                                source_rt.Left = at_x;
+                                source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                                source_rt.Top = at_y + GHConstants.TileHeight / 2;
+                                source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
+                                float source_width = source_rt.Right - source_rt.Left;
+                                float source_height = source_rt.Bottom - source_rt.Top;
 
-                                int middle_tx = 18; // 21;
-                                int middle_ty = fill_pixel_top + 4;
-                                int middle_twidth = middle_width;
-                                int middle_theight = fill_pixels + 1;
+                                target_rt.Left = 0;
+                                target_rt.Right = source_width;
+                                target_rt.Top = 0;
+                                target_rt.Bottom = source_height;
 
-                                source_rt.Left = middle_x;
-                                source_rt.Right = source_rt.Left + middle_width;
-                                source_rt.Top = middle_y;
-                                source_rt.Bottom = source_rt.Top + middle_height;
+                                /* Draw to the scratch bitmap */
+                                semi_transparency = 0.0;
 
-                                target_rt.Left = middle_tx * scale * targetscale;
-                                target_rt.Right = (middle_tx + middle_twidth) * scale * targetscale;
-                                target_rt.Top = middle_ty * scale * targetscale;
-                                target_rt.Bottom = (middle_ty + middle_theight) * scale * targetscale;
-
-                                semi_transparency = 0.2;
-                                paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                                canvas.Save();
-                                try
+                                int cachekey = ComputeAutodrawCacheKey(autodraw, fill_percentage, 0);
+                                SKBitmap usedContentsBitmap = null;
+                                SKBitmap cachedBitmap = null;
+                                bool getsuccessful1;
+                                getsuccessful1 = useCache && _savedAutoDrawBitmaps.TryGetValue(cachekey, out cachedBitmap);
+                                if (getsuccessful1 && cachedBitmap != null)
                                 {
-                                    canvas.Translate(dest_x, dest_y);
-                                    canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
-#if GNH_MAUI && !SKIASHARP_3119
-                                        , SKSamplingOptions.Default
-#endif
-                                        , paint);
+                                    usedContentsBitmap = cachedBitmap;
                                 }
-                                finally
+                                else
                                 {
-                                    canvas.Restore();
+                                    oldbm = paint.BlendMode;
+                                    /* The intermediate is cached without darkening or highlighting; the cache key
+                                       carries neither, and the filter is applied when it is drawn to the canvas. */
+                                    oldcf = paint.ColorFilter;
+                                    paint.ColorFilter = null;
+                                    using (SKCanvas _paintCanvas = new SKCanvas(scratch))
+                                    {
+                                        _paintCanvas.Clear(SKColors.Transparent);
+                                        paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                                        _paintCanvas.DrawImage(TileMap[a_sheet_idx], source_rt, target_rt,
+    #if GNH_MAUI
+                                            new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
+    #endif
+                                            paint);
+                                        if ((GHApp._autodraws[autodraw].parameter3 & 1) != 0)
+                                        {
+                                            paint.BlendMode = SKBlendMode.Modulate;
+                                            paint.Color = fillcolor;
+                                            _paintCanvas.DrawRect(target_rt, paint);
+                                        }
+                                    }
+                                    paint.BlendMode = oldbm;
+                                    paint.ColorFilter = oldcf;
+                                    paint.Color = SKColors.Black;
+                                    bool containskey1;
+                                    containskey1 = !useCache || _savedAutoDrawBitmaps.ContainsKey(cachekey);
+                                    if (!containskey1)
+                                    {
+                                        SKBitmap newbmp = null;
+                                        try
+                                        {
+                                            newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                            scratch.CopyTo(newbmp);
+                                            newbmp.SetImmutable();
+                                            usedContentsBitmap = newbmp;
+                                            if (_savedAutoDrawBitmaps.Count >= GHConstants.MaxBitmapCacheSize)
+                                            {
+                                                ClearAutoDrawCache(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
+                                            }
+                                            _savedAutoDrawBitmaps.Add(cachekey, newbmp);
+                                            newbmp = null; /* Ownership transferred to cache */
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            newbmp?.Dispose();
+                                            Debug.WriteLine(ex.Message);
+                                            usedContentsBitmap = scratch;
+                                        }
+                                    }
+                                    else
+                                        usedContentsBitmap = scratch;
                                 }
 
-                                /* Top contents */
-                                int top_x = 18; // 21;
-                                int top_y = 4; // 0;
-                                int top_width = 27; // 21;
-                                int top_height = 8; // 8;
+                                /* Bottom contents */
+                                int bottom_x = 20; // 21;
+                                int bottom_y = 40; // 38;
+                                int bottom_width = 23; // 21;
+                                int bottom_height = 7; // 10;
 
-                                float top_tx_full = 17; // 21;
-                                float top_tx_empty = bottom_tx; // 21;
-                                float top_tx = top_tx_empty + (float)(top_tx_full - top_tx_empty) * (float)fill_percentage;
+                                int bottom_tx = 20; // 21;
+                                int bottom_ty = 38; // 35;
 
-                                float top_twidth_full = top_width;
-                                float top_twidth_empty = bottom_width; ;
-                                float top_twidth = top_twidth_empty + (float)(top_twidth_full - top_twidth_empty) * (float)fill_percentage;
+                                source_rt.Left = bottom_x;
+                                source_rt.Right = source_rt.Left + bottom_width;
+                                source_rt.Top = bottom_y;
+                                source_rt.Bottom = source_rt.Top + bottom_height;
 
-                                float top_ty = fill_pixel_top;
-                                float top_theight_full = top_height;
-                                float top_theight_empty = bottom_height;
-                                float top_theight = top_theight_empty + (float)(top_theight_full - top_theight_empty) * (float)fill_percentage;
-
-                                source_rt.Left = top_x;
-                                source_rt.Right = source_rt.Left + top_width;
-                                source_rt.Top = top_y;
-                                source_rt.Bottom = source_rt.Top + top_height;
-
-                                target_rt.Left = top_tx * scale * targetscale;
-                                target_rt.Right = (top_tx + top_twidth) * scale * targetscale;
-                                target_rt.Top = top_ty * scale * targetscale;
-                                target_rt.Bottom = (top_ty + top_theight) * scale * targetscale;
+                                target_rt.Left = bottom_tx * scale * targetscale;
+                                target_rt.Right = (bottom_tx + bottom_width) * scale * targetscale;
+                                target_rt.Top = bottom_ty * scale * targetscale;
+                                target_rt.Bottom = (bottom_ty + bottom_height) * scale * targetscale;
 
                                 semi_transparency = 0.0;
                                 paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
@@ -15023,163 +14996,248 @@ namespace GnollHackX.Pages.Game
                                 {
                                     canvas.Translate(dest_x, dest_y);
                                     canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
-#if GNH_MAUI && !SKIASHARP_3119
+    #if GNH_MAUI && !SKIASHARP_3119
                                         , SKSamplingOptions.Default
-#endif
+    #endif
                                         , paint);
                                 }
                                 finally
                                 {
                                     canvas.Restore();
                                 }
-                            }
-                        }
 
-                        /* Third, transparent foreground */
-                        source_rt.Left = a2t_x;
-                        source_rt.Right = source_rt.Left + GHConstants.TileWidth;
-                        source_rt.Top = a2t_y;
-                        source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
-
-                        target_rt.Left = 0;
-                        target_rt.Right = GHConstants.TileWidth * scale * targetscale;
-                        target_rt.Top = 0;
-                        target_rt.Bottom = GHConstants.TileHeight / 2 * scale * targetscale;
-
-                        /* Draw */
-                        semi_transparency = 0.70;
-                        paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
-                        canvas.Save();
-                        try
-                        {
-                            canvas.Translate(dest_x, dest_y);
-                            GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL, fixRects, fixFiltering);
-                            canvas.DrawImage(TileMap[a2_sheet_idx], source_rt, target_rt,
-#if GNH_MAUI
-                                new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
-#endif
-                                paint);
-                        }
-                        finally
-                        {
-                            canvas.Restore();
-                        }
-
-                        /* Fourth, opaque foreground */
-                        paint.Color = SKColors.Black;
-
-                        source_rt.Left = a2t_x;
-                        source_rt.Right = source_rt.Left + GHConstants.TileWidth;
-                        source_rt.Top = a2t_y + GHConstants.TileHeight / 2;
-                        source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
-
-                        target_rt.Left = 0;
-                        target_rt.Right = jar_width;
-                        target_rt.Top = 0;
-                        target_rt.Bottom = jar_height;
-
-                        /* Draw to _paintBitmap */
-                        int cachekey2 = ComputeAutodrawCacheKey(autodraw, fill_percentage, 1);
-                        SKBitmap usedForegroundBitmap;
-                        SKBitmap cachedFGBitmap = null;
-                        bool getsuccessful2;
-                        //lock (_saveAutoDrawLock)
-                        {
-                            getsuccessful2 = _savedAutoDrawBitmaps.TryGetValue(cachekey2, out cachedFGBitmap);
-                        }
-                        if (getsuccessful2 && cachedFGBitmap != null)
-                        {
-                            usedForegroundBitmap = cachedFGBitmap;
-                        }
-                        else
-                        {
-                            oldbm = paint.BlendMode;
-                            /* The intermediate is cached without darkening or highlighting; the cache key
-                               carries neither, and the filter is applied when it is drawn to the canvas. */
-                            oldcf = paint.ColorFilter;
-                            paint.ColorFilter = null;
-                            draw_color = GHApp._autodraws[autodraw].parameter2;
-                            blue = (byte)(draw_color & 0xFFUL);
-                            green = (byte)((draw_color & 0xFF00UL) >> 8);
-                            red = (byte)((draw_color & 0xFF0000UL) >> 16);
-                            SKColor capcolor = new SKColor(red, green, blue);
-                            using (SKCanvas _paintCanvas = new SKCanvas(_paintBitmap))
-                            {
-                                _paintCanvas.Clear(SKColors.Transparent);
-                                _paintCanvas.DrawImage(TileMap[a2_sheet_idx], source_rt, target_rt,
-#if GNH_MAUI
-                                    new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
-#endif
-                                    paint);
-                                paint.Color = capcolor;
-                                paint.BlendMode = SKBlendMode.Modulate;
-                                _paintCanvas.DrawRect(target_rt, paint);
-                            }
-                            paint.BlendMode = oldbm;
-                            paint.ColorFilter = oldcf;
-                            paint.Color = SKColors.Black;
-                            bool containskey2;
-                            //lock (_saveAutoDrawLock)
-                            {
-                                containskey2 = _savedAutoDrawBitmaps.ContainsKey(cachekey2);
-                            }
-                            if (!containskey2)
-                            {
-                                SKBitmap newbmp = null;
-                                try
+                                /* Middle contents */
+                                int full_y = 17; // 11;
+                                int empty_y = 38; // 35;
+                                int fill_pixel_top = (int)((double)(empty_y - full_y) * (1.0 - fill_percentage)) + full_y;
+                                int fill_pixels = empty_y - fill_pixel_top;
+                                if (fill_pixels > 0)
                                 {
-                                    newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
-                                    _paintBitmap.CopyTo(newbmp);
-                                    newbmp.SetImmutable();
-                                    usedForegroundBitmap = newbmp;
-                                    //lock (_saveAutoDrawLock)
+                                    int middle_x = 18; // 21;
+                                    int middle_y = 15; // 15;
+                                    int middle_width = 27; //  21;
+                                    int middle_height = 22; // 17;
+
+                                    int middle_tx = 18; // 21;
+                                    int middle_ty = fill_pixel_top + 4;
+                                    int middle_twidth = middle_width;
+                                    int middle_theight = fill_pixels + 1;
+
+                                    source_rt.Left = middle_x;
+                                    source_rt.Right = source_rt.Left + middle_width;
+                                    source_rt.Top = middle_y;
+                                    source_rt.Bottom = source_rt.Top + middle_height;
+
+                                    target_rt.Left = middle_tx * scale * targetscale;
+                                    target_rt.Right = (middle_tx + middle_twidth) * scale * targetscale;
+                                    target_rt.Top = middle_ty * scale * targetscale;
+                                    target_rt.Bottom = (middle_ty + middle_theight) * scale * targetscale;
+
+                                    semi_transparency = 0.2;
+                                    paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                                    canvas.Save();
+                                    try
                                     {
+                                        canvas.Translate(dest_x, dest_y);
+                                        canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
+    #if GNH_MAUI && !SKIASHARP_3119
+                                            , SKSamplingOptions.Default
+    #endif
+                                            , paint);
+                                    }
+                                    finally
+                                    {
+                                        canvas.Restore();
+                                    }
+
+                                    /* Top contents */
+                                    int top_x = 18; // 21;
+                                    int top_y = 4; // 0;
+                                    int top_width = 27; // 21;
+                                    int top_height = 8; // 8;
+
+                                    float top_tx_full = 17; // 21;
+                                    float top_tx_empty = bottom_tx; // 21;
+                                    float top_tx = top_tx_empty + (float)(top_tx_full - top_tx_empty) * (float)fill_percentage;
+
+                                    float top_twidth_full = top_width;
+                                    float top_twidth_empty = bottom_width; ;
+                                    float top_twidth = top_twidth_empty + (float)(top_twidth_full - top_twidth_empty) * (float)fill_percentage;
+
+                                    float top_ty = fill_pixel_top;
+                                    float top_theight_full = top_height;
+                                    float top_theight_empty = bottom_height;
+                                    float top_theight = top_theight_empty + (float)(top_theight_full - top_theight_empty) * (float)fill_percentage;
+
+                                    source_rt.Left = top_x;
+                                    source_rt.Right = source_rt.Left + top_width;
+                                    source_rt.Top = top_y;
+                                    source_rt.Bottom = source_rt.Top + top_height;
+
+                                    target_rt.Left = top_tx * scale * targetscale;
+                                    target_rt.Right = (top_tx + top_twidth) * scale * targetscale;
+                                    target_rt.Top = top_ty * scale * targetscale;
+                                    target_rt.Bottom = (top_ty + top_theight) * scale * targetscale;
+
+                                    semi_transparency = 0.0;
+                                    paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                                    canvas.Save();
+                                    try
+                                    {
+                                        canvas.Translate(dest_x, dest_y);
+                                        canvas.DrawBitmap(usedContentsBitmap, source_rt, target_rt
+    #if GNH_MAUI && !SKIASHARP_3119
+                                            , SKSamplingOptions.Default
+    #endif
+                                            , paint);
+                                    }
+                                    finally
+                                    {
+                                        canvas.Restore();
+                                    }
+                                }
+                            }
+
+                            /* Third, transparent foreground */
+                            source_rt.Left = a2t_x;
+                            source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                            source_rt.Top = a2t_y;
+                            source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
+
+                            target_rt.Left = 0;
+                            target_rt.Right = GHConstants.TileWidth * scale * targetscale;
+                            target_rt.Top = 0;
+                            target_rt.Bottom = GHConstants.TileHeight / 2 * scale * targetscale;
+
+                            /* Draw */
+                            semi_transparency = 0.70;
+                            paint.Color = SKColors.Black.WithAlpha((byte)(0xFF * (1 - semi_transparency)));
+                            canvas.Save();
+                            try
+                            {
+                                canvas.Translate(dest_x, dest_y);
+                                GHApp.MaybeFixRects(ref source_rt, ref target_rt, targetscale, usingGL, fixRects, fixFiltering);
+                                canvas.DrawImage(TileMap[a2_sheet_idx], source_rt, target_rt,
+    #if GNH_MAUI
+                                    new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
+    #endif
+                                    paint);
+                            }
+                            finally
+                            {
+                                canvas.Restore();
+                            }
+
+                            /* Fourth, opaque foreground */
+                            paint.Color = SKColors.Black;
+
+                            source_rt.Left = a2t_x;
+                            source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                            source_rt.Top = a2t_y + GHConstants.TileHeight / 2;
+                            source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
+
+                            target_rt.Left = 0;
+                            target_rt.Right = jar_width;
+                            target_rt.Top = 0;
+                            target_rt.Bottom = jar_height;
+
+                            /* Draw to the scratch bitmap */
+                            int cachekey2 = ComputeAutodrawCacheKey(autodraw, fill_percentage, 1);
+                            SKBitmap usedForegroundBitmap;
+                            SKBitmap cachedFGBitmap = null;
+                            bool getsuccessful2;
+                            getsuccessful2 = useCache && _savedAutoDrawBitmaps.TryGetValue(cachekey2, out cachedFGBitmap);
+                            if (getsuccessful2 && cachedFGBitmap != null)
+                            {
+                                usedForegroundBitmap = cachedFGBitmap;
+                            }
+                            else
+                            {
+                                oldbm = paint.BlendMode;
+                                /* The intermediate is cached without darkening or highlighting; the cache key
+                                   carries neither, and the filter is applied when it is drawn to the canvas. */
+                                oldcf = paint.ColorFilter;
+                                paint.ColorFilter = null;
+                                draw_color = GHApp._autodraws[autodraw].parameter2;
+                                blue = (byte)(draw_color & 0xFFUL);
+                                green = (byte)((draw_color & 0xFF00UL) >> 8);
+                                red = (byte)((draw_color & 0xFF0000UL) >> 16);
+                                SKColor capcolor = new SKColor(red, green, blue);
+                                using (SKCanvas _paintCanvas = new SKCanvas(scratch))
+                                {
+                                    _paintCanvas.Clear(SKColors.Transparent);
+                                    _paintCanvas.DrawImage(TileMap[a2_sheet_idx], source_rt, target_rt,
+    #if GNH_MAUI
+                                        new SKSamplingOptions(highFilterQuality ? SKFilterMode.Linear : SKFilterMode.Nearest),
+    #endif
+                                        paint);
+                                    paint.Color = capcolor;
+                                    paint.BlendMode = SKBlendMode.Modulate;
+                                    _paintCanvas.DrawRect(target_rt, paint);
+                                }
+                                paint.BlendMode = oldbm;
+                                paint.ColorFilter = oldcf;
+                                paint.Color = SKColors.Black;
+                                bool containskey2;
+                                containskey2 = !useCache || _savedAutoDrawBitmaps.ContainsKey(cachekey2);
+                                if (!containskey2)
+                                {
+                                    SKBitmap newbmp = null;
+                                    try
+                                    {
+                                        newbmp = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
+                                        scratch.CopyTo(newbmp);
+                                        newbmp.SetImmutable();
+                                        usedForegroundBitmap = newbmp;
                                         if (_savedAutoDrawBitmaps.Count >= GHConstants.MaxBitmapCacheSize)
                                         {
-                                            foreach (SKBitmap bmp in _savedAutoDrawBitmaps.Values)
-                                                bmp.Dispose();
-                                            _savedAutoDrawBitmaps.Clear(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
+                                            ClearAutoDrawCache(); /* Clear the whole dictionary for the sake of ease; should almost never happen normally anyway */
                                         }
                                         _savedAutoDrawBitmaps.Add(cachekey2, newbmp);
                                         newbmp = null; /* Ownership transferred to cache */
                                     }
+                                    catch (Exception ex)
+                                    {
+                                        newbmp?.Dispose();
+                                        Debug.WriteLine(ex.Message);
+                                        usedForegroundBitmap = scratch;
+                                    }
                                 }
-                                catch (Exception ex)
-                                {
-                                    newbmp?.Dispose();
-                                    Debug.WriteLine(ex.Message);
-                                    usedForegroundBitmap = _paintBitmap;
-                                }
+                                else
+                                    usedForegroundBitmap = scratch;
                             }
-                            else
-                                usedForegroundBitmap = _paintBitmap;
-                        }
 
-                        source_rt.Left = 0;
-                        source_rt.Right = source_rt.Left + GHConstants.TileWidth;
-                        source_rt.Top = 0;
-                        source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
+                            source_rt.Left = 0;
+                            source_rt.Right = source_rt.Left + GHConstants.TileWidth;
+                            source_rt.Top = 0;
+                            source_rt.Bottom = source_rt.Top + GHConstants.TileHeight / 2;
 
-                        target_rt.Left = 0;
-                        target_rt.Right = jar_width * scale * targetscale;
-                        target_rt.Top = 0;
-                        target_rt.Bottom = jar_height * scale * targetscale;
+                            target_rt.Left = 0;
+                            target_rt.Right = jar_width * scale * targetscale;
+                            target_rt.Top = 0;
+                            target_rt.Bottom = jar_height * scale * targetscale;
 
-                        canvas.Save();
-                        try
-                        {
-                            canvas.Translate(dest_x, dest_y);
-                            canvas.DrawBitmap(usedForegroundBitmap, source_rt, target_rt
-#if GNH_MAUI && !SKIASHARP_3119
-                                , SKSamplingOptions.Default
-#endif
-                                , paint);
+                            canvas.Save();
+                            try
+                            {
+                                canvas.Translate(dest_x, dest_y);
+                                canvas.DrawBitmap(usedForegroundBitmap, source_rt, target_rt
+    #if GNH_MAUI && !SKIASHARP_3119
+                                    , SKSamplingOptions.Default
+    #endif
+                                    , paint);
+                            }
+                            finally
+                            {
+                                canvas.Restore();
+                            }
                         }
                         finally
                         {
-                            canvas.Restore();
+                            if (cacheLockTaken)
+                                Monitor.Exit(_saveAutoDrawLock);
+                            ownScratch?.Dispose();
                         }
-
                     }
                     paint.Color = SKColors.Black;
                 }
@@ -18972,6 +19030,20 @@ namespace GnollHackX.Pages.Game
 
         private void MenuCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!TryBeginAuxiliaryPaint(ref _isMenuCanvasDrawing))
+                return;
+            try
+            {
+                PaintMenuCanvas(sender, e);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _isMenuCanvasDrawing, 0);
+            }
+        }
+
+        private void PaintMenuCanvas(object sender, SKPaintSurfaceEventArgs e)
+        {
             bool isMenuOnMainThread = MainThread.IsMainThread;
             if (!_menuCanvasThreadChecked && !isMenuOnMainThread)
             {
@@ -22406,6 +22478,20 @@ namespace GnollHackX.Pages.Game
         private float _savedTextCanvasHeight = 0;
         private void TextCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
+            if (!TryBeginAuxiliaryPaint(ref _isTextCanvasDrawing))
+                return;
+            try
+            {
+                PaintTextCanvas(sender, e);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _isTextCanvasDrawing, 0);
+            }
+        }
+
+        private void PaintTextCanvas(object sender, SKPaintSurfaceEventArgs e)
+        {
             bool isTextOnMainThread = MainThread.IsMainThread;
             if (!_textCanvasThreadChecked && !isTextOnMainThread)
             {
@@ -22972,6 +23058,20 @@ namespace GnollHackX.Pages.Game
         private float _savedCommandCanvasHeight = 0;
 
         private void CommandCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
+        {
+            if (!TryBeginAuxiliaryPaint(ref _isCommandCanvasDrawing))
+                return;
+            try
+            {
+                PaintCommandCanvas(sender, e);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _isCommandCanvasDrawing, 0);
+            }
+        }
+
+        private void PaintCommandCanvas(object sender, SKPaintSurfaceEventArgs e)
         {
             bool isCommandOnMainThread = MainThread.IsMainThread;
             if (!_commandCanvasThreadChecked && !isCommandOnMainThread)

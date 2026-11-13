@@ -162,6 +162,10 @@ namespace GnollHackX.Droid
 #if GNH_MAUI
                 // WORKAROUND(WA-MAUI-0017): Finishing the activity leaves MAUI in an unstable state on Android
                 /* FinishAffinity seems to leave MAUI in an unstable state, so need to hard quit */
+#if SENTRY
+                // WORKAROUND(WA-SENTRY-0012): Sentry reports no Android process deaths other than native crashes and ANRs
+                AndroidExitInfoReporter.MarkCloseApplication();
+#endif
                 try
                 {
                     Process.KillProcess(Process.MyPid());
