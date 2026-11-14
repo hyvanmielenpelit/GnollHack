@@ -4808,6 +4808,8 @@ namespace GnollHackX
         public static ulong GHVersionNumber { get; set; }
         public static ulong GHVersionCompatibility { get; set; }
         public static string GHVersionCompatibilityString { get { return VersionNumberToString(GHVersionCompatibility); } }
+        public static ulong GHReplayCompatibility { get { return GHConstants.ReplayVersionCompatibility; } }
+        public static string GHReplayCompatibilityString { get { return VersionNumberToString(GHReplayCompatibility); } }
         public static ulong GHPreviousVersionNumber { get; set; }
         public static bool GHDebug { get; set; }
         public static string SkiaVersionString { get; set; }
@@ -9676,7 +9678,7 @@ namespace GnollHackX
 
         public static string GetAzureBlobStorageReplayContainerName()
         {
-            ulong verCompat = GHVersionCompatibility;
+            ulong verCompat = GHReplayCompatibility;
             if (verCompat == 0)
                 return GHConstants.AzureBlobStorageReplayContainerNamePrefix;
             return GHConstants.AzureBlobStorageReplayContainerNamePrefix + "-" + verCompat.ToString();
@@ -10216,13 +10218,11 @@ namespace GnollHackX
                         {
                             /* Header */
                             ulong verno = br.ReadUInt64();
-                            ulong vercompat = br.ReadUInt64();
+                            ulong replaycompat = br.ReadUInt64();
 
-                            bool isValid = GHVersionNumber == verno ? true :
-                                GHVersionNumber > verno ? GHVersionCompatibility <= verno : /* If the replay is made with an older GnollHack version than the current app, check that current app version's compatibility covers the replay's version */
-                                vercompat <= GHVersionNumber; /* If the replay is made with a newer GnollHack version than the current app, check that replay's version compatibility covers the current app version */
+                            bool isValid = GHReplayFiles.IsReplayVersionCompatible(GHVersionNumber, GHReplayCompatibility, verno, replaycompat);
                             res = isValid;
-                            out_str = isValid ? "Replay is valid." : "Replay " + replayFileName + " has invalid version: " + verno + ", compatibility: " + vercompat + " vs the app's " + GHVersionNumber + ", compatibility: " + GHVersionCompatibility;
+                            out_str = isValid ? "Replay is valid." : "Replay " + replayFileName + " has invalid version: " + verno + ", replay compatibility: " + replaycompat + " vs the app's " + GHVersionNumber + ", replay compatibility: " + GHReplayCompatibility;
                         }
                     }
                     finally
@@ -10488,11 +10488,9 @@ namespace GnollHackX
                             {
                                 /* Header */
                                 ulong verno = br.ReadUInt64();
-                                ulong vercompat = br.ReadUInt64();
+                                ulong replaycompat = br.ReadUInt64();
 
-                                bool isValid = GHVersionNumber == verno ? true :
-                                    GHVersionNumber > verno ? GHVersionCompatibility <= verno : /* If the replay is made with an older GnollHack version than the current app, check that current app version's compatibility covers the replay's version */
-                                    vercompat <= GHVersionNumber; /* If the replay is made with a newer GnollHack version than the current app, check that replay's version compatibility covers the current app version */
+                                bool isValid = GHReplayFiles.IsReplayVersionCompatible(GHVersionNumber, GHReplayCompatibility, verno, replaycompat);
 
                                 if (isValid)
                                 {
@@ -11584,7 +11582,7 @@ namespace GnollHackX
                                 {
                                     if (!exitHackCalled)
                                         game.ClientCallback_ExitHack(2);
-                                    MaybeWriteGHLog("Replay " + usedReplayFileName + " has invalid version: " + verno + ", compatibility: " + vercompat + " vs the app's " + GHVersionNumber + ", compatibility: " + GHVersionCompatibility);
+                                    MaybeWriteGHLog("Replay " + usedReplayFileName + " has invalid version: " + verno + ", replay compatibility: " + replaycompat + " vs the app's " + GHVersionNumber + ", replay compatibility: " + GHReplayCompatibility);
                                     if (isZip && File.Exists(origRawFileName) && File.Exists(usedReplayFileName) && origRawFileName != usedReplayFileName)
                                     {
                                         File.Delete(usedReplayFileName);

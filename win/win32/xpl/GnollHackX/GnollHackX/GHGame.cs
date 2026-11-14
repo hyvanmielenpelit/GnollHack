@@ -5078,7 +5078,7 @@ namespace GnollHackX
                                     {
                                         /* Write header */
                                         writer.Write(GHApp.GHVersionNumber);
-                                        writer.Write(GHApp.GHVersionCompatibility);
+                                        writer.Write(GHApp.GHReplayCompatibility);
                                         writer.Write(timeBinary);
                                         writer.Write(configString);
                                         writer.Write(WizardMode);

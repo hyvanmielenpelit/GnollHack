@@ -61,6 +61,7 @@ namespace GnollHackX.Pages.MainScreen
 
 
             string compatstr = GHApp.GHVersionCompatibilityString;
+            string replaycompatstr = GHApp.GHReplayCompatibilityString;
             string manufacturer = DeviceInfo.Manufacturer;
             if (manufacturer?.Length > 0)
                 manufacturer = manufacturer.Substring(0, 1).ToUpper() + manufacturer.Substring(1);
@@ -299,6 +300,7 @@ namespace GnollHackX.Pages.MainScreen
             CultureLabel.Text = CultureInfo.CurrentCulture?.EnglishName; // + " / " + CultureInfo.InstalledUICulture.EnglishName + " / " + CultureInfo.CurrentUICulture.EnglishName;
 
             GnollHackCompatibilityLabel.Text = compatstr == "" ? "" : "From " + compatstr;
+            GnollHackReplayCompatibilityLabel.Text = replaycompatstr == "" ? "" : "From " + replaycompatstr;
             FMODVersionLabel.Text = GHApp.FMODVersionString;
             SkiaVersionLabel.Text = GHApp.SkiaVersionString + " (# " + GHApp.SkiaSharpVersionString + ")";
             FrameworkVersionLabel.Text = GHApp.FrameworkVersionString;

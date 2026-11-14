@@ -15,6 +15,14 @@ namespace GnollHackX
 {
     public static class GHConstants
     {
+        /* Oldest GnollHack engine version whose replays this version can play, in the format of
+           VERSION_COMPATIBILITY in include/patchlevel.h: 0xMMmmPPee, EDITLEVEL in hex. Replays
+           record the window procedure callbacks, so raise this to the current engine version
+           when a recorded callback, its arguments, RecordedFunctionID or the replay reader change
+           so that older replays no longer play correctly. VERSION_COMPATIBILITY covers saved
+           games, bones and level files, and is raised independently. */
+        public const ulong ReplayVersionCompatibility = 0x04030001UL;
+
         public const string GeneralTaskQueueDirectory = "task";
         public const string BonesDeleteFileNamePrefix = "bonesdelete_";
         public const string BonesDeleteFileNameSuffix = ".json";

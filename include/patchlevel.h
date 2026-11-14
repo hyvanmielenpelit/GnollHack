@@ -45,6 +45,11 @@
  * with all four numbers specified as two hexadecimal digits.
  */
 #define VERSION_COMPATIBILITY       0x04030001UL
+/*
+ * Replays have their own compatibility floor, GHConstants.ReplayVersionCompatibility
+ * in win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs, in the same format.
+ * VERSION_COMPATIBILITY does not cover replays.
+ */
 #define NEW_VERSION_INFO_VERSION    0x04010104UL
 
 

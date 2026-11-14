@@ -229,6 +229,10 @@ public static extern int RunGnollHack(
 
 Callback categories: window management, input handling, display/glyph rendering, menu system, sound/music playback, animation control, status updates, data transfer.
 
+### Replay Compatibility
+
+Replays (`.gnhrec`) record these callbacks and play them back without running the engine. Changing a recorded callback's signature or the meaning of its arguments, `RecordedFunctionID`, or the replay reader in `GHApp.PlayReplay` so that older replays no longer play correctly sets `GHConstants.ReplayVersionCompatibility` in [GHConstants.cs](../../../win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs), the source of truth for the replay floor, to the new engine version (`0xMMmmPPee`, `EDITLEVEL` in hex). `VERSION_COMPATIBILITY` in `include/patchlevel.h` covers saved games, bones and level files only, and is left alone unless the save format changed too.
+
 ---
 
 ## XAML Pages

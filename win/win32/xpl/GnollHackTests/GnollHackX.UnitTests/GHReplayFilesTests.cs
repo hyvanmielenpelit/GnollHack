@@ -5,8 +5,8 @@ using Xunit;
 
 namespace GnollHackX.UnitTests
 {
-    /* Covers GHReplayFiles: replay file name parsing, the next-session file lookup, and the
-       glyph table record scan and peek. */
+    /* Covers GHReplayFiles: replay file name parsing, the next-session file lookup, the
+       glyph table record scan and peek, and the replay version compatibility check. */
     public class GHReplayFilesTests
     {
         private const string T1Name = "replay-Janne-T1-430-21-9862637582834625281.gnhrec.gz";
@@ -436,6 +436,32 @@ namespace GnollHackX.UnitTests
                 Assert.Equal(3, ms.Position);
                 Assert.False(GHReplayFiles.IsGlyphTableRecordAt(null, 0));
             }
+        }
+
+        /* ---- Version compatibility ---- */
+
+        [Theory]
+        /* Same version, even with floors above both versions */
+        [InlineData(0x0403002AUL, 0x05000000UL, 0x0403002AUL, 0x05000000UL, true)]
+        /* Older replay: inside, at and outside the app's replay floor */
+        [InlineData(0x0403002AUL, 0x04030001UL, 0x04030010UL, 0x04030001UL, true)]
+        [InlineData(0x0403002AUL, 0x04030010UL, 0x04030010UL, 0x04030001UL, true)]
+        [InlineData(0x0403002AUL, 0x04030011UL, 0x04030010UL, 0x04030001UL, false)]
+        /* Newer replay: inside, at and outside the replay's own floor */
+        [InlineData(0x04030010UL, 0x04030001UL, 0x0403002AUL, 0x04030001UL, true)]
+        [InlineData(0x04030010UL, 0x04030001UL, 0x0403002AUL, 0x04030010UL, true)]
+        [InlineData(0x04030010UL, 0x04030001UL, 0x0403002AUL, 0x04030011UL, false)]
+        /* A save-format bump leaves the replay floor alone: valid in both directions */
+        [InlineData(0x0403002AUL, 0x04030001UL, 0x04030029UL, 0x04030001UL, true)]
+        [InlineData(0x04030029UL, 0x04030001UL, 0x0403002AUL, 0x04030001UL, true)]
+        /* A replay bump: invalid in both directions */
+        [InlineData(0x0403002AUL, 0x0403002AUL, 0x04030029UL, 0x04030001UL, false)]
+        [InlineData(0x04030029UL, 0x04030001UL, 0x0403002AUL, 0x0403002AUL, false)]
+        public void IsReplayVersionCompatible_AppliesTheFloorOfTheNewerSide(ulong appVersion,
+            ulong appReplayCompatibility, ulong replayVersion, ulong replayCompatibility, bool expected)
+        {
+            Assert.Equal(expected, GHReplayFiles.IsReplayVersionCompatible(appVersion, appReplayCompatibility,
+                replayVersion, replayCompatibility));
         }
     }
 }

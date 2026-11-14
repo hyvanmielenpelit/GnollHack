@@ -7,7 +7,7 @@ description: Guidelines on modifying the save/load system, which is complex and 
 
 ## Critical Rules
 - **Do NOT change struct padding/alignment**: The save files (`.sav`) are binary dumps of C structs. Changing the size or order of fields in `struct monst`, `struct obj`, or `struct you` WILL break save compatibility.
-- **Version Bumping**: If you modify a core struct, you MUST increment `EDITLEVEL` in `include/patchlevel.h`. Its comment states the rule directly: change `EDITLEVEL` when the changes to the game are save-file-breaking.
+- **Version Bumping**: If you modify a core struct, you MUST increment `EDITLEVEL` in `include/patchlevel.h`. Its comment states the rule directly: change `EDITLEVEL` when the changes to the game are save-file-breaking. A save-breaking change also sets `VERSION_COMPATIBILITY` to the new engine version. Replays have a separate floor, `GHConstants.ReplayVersionCompatibility` in `win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs`, which is left alone unless replays break too.
 - **Use `bwrite`/`mread`**: Never use standard `fwrite`/`fread` for game state. Use the engine's wrappers.
 
 ## How Saving Works (`src/save.c`)

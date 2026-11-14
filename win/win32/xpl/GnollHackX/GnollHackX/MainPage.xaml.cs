@@ -1574,6 +1574,17 @@ namespace GnollHackX
             GHApp.AvaloniaMauiVersionString = avaloniamauiverstr;
             GHApp.RuntimeVersionString = runtimeverstr;
 
+            if (GHApp.GHVersionNumber != 0UL && GHApp.GHReplayCompatibility > GHApp.GHVersionNumber)
+            {
+                string msg = "GHConstants.ReplayVersionCompatibility " + GHApp.GHReplayCompatibility.ToString("X8")
+                    + " is newer than the engine version " + GHApp.GHVersionNumber.ToString("X8") + ".";
+                Debug.WriteLine(msg);
+                GHApp.MaybeWriteGHLog(msg);
+#if DEBUG
+                Debug.Fail(msg);
+#endif
+            }
+
             //VersionLabel.Text = verid;
             GnollHackLabel.Text = "GnollHack";
 

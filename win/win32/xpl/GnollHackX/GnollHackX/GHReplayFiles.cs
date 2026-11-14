@@ -63,6 +63,18 @@ namespace GnollHackX
         /* A next session file must be time-stamped at most this long after the previous session's exit */
         public const int NextSessionWindowSeconds = 3600;
 
+        /* Same version: valid. Older replay: the app's replay floor must cover the replay's
+           version. Newer replay: the replay's floor must cover the app's version. */
+        public static bool IsReplayVersionCompatible(ulong appVersion, ulong appReplayCompatibility,
+            ulong replayVersion, ulong replayCompatibility)
+        {
+            if (appVersion == replayVersion)
+                return true;
+            if (appVersion > replayVersion)
+                return appReplayCompatibility <= replayVersion;
+            return replayCompatibility <= appVersion;
+        }
+
         public static bool TryParseReplayFileName(string fileName, out ReplayFileNameInfo info)
         {
             info = null;
