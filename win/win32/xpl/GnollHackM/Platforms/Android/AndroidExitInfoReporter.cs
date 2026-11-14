@@ -20,6 +20,9 @@ public static class AndroidExitInfoReporter
     private const string CloseMarkerSinceTimestampKey = "AndroidExitInfoCloseMarkerSinceTimestamp";
     /* Set as the process state summary just before CloseApplication kills the process */
     private const string CloseApplicationStateSummary = "gnh-close-application";
+    /* When CloseApplication last ran; matches its exit when Android refused the marker */
+    private const string CloseRequestedTimestampKey = "AndroidExitInfoCloseRequestedTimestamp";
+    private const long CloseRequestedMatchMilliseconds = 10L * 1000L;
 
     /* ApplicationExitInfo.REASON_* values; a reason not named here is reported by number */
     private const int ReasonExitSelf = 1;
@@ -48,6 +51,12 @@ public static class AndroidExitInfoReporter
 
     private static int _started = 0;
 
+    /* Serializes the snapshot writes with the close marker, so that no snapshot replaces the marker */
+    private static readonly object _stateSummaryLock = new object();
+    private static bool _closeMarked = false;
+    private static bool _stateSummaryFailed = false;
+    private static ActivityManager _stateSummaryActivityManager = null;
+
     public static void StartReporting(Context context)
     {
         if (Interlocked.Exchange(ref _started, 1) != 0)
@@ -68,14 +77,51 @@ public static class AndroidExitInfoReporter
     {
         if (!OperatingSystem.IsAndroidVersionAtLeast(30))
             return;
-        try
+        lock (_stateSummaryLock)
         {
-            ActivityManager activityManager = Android.App.Application.Context.GetSystemService(Context.ActivityService) as ActivityManager;
-            activityManager?.SetProcessStateSummary(Encoding.ASCII.GetBytes(CloseApplicationStateSummary));
+            _closeMarked = true;
+            try
+            {
+                Preferences.Set(CloseRequestedTimestampKey, Java.Lang.JavaSystem.CurrentTimeMillis());
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("AndroidExitInfoReporter close time: " + ex.Message);
+            }
+            try
+            {
+                ActivityManager activityManager = Android.App.Application.Context.GetSystemService(Context.ActivityService) as ActivityManager;
+                activityManager?.SetProcessStateSummary(Encoding.ASCII.GetBytes(CloseApplicationStateSummary));
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("AndroidExitInfoReporter mark: " + ex.Message);
+            }
         }
-        catch (Exception ex)
+    }
+
+    /* Android may throttle the call and throw on excessive use, so the first failure ends the writes
+       for this process and leaves the close marker its own call */
+    [SupportedOSPlatform("android30.0")]
+    public static void WriteStateSummary(string summary)
+    {
+        if (summary == null)
+            return;
+        lock (_stateSummaryLock)
         {
-            GHApp.MaybeWriteGHLog("AndroidExitInfoReporter mark: " + ex.Message);
+            if (_closeMarked || _stateSummaryFailed)
+                return;
+            try
+            {
+                if (_stateSummaryActivityManager == null)
+                    _stateSummaryActivityManager = Android.App.Application.Context.GetSystemService(Context.ActivityService) as ActivityManager;
+                _stateSummaryActivityManager?.SetProcessStateSummary(Encoding.ASCII.GetBytes(summary));
+            }
+            catch (Exception ex)
+            {
+                _stateSummaryFailed = true;
+                GHApp.MaybeWriteGHLog("AndroidExitInfoReporter snapshot: " + ex.Message);
+            }
         }
     }
 
@@ -211,7 +257,36 @@ public static class AndroidExitInfoReporter
         byte[] summary = exitInfo.GetProcessStateSummary();
         if (summary != null && Encoding.ASCII.GetString(summary) == CloseApplicationStateSummary)
             return false;
+        /* A close whose marker Android refused */
+        if (exitInfo.Reason == ReasonSignaled && exitInfo.Status == SignalKill)
+        {
+            long closeRequested = Preferences.Get(CloseRequestedTimestampKey, 0L);
+            if (closeRequested > 0 && exitInfo.Timestamp >= closeRequested
+                && exitInfo.Timestamp - closeRequested <= CloseRequestedMatchMilliseconds)
+                return false;
+        }
         return true;
+    }
+
+    /* Parses the snapshot that AndroidMemorySampler left in the process state summary */
+    [SupportedOSPlatform("android30.0")]
+    private static void AttachStateSummary(Scope scope, ApplicationExitInfo exitInfo, string tagPrefix, string extraName)
+    {
+        byte[] bytes = exitInfo.GetProcessStateSummary();
+        string text = bytes != null && bytes.Length > 0 ? Encoding.ASCII.GetString(bytes) : null;
+        GHExitStateSummary summary;
+        if (GHExitStateSummary.TryParse(text, out summary))
+        {
+            scope.SetTag(tagPrefix + ".in_game", GHExitStateSummary.GameStateName(summary.GameState));
+            scope.SetTag(tagPrefix + ".memory_warning", GHExitStateSummary.MemoryWarningName(summary.MemoryWarningLevel));
+            scope.SetTag(tagPrefix + ".snapshot", "yes");
+            scope.SetExtra(extraName, Shorten(summary.Describe(exitInfo.Timestamp / 1000)));
+        }
+        else
+        {
+            scope.SetTag(tagPrefix + ".snapshot", "no");
+        }
+        scope.SetTag("device.memory", GHExitStateSummary.MemoryBucket(GHApp.TotalMemory));
     }
 
     [SupportedOSPlatform("android30.0")]
@@ -245,6 +320,7 @@ public static class AndroidExitInfoReporter
             scope.SetExtra("Exit Process Name", Shorten(exitInfo.ProcessName));
             scope.SetTag("exit.lmk_report_supported", lowMemoryKillReportSupported);
             scope.SetExtra("Exit State Summary", Shorten(stateSummary));
+            AttachStateSummary(scope, exitInfo, "exit", "Exit Snapshot");
         }, SentryLevel.Warning);
     }
 
@@ -294,6 +370,7 @@ public static class AndroidExitInfoReporter
             scope.SetExtra("ANR Pss KB", exitInfo.Pss.ToString(CultureInfo.InvariantCulture));
             scope.SetExtra("ANR Rss KB", exitInfo.Rss.ToString(CultureInfo.InvariantCulture));
             scope.SetExtra("ANR Process Name", Shorten(exitInfo.ProcessName));
+            AttachStateSummary(scope, exitInfo, "anr", "ANR Snapshot");
         }, SentryLevel.Warning);
     }
 

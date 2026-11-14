@@ -475,7 +475,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: unreported
 - Last checked: 2026-11-14
-- Code: `win/win32/xpl/GnollHackM/Platforms/Android/AndroidExitInfoReporter.cs` (`AndroidExitInfoReporter.ReportNewProcessDeaths`); `win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs` (`PlatformService.CloseApplication`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Android/AndroidExitInfoReporter.cs` (`AndroidExitInfoReporter.ReportNewProcessDeaths`); `win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs` (`PlatformService.CloseApplication`); `win/win32/xpl/GnollHackM/Platforms/Android/AndroidMemorySampler.cs` (`AndroidMemorySampler`)
 - Remove when: Sentry reports Android process deaths for low memory, signals and nonzero self-exits, GnollHack uses that release, and Verify removal passes.
 - Related: WA-SENTRY-0010, WA-MAUI-0017
 
@@ -497,7 +497,12 @@ other than ANRs, user and package actions and clean exits, as a warning message
 the device first ran a build with the marker (the `AndroidExitInfoCloseMarkerSinceTimestamp`
 preference, set on that build's first launch) is skipped, because such an exit cannot be told apart
 from an exit through `CloseApplication`; it was reported as GNOLLHACK-JE. Each report carries
-`exit.lmk_report_supported` and `Exit State Summary`.
+`exit.lmk_report_supported` and `Exit State Summary`. `AndroidMemorySampler` keeps a `gs1` process
+state summary (game state, memory warnings, memory figures) current every 15 s and on each memory
+warning, and the report parses it into `exit.in_game`, `exit.memory_warning`, `exit.snapshot`,
+`device.memory` and `Exit Snapshot`. A `SIGNALED` exit with signal 9 within 10 s of a close recorded in
+the `AndroidExitInfoCloseRequestedTimestamp` preference is skipped too, in case Android refused the
+marker.
 
 **Verify removal.** With a Sentry release expected to report such deaths:
 - Build an Android Debug build without the two tagged sites.

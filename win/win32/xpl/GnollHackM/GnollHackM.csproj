@@ -277,6 +277,7 @@
     <None Remove="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHConstants.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHEnums.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHExitStateSummary.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHMapFps.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadTypes.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHEvdevProtocol.cs" />
@@ -586,6 +587,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\GHCommandButtonItem.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHConstants.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHEnums.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHExitStateSummary.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\FileDialog\GHFileDialogLogic.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\FileDialog\GHFilePlaces.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\FileDialog\GHFileDialogBehavior.cs" />

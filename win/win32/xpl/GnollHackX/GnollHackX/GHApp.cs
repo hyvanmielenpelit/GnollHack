@@ -848,9 +848,34 @@ namespace GnollHackX
         /* Memory warnings received at any level since startup */
         public static int MemoryPressureEventCount;
 
+        /* Levels are coded (int)MemoryPressureLevel + 1; 0 means none received */
+        private static int _lastMemoryPressureLevel = 0;
+        private static long _lastMemoryPressureUtcTicks = 0L;
+        private static int _highestMemoryPressureLevel = 0;
+        public static int LastMemoryPressureLevel { get { return Interlocked.CompareExchange(ref _lastMemoryPressureLevel, 0, 0); } }
+        public static long LastMemoryPressureUtcTicks { get { return Interlocked.Read(ref _lastMemoryPressureUtcTicks); } }
+        /* Background excluded, since it arrives only after the app has left the foreground */
+        public static int HighestMemoryPressureLevel { get { return Interlocked.CompareExchange(ref _highestMemoryPressureLevel, 0, 0); } }
+        public static event Action<MemoryPressureLevel> MemoryPressureReceived;
+
         private static void HandleMemoryWarning(MemoryPressureLevel level)
         {
             Interlocked.Increment(ref MemoryPressureEventCount);
+            int codedLevel = (int)level + 1;
+            Interlocked.Exchange(ref _lastMemoryPressureLevel, codedLevel);
+            Interlocked.Exchange(ref _lastMemoryPressureUtcTicks, DateTime.UtcNow.Ticks);
+            if (level != MemoryPressureLevel.Background)
+            {
+                int highest = Interlocked.CompareExchange(ref _highestMemoryPressureLevel, 0, 0);
+                while (codedLevel > highest)
+                {
+                    int previous = Interlocked.CompareExchange(ref _highestMemoryPressureLevel, codedLevel, highest);
+                    if (previous == highest)
+                        break;
+                    highest = previous;
+                }
+            }
+
             switch (level)
             {
                 case MemoryPressureLevel.Low:
@@ -889,6 +914,19 @@ namespace GnollHackX
                     }
                     break;
             }
+
+            Action<MemoryPressureLevel> handler = MemoryPressureReceived;
+            if (handler != null)
+            {
+                try
+                {
+                    handler(level);
+                }
+                catch (Exception ex)
+                {
+                    MaybeWriteGHLog("MemoryPressureReceived: " + ex.Message);
+                }
+            }
         }
 
         private static int _mainPageConstructorRunNumber = 0;
@@ -899,7 +937,18 @@ namespace GnollHackX
         }
 
         private static int _gameStarted = 0;
-        public static bool GameStarted { get { return Interlocked.CompareExchange(ref _gameStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _gameStarted, value ? 1 : 0); } }
+        public static bool GameStarted
+        {
+            get { return Interlocked.CompareExchange(ref _gameStarted, 0, 0) != 0; }
+            set
+            {
+                Interlocked.Exchange(ref _gameStarted, value ? 1 : 0);
+                Interlocked.Exchange(ref _gameStartedUtcTicks, value ? DateTime.UtcNow.Ticks : 0L);
+            }
+        }
+        /* UTC ticks when GameStarted was last set true; 0 while no game is running */
+        private static long _gameStartedUtcTicks = 0L;
+        public static long GameStartedUtcTicks { get { return Interlocked.Read(ref _gameStartedUtcTicks); } }
 
         private static int _mainScreenMusicStarted = 0;
         public static bool MainScreenMusicStarted { get { return Interlocked.CompareExchange(ref _mainScreenMusicStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _mainScreenMusicStarted, value ? 1 : 0); } }

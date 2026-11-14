@@ -493,6 +493,11 @@ namespace GnollHackX
         public const string SentryGnollHackCallbackCategoryName = "GnollHack Callback";
         public const string SentryGnollHackButtonClickCategoryName = "Button Clicked";
         public const string SentryGnollHackCaughtExceptionCategoryName = "Caught Exception";
+        public const int ExitStateSnapshotIntervalSeconds = 15;
+        public const int GpuCacheUsageSampleIntervalSeconds = 15;
+        public const int AndroidMemorySampleFirstDelaySeconds = 60;
+        public const int AndroidMemorySampleIntervalSeconds = 300;
+        public const int AndroidMemorySampleMinimumSpacingSeconds = 60;
         /* Sentry extra data keys. The same keys are used both for the per-event extras
            attached to impossible() and panic() events and for the periodic scope
            snapshot posted from rhack(). Event-level extras win over scope-level ones

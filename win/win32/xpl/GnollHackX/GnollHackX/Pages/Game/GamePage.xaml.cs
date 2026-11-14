@@ -5468,6 +5468,8 @@ namespace GnollHackX.Pages.Game
         private GlyphImageSource _paintGlyphImageSource = new GlyphImageSource();
         private SKBitmap _paintBitmap = new SKBitmap(GHConstants.TileWidth, GHConstants.TileHeight);
         private bool _mainCanvasThreadChecked = false;
+        /* Touched only on the main canvas's paint thread */
+        private long _lastGpuCacheUsageSampleTimestamp = 0L;
 
         /* Content counters the current map paint drew; written and read on the paint thread */
         private long _paintedMainCounterValue = 0;
@@ -5518,6 +5520,13 @@ namespace GnollHackX.Pages.Game
                 FrameTimeProfiler.StampPaintStart();
 
                 PaintMainGamePage(sender, e, isCanvasOnMainThread);
+
+                long gpuSampleNow = Stopwatch.GetTimestamp();
+                if (gpuSampleNow - _lastGpuCacheUsageSampleTimestamp >= GHConstants.GpuCacheUsageSampleIntervalSeconds * Stopwatch.Frequency)
+                {
+                    _lastGpuCacheUsageSampleTimestamp = gpuSampleNow;
+                    GHApp.CurrentGPUCacheUsage = MainCanvasView.ResourceCacheUsage;
+                }
 
                 if (Interlocked.Increment(ref _mainFPSCounterValue) == long.MaxValue)
                     Interlocked.Exchange(ref _mainFPSCounterValue, 0L);
