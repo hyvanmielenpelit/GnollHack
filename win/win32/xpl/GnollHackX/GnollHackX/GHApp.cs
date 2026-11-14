@@ -957,8 +957,9 @@ namespace GnollHackX
         {
             try
             {
-                FmodService?.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f);
-                MainScreenMusicStarted = true;
+                int res = FmodService != null ? FmodService.PlayUIMusic(GHConstants.IntroGHSound, GHConstants.IntroEventPath, GHConstants.IntroBankId, GHConstants.IntroMusicVolume, 1.0f) : 1;
+                if (res == 0) /* RESULT.OK; FMOD refuses the call while the mixer is suspended */
+                    MainScreenMusicStarted = true;
             }
             catch (Exception ex)
             {

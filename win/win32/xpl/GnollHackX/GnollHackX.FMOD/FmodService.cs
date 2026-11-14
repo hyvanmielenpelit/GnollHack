@@ -163,6 +163,9 @@ namespace GnollHackX.Unknown
         private int _initialized = 0;
         private bool Initialized { get { return Interlocked.CompareExchange(ref _initialized, 0, 0) != 0; } set { Interlocked.Exchange(ref _initialized, value ? 1 : 0); } }
 
+        /* Read once by InitializeFmod, so that a suspended mixer does not hide the version */
+        private volatile uint _versionCode = 0;
+
         /* True while FMOD is in its background state: mixer suspended, or master group paused */
         private int _mixerSuspended = 0;
         private bool MixerSuspended { get { return Interlocked.CompareExchange(ref _mixerSuspended, 0, 0) != 0; } set { Interlocked.Exchange(ref _mixerSuspended, value ? 1 : 0); } }
@@ -327,7 +330,10 @@ namespace GnollHackX.Unknown
             if (_coresystem.getOutput(out OUTPUTTYPE outputType) == RESULT.OK)
                 GHApp.SetSentryTag(GHConstants.SentryTagFmodOutput, outputType.ToString());
             if (_coresystem.getVersion(out uint fmodVersion, out uint fmodBuild) == RESULT.OK)
+            {
+                _versionCode = fmodVersion;
                 GHApp.SetSentryTag(GHConstants.SentryTagFmodVersion, $"{(fmodVersion >> 16) & 0xFFFF:X}.{(fmodVersion >> 8) & 0xFF:X2}.{fmodVersion & 0xFF:X2}+{fmodBuild}");
+            }
             GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
 
             /* A newly created system's master channel group is always unmuted. Re-apply
@@ -2410,6 +2416,10 @@ namespace GnollHackX.Unknown
 
         public uint GetVersionCode()
         {
+            uint cachedVersion = _versionCode;
+            if (cachedVersion != 0)
+                return cachedVersion;
+
             if (!TryEnterFmodMonitor())
                 return 0;
             try

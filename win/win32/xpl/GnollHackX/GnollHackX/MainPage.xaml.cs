@@ -1656,7 +1656,10 @@ namespace GnollHackX
                     GHApp.FmodService?.AdjustGameVolumes(generalVolume, musicVolume, ambientVolume, dialogueVolume, effectsVolume, uiVolume);
                 }
                 if (GHApp.LoadBanks)
+                {
+                    MainScreenMusicAttempted = true;
                     GHApp.PlayMainScreenMusic();
+                }
             }
             catch (Exception ex)
             {
@@ -1784,6 +1787,9 @@ namespace GnollHackX
         //private readonly object _startUpLock = new object();
         private int _finishedLogoFadeIn = 0;
         private bool FinishedLogoFadeIn { get { return Interlocked.CompareExchange(ref _finishedLogoFadeIn, 0, 0) != 0; } set { Interlocked.Exchange(ref _finishedLogoFadeIn, value ? 1 : 0); } }
+        /* Set when StartUpTasks has loaded the banks and tried the main screen music */
+        private int _mainScreenMusicAttempted = 0;
+        private bool MainScreenMusicAttempted { get { return Interlocked.CompareExchange(ref _mainScreenMusicAttempted, 0, 0) != 0; } set { Interlocked.Exchange(ref _mainScreenMusicAttempted, value ? 1 : 0); } }
 #if GNH_MAUI
         IDispatcherTimer _startUpTimer;
 #endif
@@ -2451,6 +2457,8 @@ namespace GnollHackX
             if (GHApp.CurrentGamePage == null && GHApp.PageFromTopOfModalNavigationStack() == null)
             {
                 carouselView.Play();
+                if (MainScreenMusicAttempted && !GHApp.GameStarted && !GHApp.MainScreenMusicStarted)
+                    GHApp.PlayMainScreenMusic();
             }
             StopGeneralTimer = false;
             StartGeneralTimer();
