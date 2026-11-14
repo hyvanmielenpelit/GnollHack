@@ -16,6 +16,8 @@ public static class AndroidExitInfoReporter
 {
     private const string LastReportedTimestampKey = "AndroidExitInfoLastReportedAnrTimestamp";
     private const string LastReportedExitTimestampKey = "AndroidExitInfoLastReportedExitTimestamp";
+    /* When this device first ran a build that marks CloseApplication exits */
+    private const string CloseMarkerSinceTimestampKey = "AndroidExitInfoCloseMarkerSinceTimestamp";
     /* Set as the process state summary just before CloseApplication kills the process */
     private const string CloseApplicationStateSummary = "gnh-close-application";
 
@@ -36,6 +38,7 @@ public static class AndroidExitInfoReporter
     private const int ReasonFreezer = 14;
     private const int ReasonPackageStateChange = 15;
     private const int ReasonPackageUpdated = 16;
+    private const int SignalKill = 9;
     private const long FirstRunLookbackMilliseconds = 7L * 24L * 60L * 60L * 1000L;
     private const int MaxExitInfosRead = 16;
     private const int MaxReportsPerLaunch = 5;
@@ -76,11 +79,24 @@ public static class AndroidExitInfoReporter
         }
     }
 
+    /* Exits recorded before this time come from builds that did not mark CloseApplication exits */
+    private static long GetCloseMarkerSince()
+    {
+        long since = Preferences.Get(CloseMarkerSinceTimestampKey, 0L);
+        if (since <= 0)
+        {
+            since = Java.Lang.JavaSystem.CurrentTimeMillis();
+            Preferences.Set(CloseMarkerSinceTimestampKey, since);
+        }
+        return since;
+    }
+
     [SupportedOSPlatform("android30.0")]
     private static void ReportNewExitInfos(Context context)
     {
         try
         {
+            long closeMarkerSince = GetCloseMarkerSince();
             if (!SentrySdk.IsEnabled)
                 return;
 
@@ -103,7 +119,7 @@ public static class AndroidExitInfoReporter
 
             try
             {
-                ReportNewProcessDeaths(exitInfos);
+                ReportNewProcessDeaths(exitInfos, closeMarkerSince);
             }
             catch (Exception ex)
             {
@@ -142,16 +158,17 @@ public static class AndroidExitInfoReporter
 
     // WORKAROUND(WA-SENTRY-0012): Sentry reports no Android process deaths other than native crashes and ANRs
     /* Reports each process death in the foreground or visible state that Android recorded since the
-       last report, other than ANRs, user and package actions, clean exits, and CloseApplication */
+       last report, other than ANRs, user and package actions, clean exits, CloseApplication, and SIGKILLs
+       recorded before CloseApplication exits were marked */
     [SupportedOSPlatform("android30.0")]
-    private static void ReportNewProcessDeaths(IList<ApplicationExitInfo> exitInfos)
+    private static void ReportNewProcessDeaths(IList<ApplicationExitInfo> exitInfos, long closeMarkerSince)
     {
         long lastReported = Preferences.Get(LastReportedExitTimestampKey, 0L);
         long cutoff = lastReported > 0 ? lastReported : Java.Lang.JavaSystem.CurrentTimeMillis() - FirstRunLookbackMilliseconds;
         List<ApplicationExitInfo> deaths = new List<ApplicationExitInfo>();
         foreach (ApplicationExitInfo exitInfo in exitInfos)
         {
-            if (exitInfo != null && exitInfo.Timestamp > cutoff && IsReportedProcessDeath(exitInfo))
+            if (exitInfo != null && exitInfo.Timestamp > cutoff && IsReportedProcessDeath(exitInfo, closeMarkerSince))
                 deaths.Add(exitInfo);
         }
         if (deaths.Count == 0)
@@ -168,7 +185,7 @@ public static class AndroidExitInfoReporter
     }
 
     [SupportedOSPlatform("android30.0")]
-    private static bool IsReportedProcessDeath(ApplicationExitInfo exitInfo)
+    private static bool IsReportedProcessDeath(ApplicationExitInfo exitInfo, long closeMarkerSince)
     {
         switch (exitInfo.Reason)
         {
@@ -186,6 +203,9 @@ public static class AndroidExitInfoReporter
             default:
                 break;
         }
+        /* Before the marker, an exit through CloseApplication cannot be told from any other SIGKILL */
+        if (exitInfo.Reason == ReasonSignaled && exitInfo.Status == SignalKill && exitInfo.Timestamp < closeMarkerSince)
+            return false;
         if (exitInfo.Importance > (int)Importance.Visible)
             return false;
         byte[] summary = exitInfo.GetProcessStateSummary();
@@ -204,6 +224,9 @@ public static class AndroidExitInfoReporter
             .ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
         /* A signal's number separates kills (9) from faults (6, 11), so each gets its own issue */
         string issueKey = exitInfo.Reason == ReasonSignaled ? reason + " " + status : reason;
+        string lowMemoryKillReportSupported = ActivityManager.IsLowMemoryKillReportSupported ? "yes" : "no";
+        byte[] stateSummaryBytes = exitInfo.GetProcessStateSummary();
+        string stateSummary = stateSummaryBytes != null && stateSummaryBytes.Length > 0 ? Encoding.ASCII.GetString(stateSummaryBytes) : null;
 
         SentrySdk.CaptureMessage("Android process exit info: " + issueKey, scope =>
         {
@@ -220,6 +243,8 @@ public static class AndroidExitInfoReporter
             scope.SetExtra("Exit Pss KB", exitInfo.Pss.ToString(CultureInfo.InvariantCulture));
             scope.SetExtra("Exit Rss KB", exitInfo.Rss.ToString(CultureInfo.InvariantCulture));
             scope.SetExtra("Exit Process Name", Shorten(exitInfo.ProcessName));
+            scope.SetTag("exit.lmk_report_supported", lowMemoryKillReportSupported);
+            scope.SetExtra("Exit State Summary", Shorten(stateSummary));
         }, SentryLevel.Warning);
     }
 

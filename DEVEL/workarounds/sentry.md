@@ -493,7 +493,11 @@ reads the exits Android recorded since the last report and sends each foreground
 other than ANRs, user and package actions and clean exits, as a warning message
 `Android process exit info: <reason>` with the status, importance, description, memory and exit time.
 `PlatformService.CloseApplication` sets a process state summary before it kills the process
-(WA-MAUI-0017), and exits that carry it are skipped.
+(WA-MAUI-0017), and exits that carry it are skipped. A `SIGNALED` exit with signal 9 recorded before
+the device first ran a build with the marker (the `AndroidExitInfoCloseMarkerSinceTimestamp`
+preference, set on that build's first launch) is skipped, because such an exit cannot be told apart
+from an exit through `CloseApplication`; it was reported as GNOLLHACK-JE. Each report carries
+`exit.lmk_report_supported` and `Exit State Summary`.
 
 **Verify removal.** With a Sentry release expected to report such deaths:
 - Build an Android Debug build without the two tagged sites.
