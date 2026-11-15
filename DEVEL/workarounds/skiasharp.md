@@ -172,7 +172,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-15
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/GHConstants.cs` (`GHConstants.MaxMetalGPUCacheSize`); `win/win32/xpl/GnollHackX/GnollHackX/Controls/SwitchableCanvasView.xaml.cs` (`SwitchableCanvasView.SetContextResourceCacheLimit`); `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.ComputeGPUCacheLimits`)
 - Remove when: Skia, through a SkiaSharp release GnollHack adopts, uploads only the drawn subsets of a large raster image regardless of the cache limit, or exposes a way to force that, and Verify removal passes.
 - Related: WA-SKIASHARP-0003
@@ -198,6 +198,7 @@ Then:
 
 Checks:
 - 2026-10-23 | SkiaSharp 4.153.1 | unverified | No upstream report; Skia's tiling heuristic not re-read.
+- 2026-11-15 | SkiaSharp 4.156.1 | still-needed | Not re-tested on a device. TiledTextureUtils at Skia d1717dc22e (4.156.0) still uploads an image whole when its bytes are below half the cache limit (`bmpSize < cacheSize / 2`); 4.156.1's Skia (712ea09715) leaves the file unchanged.
 
 ## WA-SKIASHARP-0006: ClipRect sometimes malfunctions on iOS SKGLView
 
@@ -314,9 +315,9 @@ Checks:
 - Platforms: Linux
 - Upstream issue: https://github.com/mono/SkiaSharp/issues/3038
 - Upstream status when added: reported
-- Upstream status: fixed-unreleased
-- Fixed upstream in: https://github.com/mono/SkiaSharp/pull/5352
-- Last checked: 2026-11-09
+- Upstream status: released
+- Fixed upstream in: HarfBuzzSharp.NativeAssets.Linux 14.4.0.100 (SkiaSharp 4.156.0), https://github.com/mono/SkiaSharp/pull/5352
+- Last checked: 2026-11-15
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/AvaloniaDesktopProgram.cs` (`AvaloniaDesktopProgram.Main`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/AvaloniaDesktopProgram.cs` (`AvaloniaDesktopProgram.PreloadHarfBuzzSharp`)
 - Remove when: GnollHack uses a SkiaSharp and HarfBuzzSharp release containing PR 5352, and Verify removal passes.
 
@@ -341,6 +342,8 @@ library first; HarfBuzzSharp's own load later gets the same handle.
 Checks:
 - 2026-10-23 | SkiaSharp.NativeAssets.Linux 4.153.1 | still-needed | Fix merged on main 2026-10-17; no release tag contains it (no backport found).
 - 2026-11-09 | SkiaSharp.NativeAssets.Linux 4.155.0 | still-needed | PR 5352 (18300df2ab) is not in v4.155.0; the first tag containing it is v4.156.0-rc.1.26553.11, with no stable release yet.
+- 2026-11-11 | SkiaSharp.NativeAssets.Linux 4.156.0, HarfBuzzSharp.NativeAssets.Linux 14.2.1.102 | still-needed | v4.156.0 contains PR 5352 (`-Wl,-Bsymbolic-functions` on libHarfBuzzSharp), which ships in HarfBuzzSharp.NativeAssets.Linux 14.4.0.100, not in a SkiaSharp package. GnollHack has no HarfBuzzSharp reference of its own, and Avalonia.Controls.Maui 11.0.0-rc.3.26301.1434 brings in 14.2.1.102, which lacks the fix.
+- 2026-11-15 | SkiaSharp.NativeAssets.Linux 4.156.1, HarfBuzzSharp.NativeAssets.Linux 14.2.1.102 | still-needed | HarfBuzzSharp.NativeAssets.Linux 14.4.0.101 (SkiaSharp 4.156.1) also contains the fix. Adopting it needs explicit `HarfBuzzSharp` and `HarfBuzzSharp.NativeAssets.Linux` references under `GnhAvalonia`, then Verify removal.
 
 ## WA-SKIASHARP-0010: Android touch cancel reaches only one pointer
 
@@ -390,7 +393,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-09
+- Last checked: 2026-11-15
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/Gamepad/GHGamepadFocusGlow.cs` (`GHGamepadFocusGlow.DrawRowGlow`)
 - Remove when: the SkiaSharp release GnollHack uses draws nothing inside the shape with `SKBlurStyle.Outer` on a rounded rectangle, and Verify removal passes.
 
@@ -418,6 +421,8 @@ painted.
 Checks:
 - 2026-10-29 | SkiaSharp 4.153.1 | still-needed | Reproduced in a scratch app on 4.153.1 and 3.119.4; no issue found in mono/SkiaSharp.
 - 2026-11-09 | SkiaSharp 4.155.0 | still-needed | Verify removal's scratch app on a raster surface: interior alpha non-zero at all four sizes. Skia m155's blur code has only an std::array rewrite.
+- 2026-11-11 | SkiaSharp 4.156.0 | still-needed | Verify removal's scratch app on a raster surface: interior alpha non-zero at all four sizes.
+- 2026-11-15 | SkiaSharp 4.156.1 | still-needed | Same scratch app result with 4.156.1's native library. Its Skia update fixes Ganesh rounded-rectangle geometry only for transformed shapes on GPU surfaces, and leaves the blur code unchanged.
 
 ## WA-SKIASHARP-0012: SKSwapChainPanel cannot choose its Direct3D adapter
 
@@ -431,7 +436,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-09
+- Last checked: 2026-11-15
 - Code: `win/win32/xpl/GnollHackM/Platforms/Windows/GHAngleAdapterSelection.cs` (`GHAngleAdapterSelection`); `win/win32/xpl/GnollHackM/Platforms/Windows/WindowsSKGLViewHandler.cs` (`WindowsSKGLViewHandler.CreatePlatformView`); `win/win32/xpl/GnollHackM/App.xaml.cs` (`App`)
 - Remove when: SkiaSharp.Views.WinUI lets the app choose the adapter of `SKSwapChainPanel`, GnollHack chooses it through that option, and Verify removal passes.
 
@@ -474,3 +479,5 @@ Checks:
 - 2026-11-06 | SkiaSharp.Views.Maui.Core 4.154.0 | still-needed | GlesContext at v4.154.0 calls eglGetPlatformDisplayEXT with EGL_DEFAULT_DISPLAY only; no adapter option.
 - 2026-11-07 | SkiaSharp.Views.Maui.Core 4.154.0 | still-needed | No adapter option at v4.154.0; a probe on the shipped ANGLE (ea1cea778c4a) confirmed that a display pre-initialized with a LUID is returned to SkiaSharp's call on that adapter.
 - 2026-11-09 | SkiaSharp.Views.Maui.Core 4.155.0 | still-needed | No adapter option at v4.155.0. GlesContext's EGL calls now take pointers, but the display attribute lists and EGL_DEFAULT_DISPLAY are unchanged; ANGLE is still chromium/6275, with rebuilt DLLs. The probe was not re-run.
+- 2026-11-11 | SkiaSharp.Views.Maui.Core 4.156.0 | still-needed | No adapter option at v4.156.0, and the display attribute lists are unchanged. ANGLE moved to chromium/8118 (d39da9a2ab). Run against 4.156.0's libEGL.dll and libGLESv2.dll, the probe got the display pre-initialized with the LUID of the Intel UHD, the RTX 3050 Ti or WARP back from SkiaSharp's call, on that adapter. 4.155.0's DLLs, as a control, gave the same result.
+- 2026-11-15 | SkiaSharp.Views.Maui.Core 4.156.1 | still-needed | No managed change at v4.156.1. ANGLE is still chromium/8118 (d39da9a2ab), with rebuilt DLLs; the probe gave the same result on all three adapters.
