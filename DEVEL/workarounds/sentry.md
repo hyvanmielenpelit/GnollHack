@@ -498,7 +498,10 @@ exits, as a warning message
 the device first ran a build with the marker (the `AndroidExitInfoCloseMarkerSinceTimestamp`
 preference, set on that build's first launch) is skipped, because such an exit cannot be told apart
 from an exit through `CloseApplication`; it was reported as GNOLLHACK-JE. Each report carries
-`exit.lmk_report_supported` and `Exit State Summary`. `AndroidMemorySampler` keeps a `gs1` process
+`exit.lmk_report_supported`, `Exit State Summary`, and `exit.description`, the description up to its
+first colon or white space. A `REASON_OTHER` exit with a description is grouped by that word as
+`other <word>`, so that vendor kills such as Xiaomi's `OptimizationClean` (GNOLLHACK-JG) and Sentry's
+own `MemoryLimiter:` exits get separate issues. `AndroidMemorySampler` keeps a `gs1` process
 state summary (game state, memory warnings, memory figures) current every 15 s and on each memory
 warning, and the report parses it into `exit.in_game`, `exit.memory_warning`, `exit.snapshot`,
 `device.memory` and `Exit Snapshot`. A `SIGNALED` exit with signal 9 within 10 s of a close recorded in

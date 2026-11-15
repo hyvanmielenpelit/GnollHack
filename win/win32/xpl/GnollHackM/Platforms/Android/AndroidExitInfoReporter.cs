@@ -48,6 +48,7 @@ public static class AndroidExitInfoReporter
     /* The header before the thread dump can run to dozens of lines; reading stops at the dump line */
     private const int MaxTraceHeaderLines = 1000;
     private const int MaxExtraLength = 1000;
+    private const int MaxDescriptionKeyLength = 64;
 
     private static int _started = 0;
 
@@ -300,8 +301,16 @@ public static class AndroidExitInfoReporter
         string importance = exitInfo.Importance.ToString(CultureInfo.InvariantCulture);
         string exitTime = DateTimeOffset.FromUnixTimeMilliseconds(exitInfo.Timestamp).UtcDateTime
             .ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
-        /* A signal's number separates kills (9) from faults (6, 11), so each gets its own issue */
-        string issueKey = exitInfo.Reason == ReasonSignaled ? reason + " " + status : reason;
+        string descriptionKey = DescriptionKey(exitInfo.Description);
+        /* A signal's number separates kills (9) from faults (6, 11), and the description's first word
+           separates the vendor and Sentry reasons behind REASON_OTHER, so each gets its own issue */
+        string issueKey;
+        if (exitInfo.Reason == ReasonSignaled)
+            issueKey = reason + " " + status;
+        else if (exitInfo.Reason == ReasonOther && descriptionKey != null)
+            issueKey = reason + " " + descriptionKey;
+        else
+            issueKey = reason;
         string lowMemoryKillReportSupported = ActivityManager.IsLowMemoryKillReportSupported ? "yes" : "no";
         byte[] stateSummaryBytes = exitInfo.GetProcessStateSummary();
         string stateSummary = stateSummaryBytes != null && stateSummaryBytes.Length > 0 ? Encoding.ASCII.GetString(stateSummaryBytes) : null;
@@ -313,6 +322,7 @@ public static class AndroidExitInfoReporter
             scope.SetTag("exit.status", status);
             scope.SetTag("exit.importance", importance);
             scope.SetTag("exit.time", exitTime);
+            scope.SetTag("exit.description", descriptionKey ?? "(none)");
             /* No null extras: see WA-SENTRY-0008 */
             scope.SetExtra("Exit Description", Shorten(exitInfo.Description));
             scope.SetExtra("Exit Status", status);
@@ -325,6 +335,24 @@ public static class AndroidExitInfoReporter
             scope.SetExtra("Exit State Summary", Shorten(stateSummary));
             AttachStateSummary(scope, exitInfo, "exit", "Exit Snapshot");
         }, SentryLevel.Warning);
+    }
+
+    /* The description up to its first colon or white space, such as "OptimizationClean" or Sentry's
+       "MemoryLimiter"; null when the description is empty */
+    private static string DescriptionKey(string description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+            return null;
+        string trimmed = description.Trim();
+        int end = 0;
+        while (end < trimmed.Length && end < MaxDescriptionKeyLength)
+        {
+            char c = trimmed[end];
+            if (c == ':' || char.IsWhiteSpace(c))
+                break;
+            end++;
+        }
+        return end > 0 ? trimmed.Substring(0, end) : null;
     }
 
     private static string ReasonName(int reason)
