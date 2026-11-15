@@ -204,8 +204,9 @@ public static class AndroidExitInfoReporter
 
     // WORKAROUND(WA-SENTRY-0012): Sentry reports no Android process deaths other than native crashes and ANRs
     /* Reports each process death in the foreground or visible state that Android recorded since the
-       last report, other than ANRs, user and package actions, clean exits, CloseApplication, and SIGKILLs
-       recorded before CloseApplication exits were marked */
+       last report, other than native crashes and ANRs, which Sentry reports itself, user and package
+       actions, clean exits, CloseApplication, and SIGKILLs recorded before CloseApplication exits were
+       marked */
     [SupportedOSPlatform("android30.0")]
     private static void ReportNewProcessDeaths(IList<ApplicationExitInfo> exitInfos, long closeMarkerSince)
     {
@@ -235,6 +236,8 @@ public static class AndroidExitInfoReporter
     {
         switch (exitInfo.Reason)
         {
+            /* Sentry's TombstoneIntegration reports native crashes with their stacks */
+            case ReasonCrashNative:
             case ReasonAnr:
             case ReasonUserRequested:
             case ReasonUserStopped:

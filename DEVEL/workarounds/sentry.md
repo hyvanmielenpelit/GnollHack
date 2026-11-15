@@ -474,7 +474,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-14
+- Last checked: 2026-11-15
 - Code: `win/win32/xpl/GnollHackM/Platforms/Android/AndroidExitInfoReporter.cs` (`AndroidExitInfoReporter.ReportNewProcessDeaths`); `win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs` (`PlatformService.CloseApplication`); `win/win32/xpl/GnollHackM/Platforms/Android/AndroidMemorySampler.cs` (`AndroidMemorySampler`)
 - Remove when: Sentry reports Android process deaths for low memory, signals and nonzero self-exits, GnollHack uses that release, and Verify removal passes.
 - Related: WA-SENTRY-0010, WA-MAUI-0017
@@ -490,7 +490,8 @@ policies, and they match only `REASON_CRASH_NATIVE` (TombstoneIntegration), `REA
 
 **Workaround.** `AndroidExitInfoReporter.ReportNewProcessDeaths`, started from `MainActivity.OnCreate`,
 reads the exits Android recorded since the last report and sends each foreground or visible one,
-other than ANRs, user and package actions and clean exits, as a warning message
+other than native crashes and ANRs (which Sentry reports itself), user and package actions and clean
+exits, as a warning message
 `Android process exit info: <reason>` with the status, importance, description, memory and exit time.
 `PlatformService.CloseApplication` sets a process state summary before it kills the process
 (WA-MAUI-0017), and exits that carry it are skipped. A `SIGNALED` exit with signal 9 recorded before
@@ -512,3 +513,4 @@ marker.
 
 Checks:
 - 2026-11-14 | Sentry 6.12.1 (sentry-android 8.60.0) | still-needed | In sentry-android-core 8.60.0, the only ApplicationExitInfoPolicy implementations are TombstonePolicy (reason 5), AnrV2Policy (6) and MemoryLimiterPolicy (17, or 13 with "MemoryLimiter:").
+- 2026-11-15 | Sentry 6.12.1 (sentry-android 8.60.0) | still-needed | GNOLLHACK-JF: each of its 3 crash-native reports duplicated a tombstone event Sentry had already sent (GNOLLHACK-HJ, GNOLLHACK-FN), so the reporter now skips REASON_CRASH_NATIVE.
