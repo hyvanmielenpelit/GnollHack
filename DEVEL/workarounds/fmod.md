@@ -96,6 +96,51 @@ mixer is left running and the worker stays inside FMOD.
 Checks:
 - 2026-10-23 | FMOD 2.03.14 | still-needed | No upstream report exists, and no fix is known.
 
+## WA-FMOD-0003: Output opened while Android has the app in the background can stay inaudible
+
+- Status: active
+- Added: 2026-11-15
+- GnollHack version: 3.41 (441)
+- Component: FMOD Core
+- Package: FMOD
+- Defective version: FMOD 2.03.14
+- Platforms: Android
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-15
+- Code: `win/win32/xpl/GnollHackX/GnollHackX.FMOD/FmodService.cs` (`FmodService.RestartOutputOpenedInBackground`)
+- Remove when: The cause is identified and fixed in FMOD or Android, GnollHack uses a release containing the fix, and Verify removal passes.
+- Related: WA-FMOD-0001
+
+**Symptom.** When FMOD is initialized after Android has stopped the activity, for example a
+Debug start from Visual Studio with the screen locked, the app can have no sound at all after the
+user returns, not even button clicks. FMOD reports itself healthy: the master channel group is
+unpaused and unmuted, the banks are loaded, events play, and the master DSP clock advances in real
+time. Sound returned later on its own, about when a game was started.
+
+**Cause.** Not established. FMOD opens its AAudio output while the app is in the background, and
+the stream accepts the mixed audio without it being heard. With WA-FMOD-0001, backgrounding only
+pauses the master channel group, so that stream is never reopened. Whether FMOD or the Android audio
+service is at fault is unknown.
+
+**Workaround.** `InitializeFmod` records when it runs with a suspend already requested on Android.
+On the first resume after that, inside the resume transition, `RestartOutputOpenedInBackground`
+calls `System::setDriver` with the current driver index, which after initialization shuts the
+driver down and starts it again. Other platforms resume with `mixerResume`, which reacquires the
+audio hardware.
+
+**Verify removal.** Remove the call to `RestartOutputOpenedInBackground` in `Resume`. Then:
+- Build an Android Debug build and start it from Visual Studio with the screen locked, leaving the
+  device locked until the log shows "FMOD initialized successfully." after "MAUI Window has been
+  stopped".
+- Unlock, and confirm that the main screen music and button sounds are heard at once, in five such
+  starts.
+
+Checks:
+- 2026-11-15 | FMOD 2.03.14 | unverified | Written from one silent run's diagnostics (DSP clock advancing, one channel playing, nothing audible); the restart itself has not been tested on a device yet.
+- 2026-11-15 | FMOD 2.03.14 | still-needed | Device test passed: with the restart, a locked-screen Debug start whose FMOD initialization came after the stop had sound right after unlocking; without it, such starts had been silent.
+
 <!-- known-issues -->
 
 ## KI-FMOD-0001: Device restart race can crash FMOD in sem_post on Android

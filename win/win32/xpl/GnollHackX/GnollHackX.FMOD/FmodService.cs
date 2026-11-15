@@ -166,6 +166,32 @@ namespace GnollHackX.Unknown
         /* Read once by InitializeFmod, so that a suspended mixer does not hide the version */
         private volatile uint _versionCode = 0;
 
+        /* 1 from an initialization made while the app was in the background on Android until the
+           first resume reopens the output */
+        private int _outputOpenedInBackground = 0;
+
+        /* FMOD stores the marshalled function pointer, so the delegate must outlive the system */
+        private static readonly FMOD.SYSTEM_CALLBACK _systemCallback = GNHSystemCallback;
+        private static int _outputUnderrunCount = 0;
+
+        /* Called from the Studio update thread, and from the mixer thread for OUTPUTUNDERRUN.
+           Makes no FMOD calls. */
+        public static RESULT GNHSystemCallback(IntPtr system, FMOD.SYSTEM_CALLBACK_TYPE type, IntPtr commanddata1, IntPtr commanddata2, IntPtr userdata)
+        {
+            try
+            {
+                if (type == FMOD.SYSTEM_CALLBACK_TYPE.OUTPUTUNDERRUN)
+                    Interlocked.Increment(ref _outputUnderrunCount);
+                else
+                    GHApp.MaybeWriteGHLog("FmodService.SystemCallback: " + type.ToString() + " at " + DateTime.UtcNow.ToString("HH:mm:ss.fff"), true, GHConstants.SentryGnollHackGeneralCategoryName);
+            }
+            catch (Exception)
+            {
+                /* An exception must not unwind into FMOD's thread */
+            }
+            return RESULT.OK;
+        }
+
         /* True while FMOD is in its background state: mixer suspended, or master group paused */
         private int _mixerSuspended = 0;
         private bool MixerSuspended { get { return Interlocked.CompareExchange(ref _mixerSuspended, 0, 0) != 0; } set { Interlocked.Exchange(ref _mixerSuspended, value ? 1 : 0); } }
@@ -335,6 +361,11 @@ namespace GnollHackX.Unknown
                 GHApp.SetSentryTag(GHConstants.SentryTagFmodVersion, $"{(fmodVersion >> 16) & 0xFFFF:X}.{(fmodVersion >> 8) & 0xFF:X2}.{fmodVersion & 0xFF:X2}+{fmodBuild}");
             }
             GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
+            res = _coresystem.setCallback(_systemCallback, FMOD.SYSTEM_CALLBACK_TYPE.DEVICELISTCHANGED | FMOD.SYSTEM_CALLBACK_TYPE.DEVICEREINITIALIZE | FMOD.SYSTEM_CALLBACK_TYPE.OUTPUTUNDERRUN);
+            if (res != RESULT.OK)
+                GHApp.MaybeWriteGHLog("FmodService.InitializeFmod: setCallback failed with result " + res, true, GHConstants.SentryGnollHackGeneralCategoryName);
+            if (SuspendRequested && UseMasterPauseForSuspend)
+                Interlocked.Exchange(ref _outputOpenedInBackground, 1);
             LogAudioDiagnostics("after initialization");
 
             /* A newly created system's master channel group is always unmuted. Re-apply
@@ -546,6 +577,8 @@ namespace GnollHackX.Unknown
             {
                 WaitForActiveCallsToDrain(GHConstants.FmodDrainTimeoutMs, "Resume");
                 resumed = ResumeMixer();
+                if (resumed)
+                    RestartOutputOpenedInBackground();
             }
             finally
             {
@@ -597,6 +630,33 @@ namespace GnollHackX.Unknown
                 GHApp.MaybeWriteGHLog("FmodService.Resume exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
             }
             return false;
+        }
+
+        // WORKAROUND(WA-FMOD-0003): an output opened while Android has the app in the background can stay inaudible
+        /* Runs inside the resume transition. setDriver after initialization shuts the driver down
+           and starts it again. */
+        private void RestartOutputOpenedInBackground()
+        {
+            if (Interlocked.Exchange(ref _outputOpenedInBackground, 0) == 0)
+                return;
+
+            try
+            {
+                if (!_coresystem.hasHandle())
+                    return;
+
+                RESULT res = _coresystem.getDriver(out int driver);
+                if (res == RESULT.OK)
+                {
+                    GHApp.MaybeWriteGHLog("FmodService.Resume: output was opened in the background; restarting driver " + driver, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                    res = _coresystem.setDriver(driver);
+                }
+                GHApp.MaybeWriteGHLog("FmodService.Resume: output restart result " + res, true, GHConstants.SentryGnollHackGeneralCategoryName);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("FmodService.Resume: output restart exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
+            }
         }
 
         private const int ResumeDiagnosticsDelayMs = 3000;
@@ -653,6 +713,9 @@ namespace GnollHackX.Unknown
                                 sb.Append(", channels=").Append(channels).Append('/').Append(realChannels);
                             if (_coresystem.getCPUUsage(out FMOD.CPU_USAGE coreUsage) == RESULT.OK)
                                 sb.Append(", dspCpu=").Append(coreUsage.dsp.ToString("F1"));
+                            if (_coresystem.getDriver(out int driver) == RESULT.OK)
+                                sb.Append(", driver=").Append(driver);
+                            sb.Append(", underruns=").Append(Interlocked.CompareExchange(ref _outputUnderrunCount, 0, 0));
                         }
                         if (_system.hasHandle())
                         {
