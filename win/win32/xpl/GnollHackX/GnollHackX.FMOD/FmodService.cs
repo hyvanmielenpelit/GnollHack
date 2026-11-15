@@ -335,6 +335,7 @@ namespace GnollHackX.Unknown
                 GHApp.SetSentryTag(GHConstants.SentryTagFmodVersion, $"{(fmodVersion >> 16) & 0xFFFF:X}.{(fmodVersion >> 8) & 0xFF:X2}.{fmodVersion & 0xFF:X2}+{fmodBuild}");
             }
             GHApp.MaybeWriteGHLog("FMOD initialized successfully.");
+            LogAudioDiagnostics("after initialization");
 
             /* A newly created system's master channel group is always unmuted. Re-apply
                the app's mute state before anything can be played, and before honouring a
@@ -449,6 +450,7 @@ namespace GnollHackX.Unknown
                 EndLifecycleTransition();
             }
             GHApp.SetSentryTag(GHConstants.SentryTagFmodMixer, MixerSuspended ? SuspendedTagValue : "running");
+            LogAudioDiagnostics("after suspend");
 
             if (!SuspendRequested && MixerSuspended)
                 Resume();
@@ -529,6 +531,8 @@ namespace GnollHackX.Unknown
 
         public void Resume()
         {
+            LogAudioDiagnostics("before resume");
+            LogAudioDiagnosticsLater(ResumeDiagnosticsDelayMs + " ms after resume", ResumeDiagnosticsDelayMs);
             SuspendRequested = false;
             if (!Initialized || !MixerSuspended)
                 return;
@@ -593,6 +597,101 @@ namespace GnollHackX.Unknown
                 GHApp.MaybeWriteGHLog("FmodService.Resume exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
             }
             return false;
+        }
+
+        private const int ResumeDiagnosticsDelayMs = 3000;
+
+        /* Logs one line of FMOD's audible state. The parent DSP clock advances only while the
+           output device pulls the mixer, and the Studio command queue stall count rises while
+           the Studio update thread is stuck. */
+        private void LogAudioDiagnostics(string context)
+        {
+            if (!GHApp.IsDebug && !GHApp.DebugLogMessages)
+                return;
+
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append("FmodService.Diagnostics (").Append(context).Append(") at ").Append(DateTime.UtcNow.ToString("HH:mm:ss.fff"));
+                sb.Append(": initialized=").Append(Initialized ? 1 : 0);
+                sb.Append(", suspended=").Append(MixerSuspended ? 1 : 0);
+                sb.Append(", suspendRequested=").Append(SuspendRequested ? 1 : 0);
+                sb.Append(", muted=").Append(GHApp.IsMuted ? 1 : 0);
+                sb.Append(", muteDirty=").Append(GHApp.MuteStateDirty ? 1 : 0);
+
+                if (!TryEnterFmodForBanks())
+                {
+                    sb.Append(", FMOD entry refused");
+                    GHApp.MaybeWriteGHLog(sb.ToString(), true, GHConstants.SentryGnollHackGeneralCategoryName, GHApp.IsDebug);
+                    return;
+                }
+                try
+                {
+                    /* FMOD calls are not made against a suspended mixer */
+                    if (MixerSuspended && !UseMasterPauseForSuspend)
+                    {
+                        sb.Append(", mixer suspended; no FMOD calls made");
+                    }
+                    else
+                    {
+                        if (_coresystem.hasHandle())
+                        {
+                            if (_coresystem.getOutput(out OUTPUTTYPE outputType) == RESULT.OK)
+                                sb.Append(", output=").Append(outputType.ToString());
+                            if (_coresystem.getSoftwareFormat(out int sampleRate, out _, out _) == RESULT.OK)
+                                sb.Append(", rate=").Append(sampleRate);
+                            if (_coresystem.getMasterChannelGroup(out ChannelGroup masterChannelGroup) == RESULT.OK)
+                            {
+                                if (masterChannelGroup.getPaused(out bool paused) == RESULT.OK)
+                                    sb.Append(", masterPaused=").Append(paused ? 1 : 0);
+                                if (masterChannelGroup.getMute(out bool mute) == RESULT.OK)
+                                    sb.Append(", masterMute=").Append(mute ? 1 : 0);
+                                if (masterChannelGroup.getDSPClock(out ulong dspClock, out ulong parentClock) == RESULT.OK)
+                                    sb.Append(", dspClock=").Append(dspClock).Append(", parentClock=").Append(parentClock);
+                            }
+                            if (_coresystem.getChannelsPlaying(out int channels, out int realChannels) == RESULT.OK)
+                                sb.Append(", channels=").Append(channels).Append('/').Append(realChannels);
+                            if (_coresystem.getCPUUsage(out FMOD.CPU_USAGE coreUsage) == RESULT.OK)
+                                sb.Append(", dspCpu=").Append(coreUsage.dsp.ToString("F1"));
+                        }
+                        if (_system.hasHandle())
+                        {
+                            if (_system.getBankCount(out int bankCount) == RESULT.OK)
+                                sb.Append(", banks=").Append(bankCount);
+                            if (_system.getBufferUsage(out FMOD.Studio.BUFFER_USAGE bufferUsage) == RESULT.OK)
+                                sb.Append(", commandQueue=").Append(bufferUsage.studiocommandqueue.currentusage).Append('/').Append(bufferUsage.studiocommandqueue.capacity)
+                                  .Append(", commandQueueStalls=").Append(bufferUsage.studiocommandqueue.stallcount);
+                            if (_system.getCPUUsage(out FMOD.Studio.CPU_USAGE studioUsage, out FMOD.CPU_USAGE _) == RESULT.OK)
+                                sb.Append(", studioUpdateCpu=").Append(studioUsage.update.ToString("F1"));
+                        }
+                    }
+                }
+                finally
+                {
+                    ExitFmodMonitor();
+                }
+                GHApp.MaybeWriteGHLog(sb.ToString(), true, GHConstants.SentryGnollHackGeneralCategoryName, GHApp.IsDebug);
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("FmodService.Diagnostics (" + context + ") exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName, GHApp.IsDebug);
+            }
+        }
+
+        private void LogAudioDiagnosticsLater(string context, int delayMs)
+        {
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(delayMs);
+                    LogAudioDiagnostics(context);
+                }
+                catch (Exception ex)
+                {
+                    GHApp.MaybeWriteGHLog("FmodService.Diagnostics (" + context + ") exception: " + ex.Message, true, GHConstants.SentryGnollHackGeneralCategoryName);
+                }
+            });
         }
 
         private void SetAudioSessionSettings(double rate, double blockSize)

@@ -9967,7 +9967,7 @@ namespace GnollHackX
             return info_str;
         }
 
-        public static void MaybeWriteGHLog(string loggedtext, bool addBreadcrumb = false, string category = null)
+        public static void MaybeWriteGHLog(string loggedtext, bool addBreadcrumb = false, string category = null, bool forceMessage = false)
         {
             if (string.IsNullOrWhiteSpace(loggedtext))
                 return;
@@ -9975,7 +9975,7 @@ namespace GnollHackX
             if (addBreadcrumb)
                 AddSentryBreadcrumb(loggedtext, category);
 
-            if (DebugLogMessages)
+            if (forceMessage || DebugLogMessages)
                 WriteGHLog(loggedtext);
             else
                 Debug.WriteLine(loggedtext);
