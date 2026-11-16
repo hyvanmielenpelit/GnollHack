@@ -51,7 +51,7 @@ Set-StrictMode -Version 2
 $ErrorActionPreference = 'Stop'
 
 # Pinned sentry-native commit: the commit of the tag that win\win32\xpl\gnhsentrywin\include\sentry.h names
-$SentryNativeCommit = 'd043b2bcbdc24eb9fd3a17d0fe0a510526e5902a'
+$SentryNativeCommit = '7afc37457d7fcc37fb0bace9c8045d3fa687717f'
 
 # The highest glibc symbol version the library may need
 $MaxGlibcVersion = '2.27'

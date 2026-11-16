@@ -137,9 +137,9 @@ public static class MauiProgram
                 // Other Sentry options can be set here.
                 options.CaptureFailedRequests = false;
 #if ANDROID || IOS
-                /* The scope is the only channel by which the crash-context snapshot from
-                    UpdateSentryCrashContextScope reaches a native signal-handler crash. */
-                options.EnableScopeSync = true;
+                /* Sentry's Android and iOS integrations sync the scope to their native SDKs themselves. The scope
+                    is the only channel by which the crash-context snapshot from UpdateSentryCrashContextScope
+                    reaches a native signal-handler crash. */
 #if ANDROID
                 /* On Android 12+, the next launch after a native crash sends the system tombstone,
                     merged with the NDK event, adding all thread stacks and the system's crash record. */
@@ -206,12 +206,9 @@ public static class MauiProgram
                 options.Dsn = WindowsSentryNative.Dsn ?? "";
                 options.Release = WindowsSentryNative.Release;
                 options.Environment = WindowsSentryNative.Environment;
+                // WORKAROUND(WA-SENTRY-0013): Sentry .NET 7 makes the native scope-sync and crashed-last-run options internal
                 if (WindowsSentryNative.NativeInitialized)
-                {
-                    options.ScopeObserver = new GHSentryNativeScopeObserver();
-                    options.EnableScopeSync = true;
-                    options.CrashedLastRun = () => WindowsSentryNative.CrashedLastRun;
-                }
+                    GHSentryOptionsInternals.TrySetNativeHooks(options, new GHSentryNativeScopeObserver(), () => WindowsSentryNative.CrashedLastRun);
 
 #if DEBUG
                 // Debug messages go to stdout through Console.WriteLine, so this stays
@@ -745,6 +742,8 @@ public static class MauiProgram
         {
             WindowsSentryNative.SubscribeClose();
             GHSentryNative.StartOutboxUpload(WindowsSentryNative.Dsn);
+            if (GHSentryOptionsInternals.Failure != null)
+                SentrySdk.CaptureMessage("Sentry options internals unavailable: " + GHSentryOptionsInternals.Failure, SentryLevel.Warning);
         }
 #endif
         return app;

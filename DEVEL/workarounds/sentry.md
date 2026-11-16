@@ -22,7 +22,7 @@ issues at the end of the file. Never renumber or reuse an ID.
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/gnhsentrywin/gnhsentry.c` (`gnh_unhandled_filter`); `win/win32/xpl/gnhsentrywin/gnhsentry.c` (`gnh_crash_install`); `win/win32/xpl/GnollHackM/GHSentryNative.cs` (`GHSentryNative.InitOnce`)
 - Remove when: GnollHack uses a sentry-native release whose inproc backend calls the previous unhandled-exception filter, and Verify removal passes.
 - Related: WA-SENTRY-0002
@@ -56,6 +56,7 @@ skip the filter swap and keep only the vectored handler. Then:
 
 Checks:
 - 2026-10-23 | sentry-native 0.17.2 | still-needed | No upstream issue found; the pinned release does not chain.
+- 2026-11-16 | sentry-native 0.17.6 | still-needed | inproc's handle_exception returns EXCEPTION_CONTINUE_SEARCH without calling g_previous_handler, which only shutdown restores; no upstream issue found.
 
 ## WA-SENTRY-0002: Native faults under managed frames never reach inproc's crash handler
 
@@ -69,7 +70,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/gnhsentrywin/gnhsentry.c` (`gnh_vectored_handler`)
 - Remove when: sentry-native captures hardware faults in native modules called from managed code in a CoreCLR process without help, and Verify removal passes.
 - Related: WA-SENTRY-0001
@@ -103,6 +104,7 @@ Then:
 
 Checks:
 - 2026-10-23 | sentry-native 0.17.2 | still-needed | No upstream issue found; inproc installs only the unhandled-exception filter.
+- 2026-11-16 | sentry-native 0.17.6 | still-needed | On Windows inproc still installs only SetUnhandledExceptionFilter, no vectored handler; no upstream issue found.
 
 ## WA-SENTRY-0003: Sentry .NET captures no native crashes in JIT desktop builds
 
@@ -116,10 +118,10 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-06
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/GnollHackM/GHSentryNative.cs` (`GHSentryNative`); `win/win32/xpl/GnollHackM/GHSentryNativeScopeObserver.cs` (`GHSentryNativeScopeObserver`); `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`SentryNative`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaSentry.cs` (`GHAvaloniaSentry.Init`)
 - Remove when: Sentry .NET starts its native SDK, with scope sync and crash upload, in JIT builds on Windows, Linux and macOS, GnollHack uses that release, and Verify removal passes.
-- Related: WA-SENTRY-0004
+- Related: WA-SENTRY-0004, WA-SENTRY-0013
 
 **Symptom.** A crash in native code, such as the C game core, is not reported by Sentry .NET
 on the Windows, Linux and macOS builds.
@@ -130,9 +132,10 @@ GnollHack ships JIT builds on these platforms.
 **Workaround.** `GHSentryNative` initializes sentry-native itself before `SentrySdk.Init`:
 gnhsentry.dll on Windows, libsentry.so on Linux, libgnhsentry.dylib on macOS, inproc
 backend, with a transport that stores crash envelopes in an outbox that is uploaded at the
-next start. It feeds `CrashedLastRun` to Sentry .NET, and `GHSentryNativeScopeObserver`
-mirrors the managed scope into the native one. `SentryNative` is `false` for these builds,
-so Sentry .NET never starts a second sentry-native beside it.
+next start. It feeds `CrashedLastRun` to Sentry .NET through `GHSentryOptionsInternals`
+(WA-SENTRY-0013), and `GHSentryNativeScopeObserver` mirrors the managed scope into the
+native one. `SentryNative` is `false` for these builds, so Sentry .NET never starts a
+second sentry-native beside it.
 
 **Verify removal.** With a Sentry .NET release that supports native crashes in JIT builds:
 - Remove `GHSentryNative.Init` and the scope observer from `WindowsSentryNative` and
@@ -148,6 +151,7 @@ Checks:
 - 2026-10-23 | Sentry 6.12.1, Sentry.Maui 6.12.1 | still-needed | No upstream issue found; the comment states the SDK's native support is limited to trimmed or Native AOT builds.
 - 2026-11-05 | Sentry 6.12.1 | still-needed | macOS: the osx static library is linked only by Native AOT (Sentry.Native.targets); libgnhsentry.dylib added.
 - 2026-11-06 | Sentry 6.12.1 | still-needed | Windows (Avalonia): the flavor uses the same sentry-native path as WinUI 3, gnhsentry.dll through GHSentryNative with SentryNative=false.
+- 2026-11-16 | Sentry 7.0.0, Sentry.Maui 7.0.0 | still-needed | SentrySdk.Init calls InitNativeSdk only when SentryNative.IsAvailable; Sentry.Native.targets links sentry-native only as static NativeLibrary items and honors SentryNative=false.
 
 ## WA-SENTRY-0004: SentrySdk.CaptureEnvelope can drop native-only event fields
 
@@ -161,7 +165,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/GnollHackM/GHSentryNative.cs` (`GHSentryNative.UploadOutboxAsync`)
 - Remove when: Sentry .NET forwards an envelope's bytes unchanged, or WA-SENTRY-0003 is removed, and Verify removal passes.
 - Related: WA-SENTRY-0003
@@ -184,6 +188,7 @@ accepted or rejected with a 4xx other than 429, and keeping the rest for the nex
 
 Checks:
 - 2026-10-23 | Sentry 6.12.1, Sentry.Maui 6.12.1 | unverified | No upstream issue found; not re-tested.
+- 2026-11-16 | Sentry 7.0.0, Sentry.Maui 7.0.0 | unverified | EnvelopeItem at 7.0.0 still parses event items with SentryEvent.FromJson; no upstream issue found; not re-tested.
 
 ## WA-SENTRY-0005: inproc's SA_ONSTACK handlers overflow the alternate stack for CoreCLR's chained handlers
 
@@ -197,7 +202,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/GnollHackM/Platforms/Linux/GHAvaloniaSentryNative.cs` (`GHAvaloniaSentryNative.ClearAlternateStackOnManagedFaultSignals`)
 - Remove when: GnollHack uses a sentry-native release whose CHAIN_AT_START strategy runs the chained handler on the interrupted thread's stack for these signals, and Verify removal passes.
 
@@ -224,6 +229,7 @@ closes sentry-native again.
 
 Checks:
 - 2026-10-23 | sentry-native 0.17.2 | still-needed | No upstream issue found; the pinned release still sets SA_ONSTACK.
+- 2026-11-16 | sentry-native 0.17.6 | still-needed | install_signal_handlers still sets SA_ONSTACK, and CHAIN_AT_START calls the previous handler from inproc's handler on the alternate stack; no upstream issue found.
 
 ## WA-SENTRY-0006: UploadDebugInfoToSentry uploads ELF symbols only for Android
 
@@ -237,7 +243,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`UploadGnollHackLinuxSoToSentry`)
 - Remove when: Sentry's MSBuild integration uploads ELF debug files for Linux JIT builds, GnollHack uses that release, and Verify removal passes.
 
@@ -261,6 +267,7 @@ uploaded, because no Linux native event has had a frame in it.
 
 Checks:
 - 2026-10-23 | Sentry 6.12.1 | still-needed | No upstream issue found; Sentry.targets at 6.12.1 still limits elf to Android.
+- 2026-11-16 | Sentry 7.0.0 | still-needed | Sentry.targets:210 at 7.0.0 still adds elf to a standard managed build only for android; no upstream issue found.
 
 ## WA-SENTRY-0007: Sentry.Maui invokes the UseSentry options callback twice
 
@@ -274,7 +281,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/GnollHackM/MauiProgram.cs` (`MauiProgram.CreateMauiApp`)
 - Remove when: Sentry.Maui invokes the options callback once, GnollHack uses that release, and Verify removal passes.
 
@@ -295,6 +302,7 @@ Windows `UseSentry` callback. Then:
 
 Checks:
 - 2026-10-23 | Sentry.Maui 6.12.1 | still-needed | No upstream issue found; SentryMauiAppBuilderExtensions.UseSentry at 6.12.1 still invokes the callback twice.
+- 2026-11-16 | Sentry.Maui 7.0.0 | still-needed | UseSentry at 7.0.0 still registers the callback with services.Configure and invokes it on a temporary SentryMauiOptions; no upstream issue found.
 
 ## WA-SENTRY-0008: The Android and iOS scope observers ignore a null extra
 
@@ -308,7 +316,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-23
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/GnollHackX/GnollHackX/GHApp.cs` (`GHApp.ClearSentryCrashContextScope`)
 - Remove when: The Android and Cocoa scope observers remove the native extra when the value is null, GnollHack uses that release, and Verify removal passes.
 
@@ -332,6 +340,7 @@ Then:
 
 Checks:
 - 2026-10-23 | Sentry.Maui 6.12.1 | still-needed | No upstream issue found; both observers at 6.12.1 still return early on null.
+- 2026-11-16 | Sentry.Maui 7.0.0 | still-needed | AndroidScopeObserver.SetExtra and CocoaScopeObserver.SetExtra at 7.0.0 still return early on null; no upstream issue found.
 
 ## WA-SENTRY-0009: A failing exception processor sends the event without its exception
 
@@ -345,7 +354,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-25
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/GnollHackM/GHSentryEventFallback.cs` (`GHSentryEventFallback.Apply`)
 - Remove when: The SDK keeps a minimal exception on the event when an exception processor fails, GnollHack uses that release, and Verify removal passes.
 - Related: GNOLLHACK-HW
@@ -377,6 +386,7 @@ nor a message gets a message.
 
 Checks:
 - 2026-10-25 | Sentry 6.12.1 | still-needed | Reproduced in a scratch console project: a throwing Message getter leaves SentryExceptions empty in BeforeSend; no upstream issue found.
+- 2026-11-16 | Sentry 7.0.0 | still-needed | SentryClient.DoSendEvent at 7.0.0 still continues after an ISdkProcessor throws, and MainExceptionProcessor is unchanged from 6.12.1; not re-run.
 
 ## WA-SENTRY-0010: Sentry's Android ANR events omit the ApplicationExitInfo description
 
@@ -390,7 +400,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-10-25
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/GnollHackM/Platforms/Android/AndroidExitInfoReporter.cs` (`AndroidExitInfoReporter`); `win/win32/xpl/GnollHackM/Platforms/Android/MainActivity.cs` (`MainActivity.OnCreate`)
 - Remove when: Sentry's Android ANR events carry the exit description or the trace header, GnollHack uses that release, and Verify removal passes.
 - Related: GNOLLHACK-DQ, GNOLLHACK-DR, WA-SENTRY-0008
@@ -420,6 +430,7 @@ description:
 
 Checks:
 - 2026-10-25 | Sentry 6.12.1 (sentry-android 8.60.0) | still-needed | No ANR or exit-info class in sentry-android-core 8.60.0 references getDescription; Sentry 6.12.1 NativeOptions has no AttachAnrThreadDump; no upstream issue found.
+- 2026-11-16 | Sentry 7.0.0 (sentry-android 8.63.0) | still-needed | AnrV2Integration, ApplicationExitInfoEventProcessor and the thread-dump parsers at 8.63.0 never call getDescription or keep Subject:; Sentry 7.0.0 NativeOptions has no AttachAnrThreadDump; no upstream issue found.
 
 ## WA-SENTRY-0011: UploadDebugInfoToSentry uploads dSYMs only for iOS and Mac Catalyst
 
@@ -433,7 +444,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-05
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`UploadGnollHackMacDsymToSentry`)
 - Remove when: Sentry's MSBuild integration uploads dSYMs for osx JIT builds, GnollHack uses that release, and Verify removal passes.
 - Related: WA-SENTRY-0006
@@ -461,6 +472,7 @@ build.
 
 Checks:
 - 2026-11-05 | Sentry 6.12.1 | still-needed | Sentry.targets:198-199 limits dsym to ios and maccatalyst.
+- 2026-11-16 | Sentry 7.0.0 | still-needed | Sentry.targets:208-209 at 7.0.0 still limits dsym in a standard managed build to ios and maccatalyst; no upstream issue found.
 
 ## WA-SENTRY-0012: Sentry reports no Android process deaths other than native crashes and ANRs
 
@@ -471,10 +483,10 @@ Checks:
 - Package: Sentry
 - Defective version: Sentry 6.12.1 (sentry-android 8.60.0)
 - Platforms: Android
-- Upstream issue: none
+- Upstream issue: https://github.com/getsentry/sentry-java/issues/3958
 - Upstream status when added: unreported
-- Upstream status: unreported
-- Last checked: 2026-11-15
+- Upstream status: reported
+- Last checked: 2026-11-16
 - Code: `win/win32/xpl/GnollHackM/Platforms/Android/AndroidExitInfoReporter.cs` (`AndroidExitInfoReporter.ReportNewProcessDeaths`); `win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs` (`PlatformService.CloseApplication`); `win/win32/xpl/GnollHackM/Platforms/Android/AndroidMemorySampler.cs` (`AndroidMemorySampler`)
 - Remove when: Sentry reports Android process deaths for low memory, signals and nonzero self-exits, GnollHack uses that release, and Verify removal passes.
 - Related: WA-SENTRY-0010, WA-MAUI-0017
@@ -517,3 +529,56 @@ marker.
 Checks:
 - 2026-11-14 | Sentry 6.12.1 (sentry-android 8.60.0) | still-needed | In sentry-android-core 8.60.0, the only ApplicationExitInfoPolicy implementations are TombstonePolicy (reason 5), AnrV2Policy (6) and MemoryLimiterPolicy (17, or 13 with "MemoryLimiter:").
 - 2026-11-15 | Sentry 6.12.1 (sentry-android 8.60.0) | still-needed | GNOLLHACK-JF: each of its 3 crash-native reports duplicated a tombstone event Sentry had already sent (GNOLLHACK-HJ, GNOLLHACK-FN), so the reporter now skips REASON_CRASH_NATIVE.
+- 2026-11-16 | Sentry 7.0.0 (sentry-android 8.63.0) | still-needed | The only ApplicationExitInfoPolicy implementations at 8.63.0 are still TombstonePolicy, AnrV2Policy and MemoryLimiterPolicy; feature request getsentry/sentry-java#3958 is open.
+
+## WA-SENTRY-0013: Sentry .NET 7 makes the native scope-sync and crashed-last-run options internal
+
+- Status: active
+- Added: 2026-11-16
+- GnollHack version: 3.41 (441)
+- Component: sentry-dotnet
+- Package: Sentry, Sentry.Maui
+- Defective version: Sentry 7.0.0
+- Platforms: Windows, Linux, macOS
+- Upstream issue: https://github.com/getsentry/sentry-dotnet/pull/5930
+- Upstream status when added: reported
+- Upstream status: reported
+- Last checked: 2026-11-16
+- Code: `win/win32/xpl/GnollHackM/GHSentryOptionsInternals.cs` (`GHSentryOptionsInternals.TrySetNativeHooks`); `win/win32/xpl/GnollHackM/MauiProgram.cs` (`MauiProgram.CreateMauiApp`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaSentry.cs` (`GHAvaloniaSentry.Init`)
+- Remove when: Sentry .NET exposes a public way to set a scope observer, scope sync and the crashed-last-run check from a `UseSentry` callback and from `SentrySdk.Init`, GnollHack uses that release, and Verify removal passes; or WA-SENTRY-0003 is removed.
+- Related: WA-SENTRY-0003
+
+**Symptom.** Code that sets `SentryOptions.ScopeObserver`, `EnableScopeSync` or
+`CrashedLastRun` does not compile against Sentry .NET 7. Without them, the sentry-native
+that GnollHack starts itself (WA-SENTRY-0003) receives none of the managed scope, so its
+native crash events lack the managed tags, extras and breadcrumbs, and the release-health
+session of a run that crashed natively does not end as crashed.
+
+**Cause.** Sentry .NET 7.0.0 makes the three options internal
+(https://github.com/getsentry/sentry-dotnet/pull/5631, for
+https://github.com/getsentry/sentry-dotnet/issues/4529); `IScopeObserver` stays public. The
+SDK sets them only for its own native SDKs: the Android and Cocoa `SentrySdk` set scope sync
+and their own observers, and `InitNativeSdk` sets all three only when Sentry's sentry-native
+is enabled, which `SentryNative=false` prevents. The open pull request
+https://github.com/getsentry/sentry-dotnet/pull/5930 would make `ScopeObserver` and
+`EnableScopeSync` `protected internal`, settable only inside a `SentryOptions` subclass, and
+keeps `CrashedLastRun` internal.
+
+**Workaround.** `GHSentryOptionsInternals.TrySetNativeHooks` sets the three through
+`[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "set_...")]` accessors to their internal
+setters. It never throws: a missing member is recorded in `GHSentryOptionsInternals.Failure`,
+and `MauiProgram.CreateMauiApp` on Windows and `GHAvaloniaSentry.Init` send one warning
+message "Sentry options internals unavailable: ..." after Sentry starts.
+`GHSentryOptionsInternalsTests` binds the accessors against the Sentry version in
+`GnhSentryVersion`, so a renamed or removed setter fails the unit tests.
+
+**Verify removal.** With a Sentry .NET release that has the public API, replace the
+`TrySetNativeHooks` calls with it. Then:
+- Build Windows and Linux Release builds of the game with a Debug engine, which has
+  `#crashtest`.
+- In wizard mode, run `#crashtest` with a segmentation fault on each, and confirm that the
+  next start uploads a native crash event carrying the managed scope's extras, and that the
+  release-health session ends as crashed.
+
+Checks:
+- 2026-11-16 | Sentry 7.0.0 | still-needed | Internal since PR #5631; UnsafeAccessor binding verified by GHSentryOptionsInternalsTests.

@@ -1606,7 +1606,7 @@
        its osx libsentry-native.a, and libsentry.so is built from the same sentry-native version; GnhSentryNative.targets
        checks that all three were built from this version -->
   <PropertyGroup>
-    <GnhSentryVersion>6.12.1</GnhSentryVersion>
+    <GnhSentryVersion>7.0.0</GnhSentryVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY')) And '$(GnhAvalonia)' != 'true'">

@@ -1,10 +1,10 @@
 <!-- Written by Build-LinuxSentryNative.ps1; checked by GnhSentryNative.targets. Do not edit. -->
 <Project>
   <PropertyGroup>
-    <GnhLibSentryNativeVersion>0.17.2</GnhLibSentryNativeVersion>
-    <GnhLibSentryCommit>d043b2bcbdc24eb9fd3a17d0fe0a510526e5902a</GnhLibSentryCommit>
-    <GnhLibSentryHeaderSha256>47DB8A66BDE34C828D2C0BCCEF1A206959440B8798D3E19C4C47A32E6177E2F4</GnhLibSentryHeaderSha256>
-    <GnhLibSentrySha256>145AD9D9A560970F3C23B07325851829B07920B4C5E66C4B02A9E66226223A90</GnhLibSentrySha256>
-    <GnhLibSentryBuildId>20ee33ed05ebbcca3bab389f401318c8fe17ea49</GnhLibSentryBuildId>
+    <GnhLibSentryNativeVersion>0.17.6</GnhLibSentryNativeVersion>
+    <GnhLibSentryCommit>7afc37457d7fcc37fb0bace9c8045d3fa687717f</GnhLibSentryCommit>
+    <GnhLibSentryHeaderSha256>2881A8B78CCAC8CA4CF511A382CC55104CD46DF68345FB91F534AC2DE21C1A86</GnhLibSentryHeaderSha256>
+    <GnhLibSentrySha256>67CCB448FC9DB4C0855435E5FD3665E726D57117DFFDC80B188359D76C6E417C</GnhLibSentrySha256>
+    <GnhLibSentryBuildId>7892084ccb6097db1063ce900334e639a4125ee6</GnhLibSentryBuildId>
   </PropertyGroup>
 </Project>

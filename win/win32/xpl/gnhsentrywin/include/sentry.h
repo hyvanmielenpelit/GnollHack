@@ -100,12 +100,34 @@ extern "C" {
 #        define SENTRY_SDK_NAME "sentry.native"
 #    endif
 #endif
+
+/**
+ * Compile-time SDK version as string.
+ *
+ * May include a prerelease suffix (e.g. `-rc.1`) or downstream SDK build
+ * metadata (e.g. `+YYYYMMDD`). Use `SENTRY_SDK_VERSION_AT_LEAST` for version
+ * checks, or `sentry_sdk_version()` for the runtime version.
+ */
 #ifndef SENTRY_SDK_VERSION
-#    define SENTRY_SDK_VERSION "0.17.2"
+#    define SENTRY_SDK_VERSION "0.17.6"
 #endif
+
+/**
+ * Compile-time SDK version `major.minor.patch` as individual numbers.
+ */
 #define SENTRY_SDK_VERSION_MAJOR 0
 #define SENTRY_SDK_VERSION_MINOR 17
-#define SENTRY_SDK_VERSION_PATCH 2
+#define SENTRY_SDK_VERSION_PATCH 6
+
+/**
+ * Checks whether the compile-time SDK version is at least `major.minor.patch`.
+ *
+ * ```c
+ * #if SENTRY_SDK_VERSION_AT_LEAST(1, 2, 3)
+ *     // use APIs introduced in 1.2.3
+ * #endif
+ * ```
+ */
 #define SENTRY_SDK_VERSION_AT_LEAST(major, minor, patch)                       \
     (SENTRY_SDK_VERSION_MAJOR > (major)                                        \
         || (SENTRY_SDK_VERSION_MAJOR == (major)                                \
@@ -1755,6 +1777,10 @@ SENTRY_API const char *sentry_options_get_dist(const sentry_options_t *opts);
  * transport on macOS for a SOCKS proxy, but not for an HTTP proxy.
  * All transports that use libcurl (Linux and the Native SDK transport on macOS)
  * will honor the proxy settings and not fall back.
+ *
+ * An empty string disables the proxy: no transport then reads the
+ * `http_proxy` and `https_proxy` environment variables or the system proxy
+ * settings.
  */
 SENTRY_API void sentry_options_set_proxy(
     sentry_options_t *opts, const char *proxy);
@@ -1945,18 +1971,27 @@ SENTRY_API int sentry_options_get_require_user_consent(
     const sentry_options_t *opts);
 
 /**
- * Enables or disables on-device symbolication of stack traces.
+ * Enables or disables client-side symbolication of stack traces.
  *
- * This feature can have a performance impact and is enabled by default on
- * Android. It is usually only necessary when it is not possible to provide
- * debug information files for system libraries which are needed for serverside
- * symbolication.
+ * Client-side symbolication is useful for resolving system library frames
+ * when debug information files cannot be provided for server-side
+ * symbolication, and for displaying readable stack traces in external crash
+ * reporters.
+ *
+ * The native backend enables symbolication by default on all supported
+ * platforms, because crash symbolication runs in a separate daemon process.
+ * Other backends enable symbolication by default on Android, AIX, and
+ * PlayStation.
+ *
+ * This feature can have a performance impact. Symbolication runs in the
+ * application process when handling crashes with the inproc backend, or when
+ * capturing events using `sentry_capture_event` with any backend.
  */
 SENTRY_API void sentry_options_set_symbolize_stacktraces(
     sentry_options_t *opts, int val);
 
 /**
- * Returns true if on-device symbolication of stack traces is enabled.
+ * Returns true if client-side symbolication of stack traces is enabled.
  */
 SENTRY_API int sentry_options_get_symbolize_stacktraces(
     const sentry_options_t *opts);
@@ -2422,6 +2457,17 @@ SENTRY_API void sentry_options_set_crashpad_limit_stack_capture_to_sp(
  */
 SENTRY_API void sentry_options_set_max_stack_capture_size(
     sentry_options_t *opts, uint32_t max_stack_capture_size);
+
+/**
+ * Sets the size (in bytes) of memory that is reserved on `sentry_init` and
+ * released when a crash is handled, so the crash handler can still allocate
+ * after the application has run out of memory. `0` disables it.
+ *
+ * Defaults to the `SENTRY_CRASH_MEMORY_RESERVE` build setting (in KiB), which
+ * is `0`. Custom backends must release the reserve from their crash handler.
+ */
+SENTRY_API void sentry_options_set_crash_memory_reserve(
+    sentry_options_t *opts, size_t bytes);
 
 /**
  * Sets the maximum time (in milliseconds) to wait for the asynchronous
@@ -3115,6 +3161,23 @@ SENTRY_EXPERIMENTAL_API int sentry_options_get_http_retry(
     const sentry_options_t *opts);
 
 /**
+ * Enables or disables attaching a stack trace to events that carry none.
+ *
+ * Events captured without an exception or a thread stack trace, like messages,
+ * get the stack trace of the capturing thread attached as a thread. Events
+ * that already carry a stack trace, including crashes, are left untouched.
+ *
+ * Attaching a stack trace makes messages group by call site rather than by
+ * message text.
+ *
+ * Disabled by default.
+ */
+SENTRY_EXPERIMENTAL_API void sentry_options_set_attach_stacktrace(
+    sentry_options_t *opts, int attach_stacktrace);
+SENTRY_EXPERIMENTAL_API int sentry_options_get_attach_stacktrace(
+    const sentry_options_t *opts);
+
+/**
  * Enables or disables out-of-band upload of large attachments.
  *
  * When enabled, attachments above an internal size threshold are uploaded
@@ -3656,7 +3719,8 @@ typedef enum {
 } sentry_session_status_t;
 
 /**
- * Starts a new session.
+ * Starts a new session and sends its initial update right away, or once the
+ * user gives consent when `require_user_consent` is set.
  */
 SENTRY_API void sentry_start_session(void);
 
@@ -4457,9 +4521,13 @@ SENTRY_DEPRECATED("The crash marker is cleared by `sentry_init()`.")
 SENTRY_EXPERIMENTAL_API int sentry_clear_crashed_last_run(void);
 
 /**
- * Sentry SDK version.
+ * Returns the runtime SDK version as string.
+ *
+ * May include a prerelease suffix (e.g. `-rc.1`) or downstream SDK build
+ * metadata (e.g. `+YYYYMMDD`). Use `SENTRY_SDK_VERSION` for the compile-time
+ * version.
  */
-SENTRY_EXPERIMENTAL_API const char *sentry_sdk_version(void);
+SENTRY_API const char *sentry_sdk_version(void);
 
 /**
  * Sentry SDK name set during build time.

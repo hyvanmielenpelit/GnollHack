@@ -12,7 +12,9 @@
     <InvariantGlobalization>true</InvariantGlobalization>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <!-- The linked files take their MAUI branch, which is the one the shipping app compiles. -->
-    <DefineConstants>$(DefineConstants);GNH_MAUI</DefineConstants>
+    <DefineConstants>$(DefineConstants);GNH_MAUI;SENTRY</DefineConstants>
+    <!-- Sentry at the version GnollHackM ships, read from GnollHackM.csproj -->
+    <GnhSentryVersion>$([System.Text.RegularExpressions.Regex]::Replace($([System.IO.File]::ReadAllText('$(MSBuildThisFileDirectory)..\..\GnollHackM\GnollHackM.csproj')), '(?s)^.*?&lt;GnhSentryVersion&gt;\s*([^&lt;\s]+)\s*&lt;/GnhSentryVersion&gt;.*$', '$1'))</GnhSentryVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +24,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="Sentry" Version="$(GnhSentryVersion)" />
   </ItemGroup>
 
   <!-- The subjects are the same files the app compiles, linked rather than copied. -->
@@ -78,6 +81,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\FileDialog\GHFileDialogLogic.cs" Link="Shared\GHFileDialogLogic.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\FileDialog\GHFilePlaces.cs" Link="Shared\GHFilePlaces.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\FileDialog\GHFileDialogBehavior.cs" Link="Shared\GHFileDialogBehavior.cs" />
+    <Compile Include="..\..\GnollHackM\GHSentryOptionsInternals.cs" Link="Shared\GHSentryOptionsInternals.cs" />
   </ItemGroup>
 
 </Project>

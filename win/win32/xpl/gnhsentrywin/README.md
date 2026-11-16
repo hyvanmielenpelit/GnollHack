@@ -149,6 +149,9 @@ Linux publish until gnhsentry.dll is rebuilt, by design. Likewise, a macOS relea
    searching the `Package` fields, per `client_workarounds`. The lint's drift warnings cover only entries whose
    upstream fix is merged or released, so they are not the list. Then run
    `DEVEL\workarounds\Test-WorkaroundRegister.ps1`.
+   Run `dotnet test GnollHackTests.sln` in `win\win32\xpl\GnollHackTests`: `GHSentryOptionsInternalsTests` binds the
+   internal `ScopeObserver`, `EnableScopeSync` and `CrashedLastRun` setters of the new package (WA-SENTRY-0013), and
+   fails when one is renamed.
 8. Smoke tests: wizard-mode `#crashtest` segmentation fault on Windows, Linux and macOS, restart, one native report
    uploaded; an unhandled managed exception still raises `AppDomain.UnhandledException` (WA-SENTRY-0001's Verify
    removal steps). `#crashtest` exists only in a Debug engine, on every platform.

@@ -55,12 +55,9 @@ namespace GnollHackM
                     options.Debug = true;
                     options.TracesSampleRate = 1.0;
 #endif
+                    // WORKAROUND(WA-SENTRY-0013): Sentry .NET 7 makes the native scope-sync and crashed-last-run options internal
                     if (nativeInitialized)
-                    {
-                        options.ScopeObserver = new GHSentryNativeScopeObserver();
-                        options.EnableScopeSync = true;
-                        options.CrashedLastRun = () => crashedLastRun;
-                    }
+                        GHSentryOptionsInternals.TrySetNativeHooks(options, new GHSentryNativeScopeObserver(), () => crashedLastRun);
 #if LINUX
                     // WORKAROUND(WA-AVALONIA-0023): IBus's Destroy reply reaches Sentry as an unobserved exception
                     options.AddExceptionFilter(new IBusDestroyReplyExceptionFilter());
@@ -108,6 +105,8 @@ namespace GnollHackM
                     AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
                     AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
                     GHSentryNative.StartOutboxUpload(dsn);
+                    if (GHSentryOptionsInternals.Failure != null)
+                        SentrySdk.CaptureMessage("Sentry options internals unavailable: " + GHSentryOptionsInternals.Failure, SentryLevel.Warning);
                 }
 
                 /* GNOLLHACK_SENTRY_TEST=1 sends one message, to check delivery without a crash */
