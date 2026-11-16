@@ -3686,6 +3686,7 @@ namespace GnollHackX
                             GHApp.IsCriticalClearCachesAndMemoryOk = true;
                             GHApp.IsCompleteClearCachesAndMemoryOk = true;
                             GHApp.CollectGarbage(); /* Collect all, may take a lot of time */
+                            GHApp.RaiseDiagnosticsCheckpoint("level-change");
                             break;
                         case 1:
                             //GC.Collect(cmd_param2); /* Collect only from 0 up to the specified generation, 0 = only nursery */

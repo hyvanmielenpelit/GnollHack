@@ -294,7 +294,8 @@ while the display is off: `GHApp.CompositionTarget_Rendering` checks the display
 every frame and skips the game page, and `MainScreenPauseWindows` suspends the game page's
 own animations for the case where the platform render loop is off.
 `GHConstants.PauseGameRenderingWhenUnseen` switches it on. The game pause does not apply
-to a locked session with the display on, because the lock is polled once a minute.
+to a locked session with the display on, because the pause follows the display state, not the
+session lock.
 
 **Verify removal.** Set `GHConstants.PauseMainScreenWhenUnseen` to `false`. Then:
 - Build the Windows Release configuration.

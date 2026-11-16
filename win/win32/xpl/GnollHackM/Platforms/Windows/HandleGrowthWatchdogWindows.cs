@@ -9,9 +9,11 @@ using Sentry;
 
 namespace GnollHackM
 {
-    /* Checks the handle count and the committed pagefile-backed section bytes every minute and, the
-       first time the handles exceed the startup baseline by GHConstants.HandleGrowthWarningThreshold or
-       the section bytes exceed the first census by GHConstants.SectionCommitGrowthWarningBytes, sends
+    /* Checks the handle count and the committed pagefile-backed section bytes every minute outside a
+       game, and at diagnostics checkpoints during one, when a minute's check was skipped. The first
+       census is the section baseline: a minute after start, or at the start of a game begun before
+       that. The first time the handles exceed the startup baseline by GHConstants.HandleGrowthWarningThreshold
+       or the section bytes exceed the baseline by GHConstants.SectionCommitGrowthWarningBytes, it sends
        one Sentry warning event and asks for a restart notice, which is retried every minute until a page
        shows it. The event passes BeforeSend like any other, so it carries the full Process Memory
        context and handle census while system commit is still available. */
@@ -37,8 +39,10 @@ namespace GnollHackM
         private static int _threshold;
         private static long _sectionThreshold;
         private static long _startTimestamp;
+        private static int _checkPending;
+        private static int _running;
 
-        /* Timer thread only */
+        /* Inside RunCheck only, which _running keeps to one thread at a time */
         private static bool _hasBaselineSectionBytes;
         private static long _baselineSectionBytes;
 
@@ -70,6 +74,7 @@ namespace GnollHackM
                 }
 #endif
                 _startTimestamp = Stopwatch.GetTimestamp();
+                GHApp.DiagnosticsCheckpoint += OnDiagnosticsCheckpoint;
                 _timer = new Timer(OnTimer, null, CheckIntervalMilliseconds, CheckIntervalMilliseconds);
             }
             catch (Exception ex)
@@ -87,6 +92,38 @@ namespace GnollHackM
                     GHApp.TryShowPendingResourceWarning();
                     return;
                 }
+                if (GHApp.IsInGameForDiagnostics)
+                {
+                    Interlocked.Exchange(ref _checkPending, 1);
+                    return;
+                }
+                RunCheck();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        /* On the checkpoint's pool task */
+        private static void OnDiagnosticsCheckpoint(string reason)
+        {
+            if (Interlocked.CompareExchange(ref _fired, 0, 0) != 0)
+                return;
+            bool pending = Interlocked.Exchange(ref _checkPending, 0) == 1;
+            bool takeBaseline = reason == "game-start" && !Volatile.Read(ref _hasBaselineSectionBytes);
+            if (pending || takeBaseline)
+                RunCheck();
+        }
+
+        private static void RunCheck()
+        {
+            if (Interlocked.Exchange(ref _running, 1) != 0)
+                return;
+            try
+            {
+                if (Interlocked.CompareExchange(ref _fired, 0, 0) != 0)
+                    return;
                 uint handles;
                 if (!GetProcessHandleCount(GetCurrentProcess(), out handles))
                     return;
@@ -146,6 +183,10 @@ namespace GnollHackM
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _running, 0);
             }
         }
     }

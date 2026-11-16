@@ -14,10 +14,21 @@ namespace GnollHackM
     /* Avalonia window lifecycle hooks, registered through ACM's AddWindows lifecycle builder */
     public static class GHAvaloniaWindowHooks
     {
-        private static readonly TimeSpan FrameReportInterval = TimeSpan.FromSeconds(10);
-
         /* The app's window from creation until it closes; UI thread */
         public static AvWindow MainWindow { get; private set; }
+
+        /* Writes the frame loop report, which covers the stretch since the previous checkpoint, to the log
+           while a game is running; on the checkpoint's pool task, as GetReport takes the frame loop's lock */
+        private static void WriteFrameReport(string reason)
+        {
+            string glReport;
+            string report = GHAvaloniaFrameLoop.GetReport(out glReport);
+            if (GHApp.CurrentGamePage != null)
+            {
+                GHApp.MaybeWriteGHLog(report);
+                GHApp.MaybeWriteGHLog(glReport);
+            }
+        }
 
         /* Called before the window is shown */
         public static void OnWindowCreated(AvWindow window)
@@ -56,19 +67,6 @@ namespace GnollHackM
             }
             window.Closing += OnWindowClosing;
 
-            /* Writes the frame loop report to the log while a game is running */
-            Avalonia.Threading.DispatcherTimer reportTimer = new Avalonia.Threading.DispatcherTimer();
-            reportTimer.Interval = FrameReportInterval;
-            reportTimer.Tick += (sender, e) =>
-            {
-                string glReport;
-                string report = GHAvaloniaFrameLoop.GetReport(out glReport);
-                if (GHApp.CurrentGamePage != null)
-                {
-                    GHApp.MaybeWriteGHLog(report);
-                    GHApp.MaybeWriteGHLog(glReport);
-                }
-            };
 
             window.Opened += (sender, e) =>
             {
@@ -79,12 +77,12 @@ namespace GnollHackM
                 AttachFullScreenRefit(window);
 #endif
                 GHAvaloniaFrameLoop.Start(window);
-                reportTimer.Start();
+                GHApp.DiagnosticsCheckpoint += WriteFrameReport;
             };
 
             window.Closed += (sender, e) =>
             {
-                reportTimer.Stop();
+                GHApp.DiagnosticsCheckpoint -= WriteFrameReport;
                 GHAvaloniaFrameLoop.Stop();
                 GHAvaloniaFrameLoop.SetPresentKeepAlive(null);
 #if WINDOWS_AVALONIA

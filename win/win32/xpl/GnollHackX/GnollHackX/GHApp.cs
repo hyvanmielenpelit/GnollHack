@@ -776,21 +776,24 @@ namespace GnollHackX
 
         private static long _freeDiskSpaceInBytes = 0L;
         public static ulong FreeDiskSpaceInBytes { get { return (ulong)Interlocked.CompareExchange(ref _freeDiskSpaceInBytes, 0L, 0L); } set { Interlocked.Exchange(ref _freeDiskSpaceInBytes, (long)value); } }
+        /* Refreshes on the thread pool; no platform's provider needs the UI thread */
         public static void UpdateFreeDiskSpace()
         {
             try
             {
-                MainThread.BeginInvokeOnMainThread(() =>
-                {
-                    try
-                    {
-                        FreeDiskSpaceInBytes = PlatformService?.GetDeviceFreeDiskSpaceInBytes() ?? 0;
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
-                });
+                Task.Run(() => RefreshFreeDiskSpace());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        private static void RefreshFreeDiskSpace()
+        {
+            try
+            {
+                FreeDiskSpaceInBytes = PlatformService?.GetDeviceFreeDiskSpaceInBytes() ?? 0;
             }
             catch (Exception ex)
             {
@@ -801,19 +804,64 @@ namespace GnollHackX
         private static long _memUsage = 0;
         public static long MemoryUsageInBytes { get { return Interlocked.CompareExchange(ref _memUsage, 0L, 0L); } set { Interlocked.Exchange(ref _memUsage, value); } }
 
+        /* Refreshes on the thread pool; no platform's provider needs the UI thread */
         public static void UpdateUsedMemory()
         {
             try
             {
-                MainThread.BeginInvokeOnMainThread(() =>
+                Task.Run(() => RefreshUsedMemory());
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        private static void RefreshUsedMemory()
+        {
+            try
+            {
+                MemoryUsageInBytes = GetUsedMemoryInBytes();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+
+        /* True while a game or replay runs in the foreground; diagnostic timers do no work then and leave it
+           to the diagnostics checkpoints */
+        public static bool IsInGameForDiagnostics
+        {
+            get { return GameStarted && !IsSuspended; }
+        }
+
+        /* Raised on the thread pool at points in play where a pause is expected or cannot be seen: a level
+           change and a game-menu close (both collect garbage), the start and end of a game, and going to the
+           background. Handlers run on that pool task and must not start another. */
+        public static event Action<string> DiagnosticsCheckpoint;
+
+        public static void RaiseDiagnosticsCheckpoint(string reason)
+        {
+            try
+            {
+                Task.Run(() =>
                 {
-                    try
+                    RefreshFreeDiskSpace();
+                    RefreshUsedMemory();
+                    Action<string> handlers = DiagnosticsCheckpoint;
+                    if (handlers == null)
+                        return;
+                    foreach (Delegate handler in handlers.GetInvocationList())
                     {
-                        MemoryUsageInBytes = GetUsedMemoryInBytes();
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
+                        try
+                        {
+                            ((Action<string>)handler)(reason);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Diagnostics checkpoint (" + reason + "): " + ex.Message);
+                        }
                     }
                 });
             }
@@ -3451,6 +3499,7 @@ namespace GnollHackX
             /* On MAUI on Android and iOS, moved saving game to SaveGameOnSleepAsync which is called in earlier events using a background task that should live long enough */
 #endif
             //CollectGarbageNonBlocking();
+            RaiseDiagnosticsCheckpoint("background");
             MaybeWriteGHLog("GHApp.OnSleep: Finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
         }
 

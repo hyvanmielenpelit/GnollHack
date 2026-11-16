@@ -291,18 +291,23 @@ After retrieval, extract and record the following for each event:
   budget), `window.state`, `window.visible`, `display.state` and
   `session.locked`. A `Process memory: ...` breadcrumb in the `GnollHack
   Information` category is written 60 seconds after launch and every 30
-  minutes (every 2 minutes in Debug builds); it leads with the handle count,
+  minutes (every 2 minutes in Debug builds), except that during a game a due
+  sample waits for the next diagnostics checkpoint (level change, game-menu
+  close, game end, backgrounding); it leads with the handle count,
   its growth and the top handle types, then the commit, so that the Sentry
   MCP's truncation keeps them. `Render surfaces: ...` breadcrumbs appear only
   when the surface counters change. `Session:`, `Display state:`, `Window
   visibility:` and `Power:` breadcrumbs mark environment transitions; the
-  session lock is polled once a minute, so its breadcrumb can lag the real lock
-  by up to a minute and a shorter lock can be missed. A
+  session lock is polled on window activation, deactivation (and 2 s after it),
+  visibility and display-state changes, at diagnostics checkpoints, and once a
+  minute outside a game. A
   separate `Handle growth warning` warning event (its own issue) is sent once
   per process when handles exceed the baseline by
   `GHConstants.HandleGrowthWarningThreshold`, or when the committed
   pagefile-backed section bytes exceed the watchdog's first census (one
-  minute after start) by `GHConstants.SectionCommitGrowthWarningBytes`; its
+  minute after start, or at the start of a game begun before that) by
+  `GHConstants.SectionCommitGrowthWarningBytes`; the watchdog checks every
+  minute outside a game and at diagnostics checkpoints during one; its
   `Trigger` extra says which (`handles` or `section commit`). An event whose
   exception mechanism type is `gnollhack.before_send_fallback`, or that carries
   an `Exception Fallback` extra, lost its exception data inside the Sentry SDK
@@ -316,8 +321,15 @@ After retrieval, extract and record the following for each event:
   ready for finalization at the **last** collection and does not change
   between collections, so it is not a live backlog. The older `Used Memory`
   extra on `Impossible`, `Panic` and `Error` events is the process working set (on iOS, the platform's figure) as
-  last refreshed by the game page, game menu or settings page; it can be
+  last refreshed at a diagnostics checkpoint or by the settings page; it can be
   minutes old and is not commit, so it can differ from `private_bytes`.
+- **Diagnostics checkpoints**: while a game runs in the foreground, no
+  diagnostic timer does its work; it runs at checkpoints instead
+  (`GHApp.RaiseDiagnosticsCheckpoint`): a level change, a game-menu close, the
+  start and end of a game, and going to the background. On Android the `gs1`
+  exit snapshot (`Exit Snapshot` / `ANR Snapshot`) taken during a game
+  therefore dates from the last checkpoint or memory warning: read its
+  `snapshot N s before exit` before trusting its in-game figures.
 
 ### A.6 Subagent Considerations
 

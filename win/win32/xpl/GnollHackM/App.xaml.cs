@@ -446,11 +446,17 @@ public partial class App : Application
     {
         GHApp.MaybeWriteGHLog("MAUI Window has been activated / focused.", true, "Window Information");
         GHApp.OnFocus();
+#if WINDOWS && GNH_MAUI
+        EnvironmentStateWindows.RequestSessionPoll();
+#endif
     }
     private static void WindowDeactivated(object sender, EventArgs e)
     {
         GHApp.MaybeWriteGHLog("MAUI Window has been deactivated / unfocused.", true, "Window Information");
         GHApp.OnUnfocus();
+#if WINDOWS && GNH_MAUI
+        EnvironmentStateWindows.RequestSessionPollAfterDeactivation();
+#endif
     }
     private static void WindowDestroying(object sender, EventArgs e)
     {

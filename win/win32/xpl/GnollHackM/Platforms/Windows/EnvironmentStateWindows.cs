@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using GnollHackX;
 
 namespace GnollHackM
@@ -12,9 +13,10 @@ namespace GnollHackM
     /* Console display state, suspend/resume, session lock and main-window visibility, collected
        without window messages: the display state and suspend/resume through powrprof callbacks
        (DEVICE_NOTIFY_CALLBACK), which run on a system thread; the session lock by polling
-       WTSQuerySessionInformation every minute, so a lock is seen up to a minute late and a shorter
-       one can be missed; visibility from the window's VisibilityChanged event. Each transition writes
-       a breadcrumb; ProcessMemoryWindows reads the current state for its breadcrumb, context and tags. */
+       WTSQuerySessionInformation on window activation, deactivation (and 2 s after it), visibility
+       and display-state changes, at diagnostics checkpoints, and every minute outside a game;
+       visibility from the window's VisibilityChanged event. Each transition writes a breadcrumb;
+       ProcessMemoryWindows reads the current state for its breadcrumb, context and tags. */
     internal static class EnvironmentStateWindows
     {
         private const uint DEVICE_NOTIFY_CALLBACK = 2;
@@ -72,6 +74,10 @@ namespace GnollHackM
         private static IntPtr _suspendNotification = IntPtr.Zero;
         private static Timer _sessionTimer;
         private static int _started;
+        private static int _stopped;
+
+        /* Serializes the session query with the state exchange, so that an older reading never replaces a newer one */
+        private static readonly object _sessionPollLock = new object();
 
         private static int _displayState = -1;      /* -1 unknown, 0 off, 1 on, 2 dimmed */
         private static int _sessionLocked;
@@ -116,6 +122,7 @@ namespace GnollHackM
                     WriteBreadcrumb("Environment state: suspend notification unavailable (error " + result + ")");
 
                 PollSessionLock();
+                GHApp.DiagnosticsCheckpoint += OnDiagnosticsCheckpoint;
                 _sessionTimer = new Timer(OnSessionTimer, null, SessionPollMilliseconds, SessionPollMilliseconds);
             }
             catch (Exception ex)
@@ -128,6 +135,8 @@ namespace GnollHackM
         {
             try
             {
+                Interlocked.Exchange(ref _stopped, 1);
+                GHApp.DiagnosticsCheckpoint -= OnDiagnosticsCheckpoint;
                 Timer timer = Interlocked.Exchange(ref _sessionTimer, null);
                 if (timer != null)
                     timer.Dispose();
@@ -157,6 +166,7 @@ namespace GnollHackM
                 if (!visible)
                     Interlocked.Increment(ref _windowHiddenCount);
                 WriteBreadcrumb(visible ? "Window visibility: visible" : "Window visibility: hidden");
+                RequestSessionPoll();
             }
             catch (Exception ex)
             {
@@ -185,6 +195,7 @@ namespace GnollHackM
                         Interlocked.Increment(ref _displayOffCount);
                     WriteBreadcrumb("Display state: " + DisplayStateName(value));
                     RaiseStateChanged();
+                    RequestSessionPoll();
                 }
                 else if (type == PBT_APMSUSPEND)
                 {
@@ -203,8 +214,50 @@ namespace GnollHackM
             return 0;
         }
 
+        /* No poll during a game: there, activation changes and diagnostics checkpoints request one */
         private static void OnSessionTimer(object state)
         {
+            if (GHApp.IsInGameForDiagnostics)
+                return;
+            TryPollSessionLock();
+        }
+
+        /* On the checkpoint's pool task */
+        private static void OnDiagnosticsCheckpoint(string reason)
+        {
+            TryPollSessionLock();
+        }
+
+        /* One poll on the thread pool, as when the window is activated */
+        public static void RequestSessionPoll()
+        {
+            if (!IsRunning)
+                return;
+            Task.Run(() => TryPollSessionLock());
+        }
+
+        /* One poll now and one 2 s later: Windows may deactivate the window a moment before it marks the session locked */
+        public static void RequestSessionPollAfterDeactivation()
+        {
+            if (!IsRunning)
+                return;
+            Task.Run(async () =>
+            {
+                TryPollSessionLock();
+                await Task.Delay(2000);
+                TryPollSessionLock();
+            });
+        }
+
+        private static bool IsRunning
+        {
+            get { return Interlocked.CompareExchange(ref _started, 0, 0) != 0 && Interlocked.CompareExchange(ref _stopped, 0, 0) == 0; }
+        }
+
+        private static void TryPollSessionLock()
+        {
+            if (!IsRunning)
+                return;
             try
             {
                 PollSessionLock();
@@ -216,6 +269,14 @@ namespace GnollHackM
         }
 
         private static void PollSessionLock()
+        {
+            lock (_sessionPollLock)
+            {
+                PollSessionLockLocked();
+            }
+        }
+
+        private static void PollSessionLockLocked()
         {
             IntPtr buffer;
             uint bytes;

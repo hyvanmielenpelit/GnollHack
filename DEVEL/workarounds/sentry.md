@@ -517,8 +517,10 @@ first colon or white space. A `REASON_OTHER` exit with a description is grouped 
 `other <word>`, so that vendor kills such as Xiaomi's `OptimizationClean` (GNOLLHACK-JG) and Sentry's
 own `MemoryLimiter:` exits get separate issues. `AndroidMemorySampler`, started from
 `MainApplication.OnCreate` before the app is created, keeps a `gs1` process state summary (game
-state, process age and startup milestone, memory warnings, memory figures) current every 15 s, on
-each memory warning and on each startup milestone, and the report parses it into `exit.in_game`,
+state, process age and startup milestone, memory warnings, memory figures) current every 15 s
+outside a game, and during one at diagnostics checkpoints (level change, game-menu close, game start
+and end, backgrounding), on each memory warning and on each startup milestone, and the report parses
+it into `exit.in_game`,
 `exit.memory_warning`, `exit.snapshot`, `exit.startup`, `device.memory` and `Exit Snapshot`. A `SIGNALED` exit with signal 9 within 10 s of a close recorded in
 the `AndroidExitInfoCloseRequestedTimestamp` preference is skipped too, in case Android refused the
 marker.

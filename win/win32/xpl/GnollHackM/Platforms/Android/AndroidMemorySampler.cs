@@ -9,7 +9,8 @@ namespace GnollHackM;
 /* Keeps the process state summary that AndroidExitInfoReporter reads from the exit record on the next
    launch, and leaves an "Android memory:" breadcrumb with each full memory sample. Starts in
    MainApplication.OnCreate, before GHApp.Initialize, so nothing here reads GHApp until the
-   AppReady startup milestone. */
+   AppReady startup milestone. Outside a game it writes every 15 s; during one its timer does
+   nothing, and it writes only at diagnostics checkpoints and on memory warnings. */
 [SupportedOSPlatform("android30.0")]
 public static class AndroidMemorySampler
 {
@@ -20,11 +21,11 @@ public static class AndroidMemorySampler
     private static int _busy = 0;
     private static int _fullSampleRequested = 0;
     private static int _snapshotRequested = 0;
-    private static int _memoryPressureSubscribed = 0;
+    private static int _appEventsSubscribed = 0;
     private static System.Threading.Timer _timer = null;
     private static long _startUtcTicks = 0L;
 
-    /* Touched only inside OnTick, which _busy keeps to one thread at a time */
+    /* Touched only inside RunPass, which _busy keeps to one thread at a time */
     private static GHExitStateSummary _lastWritten = null;
     private static long _lastWriteUtcTicks = 0L;
     private static long _lastFullSampleUtcTicks = 0L;
@@ -42,7 +43,7 @@ public static class AndroidMemorySampler
         {
             _startUtcTicks = DateTime.UtcNow.Ticks;
             GHStartupTimeline.Current.MilestoneReached += OnMilestoneReached;
-            _timer = new System.Threading.Timer(OnTick, null, 0, GHConstants.ExitStateSnapshotIntervalSeconds * 1000);
+            _timer = new System.Threading.Timer(OnTimerTick, null, 0, GHConstants.ExitStateSnapshotIntervalSeconds * 1000);
         }
         catch (Exception ex)
         {
@@ -58,18 +59,32 @@ public static class AndroidMemorySampler
     private static void OnMilestoneReached(GHStartupMilestone milestone)
     {
         Interlocked.Exchange(ref _snapshotRequested, 1);
-        Task.Run(() => OnTick(null));
+        Task.Run(() => RunPass());
     }
 
     private static void OnMemoryPressure(MemoryPressureLevel level)
     {
         if (level == MemoryPressureLevel.Critical || level == MemoryPressureLevel.Complete)
             Interlocked.Exchange(ref _fullSampleRequested, 1);
-        Task.Run(() => OnTick(null));
+        Task.Run(() => RunPass());
     }
 
-    /* A snapshot requested while a pass runs makes that pass go round again, so no milestone waits for the timer */
-    private static void OnTick(object state)
+    /* Already on the checkpoint's pool task */
+    private static void OnDiagnosticsCheckpoint(string reason)
+    {
+        Interlocked.Exchange(ref _snapshotRequested, 1);
+        RunPass();
+    }
+
+    private static void OnTimerTick(object state)
+    {
+        if (IsAppReady && GHApp.IsInGameForDiagnostics)
+            return;
+        RunPass();
+    }
+
+    /* A snapshot requested while a pass runs makes that pass go round again, so no request waits for the timer */
+    private static void RunPass()
     {
         do
         {
@@ -81,8 +96,11 @@ public static class AndroidMemorySampler
             try
             {
                 Interlocked.Exchange(ref _snapshotRequested, 0);
-                if (appReady && Interlocked.Exchange(ref _memoryPressureSubscribed, 1) == 0)
+                if (appReady && Interlocked.Exchange(ref _appEventsSubscribed, 1) == 0)
+                {
                     GHApp.MemoryPressureReceived += OnMemoryPressure;
+                    GHApp.DiagnosticsCheckpoint += OnDiagnosticsCheckpoint;
+                }
                 WriteSnapshot();
                 if (IsFullSampleDue())
                 {

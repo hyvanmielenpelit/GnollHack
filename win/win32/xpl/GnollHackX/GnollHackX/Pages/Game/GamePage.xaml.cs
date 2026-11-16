@@ -2062,10 +2062,7 @@ namespace GnollHackX.Pages.Game
                     FrameTimeProfiler.PublishDashboardSnapshot();
                 Interlocked.Exchange(ref _publishDashboardStats, 1);
                 Interlocked.Exchange(ref _publishMenuDashboardStats, 1);
-                //if (WarnLowDiskSpace)
-                    GHApp.UpdateFreeDiskSpace();
-                //if (ShowMemory)
-                    GHApp.UpdateUsedMemory();
+                /* Disk space and memory are refreshed at diagnostics checkpoints */
             }
 
             CursorIsOn = !CursorIsOn;
@@ -2948,6 +2945,7 @@ namespace GnollHackX.Pages.Game
         private void DoFadeFromBlackAtStart()
         {
             GHApp.CollectGarbageAtStart();
+            GHApp.RaiseDiagnosticsCheckpoint("game-start");
             try
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
@@ -3481,6 +3479,7 @@ namespace GnollHackX.Pages.Game
                                 //CurrentGame = null;
                                 //GHApp.CurrentGHGame = null;
                                 GHApp.GameStarted = false;
+                                GHApp.RaiseDiagnosticsCheckpoint("game-end");
                                 if (PlayingReplay)
                                     DeviceDisplay.KeepScreenOn = false;
                                 EnqueueTask(ref tasks, ReturnToMainMenu());
