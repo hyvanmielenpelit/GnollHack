@@ -211,6 +211,12 @@ namespace GnollHackX
         public static void Initialize()
         {
             GHStartupTimeline.Current.Mark(GHStartupMilestone.AppInit);
+            GHDiagnosticsScheduler.Configure(
+                () => IsInGameForDiagnostics,
+                () => CurrentGHGame?.PlayingReplay ?? false,
+                spot => { RefreshFreeDiskSpace(); RefreshUsedMemory(); },
+                spot => TryShowPendingResourceWarning(true),
+                message => Debug.WriteLine(message));
             _assembly = typeof(App).GetTypeInfo().Assembly;
             _nowAtInit = DateTime.Now;
 
@@ -898,46 +904,11 @@ namespace GnollHackX
             }
         }
 
-        /* True while a game or replay runs in the foreground; diagnostic timers do no work then and leave it
-           to the diagnostics checkpoints */
+        /* True while a game or replay runs in the foreground. Diagnostic timers then only mark their jobs due,
+           and the jobs run at the GHDiagnosticsScheduler spots. */
         public static bool IsInGameForDiagnostics
         {
             get { return GameStarted && !IsSuspended; }
-        }
-
-        /* Raised on the thread pool at points in play where a pause is expected or cannot be seen: a level
-           change and a game-menu close (both collect garbage), the start and end of a game, and going to the
-           background. Handlers run on that pool task and must not start another. */
-        public static event Action<string> DiagnosticsCheckpoint;
-
-        public static void RaiseDiagnosticsCheckpoint(string reason)
-        {
-            try
-            {
-                Task.Run(() =>
-                {
-                    RefreshFreeDiskSpace();
-                    RefreshUsedMemory();
-                    Action<string> handlers = DiagnosticsCheckpoint;
-                    if (handlers == null)
-                        return;
-                    foreach (Delegate handler in handlers.GetInvocationList())
-                    {
-                        try
-                        {
-                            ((Action<string>)handler)(reason);
-                        }
-                        catch (Exception ex)
-                        {
-                            Debug.WriteLine("Diagnostics checkpoint (" + reason + "): " + ex.Message);
-                        }
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
         }
 
         private static KeyMap[] _tempKeyMapArray = new KeyMap[256];
@@ -3494,8 +3465,9 @@ namespace GnollHackX
             TryShowPendingResourceWarning();
         }
 
-        /* Any thread; shows a pending notice on the game page or the main page while that page is on top */
-        public static void TryShowPendingResourceWarning()
+        /* Any thread. Shows a pending notice on the main page, or on the game page outside a game or at a heavy
+           diagnostics spot, while that page is on top. */
+        public static void TryShowPendingResourceWarning(bool atGoodSpot = false)
         {
             if (Interlocked.CompareExchange(ref _resourceWarningPending, 0, 0) == 0)
                 return;
@@ -3513,7 +3485,7 @@ namespace GnollHackX
                         bool shown = false;
                         if (gamePage != null)
                         {
-                            if (ReferenceEquals(topPage, gamePage))
+                            if (ReferenceEquals(topPage, gamePage) && (atGoodSpot || !IsInGameForDiagnostics))
                                 shown = gamePage.ShowResourceWarningPopup();
                         }
                         else if (topPage == null && mainPage != null)
@@ -3588,7 +3560,7 @@ namespace GnollHackX
             /* On MAUI on Android and iOS, moved saving game to SaveGameOnSleepAsync which is called in earlier events using a background task that should live long enough */
 #endif
             //CollectGarbageNonBlocking();
-            RaiseDiagnosticsCheckpoint("background");
+            GHDiagnosticsScheduler.RaiseHeavySpot(GHDiagnosticsSpotNames.Background);
             MaybeWriteGHLog("GHApp.OnSleep: Finished", true, GHConstants.SentryGnollHackGeneralCategoryName);
         }
 

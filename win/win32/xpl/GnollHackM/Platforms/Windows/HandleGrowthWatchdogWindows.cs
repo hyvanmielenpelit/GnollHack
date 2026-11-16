@@ -10,13 +10,14 @@ using Sentry;
 namespace GnollHackM
 {
     /* Checks the handle count and the committed pagefile-backed section bytes every minute outside a
-       game, and at diagnostics checkpoints during one, when a minute's check was skipped. The first
-       census is the section baseline: a minute after start, or at the start of a game begun before
-       that. The first time the handles exceed the startup baseline by GHConstants.HandleGrowthWarningThreshold
-       or the section bytes exceed the baseline by GHConstants.SectionCommitGrowthWarningBytes, it sends
-       one Sentry warning event and asks for a restart notice, which is retried every minute until a page
-       shows it. The event passes BeforeSend like any other, so it carries the full Process Memory
-       context and handle census while system commit is still available. */
+       game, and during one at the next heavy diagnostics spot, or at a light spot once three intervals
+       overdue, when a minute's check was skipped. The first census is the section baseline: a minute
+       after start, or at the start of a game begun before that. The first time the handles exceed the
+       startup baseline by GHConstants.HandleGrowthWarningThreshold or the section bytes exceed the
+       baseline by GHConstants.SectionCommitGrowthWarningBytes, it sends one Sentry warning event and
+       asks for a restart notice, which a page shows at the next chance: at once outside a game, and
+       during one at the next heavy diagnostics spot. The event passes BeforeSend like any other, so it
+       carries the full Process Memory context and handle census while system commit is still available. */
     internal static class HandleGrowthWatchdogWindows
     {
         private const int CheckIntervalMilliseconds = 60 * 1000;
@@ -39,7 +40,7 @@ namespace GnollHackM
         private static int _threshold;
         private static long _sectionThreshold;
         private static long _startTimestamp;
-        private static int _checkPending;
+        private static GHDiagnosticsJob _job;
         private static int _running;
 
         /* Inside RunCheck only, which _running keeps to one thread at a time */
@@ -74,7 +75,9 @@ namespace GnollHackM
                 }
 #endif
                 _startTimestamp = Stopwatch.GetTimestamp();
-                GHApp.DiagnosticsCheckpoint += OnDiagnosticsCheckpoint;
+                _job = new GHDiagnosticsJob("windows-handle-growth", GHDiagnosticsCost.Heavy, 3L * CheckIntervalMilliseconds / 1000,
+                    true, OnJobRun);
+                GHDiagnosticsScheduler.Register(_job);
                 _timer = new Timer(OnTimer, null, CheckIntervalMilliseconds, CheckIntervalMilliseconds);
             }
             catch (Exception ex)
@@ -92,12 +95,7 @@ namespace GnollHackM
                     GHApp.TryShowPendingResourceWarning();
                     return;
                 }
-                if (GHApp.IsInGameForDiagnostics)
-                {
-                    Interlocked.Exchange(ref _checkPending, 1);
-                    return;
-                }
-                RunCheck();
+                _job.Request();
             }
             catch (Exception ex)
             {
@@ -105,14 +103,13 @@ namespace GnollHackM
             }
         }
 
-        /* On the checkpoint's pool task */
-        private static void OnDiagnosticsCheckpoint(string reason)
+        /* Checks when a minute's check is due, and at the game-start spot takes a missing section baseline */
+        private static void OnJobRun(GHDiagnosticsSpot spot, bool wasDue)
         {
             if (Interlocked.CompareExchange(ref _fired, 0, 0) != 0)
                 return;
-            bool pending = Interlocked.Exchange(ref _checkPending, 0) == 1;
-            bool takeBaseline = reason == "game-start" && !Volatile.Read(ref _hasBaselineSectionBytes);
-            if (pending || takeBaseline)
+            bool takeBaseline = spot.Name == GHDiagnosticsSpotNames.GameStart && !Volatile.Read(ref _hasBaselineSectionBytes);
+            if (wasDue || takeBaseline)
                 RunCheck();
         }
 

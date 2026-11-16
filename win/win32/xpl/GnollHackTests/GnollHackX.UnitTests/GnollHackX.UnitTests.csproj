@@ -30,6 +30,7 @@
   <!-- The subjects are the same files the app compiles, linked rather than copied. -->
   <ItemGroup>
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceStatistics.cs" Link="Shared\GHPerformanceStatistics.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHDiagnosticsScheduler.cs" Link="Shared\GHDiagnosticsScheduler.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHFrameRecord.cs" Link="Shared\GHFrameRecord.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHFrameTimeline.cs" Link="Shared\GHFrameTimeline.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPresentFeedback.cs" Link="Shared\GHPresentFeedback.cs" />

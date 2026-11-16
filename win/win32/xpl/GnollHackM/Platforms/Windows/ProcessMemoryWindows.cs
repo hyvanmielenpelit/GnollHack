@@ -12,7 +12,8 @@ using Sentry;
 namespace GnollHackM
 {
     /* Process and system memory figures for Windows Sentry events, and a periodic breadcrumb, which
-       during a game waits for the next diagnostics checkpoint.
+       during a game waits for the next heavy diagnostics spot, or for a light spot once three intervals
+       overdue.
        Samples come from direct Win32 calls, which neither enumerate other processes nor allocate
        much, so they still work when the system is short of memory. Video memory comes from DXGI
        through VideoMemoryWindows, the handle census from HandleCensusWindows, the render
@@ -137,7 +138,7 @@ namespace GnollHackM
         private static ulong _baselineCommitUsedBytes;
         private static long _baselineTimestamp;
 
-        private static int _samplePending;
+        private static GHDiagnosticsJob _job;
         private static int _running;
 
         /* Inside RunSample only, which _running keeps to one thread at a time */
@@ -155,7 +156,9 @@ namespace GnollHackM
             if (_timer != null)
                 return;
             TakeBaseline();
-            GHApp.DiagnosticsCheckpoint += OnDiagnosticsCheckpoint;
+            _job = new GHDiagnosticsJob("windows-process-memory", GHDiagnosticsCost.Heavy, 3L * SampleIntervalMilliseconds / 1000,
+                false, (spot, due) => RunSample());
+            GHDiagnosticsScheduler.Register(_job);
             _timer = new Timer(OnTimer, null, FirstSampleDelayMilliseconds, SampleIntervalMilliseconds);
             /* Builds the DXGI adapter cache before the first event or breadcrumb needs it */
             ThreadPool.QueueUserWorkItem(delegate { VideoMemoryWindows.TrySample(new List<VideoMemorySample>(2)); });
@@ -194,19 +197,7 @@ namespace GnollHackM
 
         private static void OnTimer(object state)
         {
-            if (GHApp.IsInGameForDiagnostics)
-            {
-                Interlocked.Exchange(ref _samplePending, 1);
-                return;
-            }
-            RunSample();
-        }
-
-        /* On the checkpoint's pool task */
-        private static void OnDiagnosticsCheckpoint(string reason)
-        {
-            if (Interlocked.Exchange(ref _samplePending, 0) == 1)
-                RunSample();
+            _job.Request();
         }
 
         private static void RunSample()

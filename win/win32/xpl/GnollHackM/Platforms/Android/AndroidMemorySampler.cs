@@ -9,8 +9,10 @@ namespace GnollHackM;
 /* Keeps the process state summary that AndroidExitInfoReporter reads from the exit record on the next
    launch, and leaves an "Android memory:" breadcrumb with each full memory sample. Starts in
    MainApplication.OnCreate, before GHApp.Initialize, so nothing here reads GHApp until the
-   AppReady startup milestone. Outside a game it writes every 15 s; during one its timer does
-   nothing, and it writes only at diagnostics checkpoints and on memory warnings. */
+   AppReady startup milestone. Outside a game it writes every 15 s. During one its timer marks a
+   GHDiagnosticsScheduler job due. The summary is written at the next heavy or light spot, and on
+   memory warnings. The full sample runs only at heavy spots, or at a light spot once it is three
+   intervals old. */
 [SupportedOSPlatform("android30.0")]
 public static class AndroidMemorySampler
 {
@@ -20,11 +22,14 @@ public static class AndroidMemorySampler
     private static int _busy = 0;
     private static int _fullSampleRequested = 0;
     private static int _snapshotRequested = 0;
+    private static int _fullPassRequested = 0;
     private static int _appEventsSubscribed = 0;
     private static System.Threading.Timer _timer = null;
+    private static GHDiagnosticsJob _job = null;
     private static long _startUtcTicks = 0L;
 
-    /* Touched only inside RunPass, which _busy keeps to one thread at a time */
+    /* Touched only inside RunPass, which _busy keeps to one thread at a time; _lastFullSampleUtcTicks is also
+       read by IsFullSampleOverdue, so it is written atomically */
     private static GHExitStateSummary _lastWritten = null;
     private static long _lastWriteUtcTicks = 0L;
     private static long _lastFullSampleUtcTicks = 0L;
@@ -57,34 +62,49 @@ public static class AndroidMemorySampler
 
     private static void OnMilestoneReached(GHStartupMilestone milestone)
     {
-        Interlocked.Exchange(ref _snapshotRequested, 1);
-        Task.Run(() => RunPass());
+        Task.Run(() => RunPass(!(IsAppReady && GHApp.IsInGameForDiagnostics)));
     }
 
+    /* During a game the summary is written at once and the full sample waits for a heavy spot or the ceiling */
     private static void OnMemoryPressure(MemoryPressureLevel level)
     {
         if (level == MemoryPressureLevel.Critical || level == MemoryPressureLevel.Complete)
             Interlocked.Exchange(ref _fullSampleRequested, 1);
-        Task.Run(() => RunPass());
+        Task.Run(() => RunPass(!GHApp.IsInGameForDiagnostics));
     }
 
-    /* Already on the checkpoint's pool task */
-    private static void OnDiagnosticsCheckpoint(string reason)
+    /* On the spot's pool task, or inline in Request outside a game with a heavy timer spot */
+    private static void OnJobRun(GHDiagnosticsSpot spot, bool wasDue)
     {
-        Interlocked.Exchange(ref _snapshotRequested, 1);
-        RunPass();
+        RunPass(spot.IsHeavy || IsFullSampleOverdue());
+    }
+
+    /* The ceiling for the full sample: more than three intervals since the last one */
+    private static bool IsFullSampleOverdue()
+    {
+        long last = Interlocked.Read(ref _lastFullSampleUtcTicks);
+        return last != 0L
+            && DateTime.UtcNow.Ticks - last > 3L * GHConstants.AndroidMemorySampleIntervalSeconds * TimeSpan.TicksPerSecond;
     }
 
     private static void OnTimerTick(object state)
     {
-        if (IsAppReady && GHApp.IsInGameForDiagnostics)
+        GHDiagnosticsJob job = Volatile.Read(ref _job);
+        if (!IsAppReady || job == null)
+        {
+            RunPass(true);
             return;
-        RunPass();
+        }
+        job.Request();
     }
 
-    /* A snapshot requested while a pass runs makes that pass go round again, so no request waits for the timer */
-    private static void RunPass()
+    /* A request made while a pass runs makes that pass go round again, with the request's permission for a
+       full sample, so no request waits for the timer */
+    private static void RunPass(bool allowFullSample)
     {
+        if (allowFullSample)
+            Interlocked.Exchange(ref _fullPassRequested, 1);
+        Interlocked.Exchange(ref _snapshotRequested, 1);
         do
         {
             bool appReady = IsAppReady;
@@ -95,13 +115,16 @@ public static class AndroidMemorySampler
             try
             {
                 Interlocked.Exchange(ref _snapshotRequested, 0);
+                bool allowFull = Interlocked.Exchange(ref _fullPassRequested, 0) == 1;
                 if (appReady && Interlocked.Exchange(ref _appEventsSubscribed, 1) == 0)
                 {
                     GHApp.MemoryPressureReceived += OnMemoryPressure;
-                    GHApp.DiagnosticsCheckpoint += OnDiagnosticsCheckpoint;
+                    GHDiagnosticsJob job = new GHDiagnosticsJob("android-memory", GHDiagnosticsCost.Light, 0, true, OnJobRun);
+                    Volatile.Write(ref _job, job);
+                    GHDiagnosticsScheduler.Register(job);
                 }
                 WriteSnapshot();
-                if (IsFullSampleDue())
+                if (allowFull && IsFullSampleDue())
                 {
                     TakeFullSample();
                     WriteSnapshot();
@@ -287,7 +310,7 @@ public static class AndroidMemorySampler
         _samplePssMB = ToMB(pssKB);
         _sampleGraphicsMB = ToMB(graphicsKB);
         _sampleNativeHeapMB = ToMB(nativeKB);
-        _lastFullSampleUtcTicks = DateTime.UtcNow.Ticks;
+        Interlocked.Exchange(ref _lastFullSampleUtcTicks, DateTime.UtcNow.Ticks);
 
         long rssKB, statusSwapKB;
         ReadProcStatus(out rssKB, out statusSwapKB);

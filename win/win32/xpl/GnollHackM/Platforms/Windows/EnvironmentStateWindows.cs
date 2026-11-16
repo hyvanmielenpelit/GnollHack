@@ -14,7 +14,7 @@ namespace GnollHackM
        without window messages: the display state and suspend/resume through powrprof callbacks
        (DEVICE_NOTIFY_CALLBACK), which run on a system thread; the session lock by polling
        WTSQuerySessionInformation on window activation, deactivation (and 2 s after it), visibility
-       and display-state changes, at diagnostics checkpoints, and every minute outside a game;
+       and display-state changes, at heavy diagnostics spots, and every minute outside a game;
        visibility from the window's VisibilityChanged event. Each transition writes a breadcrumb;
        ProcessMemoryWindows reads the current state for its breadcrumb, context and tags. */
     internal static class EnvironmentStateWindows
@@ -73,6 +73,8 @@ namespace GnollHackM
         private static IntPtr _displayNotification = IntPtr.Zero;
         private static IntPtr _suspendNotification = IntPtr.Zero;
         private static Timer _sessionTimer;
+        private static GHDiagnosticsJob _sessionJob = new GHDiagnosticsJob("windows-session-lock", GHDiagnosticsCost.Light, 0, true,
+            (spot, due) => TryPollSessionLock());
         private static int _started;
         private static int _stopped;
 
@@ -122,7 +124,7 @@ namespace GnollHackM
                     WriteBreadcrumb("Environment state: suspend notification unavailable (error " + result + ")");
 
                 PollSessionLock();
-                GHApp.DiagnosticsCheckpoint += OnDiagnosticsCheckpoint;
+                GHDiagnosticsScheduler.Register(_sessionJob);
                 _sessionTimer = new Timer(OnSessionTimer, null, SessionPollMilliseconds, SessionPollMilliseconds);
             }
             catch (Exception ex)
@@ -136,7 +138,7 @@ namespace GnollHackM
             try
             {
                 Interlocked.Exchange(ref _stopped, 1);
-                GHApp.DiagnosticsCheckpoint -= OnDiagnosticsCheckpoint;
+                GHDiagnosticsScheduler.Unregister(_sessionJob);
                 Timer timer = Interlocked.Exchange(ref _sessionTimer, null);
                 if (timer != null)
                     timer.Dispose();
@@ -214,17 +216,11 @@ namespace GnollHackM
             return 0;
         }
 
-        /* No poll during a game: there, activation changes and diagnostics checkpoints request one */
+        /* No poll during a game: there, activation changes and heavy diagnostics spots request one */
         private static void OnSessionTimer(object state)
         {
             if (GHApp.IsInGameForDiagnostics)
                 return;
-            TryPollSessionLock();
-        }
-
-        /* On the checkpoint's pool task */
-        private static void OnDiagnosticsCheckpoint(string reason)
-        {
             TryPollSessionLock();
         }
 

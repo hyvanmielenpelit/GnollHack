@@ -477,10 +477,13 @@ namespace GnollHackM
             canvas.Restore();
         }
 
-        /* Render thread: the shared GRContext's resource cache use against its limit, in the app log at most once every
-           ResourceCacheReportIntervalSeconds. Every GL control shares Avalonia's context, so one line covers them all. */
+        /* Render thread: the shared GRContext's resource cache use against its limit, in the app log, while Debug Logging
+           is on, at most once every ResourceCacheReportIntervalSeconds. Every GL control shares Avalonia's context, so one
+           line covers them all. */
         private static void ReportResourceCache(GRContext grContext)
         {
+            if (!GHApp.DebugLogMessages)
+                return;
             long now = Stopwatch.GetTimestamp();
             if (_lastResourceCacheReportTicks != 0 && now - _lastResourceCacheReportTicks < ResourceCacheReportIntervalSeconds * Stopwatch.Frequency)
                 return;

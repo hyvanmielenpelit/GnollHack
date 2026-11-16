@@ -923,7 +923,7 @@ message, through a lifecycle-event lookup and a capturing lambda, and allocates 
 collects the console display state and suspend and resume through powrprof
 `DEVICE_NOTIFY_CALLBACK` callbacks, the session lock by polling
 `WTSQuerySessionInformation` on window activation, deactivation (and 2 s after it),
-visibility and display-state changes, at diagnostics checkpoints, and once a minute
+visibility and display-state changes, at heavy diagnostics spots, and once a minute
 outside a game, and window visibility from the window's `VisibilityChanged`
 event, instead of from `WM_POWERBROADCAST` and `WM_WTSSESSION_CHANGE`.
 

@@ -1949,8 +1949,6 @@ namespace GnollHackX.Pages.Game
                 return IsGameOn;
             });
 #endif
-            GHApp.UpdateFreeDiskSpace();
-            GHApp.UpdateUsedMemory();
             GHApp.MarkGameLoaded();
         }
 
@@ -2074,7 +2072,11 @@ namespace GnollHackX.Pages.Game
                     FrameTimeProfiler.PublishDashboardSnapshot();
                 Interlocked.Exchange(ref _publishDashboardStats, 1);
                 Interlocked.Exchange(ref _publishMenuDashboardStats, 1);
-                /* Disk space and memory are refreshed at diagnostics checkpoints */
+                /* Pool reads; heavy diagnostics spots also refresh both */
+                if (WarnLowDiskSpace)
+                    GHApp.UpdateFreeDiskSpace();
+                if (ShowMemory)
+                    GHApp.UpdateUsedMemory();
             }
 
             CursorIsOn = !CursorIsOn;
@@ -2905,6 +2907,7 @@ namespace GnollHackX.Pages.Game
 
         public void HideLoadingScreen()
         {
+            GHDiagnosticsScheduler.RaiseHeavySpot(GHDiagnosticsSpotNames.GameStart);
             DelayedLoadingScreenHide();
             DelayedFadeFromBlackAtStart();
             //MainGrid.IsVisible = true;
@@ -2957,7 +2960,6 @@ namespace GnollHackX.Pages.Game
         private void DoFadeFromBlackAtStart()
         {
             GHApp.CollectGarbageAtStart();
-            GHApp.RaiseDiagnosticsCheckpoint("game-start");
             try
             {
                 MainThread.BeginInvokeOnMainThread(async () =>
@@ -3491,7 +3493,7 @@ namespace GnollHackX.Pages.Game
                                 //CurrentGame = null;
                                 //GHApp.CurrentGHGame = null;
                                 GHApp.GameStarted = false;
-                                GHApp.RaiseDiagnosticsCheckpoint("game-end");
+                                GHDiagnosticsScheduler.RaiseHeavySpot(GHDiagnosticsSpotNames.GameEnd);
                                 if (PlayingReplay)
                                     DeviceDisplay.KeepScreenOn = false;
                                 EnqueueTask(ref tasks, ReturnToMainMenu());
@@ -4352,6 +4354,7 @@ namespace GnollHackX.Pages.Game
         {
             YnGrid.IsVisible = false;
             GHApp.CollectGarbagePlatformDependent();
+            GHDiagnosticsScheduler.RaiseLightSpot(GHDiagnosticsSpotNames.YnAnswer);
         }
         private void DoShowDirections()
         {
@@ -4601,6 +4604,7 @@ namespace GnollHackX.Pages.Game
             GetLineCaption.Text = "";
             GetLineEntryText.IsEnabled = false;
             GetLineEntryText.Unfocus();
+            GHDiagnosticsScheduler.RaiseLightSpot(GHDiagnosticsSpotNames.GetLineAnswer);
         }
 
         private void EnterGetLineText(string enteredLine)
@@ -22142,6 +22146,7 @@ namespace GnollHackX.Pages.Game
             StopMenuCanvasAnimation();
             MenuWindowGlyphImage.StopAnimation();
             GHApp.CollectGarbagePlatformDependent();
+            GHDiagnosticsScheduler.RaiseLightSpot(GHDiagnosticsSpotNames.MenuClose);
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }
@@ -22212,6 +22217,7 @@ namespace GnollHackX.Pages.Game
             }
             StopTextCanvasAnimation();
             GHApp.CollectGarbagePlatformDependent();
+            GHDiagnosticsScheduler.RaiseLightSpot(GHDiagnosticsSpotNames.TextClose);
             RefreshScreen = true;
             StartMainCanvasAnimation();
         }

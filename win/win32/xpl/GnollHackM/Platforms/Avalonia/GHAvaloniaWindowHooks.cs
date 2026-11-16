@@ -17,8 +17,11 @@ namespace GnollHackM
         /* The app's window from creation until it closes; UI thread */
         public static AvWindow MainWindow { get; private set; }
 
-        /* Writes the frame loop report, which covers the stretch since the previous checkpoint, to the log
-           while a game is running; on the checkpoint's pool task, as GetReport takes the frame loop's lock */
+        private static readonly GHDiagnosticsJob _frameReportJob = new GHDiagnosticsJob("avalonia-frame-report",
+            GHDiagnosticsCost.Heavy, 0, true, (spot, due) => WriteFrameReport(spot.Name));
+
+        /* Writes the frame loop report, which covers the stretch since the previous heavy diagnostics spot, to the
+           log while a game is running; on the spot's pool task, as GetReport takes the frame loop's lock */
         private static void WriteFrameReport(string reason)
         {
             string glReport;
@@ -77,12 +80,12 @@ namespace GnollHackM
                 AttachFullScreenRefit(window);
 #endif
                 GHAvaloniaFrameLoop.Start(window);
-                GHApp.DiagnosticsCheckpoint += WriteFrameReport;
+                GHDiagnosticsScheduler.Register(_frameReportJob);
             };
 
             window.Closed += (sender, e) =>
             {
-                GHApp.DiagnosticsCheckpoint -= WriteFrameReport;
+                GHDiagnosticsScheduler.Unregister(_frameReportJob);
                 GHAvaloniaFrameLoop.Stop();
                 GHAvaloniaFrameLoop.SetPresentKeepAlive(null);
 #if WINDOWS_AVALONIA
