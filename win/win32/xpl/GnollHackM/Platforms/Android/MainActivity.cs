@@ -50,9 +50,15 @@ public class MainActivity : MauiAppCompatActivity
 #if SENTRY
         // WORKAROUND(WA-SENTRY-0010): Sentry's Android ANR events omit the ApplicationExitInfo description
         AndroidExitInfoReporter.StartReporting(this);
-        if (OperatingSystem.IsAndroidVersionAtLeast(30))
-            AndroidMemorySampler.Start();
 #endif
+        GHStartupTimeline.Current.Mark(GHStartupMilestone.Activity);
+    }
+
+    public override void OnWindowFocusChanged(bool hasFocus)
+    {
+        base.OnWindowFocusChanged(hasFocus);
+        if (hasFocus)
+            GHStartupTimeline.Current.Mark(GHStartupMilestone.Focused);
     }
 
     // WORKAROUND(WA-MAUI-0016): Framework teardown raises ObjectDisposedException on Android

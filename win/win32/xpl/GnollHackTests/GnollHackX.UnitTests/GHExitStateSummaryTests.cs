@@ -16,6 +16,10 @@ namespace GnollHackX.UnitTests
             s.UnixSeconds = 1794567890;
             s.GameState = 1;
             s.SecondsInGame = 245;
+            s.ProcessAgeSeconds = 300;
+            s.StartupMilestone = (int)GHStartupMilestone.MainMenu;
+            s.StartupMilestoneAgeSeconds = 290;
+            s.StartupMilestoneMask = 2046;
             s.MemoryWarningLevel = 3;
             s.MemoryWarningAgeSeconds = 12;
             s.HighestMemoryWarningLevel = 3;
@@ -39,7 +43,8 @@ namespace GnollHackX.UnitTests
             GHExitStateSummary s = Full();
             string text = s.Format();
 
-            Assert.Equal("gs1 u=1794567890 g=1 t=245 w=3/12/3 r=1530 s=610 p=2100/320/900/40 c=380/384 b=570 f=120 h=40", text);
+            Assert.Equal("gs1 u=1794567890 g=1 t=245 a=300/10/290/2046 w=3/12/3 r=1530 s=610 p=2100/320/900/40 c=380/384 b=570 f=120 h=40", text);
+            Assert.True(Encoding.ASCII.GetByteCount(text) <= GHExitStateSummary.MaxBytes);
             GHExitStateSummary parsed;
             Assert.True(GHExitStateSummary.TryParse(text, out parsed));
             Assert.True(s.ContentEquals(parsed));
@@ -53,6 +58,10 @@ namespace GnollHackX.UnitTests
             s.UnixSeconds = long.MaxValue;
             s.GameState = int.MaxValue;
             s.SecondsInGame = long.MaxValue;
+            s.ProcessAgeSeconds = long.MaxValue;
+            s.StartupMilestone = int.MaxValue;
+            s.StartupMilestoneAgeSeconds = long.MaxValue;
+            s.StartupMilestoneMask = int.MaxValue;
             s.MemoryWarningLevel = int.MaxValue;
             s.MemoryWarningAgeSeconds = long.MaxValue;
             s.HighestMemoryWarningLevel = int.MaxValue;
@@ -129,7 +138,7 @@ namespace GnollHackX.UnitTests
 
             string text = s.Describe(s.UnixSeconds + 8);
 
-            Assert.Equal("game, 245 s in; warning Critical 12 s before snapshot, highest Critical; rss 1530 MB, swap 610 MB; "
+            Assert.Equal("game, 245 s in; process 300 s; startup done; warning Critical 12 s before snapshot, highest Critical; rss 1530 MB, swap 610 MB; "
                 + "pss 2100 MB (graphics 320, native 900) 40 s before snapshot; GPU cache 380 / 384 MB; bitmaps 570 MB; "
                 + "sound 120 MB; managed heap 40 MB; snapshot 8 s before exit", text);
         }
@@ -154,6 +163,70 @@ namespace GnollHackX.UnitTests
             GHExitStateSummary s = Full();
 
             Assert.Contains("snapshot 0 s before exit", s.Describe(s.UnixSeconds - 30));
+        }
+
+        [Fact]
+        public void TryParse_SnapshotWithoutStartupField_LeavesItAbsent()
+        {
+            GHExitStateSummary parsed;
+            Assert.True(GHExitStateSummary.TryParse("gs1 u=100 g=1 t=30 r=1362", out parsed));
+
+            Assert.Equal(-1, parsed.ProcessAgeSeconds);
+            Assert.Equal(-1, parsed.StartupMilestone);
+            Assert.Equal(-1, parsed.StartupMilestoneAgeSeconds);
+            Assert.Equal(-1, parsed.StartupMilestoneMask);
+            Assert.Null(parsed.StartupTagValue());
+            Assert.DoesNotContain("process", parsed.Describe(0));
+            Assert.DoesNotContain("startup", parsed.Describe(0));
+        }
+
+        [Fact]
+        public void StartupField_InProgress_RoundTripsAndNamesWhatIsMissing()
+        {
+            GHExitStateSummary s = new GHExitStateSummary();
+            s.UnixSeconds = 100;
+            s.GameState = 0;
+            s.ProcessAgeSeconds = 12;
+            s.StartupMilestone = (int)GHStartupMilestone.AppReady;
+            s.StartupMilestoneAgeSeconds = 3;
+            s.StartupMilestoneMask = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5);
+
+            string text = s.Format();
+            GHExitStateSummary parsed;
+            Assert.True(GHExitStateSummary.TryParse(text, out parsed));
+
+            Assert.Equal("gs1 u=100 g=0 a=12/5/3/62", text);
+            Assert.True(s.ContentEquals(parsed));
+            Assert.Equal("app-ready", parsed.StartupTagValue());
+            Assert.Equal("none; process 12 s; startup at app-ready 3 s before snapshot, "
+                + "not reached: activity, focused, main-page, startup-tasks, main-menu", parsed.Describe(0));
+        }
+
+        [Fact]
+        public void StartupField_MainPageBeforeActivity_ListsFromTheMask()
+        {
+            GHExitStateSummary s = new GHExitStateSummary();
+            s.ProcessAgeSeconds = 9;
+            s.StartupMilestone = (int)GHStartupMilestone.MainPage;
+            s.StartupMilestoneAgeSeconds = 6;
+            s.StartupMilestoneMask = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5) | (1 << 8);
+
+            Assert.Equal("main-page", s.StartupTagValue());
+            Assert.Equal("process 9 s; startup at main-page 6 s before snapshot, "
+                + "not reached: activity, focused, startup-tasks, main-menu", s.Describe(0));
+        }
+
+        [Fact]
+        public void StartupTagValue_MainMenuReached_IsDone()
+        {
+            GHExitStateSummary s = new GHExitStateSummary();
+            s.ProcessAgeSeconds = 40;
+            s.StartupMilestone = (int)GHStartupMilestone.Focused;
+            s.StartupMilestoneAgeSeconds = 30;
+            s.StartupMilestoneMask = 1 << (int)GHStartupMilestone.MainMenu;
+
+            Assert.Equal("done", s.StartupTagValue());
+            Assert.Equal("process 40 s; startup done", s.Describe(0));
         }
 
         [Fact]

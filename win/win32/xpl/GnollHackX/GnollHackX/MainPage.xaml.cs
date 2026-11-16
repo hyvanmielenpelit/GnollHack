@@ -1008,6 +1008,7 @@ namespace GnollHackX
             else if (_firsttime)
             {
                 _firsttime = false;
+                GHStartupTimeline.Current.Mark(GHStartupMilestone.MainPage);
                 GHApp.DebugWriteProfilingStopwatchTimeAndRestart("MainPage First Time");
                 GHApp.InitializeConnectivity();
                 GHApp.InitializeBattery();
@@ -1053,7 +1054,10 @@ namespace GnollHackX
 
                 await StartFadeLogoIn();
                 await StartUpTasks();
+                GHStartupTimeline.Current.Mark(GHStartupMilestone.StartUpTasks);
                 await StartFadeIn();
+                GHStartupTimeline.Current.Mark(GHStartupMilestone.MainMenu);
+                GHApp.MaybeWriteGHLog("Startup timing: " + GHStartupTimeline.Current.FormatTimings(), true, GHConstants.SentryGnollHackGeneralCategoryName);
                 StartLogoImage.IsVisible = false;
                 FmodLogoImage.IsVisible = false;
 

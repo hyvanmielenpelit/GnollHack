@@ -16,6 +16,10 @@ namespace GnollHackX
         public long UnixSeconds = -1;              /* u: when the snapshot was written */
         public int GameState = -1;                 /* g: 0 none, 1 game, 2 replay */
         public long SecondsInGame = -1;            /* t */
+        public long ProcessAgeSeconds = -1;        /* a: process age, then the last startup milestone (GHStartupMilestone), */
+        public int StartupMilestone = -1;          /*    seconds since it, and the reached-milestone mask */
+        public long StartupMilestoneAgeSeconds = -1;
+        public int StartupMilestoneMask = -1;
         public int MemoryWarningLevel = -1;        /* w: last warning; 0 none, else (int)MemoryPressureLevel + 1 */
         public long MemoryWarningAgeSeconds = -1;
         public int HighestMemoryWarningLevel = -1; /* highest since launch, Background excluded; same coding */
@@ -39,6 +43,7 @@ namespace GnollHackX
             AppendField(sb, ref full, "u", UnixSeconds);
             AppendField(sb, ref full, "g", GameState);
             AppendField(sb, ref full, "t", SecondsInGame);
+            AppendField(sb, ref full, "a", ProcessAgeSeconds, StartupMilestone, StartupMilestoneAgeSeconds, StartupMilestoneMask);
             AppendField(sb, ref full, "w", MemoryWarningLevel, MemoryWarningAgeSeconds, HighestMemoryWarningLevel);
             AppendField(sb, ref full, "r", RssMB);
             AppendField(sb, ref full, "s", SwapMB);
@@ -107,6 +112,12 @@ namespace GnollHackX
                         break;
                     case "t":
                         res.SecondsInGame = ParsePart(parts, 0);
+                        break;
+                    case "a":
+                        res.ProcessAgeSeconds = ParsePart(parts, 0);
+                        res.StartupMilestone = ParseIntPart(parts, 1);
+                        res.StartupMilestoneAgeSeconds = ParsePart(parts, 2);
+                        res.StartupMilestoneMask = ParseIntPart(parts, 3);
                         break;
                     case "w":
                         res.MemoryWarningLevel = ParseIntPart(parts, 0);
@@ -192,6 +203,28 @@ namespace GnollHackX
                 if (SecondsInGame >= 0)
                     sb.Append(", ").Append(SecondsInGame.ToString(CultureInfo.InvariantCulture)).Append(" s in");
             }
+            if (ProcessAgeSeconds != -1)
+            {
+                AppendSeparator(sb);
+                sb.Append("process ").Append(Age(ProcessAgeSeconds)).Append(" s");
+                if (StartupMilestoneMask >= 0)
+                {
+                    sb.Append("; ");
+                    if (IsStartupDone)
+                    {
+                        sb.Append("startup done");
+                    }
+                    else
+                    {
+                        sb.Append("startup at ").Append(GHStartupTimeline.Name((GHStartupMilestone)StartupMilestone));
+                        if (StartupMilestoneAgeSeconds != -1)
+                            sb.Append(' ').Append(Age(StartupMilestoneAgeSeconds)).Append(" s before snapshot");
+                        string notReached = NotReachedMilestones();
+                        if (notReached.Length > 0)
+                            sb.Append(", not reached: ").Append(notReached);
+                    }
+                }
+            }
             if (MemoryWarningLevel == 0)
             {
                 AppendSeparator(sb);
@@ -247,6 +280,37 @@ namespace GnollHackX
             return sb.ToString();
         }
 
+        private bool IsStartupDone
+        {
+            get { return StartupMilestoneMask >= 0 && (StartupMilestoneMask & (1 << (int)GHStartupMilestone.MainMenu)) != 0; }
+        }
+
+        /* From the mask alone, in code order: AppInit to MainMenu */
+        private string NotReachedMilestones()
+        {
+            StringBuilder sb = new StringBuilder();
+            int code;
+            for (code = (int)GHStartupMilestone.AppInit; code <= GHStartupTimeline.MaxMilestone; code++)
+            {
+                if ((StartupMilestoneMask & (1 << code)) != 0)
+                    continue;
+                if (sb.Length > 0)
+                    sb.Append(", ");
+                sb.Append(GHStartupTimeline.Name((GHStartupMilestone)code));
+            }
+            return sb.ToString();
+        }
+
+        /* "done" once the main menu was reached, else the last milestone's name; null without the startup field */
+        public string StartupTagValue()
+        {
+            if (StartupMilestoneMask < 0)
+                return null;
+            if (IsStartupDone)
+                return "done";
+            return GHStartupTimeline.Name((GHStartupMilestone)StartupMilestone);
+        }
+
         private static void AppendSeparator(StringBuilder sb)
         {
             if (sb.Length > 0)
@@ -270,6 +334,10 @@ namespace GnollHackX
                 return false;
             return GameState == other.GameState
                 && SecondsInGame == other.SecondsInGame
+                && ProcessAgeSeconds == other.ProcessAgeSeconds
+                && StartupMilestone == other.StartupMilestone
+                && StartupMilestoneAgeSeconds == other.StartupMilestoneAgeSeconds
+                && StartupMilestoneMask == other.StartupMilestoneMask
                 && MemoryWarningLevel == other.MemoryWarningLevel
                 && MemoryWarningAgeSeconds == other.MemoryWarningAgeSeconds
                 && HighestMemoryWarningLevel == other.HighestMemoryWarningLevel

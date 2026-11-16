@@ -121,7 +121,11 @@ public static class AndroidExitInfoReporter
             catch (Exception ex)
             {
                 _stateSummaryFailed = true;
-                GHApp.MaybeWriteGHLog("AndroidExitInfoReporter snapshot: " + ex.Message);
+                /* The sampler writes before GHApp.Initialize has run */
+                if (GHStartupTimeline.Current.HasReached(GHStartupMilestone.AppReady))
+                    GHApp.MaybeWriteGHLog("AndroidExitInfoReporter snapshot: " + ex.Message);
+                else
+                    System.Diagnostics.Debug.WriteLine("AndroidExitInfoReporter snapshot: " + ex.Message);
             }
         }
     }
@@ -284,6 +288,9 @@ public static class AndroidExitInfoReporter
             scope.SetTag(tagPrefix + ".in_game", GHExitStateSummary.GameStateName(summary.GameState));
             scope.SetTag(tagPrefix + ".memory_warning", GHExitStateSummary.MemoryWarningName(summary.MemoryWarningLevel));
             scope.SetTag(tagPrefix + ".snapshot", "yes");
+            string startup = summary.StartupTagValue();
+            if (startup != null)
+                scope.SetTag(tagPrefix + ".startup", startup);
             scope.SetExtra(extraName, Shorten(summary.Describe(exitInfo.Timestamp / 1000)));
         }
         else

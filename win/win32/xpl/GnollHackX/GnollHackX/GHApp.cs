@@ -210,6 +210,7 @@ namespace GnollHackX
 
         public static void Initialize()
         {
+            GHStartupTimeline.Current.Mark(GHStartupMilestone.AppInit);
             _assembly = typeof(App).GetTypeInfo().Assembly;
             _nowAtInit = DateTime.Now;
 
@@ -279,7 +280,9 @@ namespace GnollHackX
             /* Credentials and the cloud storage key come from the platform secure store,
                not from Preferences. This must run before the SaveFileTracking default
                below, which depends on the user name and password being loaded. */
+            GHStartupTimeline.Current.Mark(GHStartupMilestone.Credentials);
             MigrateAndLoadSecureCredentials();
+            GHStartupTimeline.Current.Mark(GHStartupMilestone.CredentialsDone);
             UseHTMLDumpLogs = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             UseSingleDumpLog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
             ReadStreamingBankToMemory = Preferences.Get("ReadStreamingBankToMemory", DefaultStreamingBankToMemory);
@@ -401,6 +404,7 @@ namespace GnollHackX
             ChangeToCustomScreenResolution();
             InitializePlatformRenderLoop();
             InitializeMemoryWarnings();
+            GHStartupTimeline.Current.Mark(GHStartupMilestone.AppReady);
         }
 
         private static void DoMigrations()

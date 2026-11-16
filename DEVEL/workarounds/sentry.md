@@ -419,7 +419,9 @@ otherwise.
 **Workaround.** `AndroidExitInfoReporter`, started from `MainActivity.OnCreate`, reads the
 ANR exits Android recorded since the last report and sends each as a warning message
 `Android ANR exit info: <type>`, with the description, the trace `Subject:` and dump-time
-lines, and the exit time in the `anr.exit_time` tag and the `ANR Exit Time` extra.
+lines, and the exit time in the `anr.exit_time` tag and the `ANR Exit Time` extra. From the
+`gs1` state summary of WA-SENTRY-0012 it also carries `anr.startup`, the startup milestone the
+process had reached (`done` after the main menu), and the `ANR Snapshot` text.
 
 **Verify removal.** With a Sentry release whose ANR events are expected to carry the
 description:
@@ -487,7 +489,7 @@ Checks:
 - Upstream status when added: unreported
 - Upstream status: reported
 - Last checked: 2026-11-16
-- Code: `win/win32/xpl/GnollHackM/Platforms/Android/AndroidExitInfoReporter.cs` (`AndroidExitInfoReporter.ReportNewProcessDeaths`); `win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs` (`PlatformService.CloseApplication`); `win/win32/xpl/GnollHackM/Platforms/Android/AndroidMemorySampler.cs` (`AndroidMemorySampler`)
+- Code: `win/win32/xpl/GnollHackM/Platforms/Android/AndroidExitInfoReporter.cs` (`AndroidExitInfoReporter.ReportNewProcessDeaths`); `win/win32/xpl/GnollHackX/GnollHackX.Android/PlatformServiceAndroid.cs` (`PlatformService.CloseApplication`); `win/win32/xpl/GnollHackM/Platforms/Android/AndroidMemorySampler.cs` (`AndroidMemorySampler`); `win/win32/xpl/GnollHackM/Platforms/Android/MainApplication.cs` (`MainApplication.OnCreate`)
 - Remove when: Sentry reports Android process deaths for low memory, signals and nonzero self-exits, GnollHack uses that release, and Verify removal passes.
 - Related: WA-SENTRY-0010, WA-MAUI-0017
 
@@ -513,15 +515,16 @@ from an exit through `CloseApplication`; it was reported as GNOLLHACK-JE. Each r
 `exit.lmk_report_supported`, `Exit State Summary`, and `exit.description`, the description up to its
 first colon or white space. A `REASON_OTHER` exit with a description is grouped by that word as
 `other <word>`, so that vendor kills such as Xiaomi's `OptimizationClean` (GNOLLHACK-JG) and Sentry's
-own `MemoryLimiter:` exits get separate issues. `AndroidMemorySampler` keeps a `gs1` process
-state summary (game state, memory warnings, memory figures) current every 15 s and on each memory
-warning, and the report parses it into `exit.in_game`, `exit.memory_warning`, `exit.snapshot`,
-`device.memory` and `Exit Snapshot`. A `SIGNALED` exit with signal 9 within 10 s of a close recorded in
+own `MemoryLimiter:` exits get separate issues. `AndroidMemorySampler`, started from
+`MainApplication.OnCreate` before the app is created, keeps a `gs1` process state summary (game
+state, process age and startup milestone, memory warnings, memory figures) current every 15 s, on
+each memory warning and on each startup milestone, and the report parses it into `exit.in_game`,
+`exit.memory_warning`, `exit.snapshot`, `exit.startup`, `device.memory` and `Exit Snapshot`. A `SIGNALED` exit with signal 9 within 10 s of a close recorded in
 the `AndroidExitInfoCloseRequestedTimestamp` preference is skipped too, in case Android refused the
 marker.
 
 **Verify removal.** With a Sentry release expected to report such deaths:
-- Build an Android Debug build without the two tagged sites.
+- Build an Android Debug build without this entry's tagged sites.
 - Start a game, kill the process with `adb shell run-as <package> kill -9 <pid>`, and relaunch it.
 - Confirm that Sentry has its own event for the death, with the reason and status, and none for an
   exit through the app's Exit button.
