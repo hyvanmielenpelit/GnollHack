@@ -155,11 +155,14 @@ namespace GnollHackX
             Interlocked.Exchange(ref _isWindowActive, active ? 1 : 0);
         }
 
-        /* Mouse movement, a pointer press or a non-grip key; UI thread */
-        public static void NoteNonGamepadInput()
+        /* Mouse movement, a pointer press or a non-grip key; cause is logged when this ends controller mode; UI thread */
+        public static void NoteNonGamepadInput(string cause)
         {
             if (Interlocked.Exchange(ref _isActive, 0) != 0)
+            {
+                LogInactive(cause);
                 RaiseStateChanged();
+            }
         }
 
         /* Starts the backend on the UI thread; a backend that fails to start is not kept */
@@ -286,7 +289,10 @@ namespace GnollHackX
             {
                 _enabledSeen = enabled;
                 if (!enabled && Interlocked.Exchange(ref _isActive, 0) != 0)
+                {
+                    LogInactive("Use Controller off");
                     RaiseStateChanged();
+                }
             }
 
             /* Gated frames still pump, so the backends stay drained, but their edges are discarded; entering or
@@ -718,6 +724,21 @@ namespace GnollHackX
             {
                 LogError("GHGamepadService: StateChanged handler failed: " + ex.Message, Stopwatch.GetTimestamp());
             }
+        }
+
+        /* Standard error, a breadcrumb, and the app log with debug logging on */
+        private static void LogInactive(string cause)
+        {
+            string line = "GAMEPAD inactive: " + (string.IsNullOrEmpty(cause) ? "unknown" : cause);
+            try
+            {
+                Console.Error.WriteLine(line);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            GHApp.MaybeWriteGHLog(line, true, GHConstants.SentryGnollHackGeneralCategoryName);
         }
 
         /* At most one entry per ErrorLogIntervalSeconds */

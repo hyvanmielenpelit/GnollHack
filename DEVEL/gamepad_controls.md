@@ -73,7 +73,8 @@ The other pages work the same way, with these additions:
 **Text fields and the Steam keyboard.** On a Steam Deck in Game Mode, A on a text field focuses
 it and opens Steam's on-screen keyboard, placed away from the field; the keyboard's Enter closes
 it and confirms, and B ends the edit. A getline prompt (wish, engrave, name) opens the keyboard
-as soon as it appears, and Y reopens it. In Desktop Mode, or with `GNOLLHACK_STEAM_KEYBOARD=off`,
+as soon as it appears, and Y reopens it. Typing on it keeps controller mode: a key that arrives
+while the keyboard is shown does not end it. In Desktop Mode, or with `GNOLLHACK_STEAM_KEYBOARD=off`,
 A only focuses the field; Steam + X opens the keyboard by hand. `GNOLLHACK_STEAM_KEYBOARD=on`
 allows it on any Linux session, and `GNOLLHACK_STEAM_KEYBOARD_LAUNCH` (`xdg-open`, the default,
 `steam` or `launcher`) picks how the `steam://open/keyboard` link is opened. Windows has no
@@ -183,7 +184,9 @@ bar's buttons and its dimmed background are hidden but keep their space, so the 
 and the context buttons stay where they are, and the hint strip (with its own backing) is
 centered vertically in the bar's area. Menus likewise hide their OK and Cancel buttons, keeping
 the space; the hints show X OK and B Cancel. Touch, the mouse or a keyboard key brings the
-buttons back; the first touch on the bar only does that. **Settings, Controller, Hide Command Bar**
+buttons back; the first touch on the bar only does that. Keys typed on Steam's on-screen keyboard
+do not, and neither does the first pointer move after the pointer re-enters the window, as it does
+when Steam's overlay (a screenshot, for example) goes away. **Settings, Controller, Hide Command Bar**
 is on by default. With it off, the bar and the menus' OK and Cancel stay while the controller is
 active and work at once, ending controller mode; the hint strip sits right above them and can cover
 the lowest messages, and Settings also shows Bar Commands.
@@ -525,11 +528,13 @@ debug logging on also to the app log, at startup and on every hot-plug, with lin
 | `GAMEPAD keys bridge on (...)` / `off (...)` | Whether the back-grip bridge runs, and its keys |
 | `GAMEPAD hint: no Steam virtual gamepad (GnollHack's Steam Input layout is not a gamepad layout?)` | A Steam launch with no virtual pad: the layout outputs keyboard and mouse. Select the GnollHack layout or "Gamepad with Mouse Trackpad" |
 | `GAMEPAD hint: only valve-physical device present (Steam Input off?)` | Only the Deck's physical controller is visible. Turn Steam Input on for the game |
+| `GAMEPAD inactive: <cause>` | Controller mode ended, and why: `key <name>`, `key (character)` (a typed character is never named), `pointer move dx,dy`, `pointer press Mouse\|Touch\|Pen` (`Touchpad` too on WinUI) or `Use Controller off`. Every build writes it, to standard error and as a Sentry breadcrumb, and to the app log with debug logging on |
+| `GAMEPAD pointer re-entry ignored dx,dy` | Avalonia: the first pointer move after the pointer left the window, or the window was deactivated, landed away from the old position and was not taken as mouse use |
 
 The hints are written once, 10 s after the backend starts. A frame that throws is
 logged at most once every 10 s, and 30 failed frames in a row stop the gamepad for the session.
 
-The Windows builds log no devices, only failures.
+The Windows builds log no devices, only failures and `GAMEPAD inactive`.
 
 The macOS flavor writes `GAMEPAD gc +connect id=... name=... category=... profile=... style=...`,
 `GAMEPAD gc -disconnect id=...` and `GAMEPAD gc skip ...` (a controller without an extended gamepad

@@ -32,6 +32,8 @@ namespace GnollHackM
         private static GHGamepadKeyBridge _keyBridge = null;
         private static Avalonia.Point _pointerBase;
         private static bool _hasPointerBase = false;
+        private static bool _pointerBaseForgotten = false;  /* set by a pointer exit or deactivation while a base exists */
+        private static Avalonia.Point _forgottenPointerBase;
 
         /* The grip bridge's decision for the last key passed to TryHandleKey, for the key log */
         public static string LastKeyDecision { get; private set; }
@@ -46,6 +48,7 @@ namespace GnollHackM
             window.Deactivated += OnDeactivated;
             window.AddHandler(InputElement.PointerMovedEvent, OnPointerMoved, RoutingStrategies.Tunnel, true);
             window.AddHandler(InputElement.PointerPressedEvent, OnPointerPressed, RoutingStrategies.Tunnel, true);
+            window.AddHandler(InputElement.PointerExitedEvent, OnPointerExited, RoutingStrategies.Direct, true);
         }
 
         public static void Detach(Avalonia.Controls.Window window)
@@ -56,6 +59,7 @@ namespace GnollHackM
             window.Deactivated -= OnDeactivated;
             window.RemoveHandler(InputElement.PointerMovedEvent, OnPointerMoved);
             window.RemoveHandler(InputElement.PointerPressedEvent, OnPointerPressed);
+            window.RemoveHandler(InputElement.PointerExitedEvent, OnPointerExited);
             StopBackends();
             _window = null;
         }
@@ -251,34 +255,60 @@ namespace GnollHackM
         private static void OnDeactivated(object sender, EventArgs e)
         {
             GHGamepadService.SetWindowActive(false);
+            ForgetPointerBase();
         }
 
         /* While the gamepad is active, a move of more than PointerMoveThreshold from the last position the
-           pointer had in mouse use switches back to the mouse */
+           pointer had in mouse use switches back to the mouse. The base is forgotten when the pointer leaves
+           the window or the window is deactivated, so the next move only records a new one. */
         private static void OnPointerMoved(object sender, Avalonia.Input.PointerEventArgs e)
         {
             if (_window == null)
                 return;
             Avalonia.Point position = e.GetPosition(_window);
+            double dx, dy;
             if (!GHGamepadService.IsActive || !_hasPointerBase)
             {
+                if (GHGamepadService.IsActive && _pointerBaseForgotten)
+                {
+                    dx = position.X - _forgottenPointerBase.X;
+                    dy = position.Y - _forgottenPointerBase.Y;
+                    if (dx * dx + dy * dy > PointerMoveThreshold * PointerMoveThreshold)
+                        WriteLog(string.Format(CultureInfo.InvariantCulture, "GAMEPAD pointer re-entry ignored {0:0},{1:0}", dx, dy));
+                }
+                _pointerBaseForgotten = false;
                 _pointerBase = position;
                 _hasPointerBase = true;
                 return;
             }
-            double dx = position.X - _pointerBase.X;
-            double dy = position.Y - _pointerBase.Y;
+            dx = position.X - _pointerBase.X;
+            dy = position.Y - _pointerBase.Y;
             if (dx * dx + dy * dy > PointerMoveThreshold * PointerMoveThreshold)
             {
                 _pointerBase = position;
-                GHGamepadService.NoteNonGamepadInput();
+                GHGamepadService.NoteNonGamepadInput(string.Format(CultureInfo.InvariantCulture, "pointer move {0:0},{1:0}", dx, dy));
             }
+        }
+
+        /* The next move, often Avalonia's move for the pointer re-entering the window, only records a new base */
+        private static void OnPointerExited(object sender, Avalonia.Input.PointerEventArgs e)
+        {
+            ForgetPointerBase();
+        }
+
+        private static void ForgetPointerBase()
+        {
+            if (!_hasPointerBase)
+                return;
+            _forgottenPointerBase = _pointerBase;
+            _pointerBaseForgotten = true;
+            _hasPointerBase = false;
         }
 
         private static void OnPointerPressed(object sender, PointerPressedEventArgs e)
         {
             if (GHGamepadService.IsActive)
-                GHGamepadService.NoteNonGamepadInput();
+                GHGamepadService.NoteNonGamepadInput("pointer press " + e.Pointer.Type);
         }
 
         private static void WriteLog(string line)

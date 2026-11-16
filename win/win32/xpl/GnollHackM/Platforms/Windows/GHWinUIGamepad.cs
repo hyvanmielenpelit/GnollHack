@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Globalization;
 using GnollHackX;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -70,7 +71,7 @@ namespace GnollHackM
                 if (_keyDownPending)
                 {
                     _keyDownPending = false;
-                    GHGamepadService.NoteNonGamepadInput();
+                    GHGamepadService.NoteNonGamepadInput("key");
                 }
                 if (GHGamepadService.IsAvailable)
                     GHGamepadService.SetWindowActive(GHApp.WindowFocused && WindowFocusHelper.IsOwnProcessForeground());
@@ -145,12 +146,12 @@ namespace GnollHackM
             double dx = position.X - _pointerBase.X;
             double dy = position.Y - _pointerBase.Y;
             if (dx * dx + dy * dy > PointerMoveThreshold * PointerMoveThreshold)
-                GHGamepadService.NoteNonGamepadInput();
+                GHGamepadService.NoteNonGamepadInput(string.Format(CultureInfo.InvariantCulture, "pointer move {0:0},{1:0}", dx, dy));
         }
 
         private static void OnPointerPressed(object sender, PointerRoutedEventArgs e)
         {
-            GHGamepadService.NoteNonGamepadInput();
+            GHGamepadService.NoteNonGamepadInput("pointer press " + e.Pointer.PointerDeviceType);
         }
     }
 }

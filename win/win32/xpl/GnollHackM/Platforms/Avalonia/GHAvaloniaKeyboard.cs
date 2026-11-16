@@ -78,8 +78,9 @@ namespace GnollHackM
                 _keyDownRouted = true;
                 return;
             }
-            if (!IsModifierKey(e.Key))
-                GHGamepadService.NoteNonGamepadInput();
+            /* Keys typed on the on-screen keyboard the controller opened belong to the controller */
+            if (!IsModifierKey(e.Key) && !GHScreenKeyboard.IsShown)
+                GHGamepadService.NoteNonGamepadInput(DescribeKey(e));
 
             if (!GHApp.IsKeyboardHookEnabled || IsModifierKey(e.Key))
                 return;
@@ -175,6 +176,18 @@ namespace GnollHackM
             }
             if (handled)
                 e.Handled = true;
+        }
+
+        /* A typed character is not named in the log, which reaches Sentry breadcrumbs */
+        private static string DescribeKey(KeyEventArgs e)
+        {
+            string symbol = e.KeySymbol;
+            if (!string.IsNullOrEmpty(symbol) && symbol.Length == 1 && !char.IsControl(symbol[0]))
+                return "key (character)";
+            Key key = e.Key;
+            if ((key >= Key.A && key <= Key.Z) || (key >= Key.D0 && key <= Key.D9) || (key >= Key.NumPad0 && key <= Key.NumPad9))
+                return "key (character)";
+            return "key " + key;
         }
 
         private static bool IsModifierKey(Key key)
