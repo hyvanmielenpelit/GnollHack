@@ -506,6 +506,11 @@ namespace GnollHackX
         public const int AndroidMemorySampleFirstDelaySeconds = 60;
         public const int AndroidMemorySampleIntervalSeconds = 300;
         public const int AndroidMemorySampleMinimumSpacingSeconds = 60;
+        /* Android devices below this TotalMemory (a rated 4 GB or less) get capped GPU caches and release the tile sheets between games */
+        public const ulong LowMemoryPolicyThresholdBytes = 5UL * 1024UL * 1024UL * 1024UL;
+        public const long LowMemoryPrimaryGPUCacheCap = 256L * 1024 * 1024;
+        public const long LowMemorySecondaryGPUCacheCap = 128L * 1024 * 1024;
+        public const string LowMemoryPolicyOverrideFileName = "force_low_memory_policy";
         /* Sentry extra data keys. The same keys are used both for the per-event extras
            attached to impossible() and panic() events and for the periodic scope
            snapshot posted from rhack(). Event-level extras win over scope-level ones

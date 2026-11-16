@@ -58,6 +58,7 @@ namespace GnollHackX.UnitTests
             s.UnixSeconds = long.MaxValue;
             s.GameState = int.MaxValue;
             s.SecondsInGame = long.MaxValue;
+            s.SecondsSinceLoaded = long.MaxValue;
             s.ProcessAgeSeconds = long.MaxValue;
             s.StartupMilestone = int.MaxValue;
             s.StartupMilestoneAgeSeconds = long.MaxValue;
@@ -73,7 +74,9 @@ namespace GnollHackX.UnitTests
             s.PssSampleAgeSeconds = long.MaxValue;
             s.GpuCacheUsedMB = long.MaxValue;
             s.GpuCacheLimitMB = long.MaxValue;
+            s.GpuCacheSampleAgeSeconds = long.MaxValue;
             s.BitmapMB = long.MaxValue;
+            s.TileSheetMB = long.MaxValue;
             s.SoundMB = long.MaxValue;
             s.ManagedHeapMB = long.MaxValue;
 
@@ -87,6 +90,117 @@ namespace GnollHackX.UnitTests
             Assert.True(GHExitStateSummary.TryParse(text, out parsed));
             Assert.Equal(long.MaxValue, parsed.UnixSeconds);
             Assert.Equal(int.MaxValue, parsed.GameState);
+            Assert.Equal(long.MaxValue, parsed.SecondsInGame);
+        }
+
+        private static GHExitStateSummary FullWithLoadAndSheets()
+        {
+            GHExitStateSummary s = Full();
+            s.SecondsSinceLoaded = 70;
+            s.GpuCacheSampleAgeSeconds = 9;
+            s.TileSheetMB = 570;
+            return s;
+        }
+
+        [Fact]
+        public void Format_LoadAndSheetFields_RoundTrip()
+        {
+            GHExitStateSummary s = FullWithLoadAndSheets();
+            string text = s.Format();
+
+            Assert.Equal("gs1 u=1794567890 g=1 t=245 d=70 a=300/10/290/2046 w=3/12/3 r=1530 s=610 p=2100/320/900/40 c=380/384/9 b=570/570 f=120 h=40", text);
+            GHExitStateSummary parsed;
+            Assert.True(GHExitStateSummary.TryParse(text, out parsed));
+            Assert.True(s.ContentEquals(parsed));
+            Assert.Equal(70, parsed.SecondsSinceLoaded);
+            Assert.Equal(9, parsed.GpuCacheSampleAgeSeconds);
+            Assert.Equal(570, parsed.TileSheetMB);
+        }
+
+        [Fact]
+        public void Format_RealisticLongGame_KeepsEveryField()
+        {
+            GHExitStateSummary s = new GHExitStateSummary();
+            s.UnixSeconds = 1794567890;
+            s.GameState = 1;
+            s.SecondsInGame = 3600;
+            s.SecondsSinceLoaded = 3590;
+            s.ProcessAgeSeconds = 3700;
+            s.StartupMilestone = (int)GHStartupMilestone.MainMenu;
+            s.StartupMilestoneAgeSeconds = 3650;
+            s.StartupMilestoneMask = 2046;
+            s.MemoryWarningLevel = 3;
+            s.MemoryWarningAgeSeconds = 120;
+            s.HighestMemoryWarningLevel = 3;
+            s.RssMB = 1500;
+            s.SwapMB = 20;
+            s.PssMB = 1600;
+            s.GraphicsMB = 400;
+            s.NativeHeapMB = 840;
+            s.PssSampleAgeSeconds = 0;
+            s.GpuCacheUsedMB = 180;
+            s.GpuCacheLimitMB = 256;
+            s.GpuCacheSampleAgeSeconds = 9;
+            s.BitmapMB = 705;
+            s.TileSheetMB = 570;
+            s.SoundMB = 11;
+            s.ManagedHeapMB = 80;
+
+            string text = s.Format();
+
+            Assert.True(Encoding.ASCII.GetByteCount(text) <= GHExitStateSummary.MaxBytes);
+            Assert.EndsWith(" h=80", text);
+        }
+
+        [Fact]
+        public void TryParse_OldGpuCacheAndBitmapFields_LeavesNewPartsAbsent()
+        {
+            GHExitStateSummary parsed;
+            Assert.True(GHExitStateSummary.TryParse("gs1 u=5 g=1 c=8/512 b=705", out parsed));
+
+            Assert.Equal(8, parsed.GpuCacheUsedMB);
+            Assert.Equal(512, parsed.GpuCacheLimitMB);
+            Assert.Equal(-1, parsed.GpuCacheSampleAgeSeconds);
+            Assert.Equal(705, parsed.BitmapMB);
+            Assert.Equal(-1, parsed.TileSheetMB);
+            Assert.Equal(-1, parsed.SecondsSinceLoaded);
+            string text = parsed.Describe(0);
+            Assert.DoesNotContain("sampled", text);
+            Assert.DoesNotContain("tile sheets", text);
+            Assert.DoesNotContain("loaded", text);
+        }
+
+        [Theory]
+        [InlineData(0, "none")]
+        [InlineData(1, "game")]
+        [InlineData(2, "replay")]
+        [InlineData(3, "game-loading")]
+        [InlineData(4, "replay-loading")]
+        [InlineData(5, "unknown")]
+        public void GameStateName_NamesStates(int state, string expected)
+        {
+            Assert.Equal(expected, GHExitStateSummary.GameStateName(state));
+        }
+
+        [Fact]
+        public void Describe_LoadAndSheetFields()
+        {
+            GHExitStateSummary s = FullWithLoadAndSheets();
+
+            string text = s.Describe(s.UnixSeconds + 8);
+
+            Assert.StartsWith("game, 245 s in, loaded 70 s before snapshot; process 300 s;", text);
+            Assert.Contains("GPU cache 380 / 384 MB sampled 9 s before snapshot; bitmaps 570 MB (tile sheets 570); sound", text);
+        }
+
+        [Fact]
+        public void ContentEquals_SecondsSinceLoadedDiffers_IsFalse()
+        {
+            GHExitStateSummary a = FullWithLoadAndSheets();
+            GHExitStateSummary b = FullWithLoadAndSheets();
+            b.SecondsSinceLoaded = a.SecondsSinceLoaded + 1;
+
+            Assert.False(a.ContentEquals(b));
         }
 
         [Fact]

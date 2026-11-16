@@ -14,8 +14,9 @@ namespace GnollHackX
         private static readonly string[] _memoryWarningLevelNames = { "Low", "Medium", "Critical", "Background", "Complete" };
 
         public long UnixSeconds = -1;              /* u: when the snapshot was written */
-        public int GameState = -1;                 /* g: 0 none, 1 game, 2 replay */
+        public int GameState = -1;                 /* g: 0 none, 1 game, 2 replay, 3 game loading, 4 replay loading */
         public long SecondsInGame = -1;            /* t */
+        public long SecondsSinceLoaded = -1;       /* d: seconds since the game finished loading */
         public long ProcessAgeSeconds = -1;        /* a: process age, then the last startup milestone (GHStartupMilestone), */
         public int StartupMilestone = -1;          /*    seconds since it, and the reached-milestone mask */
         public long StartupMilestoneAgeSeconds = -1;
@@ -31,7 +32,9 @@ namespace GnollHackX
         public long PssSampleAgeSeconds = -1;
         public long GpuCacheUsedMB = -1;           /* c */
         public long GpuCacheLimitMB = -1;
-        public long BitmapMB = -1;                 /* b */
+        public long GpuCacheSampleAgeSeconds = -1;
+        public long BitmapMB = -1;                 /* b: all bitmaps, then the tile sheets */
+        public long TileSheetMB = -1;
         public long SoundMB = -1;                  /* f */
         public long ManagedHeapMB = -1;            /* h */
 
@@ -43,13 +46,14 @@ namespace GnollHackX
             AppendField(sb, ref full, "u", UnixSeconds);
             AppendField(sb, ref full, "g", GameState);
             AppendField(sb, ref full, "t", SecondsInGame);
+            AppendField(sb, ref full, "d", SecondsSinceLoaded);
             AppendField(sb, ref full, "a", ProcessAgeSeconds, StartupMilestone, StartupMilestoneAgeSeconds, StartupMilestoneMask);
             AppendField(sb, ref full, "w", MemoryWarningLevel, MemoryWarningAgeSeconds, HighestMemoryWarningLevel);
             AppendField(sb, ref full, "r", RssMB);
             AppendField(sb, ref full, "s", SwapMB);
             AppendField(sb, ref full, "p", PssMB, GraphicsMB, NativeHeapMB, PssSampleAgeSeconds);
-            AppendField(sb, ref full, "c", GpuCacheUsedMB, GpuCacheLimitMB);
-            AppendField(sb, ref full, "b", BitmapMB);
+            AppendField(sb, ref full, "c", GpuCacheUsedMB, GpuCacheLimitMB, GpuCacheSampleAgeSeconds);
+            AppendField(sb, ref full, "b", BitmapMB, TileSheetMB);
             AppendField(sb, ref full, "f", SoundMB);
             AppendField(sb, ref full, "h", ManagedHeapMB);
             return sb.ToString();
@@ -73,9 +77,14 @@ namespace GnollHackX
             if (!any)
                 return;
 
+            /* Trailing unknown parts are left out; TryParse reads a missing part as -1 */
+            int count = values.Length;
+            while (count > 1 && values[count - 1] == -1)
+                count--;
+
             StringBuilder field = new StringBuilder();
             field.Append(' ').Append(key).Append('=');
-            for (i = 0; i < values.Length; i++)
+            for (i = 0; i < count; i++)
             {
                 if (i > 0)
                     field.Append('/');
@@ -113,6 +122,9 @@ namespace GnollHackX
                     case "t":
                         res.SecondsInGame = ParsePart(parts, 0);
                         break;
+                    case "d":
+                        res.SecondsSinceLoaded = ParsePart(parts, 0);
+                        break;
                     case "a":
                         res.ProcessAgeSeconds = ParsePart(parts, 0);
                         res.StartupMilestone = ParseIntPart(parts, 1);
@@ -139,9 +151,11 @@ namespace GnollHackX
                     case "c":
                         res.GpuCacheUsedMB = ParsePart(parts, 0);
                         res.GpuCacheLimitMB = ParsePart(parts, 1);
+                        res.GpuCacheSampleAgeSeconds = ParsePart(parts, 2);
                         break;
                     case "b":
                         res.BitmapMB = ParsePart(parts, 0);
+                        res.TileSheetMB = ParsePart(parts, 1);
                         break;
                     case "f":
                         res.SoundMB = ParsePart(parts, 0);
@@ -180,6 +194,8 @@ namespace GnollHackX
                 case 0: return "none";
                 case 1: return "game";
                 case 2: return "replay";
+                case 3: return "game-loading";
+                case 4: return "replay-loading";
                 default: return "unknown";
             }
         }
@@ -202,6 +218,8 @@ namespace GnollHackX
                 sb.Append(GameStateName(GameState));
                 if (SecondsInGame >= 0)
                     sb.Append(", ").Append(SecondsInGame.ToString(CultureInfo.InvariantCulture)).Append(" s in");
+                if (SecondsSinceLoaded != -1)
+                    sb.Append(", loaded ").Append(Age(SecondsSinceLoaded)).Append(" s before snapshot");
             }
             if (ProcessAgeSeconds != -1)
             {
@@ -256,11 +274,15 @@ namespace GnollHackX
             {
                 AppendSeparator(sb);
                 sb.Append("GPU cache ").Append(Mb(GpuCacheUsedMB)).Append(" / ").Append(Mb(GpuCacheLimitMB)).Append(" MB");
+                if (GpuCacheSampleAgeSeconds != -1)
+                    sb.Append(" sampled ").Append(Age(GpuCacheSampleAgeSeconds)).Append(" s before snapshot");
             }
             if (BitmapMB != -1)
             {
                 AppendSeparator(sb);
                 sb.Append("bitmaps ").Append(Mb(BitmapMB)).Append(" MB");
+                if (TileSheetMB != -1)
+                    sb.Append(" (tile sheets ").Append(Mb(TileSheetMB)).Append(')');
             }
             if (SoundMB != -1)
             {
@@ -334,6 +356,7 @@ namespace GnollHackX
                 return false;
             return GameState == other.GameState
                 && SecondsInGame == other.SecondsInGame
+                && SecondsSinceLoaded == other.SecondsSinceLoaded
                 && ProcessAgeSeconds == other.ProcessAgeSeconds
                 && StartupMilestone == other.StartupMilestone
                 && StartupMilestoneAgeSeconds == other.StartupMilestoneAgeSeconds
@@ -349,7 +372,9 @@ namespace GnollHackX
                 && PssSampleAgeSeconds == other.PssSampleAgeSeconds
                 && GpuCacheUsedMB == other.GpuCacheUsedMB
                 && GpuCacheLimitMB == other.GpuCacheLimitMB
+                && GpuCacheSampleAgeSeconds == other.GpuCacheSampleAgeSeconds
                 && BitmapMB == other.BitmapMB
+                && TileSheetMB == other.TileSheetMB
                 && SoundMB == other.SoundMB
                 && ManagedHeapMB == other.ManagedHeapMB;
         }

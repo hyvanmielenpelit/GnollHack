@@ -1319,6 +1319,8 @@ namespace GnollHackX.Pages.Game
             }
 
             DisposePaintResources();
+            if (GHApp.LowMemoryPolicyActive && !GHApp.GameStarted)
+                GHApp.ReleaseTileSheets();
         }
 
         /* Never waits: false if the page is cleaned up or the canvas is already painting */
@@ -1652,7 +1654,6 @@ namespace GnollHackX.Pages.Game
 
                 if (!GHApp.StartGameDataSet)
                 {
-                    Task<SKImage> tileSetTask;
                     LoadingDetailsLabel.Text = "Loading Master Sound Banks...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.30, 400, Easing.Linear));
                     tasks.Add(Task.Run(() =>
@@ -1662,29 +1663,7 @@ namespace GnollHackX.Pages.Game
                     await Task.WhenAll(tasks);
                     tasks.Clear();
 
-                    LoadingDetailsLabel.Text = "Loading Tile Sheet 1/3...";
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.45, 400, Easing.Linear));
-                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits.ghpng");
-                    tasks.Add(tileSetTask);
-                    await Task.WhenAll(tasks);
-                    GHApp._tileMap[0] = tileSetTask.Result;
-                    tasks.Clear();
-
-                    LoadingDetailsLabel.Text = "Loading Tile Sheet 2/3...";
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.55, 200, Easing.Linear));
-                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-2.ghpng");
-                    tasks.Add(tileSetTask);
-                    await Task.WhenAll(tasks);
-                    GHApp._tileMap[1] = tileSetTask.Result;
-                    tasks.Clear();
-
-                    LoadingDetailsLabel.Text = "Loading Tile Sheet 3/3...";
-                    tasks.Add(LoadingProgressBar.ProgressTo(0.575, 200, Easing.Linear));
-                    tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-3.ghpng");
-                    tasks.Add(tileSetTask);
-                    await Task.WhenAll(tasks);
-                    GHApp._tileMap[2] = tileSetTask.Result;
-                    tasks.Clear();
+                    await LoadTileSheetsAsync(tasks);
 
                     LoadingDetailsLabel.Text = "Loading GnollHack icon...";
                     tasks.Add(LoadingProgressBar.ProgressTo(0.600, 50, Easing.Linear));
@@ -1773,6 +1752,10 @@ namespace GnollHackX.Pages.Game
                     tasks.Clear();
 
                     GHApp.StartGameDataSet = true;
+                }
+                else if (!GHApp.AreTileSheetsLoaded)
+                {
+                    await LoadTileSheetsAsync(tasks);
                 }
 
                 LoadingDetailsLabel.Text = "Loading extended commands...";
@@ -1968,6 +1951,35 @@ namespace GnollHackX.Pages.Game
 #endif
             GHApp.UpdateFreeDiskSpace();
             GHApp.UpdateUsedMemory();
+            GHApp.MarkGameLoaded();
+        }
+
+        private async Task LoadTileSheetsAsync(List<Task> tasks)
+        {
+            Task<SKImage> tileSetTask;
+            LoadingDetailsLabel.Text = "Loading Tile Sheet 1/3...";
+            tasks.Add(LoadingProgressBar.ProgressTo(0.45, 400, Easing.Linear));
+            tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits.ghpng");
+            tasks.Add(tileSetTask);
+            await Task.WhenAll(tasks);
+            GHApp._tileMap[0] = tileSetTask.Result;
+            tasks.Clear();
+
+            LoadingDetailsLabel.Text = "Loading Tile Sheet 2/3...";
+            tasks.Add(LoadingProgressBar.ProgressTo(0.55, 200, Easing.Linear));
+            tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-2.ghpng");
+            tasks.Add(tileSetTask);
+            await Task.WhenAll(tasks);
+            GHApp._tileMap[1] = tileSetTask.Result;
+            tasks.Clear();
+
+            LoadingDetailsLabel.Text = "Loading Tile Sheet 3/3...";
+            tasks.Add(LoadingProgressBar.ProgressTo(0.575, 200, Easing.Linear));
+            tileSetTask = GHApp.LoadTilesetAsync("gnollhack_64x96_transparent_32bits-3.ghpng");
+            tasks.Add(tileSetTask);
+            await Task.WhenAll(tasks);
+            GHApp._tileMap[2] = tileSetTask.Result;
+            tasks.Clear();
         }
 
         public void StopTimers()

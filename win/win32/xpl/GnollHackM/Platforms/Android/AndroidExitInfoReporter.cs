@@ -298,6 +298,7 @@ public static class AndroidExitInfoReporter
             scope.SetTag(tagPrefix + ".snapshot", "no");
         }
         scope.SetTag("device.memory", GHExitStateSummary.MemoryBucket(GHApp.TotalMemory));
+        scope.SetTag("low_memory_policy", GHApp.LowMemoryPolicyActive ? "yes" : "no");
     }
 
     [SupportedOSPlatform("android30.0")]

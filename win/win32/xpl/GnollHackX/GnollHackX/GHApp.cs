@@ -223,6 +223,9 @@ namespace GnollHackX
             SetProcessPriority();
 
             TotalMemory = PlatformService.GetDeviceMemoryInBytes();
+            LowMemoryPolicyActive = ComputeLowMemoryPolicy();
+            if (LowMemoryPolicyActive)
+                MaybeWriteGHLog("Low-memory policy active, total memory " + (TotalMemory / (1024UL * 1024UL)) + " MB", true, GHConstants.SentryGnollHackGeneralCategoryName);
             PlatformScreenScale = PlatformService.GetPlatformScreenScale();
 
             InitBaseTypefaces();
@@ -774,6 +777,72 @@ namespace GnollHackX
             Interlocked.Add(ref _usedBitmapBytes, amount);
         }
 
+        /* The decoded tile sheets' share of UsedBitmapBytes */
+        private static long _tileSheetBytes = 0L;
+        public static long TileSheetBytes { get { return Interlocked.Read(ref _tileSheetBytes); } }
+
+        public static bool AreTileSheetsLoaded
+        {
+            get { return _tileMap[0] != null && _tileMap[1] != null && _tileMap[2] != null; }
+        }
+
+        /* Main thread only, after every canvas that draws the sheets has stopped painting */
+        public static void ReleaseTileSheets()
+        {
+            SKImage[] images = new SKImage[3];
+            int i;
+            for (i = 0; i < images.Length; i++)
+            {
+                images[i] = _tileMap[i];
+                _tileMap[i] = null;
+            }
+
+            long released = 0L;
+            for (i = 0; i < images.Length; i++)
+            {
+                SKImage image = images[i];
+                if (image == null)
+                    continue;
+                long bytes = image.Info.BytesSize64;
+                AddUsedBitmapBytes(-bytes);
+                Interlocked.Add(ref _tileSheetBytes, -bytes);
+                released += bytes;
+                try
+                {
+                    image.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    MaybeWriteGHLog("ReleaseTileSheets: " + ex.Message);
+                }
+            }
+            AddSentryBreadcrumb("Tile sheets released: " + (released / (1024L * 1024L)) + " MB", GHConstants.SentryGnollHackGeneralCategoryName);
+        }
+
+        /* True on Android devices with less than GHConstants.LowMemoryPolicyThresholdBytes of memory, or in Debug
+           builds when the override file is in GHPath */
+        public static bool LowMemoryPolicyActive { get; private set; }
+
+        private static bool ComputeLowMemoryPolicy()
+        {
+            if (!IsAndroid)
+                return false;
+            if (TotalMemory > 0 && TotalMemory < GHConstants.LowMemoryPolicyThresholdBytes)
+                return true;
+            if (IsDebug)
+            {
+                try
+                {
+                    return File.Exists(Path.Combine(GHPath, GHConstants.LowMemoryPolicyOverrideFileName));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("ComputeLowMemoryPolicy: " + ex.Message);
+                }
+            }
+            return false;
+        }
+
         private static long _freeDiskSpaceInBytes = 0L;
         public static ulong FreeDiskSpaceInBytes { get { return (ulong)Interlocked.CompareExchange(ref _freeDiskSpaceInBytes, 0L, 0L); } set { Interlocked.Exchange(ref _freeDiskSpaceInBytes, (long)value); } }
         /* Refreshes on the thread pool; no platform's provider needs the UI thread */
@@ -996,11 +1065,20 @@ namespace GnollHackX
             {
                 Interlocked.Exchange(ref _gameStarted, value ? 1 : 0);
                 Interlocked.Exchange(ref _gameStartedUtcTicks, value ? DateTime.UtcNow.Ticks : 0L);
+                Interlocked.Exchange(ref _gameLoadedUtcTicks, 0L);
             }
         }
         /* UTC ticks when GameStarted was last set true; 0 while no game is running */
         private static long _gameStartedUtcTicks = 0L;
         public static long GameStartedUtcTicks { get { return Interlocked.Read(ref _gameStartedUtcTicks); } }
+
+        /* UTC ticks when the running game finished loading; 0 while loading or with no game */
+        private static long _gameLoadedUtcTicks = 0L;
+        public static long GameLoadedUtcTicks { get { return Interlocked.Read(ref _gameLoadedUtcTicks); } }
+        public static void MarkGameLoaded()
+        {
+            Interlocked.Exchange(ref _gameLoadedUtcTicks, DateTime.UtcNow.Ticks);
+        }
 
         private static int _mainScreenMusicStarted = 0;
         public static bool MainScreenMusicStarted { get { return Interlocked.CompareExchange(ref _mainScreenMusicStarted, 0, 0) != 0; } set { Interlocked.Exchange(ref _mainScreenMusicStarted, value ? 1 : 0); } }
@@ -2467,6 +2545,14 @@ namespace GnollHackX
             limits.SecondaryList = secondaryList;
             limits.RecommendedPrimary = GetDefaultPrimaryGPUCacheSize(primaryList, memory);
             limits.RecommendedSecondary = GetDefaultSecondaryGPUCacheSize(secondaryList, memory);
+            /* Low-RAM Android devices: see GHConstants.LowMemoryPolicyThresholdBytes */
+            if (!metal && LowMemoryPolicyActive)
+            {
+                if (limits.RecommendedPrimary > GHConstants.LowMemoryPrimaryGPUCacheCap)
+                    limits.RecommendedPrimary = GHConstants.LowMemoryPrimaryGPUCacheCap;
+                if (limits.RecommendedSecondary > GHConstants.LowMemorySecondaryGPUCacheCap)
+                    limits.RecommendedSecondary = GHConstants.LowMemorySecondaryGPUCacheCap;
+            }
             return limits;
         }
 
@@ -2670,7 +2756,10 @@ namespace GnollHackX
 
         private static readonly object _gPUBackendLock = new object();
         private static CacheUsageInfo _currentGPUCacheUsage = new CacheUsageInfo(-1, -1); /* Null */
-        public static CacheUsageInfo CurrentGPUCacheUsage { get { lock (_gPUBackendLock) { return _currentGPUCacheUsage; } } set { lock (_gPUBackendLock) { _currentGPUCacheUsage = value; } } }
+        public static CacheUsageInfo CurrentGPUCacheUsage { get { lock (_gPUBackendLock) { return _currentGPUCacheUsage; } } set { lock (_gPUBackendLock) { _currentGPUCacheUsage = value; _currentGPUCacheUsageUtcTicks = DateTime.UtcNow.Ticks; } } }
+        /* UTC ticks when CurrentGPUCacheUsage was last set; 0 before that */
+        private static long _currentGPUCacheUsageUtcTicks = 0L;
+        public static long CurrentGPUCacheUsageUtcTicks { get { lock (_gPUBackendLock) { return _currentGPUCacheUsageUtcTicks; } } }
 
         private static double _batteryChargeLevel = -1;
         private static double _previousBatteryChargeLevel = -1;
@@ -5444,12 +5533,18 @@ namespace GnollHackX
                     /* A decoded tile sheet is tens of megabytes; decoding it on the UI thread causes ANRs */
                     res = await Task.Run(() =>
                     {
-                        SKBitmap bmp = SKBitmap.Decode(stream);
-                        bmp.SetImmutable();
-                        return SKImage.FromBitmap(bmp);
+                        /* The image shares the immutable bitmap's pixels, so they outlive the wrapper */
+                        using (SKBitmap bmp = SKBitmap.Decode(stream))
+                        {
+                            bmp.SetImmutable();
+                            return SKImage.FromBitmap(bmp);
+                        }
                     });
                     if (res != null)
+                    {
                         AddUsedBitmapBytes(res.Info.BytesSize64);
+                        Interlocked.Add(ref _tileSheetBytes, res.Info.BytesSize64);
+                    }
                 }
             }
             catch (Exception ex)

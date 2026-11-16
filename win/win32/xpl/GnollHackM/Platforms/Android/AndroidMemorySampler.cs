@@ -15,7 +15,6 @@ namespace GnollHackM;
 public static class AndroidMemorySampler
 {
     private const long IdleRewriteSeconds = 60;
-    private const long GameLoadedSampleDelaySeconds = 30;
 
     private static int _started = 0;
     private static int _busy = 0;
@@ -29,7 +28,7 @@ public static class AndroidMemorySampler
     private static GHExitStateSummary _lastWritten = null;
     private static long _lastWriteUtcTicks = 0L;
     private static long _lastFullSampleUtcTicks = 0L;
-    private static long _lastSampledGameStartUtcTicks = 0L;
+    private static long _lastSampledGameLoadUtcTicks = 0L;
     private static long _samplePssMB = -1;
     private static long _sampleGraphicsMB = -1;
     private static long _sampleNativeHeapMB = -1;
@@ -127,18 +126,19 @@ public static class AndroidMemorySampler
         if (!IsAppReady)
             return false;
         long now = DateTime.UtcNow.Ticks;
+
+        /* One sample per loaded game, at the first pass after loading, whatever the spacing */
+        long loaded = GHApp.GameLoadedUtcTicks;
+        if (loaded != 0L && loaded != _lastSampledGameLoadUtcTicks)
+        {
+            _lastSampledGameLoadUtcTicks = loaded;
+            return true;
+        }
+
         if (_lastFullSampleUtcTicks != 0L && now - _lastFullSampleUtcTicks < GHConstants.AndroidMemorySampleMinimumSpacingSeconds * TimeSpan.TicksPerSecond)
             return false;
         if (Interlocked.Exchange(ref _fullSampleRequested, 0) == 1)
             return true;
-
-        long gameStart = GHApp.GameStartedUtcTicks;
-        if (gameStart != 0L && gameStart != _lastSampledGameStartUtcTicks
-            && now - gameStart >= GameLoadedSampleDelaySeconds * TimeSpan.TicksPerSecond)
-        {
-            _lastSampledGameStartUtcTicks = gameStart;
-            return true;
-        }
 
         if (_lastFullSampleUtcTicks == 0L)
             return now - _startUtcTicks >= GHConstants.AndroidMemorySampleFirstDelaySeconds * TimeSpan.TicksPerSecond;
@@ -178,12 +178,12 @@ public static class AndroidMemorySampler
         }
 
         long gameStart = GHApp.GameStartedUtcTicks;
-        if (!GHApp.GameStarted)
-            summary.GameState = 0;
-        else
-            summary.GameState = GHApp.CurrentGamePage?.PlayingReplay == true ? 2 : 1;
+        long gameLoaded = GHApp.GameLoadedUtcTicks;
+        summary.GameState = CurrentGameState();
         if (summary.GameState != 0 && gameStart != 0L)
             summary.SecondsInGame = Math.Max(0L, (now - gameStart) / TimeSpan.TicksPerSecond);
+        if (summary.GameState != 0 && gameLoaded != 0L)
+            summary.SecondsSinceLoaded = Math.Max(0L, (now - gameLoaded) / TimeSpan.TicksPerSecond);
 
         summary.MemoryWarningLevel = GHApp.LastMemoryPressureLevel;
         long warningTicks = GHApp.LastMemoryPressureUtcTicks;
@@ -207,13 +207,28 @@ public static class AndroidMemorySampler
         long gpuLimit = GHApp.CurrentGPUCacheSize;
         summary.GpuCacheUsedMB = gpuUsage.MaxResourceBytes < 0 ? -1 : gpuUsage.MaxResourceBytes / (1024 * 1024);
         summary.GpuCacheLimitMB = gpuLimit < 0 ? -1 : gpuLimit / (1024 * 1024);
+        long gpuSampleTicks = GHApp.CurrentGPUCacheUsageUtcTicks;
+        if (gpuSampleTicks != 0L)
+            summary.GpuCacheSampleAgeSeconds = Math.Max(0L, (now - gpuSampleTicks) / TimeSpan.TicksPerSecond);
         summary.BitmapMB = (long)(GHApp.UsedBitmapBytes / (1024UL * 1024UL));
+        summary.TileSheetMB = Math.Max(0L, GHApp.TileSheetBytes) / (1024L * 1024L);
 
         int soundCurrent = -1, soundMax = -1;
         GHApp.FmodService?.GetStats(out soundCurrent, out soundMax);
         summary.SoundMB = soundCurrent < 0 ? -1 : soundCurrent / (1024 * 1024);
         summary.ManagedHeapMB = GC.GetGCMemoryInfo().HeapSizeBytes / (1024 * 1024);
         WriteIfChanged(summary, now);
+    }
+
+    /* GHExitStateSummary.GameState coding; only after AppReady */
+    private static int CurrentGameState()
+    {
+        if (!GHApp.GameStarted)
+            return 0;
+        int state = GHApp.CurrentGamePage?.PlayingReplay == true ? 2 : 1;
+        if (GHApp.GameLoadedUtcTicks == 0L)
+            state += 2;
+        return state;
     }
 
     private static void WriteIfChanged(GHExitStateSummary summary, long nowUtcTicks)
@@ -281,7 +296,7 @@ public static class AndroidMemorySampler
         int soundCurrent = -1, soundMax = -1;
         GHApp.FmodService?.GetStats(out soundCurrent, out soundMax);
         long gameStart = GHApp.GameStartedUtcTicks;
-        int gameState = !GHApp.GameStarted ? 0 : GHApp.CurrentGamePage?.PlayingReplay == true ? 2 : 1;
+        int gameState = CurrentGameState();
         string game = GHExitStateSummary.GameStateName(gameState);
         if (gameState != 0 && gameStart != 0L)
             game += " " + ((DateTime.UtcNow.Ticks - gameStart) / TimeSpan.TicksPerSecond).ToString(CultureInfo.InvariantCulture) + " s";
@@ -293,6 +308,7 @@ public static class AndroidMemorySampler
             + "; GPU cache " + Mb(gpuUsage.MaxResourceBytes < 0 ? -1 : gpuUsage.MaxResourceBytes / (1024 * 1024))
             + "/" + Mb(gpuLimit < 0 ? -1 : gpuLimit / (1024 * 1024)) + " MB"
             + "; bitmaps " + Mb((long)(GHApp.UsedBitmapBytes / (1024UL * 1024UL))) + " MB"
+            + ", tile sheets " + Mb(Math.Max(0L, GHApp.TileSheetBytes) / (1024L * 1024L)) + " MB"
             + "; sound " + Mb(soundCurrent < 0 ? -1 : soundCurrent / (1024 * 1024)) + " MB"
             + "; " + game;
         GHApp.AddSentryBreadcrumb(message, GHConstants.SentryGnollHackGeneralCategoryName);
