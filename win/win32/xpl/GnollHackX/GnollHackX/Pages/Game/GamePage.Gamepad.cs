@@ -77,6 +77,9 @@ namespace GnollHackX.Pages.Game
         /* Per sector N, NE, E, SE, S, SW, W, NW: the direction key and the getpos 8-tile jump letter */
         private static readonly int[] GamepadSectorDirections = { -8, -9, -6, -3, -2, -1, -4, -7 };
         private static readonly int[] GamepadSectorJumpLetters = { 'K', 'U', 'L', 'N', 'J', 'B', 'H', 'Y' };
+        /* Per sector N, NE, E, SE, S, SW, W, NW: the map offset of the square in that direction */
+        private static readonly int[] GamepadSectorDx = { 0, 1, 1, 1, 0, -1, -1, -1 };
+        private static readonly int[] GamepadSectorDy = { -1, -1, 0, 1, 1, 1, 0, -1 };
         /* The sector of a held D-pad set by (dy + 1) * 3 + (dx + 1), with +y down; -1 for none */
         private static readonly int[] GamepadDPadSectors = { 7, 0, 1, 6, -1, 2, 5, 4, 3 };
         /* The GHCommands of Rest, Search 20 and Extended, as GHApp identifies them, in their commands radial order */
@@ -117,6 +120,11 @@ namespace GnollHackX.Pages.Game
         private GamepadCommand _gamepadPending = null;
         private long _gamepadPendingDeadline = 0;
         private readonly GamepadStickDirection _gamepadLeftDirection = new GamepadStickDirection();
+        /* Aim and Confirm: the aimed sector and A's steps; UI thread */
+        private readonly GHGamepadAimStepper _gamepadAimStepper = new GHGamepadAimStepper(
+            GamepadMsToTicks(GHConstants.GamepadWalkFirstRepeatDelayMs), GamepadMsToTicks(GHConstants.GamepadWalkRepeatIntervalMs));
+        /* The aimed sector for the map paint, -1 for none; read on the paint thread */
+        private int _gamepadAimSectorShown = -1;
         private bool _gamepadLeftStickDisarmed = false;
         private bool _gamepadRightStickDisarmed = false;
         private float _gamepadMessageScrollRemainder = 0f;
@@ -246,6 +254,7 @@ namespace GnollHackX.Pages.Game
             {
                 StopGamepadPanning();
                 _gamepadLeftDirection.Reset();
+                ClearGamepadAim();
             }
             if (ctx != GHGamepadMapContext.Normal && ctx != GHGamepadMapContext.Busy)
             {
@@ -303,7 +312,27 @@ namespace GnollHackX.Pages.Game
             _gamepadLeftStickDisarmed = true;
             _gamepadRightStickDisarmed = true;
             _gamepadLeftDirection.Reset();
+            ClearGamepadAim();
             StopGamepadPanning();
+        }
+
+        /* The aimed sector, -1 for none; the strip and the map follow */
+        private void SetGamepadAim(int sector, long now)
+        {
+            if (_gamepadAimStepper.SetAim(sector, now))
+            {
+                Interlocked.Exchange(ref _gamepadAimSectorShown, _gamepadAimStepper.Sector);
+                _gamepadHintsDirty = true;
+            }
+        }
+
+        private void ClearGamepadAim()
+        {
+            bool wasAiming = _gamepadAimStepper.IsAiming;
+            _gamepadAimStepper.Reset();
+            Interlocked.Exchange(ref _gamepadAimSectorShown, -1);
+            if (wasAiming)
+                _gamepadHintsDirty = true;
         }
 
         /* IGHGamepadHandlingPage, IGHGamepadPopupPage, IGHGamepadFrameTickPage */
@@ -428,6 +457,9 @@ namespace GnollHackX.Pages.Game
         public void GamepadFrameTick(long nowTicks)
         {
             TickRadialMenu();
+            /* An aim never outlives the controller as the active input */
+            if (_gamepadAimStepper.IsAiming && !GHGamepadService.IsActive)
+                ClearGamepadAim();
             if (!GHGamepadService.IsAvailable && _gamepadPending == null && !_gamepadHintShown
                 && !_gamepadCommandBarHidden)
                 return;
@@ -440,6 +472,9 @@ namespace GnollHackX.Pages.Game
 
             GHGamepadMapContext ctx = ResolveGamepadContext();
             NoteGamepadContext(ctx, nowTicks);
+            if (_gamepadAimStepper.IsAiming && (!GHApp.GamepadAimAndConfirm
+                || (ctx != GHGamepadMapContext.Normal && ctx != GHGamepadMapContext.Busy)))
+                ClearGamepadAim();
             if (ctx == GHGamepadMapContext.Radial && GetGamepadDialogContext() != GHGamepadDialogContext.None)
             {
                 /* A dialog that appears over the radial wins */
@@ -629,8 +664,9 @@ namespace GnollHackX.Pages.Game
            command; a direction prompt either raises while the trigger is held opens the direction radial. With the
            other side's modifier a trigger does nothing. Both shoulders held and released with nothing pressed in
            between open a Quick radial: Right Quick when L1 went down first, Left Quick when R1 did. L3 arms a run
-           for the next direction, and any other command button disarms it, B doing nothing else. In Busy, game input
-           signals the game, which the command gate would otherwise hold back unseen. */
+           for the next direction, and any other command button disarms it, B doing nothing else. With Aim and Confirm,
+           the left stick aims and A, or R1 + A to run, moves to the aimed square. In Busy, game input signals the
+           game, which the command gate would otherwise hold back unseen. */
         private void HandleNormalGamepadButton(GHGamepadMapContext ctx, GHGamepadButtonEvent e, long now)
         {
             bool pressed = e.Kind == GHGamepadButtonEventKind.Pressed;
@@ -642,7 +678,8 @@ namespace GnollHackX.Pages.Game
                 _gamepadShoulderChord = false;
                 _gamepadHintsDirty = true;
             }
-            if (pressed && _gamepadRunArmed && !KeepsGamepadRunArmed(e.Button))
+            if (pressed && _gamepadRunArmed && !KeepsGamepadRunArmed(e.Button)
+                && !(e.Button == GHGamepadButton.A && _gamepadAimStepper.IsAiming && !mod))
             {
                 SetGamepadRunArmed(false);
                 if (e.Button == GHGamepadButton.B)
@@ -669,6 +706,8 @@ namespace GnollHackX.Pages.Game
                     }
                     break;
                 case GHGamepadButton.A:
+                    if (e.Kind == GHGamepadButtonEventKind.Released)
+                        _gamepadAimStepper.ReleaseConfirm();
                     if (!pressed)
                         break;
                     if (mod && rightMod)
@@ -677,6 +716,8 @@ namespace GnollHackX.Pages.Game
                     }
                     else if (mod)
                         OpenRadialMenu(BuildGamepadActionsRadial(ctx, true));
+                    else if (_gamepadAimStepper.IsAiming)
+                        StepGamepadAim(ctx, now, rightMod || _gamepadRunArmed);
                     else
                         RunGamepadContextCommand(ctx);
                     break;
@@ -832,6 +873,23 @@ namespace GnollHackX.Pages.Game
                 default:
                     return button >= GHGamepadButton.LeftStickUp;
             }
+        }
+
+        /* Aim and Confirm: A steps in the aimed direction, or runs there once; the first step goes through the
+           pending slot, so a press during a busy turn is kept */
+        private void StepGamepadAim(GHGamepadMapContext ctx, long now, bool run)
+        {
+            if (!_gamepadAimStepper.PressConfirm(now, !run))
+                return;
+            SignalGamepadBusyInput(ctx);
+            int dir = GamepadSectorDirections[_gamepadAimStepper.Sector];
+            if (run)
+            {
+                SubmitGamepadKeys(GHGamepadMapContext.Normal, now, MapK(nh_keyfunc.NHKF_RUN), dir);
+                SetGamepadRunArmed(false);
+            }
+            else
+                SubmitGamepadKeys(GHGamepadMapContext.Normal, now, dir);
         }
 
         /* A: none of the core's context buttons does nothing, one runs as its radial pick would, and several open the
@@ -1313,9 +1371,12 @@ namespace GnollHackX.Pages.Game
 
         private void UpdateMapGamepadSticks(GHGamepadMapContext ctx, GHGamepadSticks sticks, double dtSeconds, long now)
         {
-            /* Left stick: walk, run with R1, getpos cursor; then D-pad walking */
+            /* Left stick: walk or aim, run with R1, getpos cursor; then D-pad walking */
             if (_gamepadLeftStickDisarmed)
+            {
                 _gamepadLeftDirection.Reset();
+                ClearGamepadAim();
+            }
             else
                 UpdateGamepadLeftStick(ctx, sticks, now);
             UpdateGamepadDPadWalk(ctx, now);
@@ -1350,8 +1411,11 @@ namespace GnollHackX.Pages.Game
             if (!engaged || family == GamepadFamilyNone)
             {
                 d.Reset();
+                ClearGamepadAim();
                 return;
             }
+            if (family != GamepadFamilyWalk)
+                ClearGamepadAim();
             if (family != d.Family)
             {
                 /* A new use of the stick starts over with the settle time */
@@ -1377,6 +1441,13 @@ namespace GnollHackX.Pages.Game
             switch (family)
             {
                 case GamepadFamilyWalk:
+                    if (GHApp.GamepadAimAndConfirm)
+                    {
+                        /* Aim and Confirm: the stick only aims, and a held A steps */
+                        SetGamepadAim(sector, now);
+                        UpdateGamepadAimSteps(ctx, now);
+                        break;
+                    }
                     if (!settled || d.RunSent || now < d.NextStepTicks)
                         break;
                     /* A due step or run that the gate holds back signals the busy game */
@@ -1428,6 +1499,17 @@ namespace GnollHackX.Pages.Game
                 default:
                     break;
             }
+        }
+
+        /* Aim and Confirm: a held A's due step, through the gate; a held-back step signals the busy game */
+        private void UpdateGamepadAimSteps(GHGamepadMapContext ctx, long now)
+        {
+            if (!_gamepadAimStepper.IsStepDue(now))
+                return;
+            if (TrySendGamepadKey(GHGamepadMapContext.Normal, GamepadSectorDirections[_gamepadAimStepper.Sector]))
+                _gamepadAimStepper.NoteStepSent(now);
+            else
+                SignalGamepadBusyInput(ctx);
         }
 
         /* Compass sector 0-7 (N, NE, E, SE, S, SW, W, NW) of a stick vector with +Y down. Cardinal sectors are
@@ -2176,7 +2258,8 @@ namespace GnollHackX.Pages.Game
                     _gamepadHintQuickSpellName = quickSpellName;
                     _gamepadHintsDirty = true;
                 }
-                int key = ((((int)GetGamepadOwnerFamily(ctx) * 64 + (int)dialog) * 16 + (int)style) * 4 + layers) * 4 + _gamepadHintContextCount;
+                int key = (((((int)GetGamepadOwnerFamily(ctx) * 64 + (int)dialog) * 16 + (int)style) * 4 + layers) * 4 + _gamepadHintContextCount) * 2
+                    + (_gamepadAimStepper.IsAiming ? 1 : 0);
                 if (_gamepadHintsDirty || key != _gamepadHintKey)
                 {
                     _gamepadHintsDirty = false;
@@ -2338,9 +2421,12 @@ namespace GnollHackX.Pages.Game
                     break;
                 case GHGamepadMapContext.Normal:
                 case GHGamepadMapContext.Busy:
+                    bool aimMode = GHApp.GamepadAimAndConfirm;
                     if (_gamepadRunArmed)
                     {
-                        GHGamepadHint runHint = GHGamepadHint.ForSymbol(GHGamepadHintSymbol.LeftStick, "Run");
+                        /* With Aim and Confirm, A runs to the aimed square instead of the stick */
+                        GHGamepadHint runHint = aimMode ? new GHGamepadHint(GHGamepadButton.A, "Run", false)
+                            : GHGamepadHint.ForSymbol(GHGamepadHintSymbol.LeftStick, "Run");
                         runHint.Highlight = true;
                         hints.Add(runHint);
                         runHint = GHGamepadHint.ForSymbol(GHGamepadHintSymbol.DPad, "Run");
@@ -2379,12 +2465,15 @@ namespace GnollHackX.Pages.Game
                         AddGamepadTriggerHint(hints, GHGamepadButton.LT, _gamepadHintLTSecondaryCommand, _gamepadHintQuickSpellName);
                         hints.Add(new GHGamepadHint(GHGamepadButton.LB, "Quick", false));
                         hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.DPad, "Zoom"));
-                        hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.LeftStick, "Run"));
+                        hints.Add(aimMode ? new GHGamepadHint(GHGamepadButton.A, "Run", false)
+                            : GHGamepadHint.ForSymbol(GHGamepadHintSymbol.LeftStick, "Run"));
                         hints.Add(new GHGamepadHint(GHGamepadButton.L3, "Center", false));
                     }
                     else
                     {
-                        if (_gamepadHintContextCount > 0)
+                        if (aimMode && _gamepadAimStepper.IsAiming)
+                            hints.Add(new GHGamepadHint(GHGamepadButton.A, "Move", false));
+                        else if (_gamepadHintContextCount > 0)
                             hints.Add(new GHGamepadHint(GHGamepadButton.A, _gamepadHintContextCount == 1 ? "Act" : "Actions", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.B, "Search", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.X, "Pick up", false));

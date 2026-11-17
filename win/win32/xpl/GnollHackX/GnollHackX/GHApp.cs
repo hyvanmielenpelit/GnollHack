@@ -4212,6 +4212,7 @@ namespace GnollHackX
         private static int _showKeyboardShortcuts = 0;
         private static int _gamepadEnabled = 1;
         private static int _gamepadHideCommandBar = 1;
+        private static int _gamepadAimAndConfirm = 0;
         private static int _gamepadGripL4Command = 0;
         private static int _gamepadGripL5Command = 0;
         private static int _gamepadGripR4Command = 0;
@@ -4243,18 +4244,21 @@ namespace GnollHackX
             get { return Interlocked.CompareExchange(ref _gamepadHintScale, 0.0f, 0.0f); }
             set { Interlocked.Exchange(ref _gamepadHintScale, value >= 1.0f && value <= 2.0f ? value : 1.0f); }
         }
+        /* The Aim and Confirm setting: the left stick aims and A moves */
+        public static bool GamepadAimAndConfirm { get { return Interlocked.CompareExchange(ref _gamepadAimAndConfirm, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadAimAndConfirm, value ? 1 : 0); } }
         /* A controller can be used: see GHGamepadService.IsAvailable; independent of the setting */
         public static bool IsGamepadAvailable { get { return GHGamepadService.IsAvailable; } }
 
         public static readonly GHGamepadButton[] GamepadGrips = { GHGamepadButton.L4, GHGamepadButton.L5, GHGamepadButton.R4, GHGamepadButton.R5 };
 
-        /* Use Controller, Hide Command Bar, Hint Size, the grips, the trigger commands, the Quick radial slots and the
-           quick commands from the preferences, each missing one at its default */
+        /* Use Controller, Hide Command Bar, Hint Size, Aim and Confirm, the grips, the trigger commands, the Quick
+           radial slots and the quick commands from the preferences, each missing one at its default */
         public static void LoadGamepadSettings()
         {
             GamepadEnabled = Preferences.Get("GamepadEnabled", true);
             GamepadHideCommandBar = Preferences.Get("GamepadHideCommandBar", true);
             GamepadHintScale = Preferences.Get("GamepadHintScale", 1.0f);
+            GamepadAimAndConfirm = Preferences.Get("GamepadAimAndConfirm", false);
             MigrateGamepadDefaultCommands();
             foreach (GHGamepadButton grip in GamepadGrips)
                 SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));

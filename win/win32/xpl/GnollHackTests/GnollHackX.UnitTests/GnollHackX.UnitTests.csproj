@@ -59,6 +59,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHEvdevDeviceFilter.cs" Link="Shared\GHEvdevDeviceFilter.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHSteamVirtualGamepadInfo.cs" Link="Shared\GHSteamVirtualGamepadInfo.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadMath.cs" Link="Shared\GHGamepadMath.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadAimStepper.cs" Link="Shared\GHGamepadAimStepper.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadButtonTracker.cs" Link="Shared\GHGamepadButtonTracker.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadControllerSelector.cs" Link="Shared\GHGamepadControllerSelector.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadGlyphs.cs" Link="Shared\GHGamepadGlyphs.cs" />

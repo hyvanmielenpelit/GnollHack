@@ -870,6 +870,14 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Aim and Confirm" x:Name="GamepadAimAndConfirmLabel"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start" />
+                                    <Switch Grid.Column="1" x:Name="GamepadAimAndConfirmSwitch" HorizontalOptions="End" VerticalOptions="Center" />
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                     <Label Text="R2 Action" x:Name="GamepadTriggerRTLabel"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"

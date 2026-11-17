@@ -286,6 +286,7 @@
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHEvdevDeviceFilter.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHSteamVirtualGamepadInfo.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadMath.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadAimStepper.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadButtonTracker.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadControllerSelector.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadGlyphs.cs" />
@@ -602,6 +603,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHEvdevDeviceFilter.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHSteamVirtualGamepadInfo.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadMath.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadAimStepper.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadButtonTracker.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadControllerSelector.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadGlyphs.cs" />

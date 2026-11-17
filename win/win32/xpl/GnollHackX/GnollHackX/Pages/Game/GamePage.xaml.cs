@@ -6190,6 +6190,40 @@ namespace GnollHackX.Pages.Game
 #endif
                 );
             }
+
+            /* Aim and Confirm's square, on the grid's rectangle */
+            if (mapx == _localGamepadAimX && mapy == _localGamepadAimY)
+            {
+                float aimTx = offsetX + usedOffsetX + width * (float)mapx;
+                float aimTy = offsetY + usedOffsetY + mapFontAscent + height * (float)mapy;
+                ulong monsterFlags = currentLayerInfo.monster_flags;
+                bool hostile = (monsterFlags & (ulong)LayerMonsterFlags.LMFLAGS_CANSPOTMON) != 0
+                    && (monsterFlags & (ulong)(LayerMonsterFlags.LMFLAGS_PET | LayerMonsterFlags.LMFLAGS_PEACEFUL)) == 0;
+                DrawGamepadAimOutline(canvas, textPaint, new SKRect(aimTx, aimTy, aimTx + width, aimTy + height), hostile);
+            }
+        }
+
+        private static readonly SKColor GamepadAimStrokeColor = new SKColor(255, 255, 255, 230);
+        private static readonly SKColor GamepadAimFillColor = new SKColor(255, 255, 255, 48);
+        private static readonly SKColor GamepadAimHostileStrokeColor = new SKColor(255, 80, 64, 235);
+        private static readonly SKColor GamepadAimHostileFillColor = new SKColor(255, 80, 64, 48);
+
+        /* The Aim and Confirm outline on one square, red over a hostile monster in view */
+        private void DrawGamepadAimOutline(SKCanvas canvas, GHSkiaFontPaint textPaint, SKRect rect, bool hostile)
+        {
+            float oldStrokeWidth = textPaint.StrokeWidth;
+            float stroke = Math.Max(2f, rect.Width * 0.07f);
+            float corner = rect.Width * 0.12f;
+            SKRect inner = new SKRect(rect.Left + stroke / 2, rect.Top + stroke / 2, rect.Right - stroke / 2, rect.Bottom - stroke / 2);
+            textPaint.Style = SKPaintStyle.Fill;
+            textPaint.Color = hostile ? GamepadAimHostileFillColor : GamepadAimFillColor;
+            canvas.DrawRoundRect(inner, corner, corner, textPaint.Paint);
+            textPaint.Style = SKPaintStyle.Stroke;
+            textPaint.StrokeWidth = stroke;
+            textPaint.Color = hostile ? GamepadAimHostileStrokeColor : GamepadAimStrokeColor;
+            canvas.DrawRoundRect(inner, corner, corner, textPaint.Paint);
+            textPaint.Style = SKPaintStyle.Fill;
+            textPaint.StrokeWidth = oldStrokeWidth;
         }
 
 
@@ -8014,6 +8048,9 @@ namespace GnollHackX.Pages.Game
         private readonly GHStatusField[] _localStatusFields = new GHStatusField[(int)NhStatusFields.MAXBLSTATS];
         private int _local_ux = 0;
         private int _local_uy = 0;
+        /* The square Aim and Confirm points at, -1 for none; paint thread */
+        private int _localGamepadAimX = -1;
+        private int _localGamepadAimY = -1;
         private ulong _local_u_condition_bits = 0;
         private ulong _local_u_status_bits = 0;
         private ulong[] _local_u_buff_bits = new ulong[GHConstants.NUM_BUFF_BIT_ULONGS];
@@ -8478,6 +8515,21 @@ namespace GnollHackX.Pages.Game
                 return;
             }
 
+            /* Aim and Confirm's square next to the hero, if any */
+            int aimSector = Interlocked.CompareExchange(ref _gamepadAimSectorShown, 0, 0);
+            _localGamepadAimX = -1;
+            _localGamepadAimY = -1;
+            if (aimSector >= 0 && aimSector < 8)
+            {
+                int aimX = _local_ux + GamepadSectorDx[aimSector];
+                int aimY = _local_uy + GamepadSectorDy[aimSector];
+                if (GHUtils.isok(aimX, aimY))
+                {
+                    _localGamepadAimX = aimX;
+                    _localGamepadAimY = aimY;
+                }
+            }
+
             lockTaken = false;
             //lock (_floatingTextLock)
             try
@@ -8807,6 +8859,13 @@ namespace GnollHackX.Pages.Game
                                     for (int mapy = startY; mapy <= endY; mapy++)
                                     {
                                         ref MapData currentCell = ref _mapData[mapx, mapy];
+                                        if (mapx == _localGamepadAimX && mapy == _localGamepadAimY)
+                                        {
+                                            /* Aim and Confirm's square; each cell sets its own color below */
+                                            float aimTx = offsetX + usedOffsetX + width * (float)mapx;
+                                            float aimTy = offsetY + usedOffsetY + height * (float)mapy + textPaint.FontMetrics.Ascent;
+                                            DrawGamepadAimOutline(canvas, textPaint, new SKRect(aimTx, aimTy, aimTx + width, aimTy + height), false);
+                                        }
                                         if (currentCell.CodePoint != 0)
                                         {
                                             str = currentCell.Symbol;

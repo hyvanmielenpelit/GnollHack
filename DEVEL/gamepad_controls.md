@@ -115,7 +115,7 @@ Y for Rest, cancels that.
 | Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
 | View | Inventory | -- | Equipment (all equipment in use) | -- |
 | D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, one step per press and then continuously while held, Left toggles the minimap, Right returns to normal zoom | -- |
-| Left stick | Walk (8-way) | -- | Run in that direction | -- |
+| Left stick | Walk (8-way); with **Aim and Confirm**, aim, and A moves | -- | Run in that direction; with Aim and Confirm, aim, and A runs | -- |
 | Right stick | Pan the map | | | |
 | L3 (also the left trackpad's click) | **Run**: the next direction, on the left stick or the D-pad, runs as the keyboard's `G` prefix does | -- | Center the map on the hero | -- |
 | R3 | Open the Toggles radial | | | |
@@ -151,6 +151,13 @@ with Hide Command Bar off.
 **Quick commands.** Quick Command 1 and Quick Command 2 in **Settings, Controller** take any command the
 bar buttons can hold, or None, the default. They appear West and Northwest on the Actions radial's
 Quick Commands page (see [Radials](#radials)) and run as a Quick radial's action does.
+
+**Aim and Confirm.** With **Settings, Controller, Aim and Confirm** on, the left stick only aims: the
+square next to the hero in that direction is outlined, red over a hostile monster in view, and nothing
+moves. A moves there, and holding A keeps walking at the stick's repeat rate; a new aim waits the first
+repeat delay. R1 + A, or L3 and then A, runs once. Releasing the stick ends the aim and a held A, and
+with the stick centered A is the context button as usual. The D-pad and position and direction prompts
+are unchanged.
 
 **Direction radial.** When a command asks for a direction with the controller active, the violet
 **Direction** radial opens over the prompt (see [Radials](#radials)). If a trigger's command raised it
