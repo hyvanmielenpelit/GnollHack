@@ -1465,10 +1465,20 @@ namespace GnollHackX
         public override Size GetDesiredSize(double widthConstraint, double heightConstraint)
         {
             var custom = (this.VirtualView as CustomLabel).CustomMeasureSize(widthConstraint, heightConstraint);
+#if WINDOWS
+            /* WinUI measures a child only when its parent's measure pass calls Measure on it. A canvas left
+               unmeasured stays flagged for measuring and ignores every later change to its requested size. */
+            Size measured = base.GetDesiredSize(widthConstraint, heightConstraint);
+            if (custom == Size.Zero)
+                return measured;
+            else
+                return custom;
+#else
             if (custom == Size.Zero)
                 return base.GetDesiredSize(widthConstraint, heightConstraint);
             else
                 return custom;
+#endif
         }
     }
 #endif

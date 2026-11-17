@@ -1221,3 +1221,46 @@ so nothing else loses a focus rectangle.
 
 Checks:
 - 2026-11-01 | Microsoft.Maui.Controls 10.0.120 | unverified | Seen by the user on the Game Menu. The style has not yet been tested. One issue search found nothing.
+
+## WA-MAUI-0032: Input-transparent layout loses its background when its handler is created
+
+- Status: active
+- Added: 2026-11-17
+- GnollHack version: 3.42 (442)
+- Component: .NET MAUI
+- Package: Microsoft.Maui.Controls
+- Defective version: Microsoft.Maui.Controls 11.0.10
+- Platforms: Windows (MAUI)
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-17
+- Code: `win/win32/xpl/GnollHackX/GnollHackX/MainPage.xaml.cs` (`MainPage.InitializeGamepadNavigation`)
+- Remove when: `LayoutHandler.SetVirtualView` no longer removes the background layer of an input-transparent layout, in a Microsoft.Maui.Controls release GnollHack uses, and Verify removal passes.
+
+**Symptom.** On Windows, the controller hint above the mode switches on the main page has no shaded
+box behind its text. The other platforms draw it.
+
+**Cause.** On Windows a layout that is input transparent cannot keep its own `Background`, so
+`LayoutPanel.MakeInputTransparent` draws it with an extra child canvas (dotnet/maui#30311, which
+fixed dotnet/maui#17389). `LayoutHandler.SetVirtualView` runs the property mappers, which add that
+canvas, and then clears the panel's children before adding the layout's own. The canvas is removed,
+and it comes back only when `Background` or `InputTransparent` is mapped again. A layout that has
+its background and its input transparency before its handler exists therefore shows none.
+`modeDescriptionBackground` is one: it inherits `InputTransparent` from `modeDescriptionGrid`, and
+its color is set in the page's constructor. This is read in MAUI's source at tag 11.0.10. The UI
+test that came with dotnet/maui#30311 sets the properties after the page is shown, and does not
+cover this case.
+
+**Workaround.** `MainPage.InitializeGamepadNavigation` maps `Background` again from the layout's
+`HandlerChanged` event, which is raised after `SetVirtualView` returns. The mapper then puts the
+canvas back.
+
+**Verify removal.** Remove the `HandlerChanged` subscription and its tag from
+`MainPage.InitializeGamepadNavigation`. Then:
+- Build for Windows and run it with a game controller connected.
+- On the main page, move the focus to Classic Mode.
+- A shaded box must show behind "Death is permanent.".
+
+Checks:
+- 2026-11-17 | Microsoft.Maui.Controls 11.0.10 | unverified | Read in MAUI's source at tag 11.0.10; unchanged on main at efe63adf42. The user reported the missing box. The workaround has not yet been tested. Issue searches found only the closed dotnet/maui#17389 and dotnet/maui#23436.

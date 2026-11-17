@@ -2894,6 +2894,11 @@ namespace GnollHackX
 
             GHGamepadPageNavigator.Layer main = _gamepadNavigator.Main;
             modeDescriptionBackground.BackgroundColor = UIUtils.GamepadDescriptionBackgroundColor;
+#if WINDOWS
+            // WORKAROUND(WA-MAUI-0032): Input-transparent layout loses its background when its handler is created
+            modeDescriptionBackground.HandlerChanged += (s, e) =>
+                modeDescriptionBackground.Handler?.UpdateValue(nameof(Microsoft.Maui.IView.Background));
+#endif
             main.Focus.ShownFocusChanged = view =>
             {
                 _gamepadShownFocus = view;
