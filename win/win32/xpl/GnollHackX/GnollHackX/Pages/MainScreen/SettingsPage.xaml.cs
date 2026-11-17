@@ -2404,8 +2404,9 @@ namespace GnollHackX.Pages.MainScreen
             get { return new Picker[] { GamepadQuickCommand1Picker, GamepadQuickCommand2Picker }; }
         }
 
-        /* The Controller section is shown whenever a controller can be used, whatever the Use Controller setting,
-           so that the setting can always be turned back on; the grip pickers only when grips exist */
+        /* The Controller section, and Actions Radial after it, are shown whenever a controller can be used, whatever
+           the Use Controller setting, so that the setting can always be turned back on; the grip pickers only when
+           grips exist */
         private void SetGamepadInitialValues()
         {
             bool available = GHApp.IsGamepadAvailable;

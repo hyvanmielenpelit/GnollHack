@@ -100,7 +100,7 @@ Anything that changes controller behavior, in any of these:
 - `Platforms/Linux/Packaging/steam/input/` and `steamdeck/run-gnollhack.sh`
 - Any page with controller navigation, when a change adds, moves or removes a focusable control,
   changes the focus order, or changes a hint strip, an in-page popup or a list's selection
-- Settings: the Controller and Quick Radials sections
+- Settings: the Controller, Actions Radial and Quick Radials sections
 - C core or bridge changes made for a controller command
 
 It does not apply to comment-only changes, changes that only touch unit tests, or documentation-only changes.

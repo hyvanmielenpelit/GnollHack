@@ -139,7 +139,7 @@ Healing`), and while R2 is Cast Quick the strip also shows L1 + R2's command.
 and pressing L1 the gold **Left Quick** radial, when a shoulder is released (see the shoulder
 paragraph above). They run the chosen action at once, with the direction radial if it asks for a
 direction. Pressing the second shoulder again closes them. Their eight slots are set in **Settings, Quick Radials** (any
-command the bar buttons can hold, or None). The section sits between Controller and Bar Commands,
+command the bar buttons can hold, or None). The section sits between Actions Radial and Bar Commands,
 after Behavior. The page shows Bar Commands with Use Controller off, without a controller backend, or
 with Hide Command Bar off.
 
@@ -148,9 +148,10 @@ with Hide Command Bar off.
 | Right Quick | 2-Weapon, Swap, Chat, Throw, Cast, Cast Quick, Zap, Zap Quick |
 | Left Quick | Apply, Drop Items, Drop Types, Pray, Yell, Engrave, Pick-axe, Polearm |
 
-**Quick commands.** Quick Command 1 and Quick Command 2 in **Settings, Controller** take any command the
+**Quick commands.** Quick Command 1 and Quick Command 2 in **Settings, Actions Radial** take any command the
 bar buttons can hold, or None, the default. They appear West and Northwest on the Actions radial's
-Quick Commands page (see [Radials](#radials)) and run as a Quick radial's action does.
+Quick Commands page (see [Radials](#radials)) and run as a Quick radial's action does. The section follows
+Controller and is shown whenever Controller is.
 
 **Aim and Confirm.** With **Settings, Controller, Aim and Confirm** on, the left stick only aims: the
 square next to the hero in that direction is outlined, red over a hostile monster in view, and nothing
