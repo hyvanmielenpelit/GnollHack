@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -28,6 +28,9 @@
     <!-- Versions -->
     <ApplicationDisplayVersion>3.42</ApplicationDisplayVersion>
     <ApplicationVersion>442</ApplicationVersion>
+    <!-- WORKAROUND(WA-BUILD-0008): Visual Studio restore needs one PackageVersion across target frameworks -->
+    <!-- On Windows MAUI sets this from a restored package only; here it holds before any restore -->
+    <Version>$(ApplicationDisplayVersion)</Version>
 
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">15.0</SupportedOSPlatformVersion>
     <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">13.1</SupportedOSPlatformVersion>

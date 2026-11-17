@@ -261,3 +261,51 @@ up to date after such an edit, and the app must show the change.
 
 Checks:
 - 2026-11-11 | Visual Studio 2026 18.12.0 | still-needed | Seen once by the user; the cause was inferred from file timestamps, and the check's own log was not captured. One search of dotnet/project-system found no matching issue.
+
+## WA-BUILD-0008: Visual Studio restore needs one PackageVersion across target frameworks
+
+- Status: active
+- Added: 2026-11-17
+- GnollHack version: 3.42 (442)
+- Component: NuGet in Visual Studio
+- Package: Visual Studio, Microsoft.Maui.Controls
+- Defective version: Visual Studio 2026 18.12.0, Microsoft.Maui.Controls 11.0.10
+- Platforms: Android, iOS, Windows (MAUI)
+- Upstream issue: https://github.com/NuGet/Home/issues/6461
+- Upstream status when added: reported
+- Upstream status: reported
+- Last checked: 2026-11-17
+- Code: `win/win32/xpl/GnollHackM/GnollHackM.csproj` (`Version`)
+- Remove when: Visual Studio's restore accepts a `PackageVersion` that differs between target frameworks, or MAUI sets `Version` on Windows before any restore, and Verify removal passes.
+
+**Symptom.** After an Avalonia restore of `GnollHackM.csproj` (`-p:GnhAvalonia=true`), or with
+no restore outputs in `obj`, Visual Studio's restore fails with `NU1105: Unable to read project
+information for 'GnollHackM': The property PackageVersion was expected to have a single value
+across all target frameworks, but instead had the following values: 1.0.0, 3.42`. It writes a
+`project.assets.json` with no targets, and every build then stops with `NETSDK1005`. Visual
+Studio does not recover by itself; a command-line `dotnet restore` does.
+
+**Cause.** Visual Studio's restore (`VSNominationUtilities.GetPackageVersion` in NuGet.Client)
+requires `PackageVersion`, which defaults to `Version`, to have one value across the project's
+target frameworks. Command-line restore has no such check. The Android and iOS workloads set
+`Version` to `ApplicationDisplayVersion` in their SDK targets. For Windows, MAUI does the same
+in `buildTransitive\WinUI.targets` of the Microsoft.Maui.Core package, which is imported only
+through the restore output `obj\GnollHackM.csproj.nuget.g.targets`. When that file is missing,
+or was written by a restore of the Avalonia flavor, which shares `obj`, Windows keeps the SDK
+default `1.0.0`. The failed restore then writes an empty `nuget.g.targets`, which keeps Windows
+at `1.0.0`. dotnet/maui#6626 describes the same failure and recommends this workaround.
+
+**Workaround.** The base property group sets `Version` to `ApplicationDisplayVersion`, the value
+the three platforms' targets set, so it is the same on every target framework in every restore
+state. The Avalonia property group sets its own `Version` after it.
+
+**Verify removal.** Remove the tagged line. Then:
+- Close Visual Studio, and in `win/win32/xpl/GnollHackM` run
+  `dotnet restore GnollHackM.csproj -p:GnhAvalonia=true -r linux-x64`.
+- Open the solution in Visual Studio and build GnollHackM for Windows, without running a
+  command-line restore.
+- Confirm that the build succeeds, and that `obj\project.assets.json` lists the three MAUI
+  target frameworks and has no `NU1105` in its `logs`.
+
+Checks:
+- 2026-11-17 | Visual Studio 2026 18.12.0, Microsoft.Maui.Controls 11.0.10 | still-needed | Reproduced by evaluation: on the outputs of an Avalonia restore, Windows reports PackageVersion 1.0.0, and Android and iOS 3.42; with the property all three report 3.42. NuGet/Home#6461 is open, and NuGet/Home#13304 was closed as not planned.
