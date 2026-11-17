@@ -12,7 +12,7 @@ GnollHack's graphical client is a .NET MAUI application targeting Android, iOS, 
 - **Do NOT block the UI Thread**: Long-running native calls or file I/O must run asynchronously.
 - **Cross-Platform XAML**: Use `OnPlatform` in XAML to handle differences between iOS/Android/Windows.
 - **Workarounds are registered**: a workaround for a MAUI, SkiaSharp, WinUI, Avalonia, Android or iOS defect gets a `WORKAROUND(WA-...)` tag and an entry in `DEVEL/workarounds/` in the same change. See `client_workarounds`.
-- **Gamepad code is shared but idle on Android and iOS**: `GnollHackX/Gamepad/`, `Radial/` and the pages' controller navigation compile into every flavor, but only the Avalonia and WinUI 3 builds run them, so an Android or iOS build proves only that they compile. Which device tests such a change is in `client_gamepad_testing`.
+- **Gamepad code is shared but idle on iOS**: `GnollHackX/Gamepad/`, `Radial/` and the pages' controller navigation compile into every flavor and run in the Avalonia, WinUI 3 and Android builds. On iOS they are idle, so an iOS build proves only that they compile. Which device tests such a change is in `client_gamepad_testing`.
 - **XAML `WidthRequest` / `HeightRequest` → `MaximumWidthRequest` / `MaximumHeightRequest` Convention**:
 
   > [!CAUTION]

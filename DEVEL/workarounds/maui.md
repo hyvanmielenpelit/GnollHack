@@ -479,9 +479,9 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unknown
 - Upstream status: unreported
-- Last checked: 2026-10-23
-- Code: `win/win32/xpl/GnollHackM/MauiProgram.cs` (`CreateMauiApp`, Android `OnCreate` registering `MyFragmentLifecycleCallbacks`); `win/win32/xpl/GnollHackM/MauiProgram.cs` (`MyFragmentLifecycleCallbacks`); `win/win32/xpl/GnollHackM/MauiProgram.cs` (`AndroidDialogKeyPress`)
-- Remove when: MAUI's modal DialogFragment windows follow the activity's system bar visibility and pass key events to the activity in a Microsoft.Maui.Controls release GnollHack uses, and Verify removal passes.
+- Last checked: 2026-11-17
+- Code: `win/win32/xpl/GnollHackM/MauiProgram.cs` (`CreateMauiApp`, Android `OnCreate` registering `MyFragmentLifecycleCallbacks`, which calls `GHAndroidWindowCallback.Install`); `win/win32/xpl/GnollHackM/MauiProgram.cs` (`MyFragmentLifecycleCallbacks`); `win/win32/xpl/GnollHackM/MauiProgram.cs` (`AndroidDialogKeyPress`); `win/win32/xpl/GnollHackM/Platforms/Android/GHAndroidWindowCallback.cs` (`GHAndroidWindowCallback`)
+- Remove when: MAUI's modal DialogFragment windows follow the activity's system bar visibility and pass key, joystick motion and touch events to the activity in a Microsoft.Maui.Controls release GnollHack uses, and Verify removal passes.
 - Related: WA-MAUI-0012
 
 **Symptom.** While a modal page is shown, the status and navigation bars reappear, and
@@ -489,22 +489,31 @@ hardware keyboard keys do not reach the game's key handling.
 
 **Cause.** Since .NET 9, MAUI shows modal pages in a DialogFragment. The dialog has its own
 Window, which does not inherit the activity's immersive system bar settings, and key
-events go to the dialog instead of the activity.
+events go to the dialog instead of the activity. So do the game controller's joystick
+motion events and the touch events, which never reach `Dialog.KeyPress`: it sees key events
+only.
 
 **Workaround.** A fragment lifecycle callback, registered on each activity's fragment
 manager, runs on every start and stop of a DialogFragment. While the fragment is added, it
 hides the system bars of the dialog's window (WindowInsetsController on API 30 and later,
 the legacy immersive flags below) and subscribes `AndroidDialogKeyPress`, which passes key
 presses to `PlatformService.HandleOnKeyDown`; it unsubscribes when the fragment is removed.
+It also calls `GHAndroidWindowCallback.Install`, which wraps the dialog window's callback
+once, so the window's key, generic motion and touch events go to `GHAndroidGamepad` as the
+activity's do; the events the gamepad does not consume continue to the dialog, and its key
+events to `AndroidDialogKeyPress`.
 
 **Verify removal.** Remove the `RegisterFragmentLifecycleCallbacks` call. Then:
 - Build for Android and run on a device with a hardware keyboard, with the navigation bar
   hidden.
 - Open a modal page (Settings, the game menu), and confirm the system bars stay hidden and
   keyboard keys (Esc, letters) work on the modal page.
+- With a controller connected, open Settings and move through it with the D-pad and the
+  left stick.
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | No upstream issue found.
+- 2026-11-17 | Microsoft.Maui.Controls 11.0.10 | unverified | Extended to the game controller's key and joystick motion events and to touch events through `GHAndroidWindowCallback`; not tested on a device until runbook check M1 passes.
 
 ## WA-MAUI-0014: Fill-aligned ScrollView measures at the full constraint on Android
 

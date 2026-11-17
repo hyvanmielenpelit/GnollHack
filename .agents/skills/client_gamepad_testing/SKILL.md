@@ -7,7 +7,7 @@ description: >-
   Xbox controller on the Avalonia Windows build as a backup; the packaging and Deploy-SteamDeck.ps1
   sequence, what to do when the Deck cannot be reached, what the user must test, and how to read the
   Deck's logs afterward. Read whenever you plan, change or review anything that alters what a
-  controller does or shows: GHGamepad* or GHEvdev* code, GHXInput, GHWinUI or GHGameController code, radial menus, hint strips, focus navigation
+  controller does or shows: GHGamepad* or GHEvdev* code, GHXInput, GHWinUI, GHGameController or GHAndroid code, radial menus, hint strips, focus navigation
   on a page, controller settings, Steam Input layouts, or the Steam keyboard. Read before reporting
   such work as finished.
 ---
@@ -34,8 +34,9 @@ The devices:
 | Linux PC, Xbox controller | Avalonia Linux | Yes | **Platform** | From the Linux package; see [Xbox on Desktop Linux](#xbox-on-desktop-linux) |
 | Windows PC, Xbox controller | Avalonia Windows | No | **Platform** for its own code; otherwise a backup and extra check | Directly, from the build output; see [Xbox on Avalonia Windows](#xbox-on-avalonia-windows) |
 | Mac, Xbox or PlayStation controller | Avalonia macOS | No | **Platform** for its own code | From Terminal on the Mac; see [Controller on Avalonia macOS](#controller-on-avalonia-macos) |
+| Android phone, USB-C clip-on or Bluetooth controller | MAUI Android | Yes | **Platform** | Debug build installed with dotnet; see [Controller on Android](#controller-on-android) |
 
-Android and iOS have no controller support yet. When a build gains it, add a row with the role **Platform**, and
+iOS has no controller support yet. When it gains it, add a row with the role **Platform**, and
 write its procedure in this skill. Its first implementation gets a full pass there; after that this rule applies.
 
 ### Shared or Platform-Specific
@@ -54,6 +55,7 @@ navigation, hint strips, in-page popups, `FileDialogView`, controller settings, 
 | WinUI 3 | `Platforms/Windows/GHWinUI*`, `GHWebView2FileChooser`, `KeyboardHook`'s key note, `#if WINDOWS` branches in controller code |
 | Desktop Linux | The `!IsSteamDeck` branches of the evdev backend and `GHAvaloniaGamepad`, and physical pads in `GHEvdev*` |
 | Both Windows builds | `GnollHackM/GHXInputGamepadBackend.cs`. Test on WinUI 3 |
+| Android | `Platforms/Android/GHAndroid*`, `GHAndroidGamepadMapping` and `GHAndroidGamepadDevice` (shared files only Android uses), `#elif ANDROID` branches in controller code, the `WA-MAUI-0013` dialog hook |
 
 Other code in `Platforms/Avalonia/`, such as `GHAvaloniaGamepad`, runs on the Deck too, so the Deck covers it.
 `Platforms/Avalonia/Web/gamepad_web.js` is shared, whatever its folder.
@@ -70,8 +72,8 @@ change needs no Deck.
 ### Before a Release
 
 Shared code is tested on the primary device only, so before releasing a build with a **Platform** row that ships, the user
-runs its smoke list, about 10 minutes, against the release candidate. This applies to WinUI 3, and also to the Avalonia
-Windows build if it starts to ship.
+runs its smoke list, about 10 minutes, against the release candidate. This applies to WinUI 3, to Android, which has its
+own list below, and also to the Avalonia Windows build if it starts to ship.
 
 1. No controller connected: Settings has no Controller section, and mouse and keyboard play is unchanged.
 2. Connect a controller and wait 3 s: A shows the focus on the main menu.
@@ -80,6 +82,17 @@ Windows build if it starts to ship.
 5. Alt+Tab away, press buttons, return: nothing happened, and nothing is stuck.
 6. Move the mouse: focus and hints go. Press the pad: they return.
 7. Open the wiki: the ring moves, and A follows a link.
+8. Open the Overseer: Menu leaves.
+
+On Android:
+
+1. No controller connected: Settings has no Controller section, and touch play is unchanged.
+2. Attach the controller and wait 3 s: A shows the focus on the main menu.
+3. Walk Settings to the bottom, and close it with B.
+4. Start a game: walk, open a radial, open the inventory and pick an item, answer a y/n prompt.
+5. Swipe home while holding a direction, and return: nothing moves or repeats.
+6. Touch the status bar: focus and hints go. Press a button: they return.
+7. Open the Wiki: the ring moves, and A follows a link.
 8. Open the Overseer: Menu leaves.
 
 A failure there is a bug to fix before release, whichever code it is in.
@@ -95,6 +108,9 @@ Anything that changes controller behavior, in any of these:
 - `win/win32/xpl/GnollHackM/Platforms/Linux/`: the evdev backend (`GHEvdev*.cs`) and the in-app browser's
   controller input (`Cef/GHCefInput.cs`)
 - `win/win32/xpl/GnollHackM/Platforms/MacOS/GHGameController*.cs`: the macOS flavor's GameController backend
+- `win/win32/xpl/GnollHackM/Platforms/Android/GHAndroid*.cs`: the Android backend, the modal window hook, the
+  Android keyboard and the in-app browser's script host; and the shared `Gamepad/GHAndroidGamepadMapping.cs` and
+  `Gamepad/GHAndroidGamepadDevice.cs`, which only Android uses
 - `win/win32/xpl/GnollHackM/GHXInputGamepadBackend.cs`, `GHWebPageScript.cs`, and the WinUI 3 glue:
   `Platforms/Windows/GHWinUI*.cs`, `GHWebView2FileChooser.cs`, and `KeyboardHook`'s key note in `MauiProgram.cs`
 - `Platforms/Linux/Packaging/steam/input/` and `steamdeck/run-gnollhack.sh`
@@ -111,8 +127,8 @@ Run these too, but none of them satisfies the rule:
 
 - **Unit tests.** They cover decoding and routing, not what happens on the device.
 - **WSL.** It has no gamepad drivers.
-- **A build without controller support.** Android and iOS only prove that shared code compiles, so the usual verification
-  builds still apply.
+- **A build without a device run.** An iOS build, which has no controller support, and an Android build that no
+  controller drives only prove that shared code compiles, so the usual verification builds still apply.
 - **The Deck's Desktop Mode.** Game Mode is the real target; `DEVEL/gamepad_controls.md` lists the differences.
 - **Another platform's device, for that platform's code.** Each row tests its own.
 
@@ -247,6 +263,31 @@ controller (Xbox or PlayStation, paired in System Settings, Bluetooth, or by USB
 
 **What it cannot cover:** evdev and device filtering, Steam Input and its layouts, the grips, the Steam keyboard,
 Gaming Mode and the Deck's screen size. It is the only device that runs the in-app browser on WKWebView.
+
+## Controller on Android
+
+The Android build's controller code is tested on an Android phone with a real controller, a USB-C clip-on controller
+such as the Backbone One or a Bluetooth one, and needs no Deck.
+
+1. Restore and install a Debug build from `win\win32\xpl\GnollHackM`, with the phone connected by USB or by Android's
+   Wireless debugging. `<android-tfm>` is the Android entry of `TargetFrameworks` in `GnollHackM.csproj`:
+
+   ```powershell
+   dotnet restore GnollHackM.csproj
+   dotnet build GnollHackM.csproj -c Debug -f <android-tfm> -t:Install
+   ```
+
+   A clip-on controller takes the phone's USB-C port, so with one attached `adb` reaches the phone over Wireless
+   debugging. `adb` is in the Android SDK's platform-tools.
+2. The user starts the game on the phone and attaches the controller.
+3. The checks are a `TEST` session in the task's Developer Runbook with `Where` = `Android`.
+4. If anything goes wrong, read the log: `adb logcat -d | Select-String 'GAMEPAD'`. The `GAMEPAD android` lines name
+   each controller, its axis layout and its axes; their meanings are in the Diagnostics section of
+   `DEVEL/gamepad_controls.md`.
+
+**What it cannot cover:** the back grips, Steam Input and its layouts, evdev and device filtering, the Steam keyboard,
+Gaming Mode and the Deck itself. A Bluetooth Xbox controller is a second Android controller, for Android's own code; it
+is not a substitute for the Deck.
 
 ## First-Time Setup
 

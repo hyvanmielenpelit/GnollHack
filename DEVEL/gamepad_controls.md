@@ -3,8 +3,8 @@
 GnollHack's native gamepad controls are built for the **Steam Deck**: the Avalonia Linux
 build, launched through Steam. They also work with an **Xbox controller** in the WinUI 3
 build, on desktop Linux and in the Avalonia Windows build, which is for development, and with any controller
-macOS supports in the Avalonia macOS build. Android and iOS have no gamepad support
-yet.
+macOS supports in the Avalonia macOS build. They also work with a USB or Bluetooth controller in
+the Android build. iOS has no gamepad support yet.
 
 Contents:
 
@@ -77,9 +77,12 @@ as soon as it appears, and Y reopens it. Typing on it keeps controller mode: a k
 while the keyboard is shown does not end it. In Desktop Mode, or with `GNOLLHACK_STEAM_KEYBOARD=off`,
 A only focuses the field; Steam + X opens the keyboard by hand. `GNOLLHACK_STEAM_KEYBOARD=on`
 allows it on any Linux session, and `GNOLLHACK_STEAM_KEYBOARD_LAUNCH` (`xdg-open`, the default,
-`steam` or `launcher`) picks how the `steam://open/keyboard` link is opened. Windows has no
-on-screen keyboard here. Where none is available, text is typed on a physical keyboard: A only
-focuses a page's field, and in a getline prompt A is OK and submits what has been typed.
+`steam` or `launcher`) picks how the `steam://open/keyboard` link is opened. On Android, A on a
+text field focuses it and opens the Android keyboard, a getline prompt opens it as soon as it
+appears, and Y reopens it; typing on it keeps controller mode, and with a hardware keyboard
+connected it does not open. Windows has no on-screen keyboard here. Where none is available,
+text is typed on a physical keyboard: A only focuses a page's field, and in a getline prompt A is
+OK and submits what has been typed.
 
 Pages that keep the keyboard adapter (the tombstone, and the developer-only editor and performance
 suite) receive A as Enter, B as Escape, directions as arrow keys and L1/R1 as Page Up and Page
@@ -297,8 +300,9 @@ Smaller in-game states:
 On desktop, every web link GnollHack opens (the wiki, About's links, the GnollHack Account page,
 Top Scores, popup links) opens in its in-app browser. The controller moves a gold focus ring
 between the links and controls of the page itself; the ring is drawn by a script the browser
-injects into each page. These controls exist in the Avalonia and WinUI 3 builds, and the Steam
-Deck's right trackpad stays a mouse.
+injects into each page. These controls exist in the Avalonia and WinUI 3 builds, and in the Android
+build for the game menu's Wiki and the Overseer; on Android every other web link opens the system
+browser. The Steam Deck's right trackpad stays a mouse.
 
 | Control | Action |
 |---------|--------|
@@ -514,6 +518,7 @@ A keyboard template produces no virtual pad, so keys behave as they always did.
 | Back-grip key bridge | Avalonia, any OS | `GNOLLHACK_GAMEPAD_KEYS` allows it (below) |
 | XInput | Windows (WinUI 3 and Avalonia) | Always; available once a controller has been seen. Xbox controllers through `xinput1_4.dll` |
 | GameController | Avalonia macOS | Always; available once a controller has been seen. Controllers macOS supports with an extended gamepad profile (Xbox, PlayStation, MFi) |
+| Android | MAUI Android | Always; available once a controller has been seen. Devices with a gamepad source, or a joystick source with an X axis, that are not virtual |
 
 A **Steam launch** is any of `SteamGameId`, `SteamAppId` (non-empty and not `0`),
 `SteamClientLaunch=1`, or `SDL_GAMECONTROLLER_ALLOW_STEAM_VIRTUAL_GAMEPAD`. Non-Steam shortcuts
@@ -535,10 +540,11 @@ The evdev backend honors `SDL_GAMECONTROLLER_IGNORE_DEVICES` and
 It never grabs a device.
 
 The bridge only takes F2-F5 without modifiers. **Settings, Controller, Use Controller** turns
-the whole feature off: evdev, XInput and GameController input is discarded, and F2-F5 pass through to the game
+the whole feature off: evdev, XInput and GameController input is discarded, Android passes controller events on
+to the system unconsumed (see [Android](#android)), and F2-F5 pass through to the game
 as keys. The Controller section is shown only when a backend is available: evdev on a Steam Deck
-and the key bridge from their start, evdev elsewhere, XInput and GameController once a controller has been seen
-in the session.
+and the key bridge from their start, evdev elsewhere, XInput, GameController and Android once a controller has
+been seen in the session.
 
 ## Diagnostics
 
@@ -567,6 +573,18 @@ The macOS flavor writes `GAMEPAD gc +connect id=... name=... category=... profil
 profile) to standard error: the Terminal it was started from, or `~/Library/Logs/GnollHack/GnollHack.log`
 when started any other way. `GAMEPAD GameController backend
 not started: missing selector ...` means this macOS lacks a call the backend uses.
+
+The Android build writes its `GAMEPAD android` lines to logcat, and with debug logging on also to the
+app log. Read them with `adb logcat -d`, filtered for `GAMEPAD`: `adb logcat -d | Select-String 'GAMEPAD'`.
+
+| Line | Meaning |
+|------|---------|
+| `GAMEPAD android +connect id=... name="..." style=... analogTriggers=0\|1 stickClicks=0\|1 Android dev=... vid:pid=... sources=0x... layout=... axes=...` | A controller was added. `layout` is the axis layout, `Standard`, `RxRyStick` or `LinuxGamepad` (see [Android](#android)), and `axes` lists each axis the device reports as `name:min..max/flat` |
+| `GAMEPAD android -disconnect id=... dev=...` | The controller was removed, or re-added because its axes changed |
+| `GAMEPAD android skip "name" vid:pid=... sources=0x...` | An input device that is not a controller, such as the touch screen or the volume keys, once per device |
+| `GAMEPAD android unmapped key=... device=...` | A controller key the game does not map, once per key and device; Android handles it. The Guide button is key 110 |
+
+`GAMEPAD Android backend not started: ...` in the app log means the backend could not start.
 
 On the Deck's development shortcut, standard error goes to
 `~/gnollhack-dev/logs/latest.log`.
@@ -638,3 +656,72 @@ bitmaps of Steam's virtual pad, measured on a Deck, and raw dumps.
 
 X and Y are swapped for Sony's vendor ID only. A Nintendo pad read directly has not been tested, and
 its X and Y may come out reversed: its top button should arrive as `BTN_NORTH`, which is `BTN_X`.
+
+### Android
+
+The Android build reads controllers from Android's key and joystick motion events
+(`Platforms/Android/GHAndroidGamepadBackend.cs`). The key and axis mapping and each controller's
+state are shared files that only Android uses, `GHAndroidGamepadMapping` and `GHAndroidGamepadDevice`
+in `GnollHackX/Gamepad/`, and are covered by unit tests. A controller is any device that is not
+virtual and reports itself as a gamepad, or as a joystick with an X axis: a USB-C clip-on controller
+such as the Backbone One, or a Bluetooth one such as an Xbox controller. Controllers can come and
+go during the game. The backend starts a second after the first frame and counts as available from
+its first controller, so Settings shows the Controller section once a controller has been seen in
+the session. The glyph style follows the USB vendor ID, then the device name. There are no back
+grips.
+
+Android reports the right stick and the triggers on different axes for different controllers, so
+each controller gets an axis layout from the axes it has:
+
+| Layout | Right stick | Triggers |
+|--------|-------------|----------|
+| `Standard` | Z/Rz | The trigger axes, or gas and brake |
+| `RxRyStick` | Rx/Ry | As `Standard` |
+| `LinuxGamepad` | Rx/Ry | Z and Rz, rescaled to 0..1 |
+
+A controller with analog triggers has its L2 and R2 keys ignored. Some controllers send Back and
+Menu for their two small buttons; they map to View and Menu.
+
+**What the game consumes.** With **Use Controller** on, the game consumes a controller's mapped
+keys and its joystick motion, and every other input reaches Android as usual; a touch ends
+controller mode. With Use Controller off it consumes nothing. Android then generates fallback keys
+for the controller's buttons, which the backend ignores, so the buttons work as Android's own:
+
+| Button | With Use Controller off |
+|--------|-------------------------|
+| A, Start, L3, R3 | Press the focused control |
+| B | Back |
+| X | Delete |
+| Y | Space, which reaches the game as a key |
+| Select (View) | Menu |
+| L1, R1, L2, R2 | Nothing |
+| Guide | Home |
+
+The Guide button is never consumed, so it goes home whatever the setting.
+
+**Modal pages.** MAUI shows each modal page in a DialogFragment with its own window, whose events
+never reach `MainActivity`. `GHAndroidWindowCallback` wraps that window's callback (`WA-MAUI-0013`),
+so its key, joystick motion and touch events reach the gamepad code too.
+
+**Interruptions.** The service's `Resync`, after a stalled frame or a change of its gate, keeps
+the stored stick and trigger values and keeps a held button silent until it is released.
+`InputLost`, from the activity's `OnPause` or from Android's joystick `ACTION_CANCEL` when the
+window loses focus (to the notification shade, for example), reports the sticks and triggers
+neutral, keeps one that was deflected neutral until it returns inside its release threshold, and
+releases the hat at once.
+
+**Text fields.** While a text field is being edited, the input method sees a hardware key before
+the game does. In landscape on a phone, input methods use fullscreen extract mode, where the D-pad
+moves the text cursor.
+
+**Testing.** Install a Debug build on the phone with USB or wireless debugging on, from
+`win\win32\xpl\GnollHackM`, with the Android target framework from `GnollHackM.csproj`:
+
+```powershell
+dotnet restore GnollHackM.csproj
+dotnet build GnollHackM.csproj -c Debug -f net11.0-android -t:Install
+```
+
+`adb` is in the Android SDK's platform-tools. A clip-on controller takes the phone's USB-C port,
+so `adb` reaches the phone over Android's Wireless debugging. The log lines are in
+[Diagnostics](#diagnostics).

@@ -70,6 +70,8 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadKeyBridge.cs" Link="Shared\GHGamepadKeyBridge.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHWebSpatialNavigation.cs" Link="Shared\GHWebSpatialNavigation.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHWebGamepadProfile.cs" Link="Shared\GHWebGamepadProfile.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHAndroidGamepadMapping.cs" Link="Shared\GHAndroidGamepadMapping.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHAndroidGamepadDevice.cs" Link="Shared\GHAndroidGamepadDevice.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialTuning.cs" Link="Shared\GHRadialTuning.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialGeometry.cs" Link="Shared\GHRadialGeometry.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialSelector.cs" Link="Shared\GHRadialSelector.cs" />

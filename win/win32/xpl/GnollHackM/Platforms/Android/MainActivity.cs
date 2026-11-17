@@ -117,6 +117,38 @@ public class MainActivity : MauiAppCompatActivity
             return true;
     }
 
+    public override bool DispatchKeyEvent(KeyEvent e)
+    {
+        if (GHAndroidGamepad.DispatchKeyEvent(e))
+            return true;
+        return base.DispatchKeyEvent(e);
+    }
+
+    public override bool DispatchGenericMotionEvent(MotionEvent ev)
+    {
+        if (GHAndroidGamepad.DispatchGenericMotionEvent(ev))
+            return true;
+        return base.DispatchGenericMotionEvent(ev);
+    }
+
+    public override bool DispatchTouchEvent(MotionEvent ev)
+    {
+        GHAndroidGamepad.NoteTouch(ev);
+        return base.DispatchTouchEvent(ev);
+    }
+
+    protected override void OnResume()
+    {
+        base.OnResume();
+        GHAndroidGamepad.SetActive(true);
+    }
+
+    protected override void OnPause()
+    {
+        base.OnPause();
+        GHAndroidGamepad.SetActive(false);
+    }
+
     private static int _isHardKeyboardConnected = 0;
     public static bool IsHardKeyboardConnected
     {

@@ -600,6 +600,9 @@ public static class MauiProgram
                                             /* Runs on every start and stop while the fragment is added; the removal keeps exactly one subscription */
                                             dialog.KeyPress -= AndroidDialogKeyPress;
                                             dialog.KeyPress += AndroidDialogKeyPress;
+                                            /* Gamepad keys, joystick motion and touches of the dialog's window */
+                                            if (dialog.Window != null)
+                                                GHAndroidWindowCallback.Install(dialog.Window);
                                         }
                                     }
                                     else if (dialogFragment.IsRemoving)

@@ -14,6 +14,8 @@ using SkiaSharp.Views.Maui;
 using GHPlatformWebScriptHost = GnollHackM.GHAvaloniaWebScriptHost;
 #elif WINDOWS
 using GHPlatformWebScriptHost = GnollHackM.GHWinUIWebScriptHost;
+#elif ANDROID
+using GHPlatformWebScriptHost = GnollHackM.GHAndroidWebScriptHost;
 #endif
 
 namespace GnollHackM
@@ -41,7 +43,7 @@ namespace GnollHackX.Pages.Game
         private const double WikiHintRowPaddingDips = 8.0;     /* around the hint line in the toolbar row */
 
         private readonly GHWebGamepadNavigator _webNavigator;
-#if GNH_AVALONIA || WINDOWS
+#if GNH_AVALONIA || WINDOWS || ANDROID
         private GHPlatformWebScriptHost _webScriptHost;
 #endif
         private GHGamepadHintRenderer _gamepadHintRenderer;
@@ -73,7 +75,7 @@ namespace GnollHackX.Pages.Game
             _webNavigator.ClosePage = ClosePage;
             _webNavigator.CanGoForward = () => DisplayWebView.CanGoForward;
             _webNavigator.GoForward = GoForwardInHistory;
-#if GNH_AVALONIA || WINDOWS
+#if GNH_AVALONIA || WINDOWS || ANDROID
             _webScriptHost = new GHPlatformWebScriptHost(DisplayWebView);
             _webNavigator.Host = _webScriptHost;
 #endif
@@ -269,7 +271,7 @@ namespace GnollHackX.Pages.Game
         private void ContentPage_Appearing(object sender, EventArgs e)
         {
             GHApp.BackButtonPressed += BackButtonPressed;
-#if GNH_AVALONIA || WINDOWS
+#if GNH_AVALONIA || WINDOWS || ANDROID
             if (_webScriptHost == null)
             {
                 _webScriptHost = new GHPlatformWebScriptHost(DisplayWebView);
@@ -287,7 +289,7 @@ namespace GnollHackX.Pages.Game
             GHApp.BackButtonPressed -= BackButtonPressed;
             _webNavigator.HintsChanged -= WebNavigator_HintsChanged;
             _webNavigator.Detach();
-#if GNH_AVALONIA || WINDOWS
+#if GNH_AVALONIA || WINDOWS || ANDROID
             _webNavigator.Host = null;
             if (_webScriptHost != null)
             {
