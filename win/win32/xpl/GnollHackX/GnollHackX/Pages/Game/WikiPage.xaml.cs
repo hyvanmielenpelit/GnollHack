@@ -107,14 +107,30 @@ namespace GnollHackX.Pages.Game
                 }
             };
 #endif
-            /* The toolbar row holds the hint strip's line at the Hint Size */
-            if (GHApp.IsGamepadAvailable)
-            {
-                double needed = Math.Ceiling(GHGamepadHintRenderer.GetLineBoxHeight(GamepadHintFontSizeDips * GHApp.GamepadHintScale))
-                    + WikiHintRowPaddingDips;
-                if (needed > ButtonRowDefinition.Height.Value)
-                    ButtonRowDefinition.Height = needed;
-            }
+            UpdateGamepadHintRowHeight();
+#if GNH_MAUI && WINDOWS
+            TitleLabel.SizeChanged += (s, e) => UpdateGamepadHintRowHeight();
+#endif
+        }
+
+        /* The bottom of the title, in DIPs from the toolbar row's top; 0 when no title is shown or laid out */
+        private double GetTitleBandHeight()
+        {
+            if (!TitleLabel.IsVisible || TitleLabel.Height <= 0)
+                return 0;
+            return Math.Max(0, TitleLabel.Y + TitleLabel.Height + TitleLabel.Margin.Bottom);
+        }
+
+        /* The toolbar row holds the title and, below it, the hint strip's line at the Hint Size */
+        private void UpdateGamepadHintRowHeight()
+        {
+            if (!GHApp.IsGamepadAvailable)
+                return;
+            double needed = GetTitleBandHeight()
+                + Math.Ceiling(GHGamepadHintRenderer.GetLineBoxHeight(GamepadHintFontSizeDips * GHApp.GamepadHintScale))
+                + WikiHintRowPaddingDips;
+            if (needed > ButtonRowDefinition.Height.Value)
+                ButtonRowDefinition.Height = needed;
         }
 
         private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
@@ -355,7 +371,7 @@ namespace GnollHackX.Pages.Game
             return _gamepadHintRenderer;
         }
 
-        /* The gamepad hint strip, painted on the UI thread: one line centered in the canvas, dropping
+        /* The gamepad hint strip, painted on the UI thread: one line centered below any title, dropping
            the last hints, down to GamepadHintMinimumCount, while the row needs two lines */
         private void GamepadHintCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
@@ -379,10 +395,9 @@ namespace GnollHackX.Pages.Game
 
             renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
             float baseFontSize = GamepadHintFontSizeDips * scale;
-            /* The line is centered in the canvas, and a title sits at the canvas top */
-            float usableHeight = pixelHeight;
-            if (TitleLabel.IsVisible)
-                usableHeight -= 2f * (float)(TitleLabel.Y + TitleLabel.Height + TitleLabel.Margin.Bottom) * scale;
+            /* The line is centered in the band below the title, beside the toolbar buttons */
+            float bandTop = Math.Min(pixelHeight, (float)GetTitleBandHeight() * scale);
+            float usableHeight = pixelHeight - bandTop;
             float fontSize = Math.Max(baseFontSize, Math.Min(baseFontSize * GHApp.GamepadHintScale,
                 GHGamepadHintRenderer.GetFontSizeForLineBox(usableHeight)));
             float maxWidth = pixelWidth - 2f * fontSize * GHGamepadHintRenderer.BackingPadOfFont;
@@ -402,7 +417,7 @@ namespace GnollHackX.Pages.Game
             if (renderer.LineCount == 0)
                 return;
 
-            float bottomY = pixelHeight * 0.5f + renderer.RowHeight * 0.5f;
+            float bottomY = bandTop + usableHeight * 0.5f + renderer.RowHeight * 0.5f;
             renderer.DrawRow(canvas, paintHints, style, pixelWidth * 0.5f, bottomY, 1.0f, true);
         }
         //protected override bool OnBackButtonPressed()
