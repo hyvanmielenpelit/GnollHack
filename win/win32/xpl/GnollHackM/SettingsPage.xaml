@@ -889,6 +889,44 @@
                                     </Picker>
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="L1 + R2 Action" x:Name="GamepadTriggerRTSecondaryLabel"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="GamepadTriggerRTSecondaryPicker"
+                                                Title="Select command"
+                                                FontFamily="Underwood"
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="End" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="R1 + L2 Action" x:Name="GamepadTriggerLTSecondaryLabel"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="GamepadTriggerLTSecondaryPicker"
+                                                Title="Select command"
+                                                FontFamily="Underwood"
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="End" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                     <Label Text="Quick Command 1" x:Name="GamepadQuickCommand1Label"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"

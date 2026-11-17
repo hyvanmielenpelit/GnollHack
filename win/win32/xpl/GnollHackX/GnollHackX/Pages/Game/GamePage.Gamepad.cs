@@ -95,6 +95,8 @@ namespace GnollHackX.Pages.Game
         private GHGamepadMapContext _gamepadContext = GHGamepadMapContext.Inactive;
         private bool _gamepadLeftModifierHeld = false;     /* L1: the layer of A, B, X, Y, Menu and the triggers */
         private bool _gamepadRightModifierHeld = false;    /* R1: the layer of the D-pad, the left stick, View and the triggers */
+        private GHGamepadButton _gamepadFirstShoulder = GHGamepadButton.Count; /* the shoulder that went down while the other was up; Count for none */
+        private bool _gamepadShoulderChord = false;         /* both shoulders are down and nothing else was pressed since */
         private bool _gamepadViewWithRightModifier = false; /* R1 was held when View went down */
         private bool _gamepadRunArmed = false;              /* L3 was pressed: the next direction runs */
         private int _gamepadDPadHeld = 0;                   /* walking D-pad directions pressed in Normal or Busy */
@@ -130,6 +132,9 @@ namespace GnollHackX.Pages.Game
         private GHGamepadStyle _gamepadHintStyle = GHGamepadStyle.SteamDeck;            /* the style of _gamepadHints */
         private int _gamepadHintLTCommand = int.MinValue;   /* the trigger commands the strip's L2 and R2 labels show */
         private int _gamepadHintRTCommand = int.MinValue;
+        private int _gamepadHintLTSecondaryCommand = int.MinValue; /* the secondary commands the R1 and L1 layers show */
+        private int _gamepadHintRTSecondaryCommand = int.MinValue;
+        private string _gamepadHintQuickSpellName = null;   /* the quick spell a Cast Quick label names */
         private GHGamepadHintRenderer _gamepadHintRenderer;
         private float _gamepadHintRowCenterDips = 0f;       /* the bar's center above the hint canvas bottom; 0: bottom */
         private bool _gamepadCommandBarHidden = false;      /* the command bar's buttons are transparent, ignore input */
@@ -246,6 +251,8 @@ namespace GnollHackX.Pages.Game
             {
                 _gamepadLeftModifierHeld = false;
                 _gamepadRightModifierHeld = false;
+                _gamepadFirstShoulder = GHGamepadButton.Count;
+                _gamepadShoulderChord = false;
                 _gamepadViewWithRightModifier = false;
                 _gamepadRunArmed = false;
                 _gamepadDPadZoomHeld = 0;
@@ -271,6 +278,8 @@ namespace GnollHackX.Pages.Game
             _gamepadContext = GHGamepadMapContext.Inactive;
             _gamepadLeftModifierHeld = false;
             _gamepadRightModifierHeld = false;
+            _gamepadFirstShoulder = GHGamepadButton.Count;
+            _gamepadShoulderChord = false;
             _gamepadViewWithRightModifier = false;
             _gamepadRunArmed = false;
             _gamepadDPadZoomHeld = 0;
@@ -308,20 +317,28 @@ namespace GnollHackX.Pages.Game
             if (b < 0 || b >= _gamepadButtonOwner.Length)
                 return false;
 
-            /* Releases end the layers and the held D-pad directions wherever the press went */
+            /* Releases end the layers and the held D-pad directions wherever the press went; a shoulder released from an
+               unused chord opens the Quick radial that the first shoulder down picks */
             if (e.Kind == GHGamepadButtonEventKind.Released)
             {
                 if (e.Button == _gamepadDirectionRadialTrigger)
                     _gamepadDirectionRadialTrigger = GHGamepadButton.Count;
-                if (e.Button == GHGamepadButton.LB && _gamepadLeftModifierHeld)
+                bool shoulder = (e.Button == GHGamepadButton.LB && _gamepadLeftModifierHeld)
+                    || (e.Button == GHGamepadButton.RB && _gamepadRightModifierHeld);
+                if (shoulder)
                 {
-                    _gamepadLeftModifierHeld = false;
+                    bool chord = _gamepadShoulderChord && !e.IsCancelled;
+                    GHGamepadButton first = _gamepadFirstShoulder;
+                    _gamepadShoulderChord = false;
+                    if (e.Button == GHGamepadButton.LB)
+                        _gamepadLeftModifierHeld = false;
+                    else
+                        _gamepadRightModifierHeld = false;
+                    if (!_gamepadLeftModifierHeld && !_gamepadRightModifierHeld)
+                        _gamepadFirstShoulder = GHGamepadButton.Count;
                     _gamepadHintsDirty = true;
-                }
-                else if (e.Button == GHGamepadButton.RB && _gamepadRightModifierHeld)
-                {
-                    _gamepadRightModifierHeld = false;
-                    _gamepadHintsDirty = true;
+                    if (chord && (ctx == GHGamepadMapContext.Normal || ctx == GHGamepadMapContext.Busy) && !IsRadialMenuOpen)
+                        OpenRadialMenu(BuildGamepadQuickRadial(first == GHGamepadButton.RB ? GHGamepadButton.LT : GHGamepadButton.RT));
                 }
                 else
                 {
@@ -608,17 +625,23 @@ namespace GnollHackX.Pages.Game
 
         /* Normal and Busy. L1 and R1 are hold modifiers sampled when another button goes down: L1 for A, B, X, Y,
            Menu and the triggers, R1 for the D-pad, the left stick, View and the triggers. A trigger alone, or with
-           both modifiers, runs its command, and a direction prompt that command raises while the trigger is held
-           opens the direction radial; with the opposite side's modifier it opens its Quick radial, and with its own
-           side's modifier it does nothing. L3 arms a run for the next direction, and any other command
-           button disarms it, B doing nothing else. In Busy, game input signals the game, which the command gate would
-           otherwise hold back unseen. */
+           both modifiers, runs its command, and with its own side's modifier (L1 + R2, R1 + L2) its secondary
+           command; a direction prompt either raises while the trigger is held opens the direction radial. With the
+           other side's modifier a trigger does nothing. Both shoulders held and released with nothing pressed in
+           between open a Quick radial: Right Quick when L1 went down first, Left Quick when R1 did. L3 arms a run
+           for the next direction, and any other command button disarms it, B doing nothing else. In Busy, game input
+           signals the game, which the command gate would otherwise hold back unseen. */
         private void HandleNormalGamepadButton(GHGamepadMapContext ctx, GHGamepadButtonEvent e, long now)
         {
             bool pressed = e.Kind == GHGamepadButtonEventKind.Pressed;
             bool mod = _gamepadLeftModifierHeld;
             bool rightMod = _gamepadRightModifierHeld;
             GHGamepadMapContext normal = GHGamepadMapContext.Normal;
+            if (pressed && _gamepadShoulderChord && e.Button != GHGamepadButton.LB && e.Button != GHGamepadButton.RB)
+            {
+                _gamepadShoulderChord = false;
+                _gamepadHintsDirty = true;
+            }
             if (pressed && _gamepadRunArmed && !KeepsGamepadRunArmed(e.Button))
             {
                 SetGamepadRunArmed(false);
@@ -630,6 +653,7 @@ namespace GnollHackX.Pages.Game
                 case GHGamepadButton.LB:
                     if (pressed)
                     {
+                        NoteGamepadShoulderPressed(GHGamepadButton.LB, rightMod);
                         _gamepadLeftModifierHeld = true;
                         _gamepadHintsDirty = true;
                     }
@@ -638,6 +662,7 @@ namespace GnollHackX.Pages.Game
                     if (pressed)
                     {
                         /* The D-pad zooms while R1 is held, and a walking direction must be pressed again */
+                        NoteGamepadShoulderPressed(GHGamepadButton.RB, mod);
                         _gamepadRightModifierHeld = true;
                         _gamepadHintsDirty = true;
                         ClearGamepadDPadWalk();
@@ -700,7 +725,7 @@ namespace GnollHackX.Pages.Game
                     if (!pressed)
                         break;
                     if (mod && !rightMod)
-                        OpenRadialMenu(BuildGamepadQuickRadial(GHGamepadButton.RT));
+                        RunGamepadTriggerSecondaryCommand(ctx, GHGamepadButton.RT, now);
                     else if (rightMod && !mod)
                     {
                         /* Unused */
@@ -712,7 +737,7 @@ namespace GnollHackX.Pages.Game
                     if (!pressed)
                         break;
                     if (rightMod && !mod)
-                        OpenRadialMenu(BuildGamepadQuickRadial(GHGamepadButton.LT));
+                        RunGamepadTriggerSecondaryCommand(ctx, GHGamepadButton.LT, now);
                     else if (mod && !rightMod)
                     {
                         /* Unused */
@@ -768,6 +793,18 @@ namespace GnollHackX.Pages.Game
                     break;
                 default:
                     break;
+            }
+        }
+
+        /* A shoulder going down: the first of the two, or the second, which starts a chord */
+        private void NoteGamepadShoulderPressed(GHGamepadButton shoulder, bool otherHeld)
+        {
+            if (otherHeld)
+                _gamepadShoulderChord = true;
+            else
+            {
+                _gamepadFirstShoulder = shoulder;
+                _gamepadShoulderChord = false;
             }
         }
 
@@ -1223,9 +1260,22 @@ namespace GnollHackX.Pages.Game
         /* A trigger's command, which may raise the prompt that OpenGamepadDirectionRadialForPrompt answers */
         private void RunGamepadTriggerCommand(GHGamepadMapContext ctx, GHGamepadButton trigger, long now)
         {
+            RunGamepadTriggerBoundCommand(ctx, trigger, now, GHApp.ResolveGamepadCommand(GHApp.GetGamepadTriggerCommand(trigger)));
+        }
+
+        /* A trigger's secondary command, with its own side's modifier held; None does nothing */
+        private void RunGamepadTriggerSecondaryCommand(GHGamepadMapContext ctx, GHGamepadButton trigger, long now)
+        {
+            int command = GHApp.ResolveGamepadSecondaryCommand(GHApp.GetGamepadTriggerSecondaryCommand(trigger));
+            if (command != 0)
+                RunGamepadTriggerBoundCommand(ctx, trigger, now, command);
+        }
+
+        private void RunGamepadTriggerBoundCommand(GHGamepadMapContext ctx, GHGamepadButton trigger, long now, int command)
+        {
             _gamepadDirectionRadialTrigger = trigger;
             _gamepadDirectionRadialArmedTicks = now;
-            ExecuteGamepadBoundCommand(ctx, GHApp.ResolveGamepadCommand(GHApp.GetGamepadTriggerCommand(trigger)));
+            ExecuteGamepadBoundCommand(ctx, command);
         }
 
         /* Game input in Busy, which the gate holds back: animations and output delays end early and running and
@@ -1641,7 +1691,7 @@ namespace GnollHackX.Pages.Game
                     continue;
                 }
                 item.Label = shortcut.Label;
-                item.Description = GetGamepadItemDescription(shortcut.Name, shortcut.Label);
+                item.Description = GetGamepadCommandDescription(command, shortcut.Name, shortcut.Label);
                 item.IconPath = string.IsNullOrEmpty(shortcut.ImageSourcePath) ? null : "resource://" + shortcut.ImageSourcePath;
                 int slotCommand = command;
                 item.Kind = GHRadialItemKind.Command;
@@ -1845,6 +1895,7 @@ namespace GnollHackX.Pages.Game
                    Polearm and Wield Last, each in its own slot whether or not the others are shown, and the two quick
                    commands from Settings West and Northwest */
                 GHRadialSourceItem[] quick = new GHRadialSourceItem[GHRadialTuning.CommandPageSlotCount];
+                HashSet<int> listed = new HashSet<int>();
                 lock (GHApp._moreBtnLock)
                 {
                     int i;
@@ -1858,20 +1909,44 @@ namespace GnollHackX.Pages.Game
                         GHRadialSourceItem source = new GHRadialSourceItem();
                         source.Id = "cmd:" + cbi.GHCommand.ToString() + ":" + cbi.Text;
                         source.Label = cbi.Text;
-                        source.Description = null; /* the hub shows only the name */
+                        source.Description = GHApp.GetCommandDescription(cbi.GHCommand, game);
                         source.IconPath = "resource://" + cbi.ImageSourcePath;
                         source.Command = cbi.MappedGHCommand;
                         source.Page = -1;
                         source.Column = -1;
                         source.Row = -1;
                         source.ShortcutText = cbi.ShortcutText;
-                        int lead = Array.IndexOf(GamepadLeadingCommands, cbi.GHCommand);
-                        if (lead < 0)
-                            commands.Add(source);
-                        else if (quick[lead] == null)
-                            quick[lead] = source;
+                        listed.Add(cbi.GHCommand);
+                        AddGamepadCommandSource(source, cbi.GHCommand, commands, quick);
                     }
                 }
+
+                /* The touch command bar's commands, which the More list leaves out */
+                foreach (SelectableShortcutButton button in UseSimpleCmdLayout ? GHApp.GetSimpleBarButtons() : GHApp.GetFullBarButtons())
+                {
+                    if (button == null || button.GHCommand == 0 || !listed.Add(button.GHCommand))
+                        continue;
+                    int mapped = GHApp.MapCommand(button.GHCommand);
+                    GHRadialSourceItem source = new GHRadialSourceItem();
+                    source.Id = "cmd:" + button.GHCommand.ToString() + ":" + button.Label;
+                    source.Label = button.Label;
+                    source.Description = GHApp.GetCommandDescription(button.GHCommand, game);
+                    source.IconPath = string.IsNullOrEmpty(button.ImageSourcePath) ? null : "resource://" + button.ImageSourcePath;
+                    source.Command = mapped;
+                    source.Page = -1;
+                    source.Column = -1;
+                    source.Row = -1;
+                    source.ShortcutText = button.GHCommand > 0 ? GHUtils.ConstructShortcutText(mapped) : null;
+                    AddGamepadCommandSource(source, button.GHCommand, commands, quick);
+                }
+                commands.Sort((a, b) =>
+                {
+                    if (a.Label == null)
+                        return -1;
+                    if (b.Label == null)
+                        return 1;
+                    return a.Label.CompareTo(b.Label);
+                });
                 if (game != null)
                     AddGamepadLeftSideItems(game, quick, GamepadLeadingCommands.Length);
 
@@ -1913,6 +1988,25 @@ namespace GnollHackX.Pages.Game
             def.OnClosed = OnGamepadRadialClosed;
             ApplyGamepadRadialGlyphs(def);
             return def;
+        }
+
+        /* Rest, Search 20 and Extended lead the Quick Commands page, the first of each; every other command goes to the
+           Commands pages */
+        private static void AddGamepadCommandSource(GHRadialSourceItem source, int ghCommand, List<GHRadialSourceItem> commands, GHRadialSourceItem[] quick)
+        {
+            int lead = Array.IndexOf(GamepadLeadingCommands, ghCommand);
+            if (lead < 0)
+                commands.Add(source);
+            else if (quick[lead] == null)
+                quick[lead] = source;
+        }
+
+        /* A command's description for a radial item: the description table's, else the item's name when it says more than
+           the label */
+        private static string GetGamepadCommandDescription(int ghCommand, string name, string label)
+        {
+            string description = GHApp.GetCommandDescription(ghCommand, GHApp.CurrentGHGame);
+            return description ?? GetGamepadItemDescription(name, label);
         }
 
         /* A radial item's description, or null when it would only repeat the label */
@@ -1982,7 +2076,7 @@ namespace GnollHackX.Pages.Game
             GHRadialItem item = new GHRadialItem();
             item.Id = "quickcmd:" + (index + 1).ToString();
             item.Label = shortcut.Label;
-            item.Description = GetGamepadItemDescription(shortcut.Name, shortcut.Label);
+            item.Description = GetGamepadCommandDescription(command, shortcut.Name, shortcut.Label);
             item.IconPath = string.IsNullOrEmpty(shortcut.ImageSourcePath) ? null : "resource://" + shortcut.ImageSourcePath;
             item.Kind = GHRadialItemKind.Command;
             item.ClosesOnActivate = true;
@@ -2035,8 +2129,9 @@ namespace GnollHackX.Pages.Game
         /* Hint strip */
 
         /* Shown while the gamepad is the active input, outside radials and the loading screen; the hints change only
-           with the context, the L1 and R1 layers, the controller style, the dialog kind, the triggers' commands
-           or, on the map, whether there are none, one or several context buttons. The canvas repaints only
+           with the context, the L1 and R1 layers and their chord, the controller style, the dialog kind, the triggers'
+           primary and secondary commands, the quick spell or, on the map, whether there are none, one or several
+           context buttons. The canvas repaints only
            when the hints differ from the shown ones. The command bar and the strip's position follow on every call. */
         private void UpdateGamepadHintStrip(GHGamepadMapContext ctx)
         {
@@ -2066,10 +2161,19 @@ namespace GnollHackX.Pages.Game
                 /* Settings, the game's role and its quick spell change the triggers' commands */
                 int ltCommand = GHApp.ResolveGamepadCommand(GHApp.GetGamepadTriggerCommand(GHGamepadButton.LT));
                 int rtCommand = GHApp.ResolveGamepadCommand(GHApp.GetGamepadTriggerCommand(GHGamepadButton.RT));
-                if (ltCommand != _gamepadHintLTCommand || rtCommand != _gamepadHintRTCommand)
+                int ltSecondary = GHApp.ResolveGamepadSecondaryCommand(GHApp.GetGamepadTriggerSecondaryCommand(GHGamepadButton.LT));
+                int rtSecondary = GHApp.ResolveGamepadSecondaryCommand(GHApp.GetGamepadTriggerSecondaryCommand(GHGamepadButton.RT));
+                GHGame hintGame = GHApp.CurrentGHGame;
+                string quickSpellName = hintGame?.QuickCastSpellName;
+                if (ltCommand != _gamepadHintLTCommand || rtCommand != _gamepadHintRTCommand
+                    || ltSecondary != _gamepadHintLTSecondaryCommand || rtSecondary != _gamepadHintRTSecondaryCommand
+                    || !string.Equals(quickSpellName, _gamepadHintQuickSpellName, StringComparison.Ordinal))
                 {
                     _gamepadHintLTCommand = ltCommand;
                     _gamepadHintRTCommand = rtCommand;
+                    _gamepadHintLTSecondaryCommand = ltSecondary;
+                    _gamepadHintRTSecondaryCommand = rtSecondary;
+                    _gamepadHintQuickSpellName = quickSpellName;
                     _gamepadHintsDirty = true;
                 }
                 int key = ((((int)GetGamepadOwnerFamily(ctx) * 64 + (int)dialog) * 16 + (int)style) * 4 + layers) * 4 + _gamepadHintContextCount;
@@ -2241,6 +2345,13 @@ namespace GnollHackX.Pages.Game
                     {
                         AddGamepadHeldModifierHint(hints, GHGamepadHint.Pair(GHGamepadButton.LB, GHGamepadButton.RB, null));
                         hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Rest", false));
+                        /* Releasing a shoulder from the unused chord opens the Quick radial */
+                        if (_gamepadShoulderChord)
+                        {
+                            bool rightQuick = _gamepadFirstShoulder != GHGamepadButton.RB;
+                            hints.Add(new GHGamepadHint(rightQuick ? GHGamepadButton.RB : GHGamepadButton.LB,
+                                rightQuick ? "Release: Right Quick" : "Release: Left Quick", false));
+                        }
                     }
                     else if (_gamepadLeftModifierHeld)
                     {
@@ -2249,14 +2360,16 @@ namespace GnollHackX.Pages.Game
                         hints.Add(new GHGamepadHint(GHGamepadButton.B, "Search 20", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.X, "Stash", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Wait", false));
-                        hints.Add(new GHGamepadHint(GHGamepadButton.RT, "Quick", false));
+                        AddGamepadTriggerHint(hints, GHGamepadButton.RT, _gamepadHintRTSecondaryCommand, _gamepadHintQuickSpellName);
+                        hints.Add(new GHGamepadHint(GHGamepadButton.RB, "Quick", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Abilities", false));
                     }
                     else if (_gamepadRightModifierHeld)
                     {
                         AddGamepadHeldModifierHint(hints, new GHGamepadHint(GHGamepadButton.RB, null, true));
                         hints.Add(new GHGamepadHint(GHGamepadButton.View, "Equipment", false));
-                        hints.Add(new GHGamepadHint(GHGamepadButton.LT, "Quick", false));
+                        AddGamepadTriggerHint(hints, GHGamepadButton.LT, _gamepadHintLTSecondaryCommand, _gamepadHintQuickSpellName);
+                        hints.Add(new GHGamepadHint(GHGamepadButton.LB, "Quick", false));
                         hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.DPad, "Zoom"));
                         hints.Add(GHGamepadHint.ForSymbol(GHGamepadHintSymbol.LeftStick, "Run"));
                         hints.Add(new GHGamepadHint(GHGamepadButton.L3, "Center", false));
@@ -2268,8 +2381,15 @@ namespace GnollHackX.Pages.Game
                         hints.Add(new GHGamepadHint(GHGamepadButton.B, "Search", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.X, "Pick up", false));
                         hints.Add(new GHGamepadHint(GHGamepadButton.Y, "Repeat", false));
-                        AddGamepadTriggerHint(hints, GHGamepadButton.LT, _gamepadHintLTCommand);
-                        AddGamepadTriggerHint(hints, GHGamepadButton.RT, _gamepadHintRTCommand);
+                        AddGamepadTriggerHint(hints, GHGamepadButton.LT, _gamepadHintLTCommand, _gamepadHintQuickSpellName);
+                        AddGamepadTriggerHint(hints, GHGamepadButton.RT, _gamepadHintRTCommand, _gamepadHintQuickSpellName);
+                        /* While R2 casts the quick spell, its secondary command, the full spell list for casters */
+                        if (_gamepadHintRTCommand == GHUtils.Meta(26))
+                        {
+                            string secondaryLabel = GetGamepadTriggerHintLabel(_gamepadHintRTSecondaryCommand, _gamepadHintQuickSpellName);
+                            if (secondaryLabel != null)
+                                hints.Add(GHGamepadHint.Pair(GHGamepadButton.LB, GHGamepadButton.RT, secondaryLabel));
+                        }
                         GHGamepadHint leftModifier = new GHGamepadHint(GHGamepadButton.LB, "More", true);
                         leftModifier.LineBreakBefore = true;
                         hints.Add(leftModifier);
@@ -2312,14 +2432,44 @@ namespace GnollHackX.Pages.Game
         }
 
         /* A trigger and the label of its command; nothing when the command is None */
-        private static void AddGamepadTriggerHint(List<GHGamepadHint> hints, GHGamepadButton trigger, int command)
+        private static void AddGamepadTriggerHint(List<GHGamepadHint> hints, GHGamepadButton trigger, int command, string quickSpellName)
+        {
+            string label = GetGamepadTriggerHintLabel(command, quickSpellName);
+            if (label != null)
+                hints.Add(new GHGamepadHint(trigger, label, false));
+        }
+
+        /* A trigger command's label, Cast and the quick spell's name for Cast Quick; null for None */
+        private static string GetGamepadTriggerHintLabel(int command, string quickSpellName)
         {
             if (command == 0)
-                return;
+                return null;
+            if (command == GHUtils.Meta(26) && !string.IsNullOrEmpty(quickSpellName))
+                return "Cast " + ToGamepadTitleCase(quickSpellName);
             SelectableShortcutButton item = GHApp.GetGamepadCommandItem(command);
             if (item == null || item.GHCommand == 0 || string.IsNullOrEmpty(item.Label))
-                return;
-            hints.Add(new GHGamepadHint(trigger, item.Label, false));
+                return null;
+            return item.Label;
+        }
+
+        /* "minor healing" as "Minor Healing" */
+        private static string ToGamepadTitleCase(string text)
+        {
+            char[] chars = text.ToCharArray();
+            bool wordStart = true;
+            int i;
+            for (i = 0; i < chars.Length; i++)
+            {
+                if (char.IsWhiteSpace(chars[i]))
+                    wordStart = true;
+                else
+                {
+                    if (wordStart)
+                        chars[i] = char.ToUpperInvariant(chars[i]);
+                    wordStart = false;
+                }
+            }
+            return new string(chars);
         }
     }
 }

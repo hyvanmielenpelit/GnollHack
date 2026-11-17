@@ -197,26 +197,28 @@ namespace GnollHackX.Pages.MainScreen
             { "Back Grip L5", GamepadGripDescription("L5", "F3") },
             { "Back Grip R4", GamepadGripDescription("R4", "F4") },
             { "Back Grip R5", GamepadGripDescription("R5", "F5") },
-            { "R2 Action", ("What R2 does when pressed alone.", "The command R2 runs when pressed alone. If the command asks for a direction, keep R2 held to choose it in a radial, and release R2 to confirm. After a menu or a release, the same radial stays until you confirm with A. By Role picks the command from your character's role: Cast Quick for Healers, Monks, Priests and Wizards, or Cast while no quick spell is set; Polearm for Knights; and Fire for the others.") },
-            { "L2 Action", ("What L2 does when pressed alone.", "The command L2 runs when pressed alone. If the command asks for a direction, keep L2 held to choose it in a radial, and release L2 to confirm. After a menu or a release, the same radial stays until you confirm with A. By Role picks the command from your character's role: Cast Quick for Healers, Monks, Priests and Wizards, or Cast while no quick spell is set; Polearm for Knights; and Fire for the others.") },
+            { "R2 Action", ("What R2 does when pressed alone.", "The command R2 runs when pressed alone. If the command asks for a direction, keep R2 held to choose it in a radial, and release R2 to confirm. After a menu or a release, the same radial stays until you confirm with A. By Role picks the command from your character's role: Cast Quick for Healers, Monks, Priests and Wizards, or Cast while no quick spell is set; Polearm for Knights; and Fire for the others. L1 + R2 runs a second command, set in L1 + R2 Action.") },
+            { "L2 Action", ("What L2 does when pressed alone.", "The command L2 runs when pressed alone. If the command asks for a direction, keep L2 held to choose it in a radial, and release L2 to confirm. After a menu or a release, the same radial stays until you confirm with A. By Role picks the command from your character's role: Cast Quick for Healers, Monks, Priests and Wizards, or Cast while no quick spell is set; Polearm for Knights; and Fire for the others. R1 + L2 runs a second command, set in R1 + L2 Action.") },
+            { "L1 + R2 Action", ("What R2 does while L1 is held.", "The command R2 runs while you hold L1. If the command asks for a direction, keep R2 held to choose it in a radial, and release R2 to confirm. By Role picks the command from your character's role: Cast, which opens your spell list, for Healers, Monks, Priests and Wizards, whose R2 casts their quick spell; and Throw for the others.") },
+            { "R1 + L2 Action", ("What L2 does while R1 is held.", "The command L2 runs while you hold R1, by default Pick-axe. If the command asks for a direction, keep L2 held to choose it in a radial, and release L2 to confirm. By Role picks Cast for Healers, Monks, Priests and Wizards, and Throw for the others.") },
             { "Quick Command 1", GamepadQuickCommandDescription(1, "west") },
             { "Quick Command 2", GamepadQuickCommandDescription(2, "northwest") },
-            { "Right Quick 1", GamepadQuickSlotDescription("Right Quick", 1, "L1 + R2") },
-            { "Right Quick 2", GamepadQuickSlotDescription("Right Quick", 2, "L1 + R2") },
-            { "Right Quick 3", GamepadQuickSlotDescription("Right Quick", 3, "L1 + R2") },
-            { "Right Quick 4", GamepadQuickSlotDescription("Right Quick", 4, "L1 + R2") },
-            { "Right Quick 5", GamepadQuickSlotDescription("Right Quick", 5, "L1 + R2") },
-            { "Right Quick 6", GamepadQuickSlotDescription("Right Quick", 6, "L1 + R2") },
-            { "Right Quick 7", GamepadQuickSlotDescription("Right Quick", 7, "L1 + R2") },
-            { "Right Quick 8", GamepadQuickSlotDescription("Right Quick", 8, "L1 + R2") },
-            { "Left Quick 1", GamepadQuickSlotDescription("Left Quick", 1, "R1 + L2") },
-            { "Left Quick 2", GamepadQuickSlotDescription("Left Quick", 2, "R1 + L2") },
-            { "Left Quick 3", GamepadQuickSlotDescription("Left Quick", 3, "R1 + L2") },
-            { "Left Quick 4", GamepadQuickSlotDescription("Left Quick", 4, "R1 + L2") },
-            { "Left Quick 5", GamepadQuickSlotDescription("Left Quick", 5, "R1 + L2") },
-            { "Left Quick 6", GamepadQuickSlotDescription("Left Quick", 6, "R1 + L2") },
-            { "Left Quick 7", GamepadQuickSlotDescription("Left Quick", 7, "R1 + L2") },
-            { "Left Quick 8", GamepadQuickSlotDescription("Left Quick", 8, "R1 + L2") },
+            { "Right Quick 1", GamepadQuickSlotDescription("Right Quick", 1, "holding L1 and pressing R1") },
+            { "Right Quick 2", GamepadQuickSlotDescription("Right Quick", 2, "holding L1 and pressing R1") },
+            { "Right Quick 3", GamepadQuickSlotDescription("Right Quick", 3, "holding L1 and pressing R1") },
+            { "Right Quick 4", GamepadQuickSlotDescription("Right Quick", 4, "holding L1 and pressing R1") },
+            { "Right Quick 5", GamepadQuickSlotDescription("Right Quick", 5, "holding L1 and pressing R1") },
+            { "Right Quick 6", GamepadQuickSlotDescription("Right Quick", 6, "holding L1 and pressing R1") },
+            { "Right Quick 7", GamepadQuickSlotDescription("Right Quick", 7, "holding L1 and pressing R1") },
+            { "Right Quick 8", GamepadQuickSlotDescription("Right Quick", 8, "holding L1 and pressing R1") },
+            { "Left Quick 1", GamepadQuickSlotDescription("Left Quick", 1, "holding R1 and pressing L1") },
+            { "Left Quick 2", GamepadQuickSlotDescription("Left Quick", 2, "holding R1 and pressing L1") },
+            { "Left Quick 3", GamepadQuickSlotDescription("Left Quick", 3, "holding R1 and pressing L1") },
+            { "Left Quick 4", GamepadQuickSlotDescription("Left Quick", 4, "holding R1 and pressing L1") },
+            { "Left Quick 5", GamepadQuickSlotDescription("Left Quick", 5, "holding R1 and pressing L1") },
+            { "Left Quick 6", GamepadQuickSlotDescription("Left Quick", 6, "holding R1 and pressing L1") },
+            { "Left Quick 7", GamepadQuickSlotDescription("Left Quick", 7, "holding R1 and pressing L1") },
+            { "Left Quick 8", GamepadQuickSlotDescription("Left Quick", 8, "holding R1 and pressing L1") },
         };
 
         private static (string Tooltip, string Description) GamepadGripDescription(string grip, string key)
@@ -225,11 +227,11 @@ namespace GnollHackX.Pages.MainScreen
                 "The command the " + grip + " back grip runs. The back grips need the GnollHack Steam Deck layout, or " + grip + " bound to the key " + key + ".");
         }
 
-        /* opener is the button combination that opens the radial */
+        /* opener is how the radial opens, as a phrase after "by" */
         private static (string Tooltip, string Description) GamepadQuickSlotDescription(string radial, int slot, string opener)
         {
             return ("Action " + slot + " of the " + radial + " radial.",
-                "An action in the " + radial + " radial, which " + opener + " opens during a game. It runs when you choose it. If it asks for a direction, the direction radial opens.");
+                "An action in the " + radial + " radial, which you open during a game by " + opener + ". It runs when you choose it. If it asks for a direction, the direction radial opens.");
         }
 
         /* direction is the command's place on the page */
@@ -383,6 +385,11 @@ namespace GnollHackX.Pages.MainScreen
             {
                 triggerPicker.ItemsSource = GHApp.GamepadTriggerCommandItems;
                 triggerPicker.ItemDisplayBinding = new Binding("Name");
+            }
+            foreach (Picker secondaryPicker in GamepadTriggerSecondaryPickers)
+            {
+                secondaryPicker.ItemsSource = GHApp.GamepadTriggerCommandItems;
+                secondaryPicker.ItemDisplayBinding = new Binding("Name");
             }
             foreach (Picker quickPicker in GamepadQuickCommandPickers)
             {
@@ -2382,6 +2389,12 @@ namespace GnollHackX.Pages.MainScreen
             get { return new Picker[] { GamepadTriggerLTPicker, GamepadTriggerRTPicker }; }
         }
 
+        /* In the order of GHApp.GamepadTriggers: R1 + L2, L1 + R2 */
+        private Picker[] GamepadTriggerSecondaryPickers
+        {
+            get { return new Picker[] { GamepadTriggerLTSecondaryPicker, GamepadTriggerRTSecondaryPicker }; }
+        }
+
         /* Index i holds GHApp's quick command i */
         private Picker[] GamepadQuickCommandPickers
         {
@@ -2410,6 +2423,7 @@ namespace GnollHackX.Pages.MainScreen
 
             Picker[][] slotPickers = GamepadTriggerSlotPickers;
             Picker[] triggerPickers = GamepadTriggerPickers;
+            Picker[] secondaryPickers = GamepadTriggerSecondaryPickers;
             int t, slot;
             for (t = 0; t < slotPickers.Length && t < GHApp.GamepadTriggers.Length; t++)
             {
@@ -2421,6 +2435,8 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 triggerPickers[t].SelectedIndex = GHApp.GamepadTriggerCommandIndexInList(
                     GHApp.GetGamepadTriggerCommand(trigger), GHApp.DefaultGamepadTriggerCommand(trigger));
+                secondaryPickers[t].SelectedIndex = GHApp.GamepadTriggerCommandIndexInList(
+                    GHApp.GetGamepadTriggerSecondaryCommand(trigger), GHApp.DefaultGamepadTriggerSecondaryCommand(trigger));
             }
 
             Picker[] quickPickers = GamepadQuickCommandPickers;
@@ -2471,10 +2487,18 @@ namespace GnollHackX.Pages.MainScreen
 
             Picker[][] slotPickers = GamepadTriggerSlotPickers;
             Picker[] triggerPickers = GamepadTriggerPickers;
+            Picker[] secondaryPickers = GamepadTriggerSecondaryPickers;
             int t, slot;
             for (t = 0; t < slotPickers.Length && t < GHApp.GamepadTriggers.Length; t++)
             {
                 GHGamepadButton trigger = GHApp.GamepadTriggers[t];
+                int secondaryIndex = secondaryPickers[t].SelectedIndex;
+                if (secondaryIndex >= 0 && secondaryIndex < GHApp.GamepadTriggerCommandItems.Count)
+                {
+                    int secondaryCommand = GHApp.GamepadTriggerCommandItems[secondaryIndex].GHCommand;
+                    GHApp.SetGamepadTriggerSecondaryCommand(trigger, secondaryCommand);
+                    Preferences.Set(GHApp.GamepadTriggerSecondaryPreferenceKey(trigger), secondaryCommand);
+                }
                 for (slot = 0; slot < slotPickers[t].Length && slot < GHApp.GamepadTriggerSlotCount; slot++)
                 {
                     int index = slotPickers[t][slot].SelectedIndex;

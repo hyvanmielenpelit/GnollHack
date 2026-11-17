@@ -137,12 +137,13 @@ namespace GnollHackX.Pages.Game
                 input = GHRadialInput.SwitchSet;
                 break;
             case GHGamepadButton.LB:
+                /* The shoulder that opened a Quick radial closes it; elsewhere the shoulders page */
                 hasInput = pressed;
-                input = GHRadialInput.PrevPage;
+                input = e.Button == opener ? GHRadialInput.OpenerPressed : GHRadialInput.PrevPage;
                 break;
             case GHGamepadButton.RB:
                 hasInput = pressed;
-                input = GHRadialInput.NextPage;
+                input = e.Button == opener ? GHRadialInput.OpenerPressed : GHRadialInput.NextPage;
                 break;
             case GHGamepadButton.L3:
             case GHGamepadButton.R3:
@@ -303,9 +304,9 @@ namespace GnollHackX.Pages.Game
             if (def.MenuId == "L3")
                 return GHGamepadButton.L3;
             if (def.MenuId == "LT")
-                return GHGamepadButton.LT;
+                return GHGamepadButton.LB;  /* Left Quick: R1, then L1 */
             if (def.MenuId == "RT")
-                return GHGamepadButton.RT;
+                return GHGamepadButton.RB;  /* Right Quick: L1, then R1 */
             return def.OwningStick == 1 ? GHGamepadButton.R3 : GHGamepadButton.L3;
         }
 

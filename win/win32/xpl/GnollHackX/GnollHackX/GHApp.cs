@@ -4259,6 +4259,7 @@ namespace GnollHackX
                 if (trigger == GHGamepadButton.RT)
                     MigrateGamepadRightTriggerByRole();
                 SetGamepadTriggerCommand(trigger, Preferences.Get(GamepadTriggerPreferenceKey(trigger), DefaultGamepadTriggerCommand(trigger)));
+                SetGamepadTriggerSecondaryCommand(trigger, Preferences.Get(GamepadTriggerSecondaryPreferenceKey(trigger), DefaultGamepadTriggerSecondaryCommand(trigger)));
             }
             int quickIndex;
             for (quickIndex = 0; quickIndex < GamepadQuickCommandCount; quickIndex++)
@@ -4399,6 +4400,8 @@ namespace GnollHackX
         private static readonly int[] _defaultGamepadRTSlots = { GHUtils.Ctrl('x'), 'x', 'C', 't', 'Z', GHUtils.Meta(26), 'z', GHUtils.Meta(27) };
         private static readonly int[] _gamepadTriggerSlotCommands = new int[2 * GamepadTriggerSlotCount];
         private static readonly int[] _gamepadTriggerCommands = new int[2];
+        /* The command a trigger runs with its own side's modifier held: L1 + R2, R1 + L2 */
+        private static readonly int[] _gamepadTriggerSecondaryCommands = new int[2];
 
         /* 0 L2, 1 R2, -1 other buttons */
         private static int GamepadTriggerIndex(GHGamepadButton trigger)
@@ -4422,6 +4425,11 @@ namespace GnollHackX
             return "GamepadTrigger" + trigger.ToString() + "Command";
         }
 
+        public static string GamepadTriggerSecondaryPreferenceKey(GHGamepadButton trigger)
+        {
+            return "GamepadTrigger" + trigger.ToString() + "SecondaryCommand";
+        }
+
         public static int DefaultGamepadTriggerSlotCommand(GHGamepadButton trigger, int slot)
         {
             if (!IsGamepadTriggerSlot(trigger, slot))
@@ -4436,6 +4444,20 @@ namespace GnollHackX
             {
                 case GHGamepadButton.LT:
                     return GHUtils.Ctrl('d');
+                case GHGamepadButton.RT:
+                    return GamepadByRoleCommand;
+                default:
+                    return 0;
+            }
+        }
+
+        /* L1 + R2 By Role, R1 + L2 Pick-axe */
+        public static int DefaultGamepadTriggerSecondaryCommand(GHGamepadButton trigger)
+        {
+            switch (trigger)
+            {
+                case GHGamepadButton.LT:
+                    return GHUtils.Meta('X');
                 case GHGamepadButton.RT:
                     return GamepadByRoleCommand;
                 default:
@@ -4478,6 +4500,24 @@ namespace GnollHackX
             Interlocked.Exchange(ref _gamepadTriggerCommands[t], GamepadTriggerCommandItems[index].GHCommand);
         }
 
+        /* The command a trigger runs with its own side's modifier held, as stored: 0 is None, GamepadByRoleCommand is
+           By Role */
+        public static int GetGamepadTriggerSecondaryCommand(GHGamepadButton trigger)
+        {
+            int t = GamepadTriggerIndex(trigger);
+            return t < 0 ? 0 : Interlocked.CompareExchange(ref _gamepadTriggerSecondaryCommands[t], 0, 0);
+        }
+
+        /* A command not in GamepadTriggerCommandItems falls back to the trigger's secondary default */
+        public static void SetGamepadTriggerSecondaryCommand(GHGamepadButton trigger, int command)
+        {
+            int t = GamepadTriggerIndex(trigger);
+            if (t < 0)
+                return;
+            int index = GamepadTriggerCommandIndexInList(command, DefaultGamepadTriggerSecondaryCommand(trigger));
+            Interlocked.Exchange(ref _gamepadTriggerSecondaryCommands[t], GamepadTriggerCommandItems[index].GHCommand);
+        }
+
         /* A trigger's command with By Role replaced by the current game's: Cast Quick (Cast while no quick spell is set),
            Polearm, else Fire */
         public static int ResolveGamepadCommand(int command)
@@ -4496,6 +4536,18 @@ namespace GnollHackX
                 default:
                     return 'f';
             }
+        }
+
+        /* A secondary trigger command with By Role replaced by the current game's: Cast for the roles whose By Role is
+           Cast Quick, else Throw */
+        public static int ResolveGamepadSecondaryCommand(int command)
+        {
+            if (command != GamepadByRoleCommand)
+                return command;
+            GHGame game = CurrentGHGame;
+            if (game != null && game.RoleRightClickCommand == (int)NhGetPosMods.ClickCast)
+                return 'Z';
+            return 't';
         }
 
         /* The picker item for a command, for its name, label and icon; None when the command is 0 or unknown */
@@ -6504,6 +6556,108 @@ namespace GnollHackX
             new SelectableShortcutButton("Zap Wand", "Zap", 'z', false, false, 0, AppResourceName + ".Assets.UI.zap.png"),
             new SelectableShortcutButton("Zap Quick Wand", "Zap Quick", (char)27, false, true, 0, AppResourceName + ".Assets.UI.zapquick.png"),
         };
+
+        /* What a command does, in a radial's hub: keyed by the unmapped GHCommand of the shortcut buttons and the More
+           list; wizard-mode commands, Back to Game and Count have none */
+        private static readonly Dictionary<int, string> _commandDescriptions = new Dictionary<int, string>()
+        {
+            { '#', "Type the name of any command" },
+            { '%', "Choose several items and drop them" },
+            { '.', "Wait for one turn, doing nothing" },
+            { '<', "Climb up the stairs or ladder here" },
+            { '>', "Go down the stairs or ladder here" },
+            { '?', "Read help on the game and its commands" },
+            { '@', "Turn automatic pickup on or off" },
+            { '\'', "Point at a map symbol and see what it is" },
+            { '/', "Point at something and see what it is" },
+            { ':', "See what is on the floor here" },
+            { '\\', "List the item types you have identified" },
+            { '_', "Travel to a place you choose on the map" },
+            { '}', "Describe your character" },
+            { '+', "List your spells and their details" },
+            { 'C', "Talk to or interact with someone nearby" },
+            { 'D', "Drop all items of the types you choose" },
+            { 'E', "Write in the dust or engrave on the floor" },
+            { 'F', "Attack in a direction, even if nothing is seen" },
+            { 'P', "Put on a ring, an amulet or another accessory" },
+            { 'Q', "Choose the ammunition that Fire uses" },
+            { 'R', "Remove a ring, an amulet or another accessory" },
+            { 'S', "View your skills and advance them" },
+            { 'T', "Take off one piece of armor" },
+            { 'W', "Wear a piece of armor" },
+            { 'X', "Prepare a spell from material components" },
+            { 'Z', "Choose a spell from your spell list and cast it" },
+            { 'a', "Use a tool or another item" },
+            { 'c', "Close a door" },
+            { 'e', "Eat something" },
+            { 'f', "Shoot or throw what is in your quiver" },
+            { 'i', "Show your inventory" },
+            { 'o', "Open a door" },
+            { 'p', "Pay your shopping bill" },
+            { 'q', "Drink a potion or from a fountain" },
+            { 'r', "Read a scroll or a spellbook" },
+            { 's', "Search around you for traps and secret doors" },
+            { 't', "Choose an item and throw it" },
+            { 'w', "Wield a weapon or another item" },
+            { 'x', "Swap your wielded and alternate weapons" },
+            { 'z', "Choose a wand and zap it" },
+            { -102, "Search around you 20 times" },
+            { -103, "Rest until healed or something happens" },
+            { GHUtils.Ctrl('a'), "Do your previous command again" },
+            { GHUtils.Ctrl('d'), "Kick something in a direction" },
+            { GHUtils.Ctrl('g'), "Dig down through the floor" },
+            { GHUtils.Ctrl('o'), "Show a summary of the explored dungeon" },
+            { GHUtils.Ctrl('s'), "Sit down" },
+            { GHUtils.Ctrl('t'), "Teleport, if you can" },
+            { GHUtils.Ctrl('x'), "Fight with a weapon in each hand, or stop" },
+            { GHUtils.Meta(2), "Show your attributes" },
+            { GHUtils.Meta(3), "List the challenges you have kept" },
+            { GHUtils.Meta(4), "Choose the spell that Cast Quick casts" },
+            { GHUtils.Meta(5), "Stop wielding your weapon" },
+            { GHUtils.Meta(15), "Choose item types to stash automatically" },
+            { GHUtils.Meta(27), "Zap your quick wand without choosing it" },
+            { GHUtils.Meta('B'), "Break something" },
+            { GHUtils.Meta('E'), "Engrave your preset text on the floor" },
+            { GHUtils.Meta('I'), "Light or snuff out something" },
+            { GHUtils.Meta('M'), "Use a monster ability of your current form" },
+            { GHUtils.Meta('N'), "Name a monster or an item" },
+            { GHUtils.Meta('P'), "Strike from a distance with a polearm or lance" },
+            { GHUtils.Meta('R'), "Mount or dismount a saddled steed" },
+            { GHUtils.Meta('T'), "Empty a container onto the floor" },
+            { GHUtils.Meta('X'), "Dig with a pick-axe or another digging tool" },
+            { GHUtils.Meta('c'), "List additional actions" },
+            { GHUtils.Meta('d'), "Dip an item into something" },
+            { GHUtils.Meta('e'), "Wipe off your face" },
+            { GHUtils.Meta('f'), "Force open the lock of a box" },
+            { GHUtils.Meta('g'), "List the monsters that are genocided" },
+            { GHUtils.Meta('h'), "Swap which hand holds your weapon" },
+            { GHUtils.Meta('i'), "Invoke an item's special powers" },
+            { GHUtils.Meta('j'), "Jump to another place" },
+            { GHUtils.Meta('k'), "List the monsters you have killed" },
+            { GHUtils.Meta('l'), "Loot a box on the floor" },
+            { GHUtils.Meta('o'), "Offer a sacrifice to the gods" },
+            { GHUtils.Meta('p'), "Pray to the gods for help" },
+            { GHUtils.Meta('r'), "Rub a lamp or a stone" },
+            { GHUtils.Meta('t'), "Take off several pieces of armor" },
+            { GHUtils.Meta('u'), "Disarm a trap or free something from one" },
+            { GHUtils.Meta('w'), "Wear several pieces of armor" },
+            { GHUtils.Meta('x'), "Examine an item closely" },
+            { GHUtils.Meta('y'), "Call your companions to you" },
+            { GHUtils.Meta('z'), "View your spells" },
+        };
+
+        /* A command's description, or null; Cast Quick names the game's quick spell */
+        public static string GetCommandDescription(int ghCommand, GHGame game)
+        {
+            if (ghCommand == GHUtils.Meta(26))
+            {
+                string name = game?.QuickCastSpellName;
+                return name != null ? "Cast your quick spell, " + name + ", without opening the spell list"
+                    : "Cast your quick spell; set one with Quick Spell";
+            }
+            string description;
+            return _commandDescriptions.TryGetValue(ghCommand, out description) ? description : null;
+        }
 
         private static readonly SelectableShortcutButton _defInventory = new SelectableShortcutButton("Inventory", "Inventory", 'i', false, false, 0, AppResourceName + ".Assets.UI.inventory.png");
         private static readonly SelectableShortcutButton _defSearch = new SelectableShortcutButton("Search", "Search", 's', false, false, 0, AppResourceName + ".Assets.UI.search.png");

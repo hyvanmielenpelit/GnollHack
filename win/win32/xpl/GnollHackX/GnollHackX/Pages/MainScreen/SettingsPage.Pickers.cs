@@ -229,7 +229,8 @@ namespace GnollHackX.Pages.MainScreen
                 GHRadialSourceItem source = new GHRadialSourceItem();
                 source.Id = "picker:" + i.ToString();
                 source.Label = command.Label;
-                source.Description = string.Equals(command.Name, command.Label, StringComparison.Ordinal) ? null : command.Name;
+                source.Description = GHApp.GetCommandDescription(command.GHCommand, null)
+                    ?? (string.Equals(command.Name, command.Label, StringComparison.Ordinal) ? null : command.Name);
                 source.IconPath = string.IsNullOrEmpty(command.ImageSourcePath) ? null : "resource://" + command.ImageSourcePath;
                 source.Command = i;     /* the picker's index */
                 source.Page = -1;

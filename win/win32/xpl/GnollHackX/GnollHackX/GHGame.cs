@@ -4657,6 +4657,8 @@ namespace GnollHackX
         public int RoleMiddleClickCommand { get { return Interlocked.CompareExchange(ref _roleMiddleClickCommand, 0, 0); } }
         /* A quick spell is set, as the game last reported */
         public bool HasQuickCastSpell { get { lock (_quickLock) { return _quickSpellOtyp > 0; } } }
+        /* The quick spell's name, null while none is set */
+        public string QuickCastSpellName { get { lock (_quickLock) { return _quickSpellOtyp > 0 && !string.IsNullOrEmpty(_quickSpellName) ? _quickSpellName : null; } } }
         public void SetQuickZapWand(int glyph, int exceptionality, string name)
         {
             lock (_quickLock)

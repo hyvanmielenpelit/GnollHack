@@ -97,7 +97,10 @@ Both shoulder buttons are **hold modifiers** on the map, each for the controls t
 uses: **L1** changes the right-side controls (A, B, X, Y, R2, Menu) and **R1** the left-side
 controls (D-pad, left stick, L3, View). Neither does anything on its own. A layer is sampled when
 the other button is pressed. The hint strip shows the layer while a modifier is held, with the
-held modifier's badge and its outlined up arrow (see Hint badges) in gold.
+held modifier's badge and its outlined up arrow (see Hint badges) in gold. Holding one shoulder,
+pressing the other and releasing either with nothing pressed in between opens a Quick radial: **L1
+then R1** opens Right Quick and **R1 then L1** Left Quick. Any other press while both are held, such as
+Y for Rest, cancels that.
 
 | Control | Alone | L1 held | R1 held | L1 + R1 held |
 |---------|-------|---------|---------|--------------|
@@ -105,8 +108,10 @@ held modifier's badge and its outlined up arrow (see Hint badges) in gold.
 | B | **Search**; first closes an overlay, and interrupts running and other occupations instead | Search 20 times | -- | -- |
 | X | Pick up | Pick and Stash | -- | -- |
 | Y | **Repeat** | Wait | -- | Rest |
-| R2 | R2's **command** (default By Role: Cast Quick, Polearm or Fire) | **Right Quick** radial | -- | R2's command |
-| L2 | L2's **command** (default Kick) | -- | **Left Quick** radial | L2's command |
+| R2 | R2's **command** (default By Role: Cast Quick, Polearm or Fire) | **L1 + R2 Action** (default By Role: **Cast**, the spell list, or **Throw**) | -- | R2's command |
+| L2 | L2's **command** (default Kick) | -- | **R1 + L2 Action** (default **Pick-axe**) | L2's command |
+| R1 | Modifier | **Right Quick** radial, on release | | |
+| L1 | Modifier | | **Left Quick** radial, on release | |
 | Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
 | View | Inventory | -- | Equipment (all equipment in use) | -- |
 | D-pad | Walk one step per press, repeating while held; two directions together walk diagonally | -- | **Zoom**: Up/Down zoom in and out, one step per press and then continuously while held, Left toggles the minimap, Right returns to normal zoom | -- |
@@ -124,11 +129,16 @@ they are bound to, which the game cannot detect.
 buttons can hold, None, or By Role, by default By Role and Kick. By Role runs Cast Quick for Healers,
 Monks, Priests and Wizards (Cast while no quick spell is set), Polearm for Knights, and Fire for the
 others, from the role the game reports at its start (GUI_CMD_REPORT_ROLE_CLICK_COMMAND). They suit a
-command that asks for a direction.
+command that asks for a direction. L1 + R2 Action and R1 + L2 Action are each trigger's **secondary
+command**, run with that side's own modifier held; they take the same choices, by default By Role and
+Pick-axe. Their By Role runs Cast for Healers, Monks, Priests and Wizards and Throw for the others. A
+trigger's label on the hint strip names the quick spell when its command is Cast Quick (`Cast Minor
+Healing`), and while R2 is Cast Quick the strip also shows L1 + R2's command.
 
-**Quick radials.** L1 + R2 opens the gold **Right Quick** radial and R1 + L2 the gold **Left Quick**
-radial, which run the chosen action at once, with the direction radial if it asks for a direction.
-Pressing the trigger again closes them. Their eight slots are set in **Settings, Quick Radials** (any
+**Quick radials.** Holding L1 and pressing R1 opens the gold **Right Quick** radial, and holding R1
+and pressing L1 the gold **Left Quick** radial, when a shoulder is released (see the shoulder
+paragraph above). They run the chosen action at once, with the direction radial if it asks for a
+direction. Pressing the second shoulder again closes them. Their eight slots are set in **Settings, Quick Radials** (any
 command the bar buttons can hold, or None). The section sits between Controller and Bar Commands,
 after Behavior. The page shows Bar Commands with Use Controller off, without a controller backend, or
 with Hide Command Bar off.
@@ -145,7 +155,7 @@ Quick Commands page (see [Radials](#radials)) and run as a Quick radial's action
 **Direction radial.** When a command asks for a direction with the controller active, the violet
 **Direction** radial opens over the prompt (see [Radials](#radials)). If a trigger's command raised it
 while that trigger is still held, within a second of the press and with no menu or dialog in between,
-releasing the trigger confirms. This covers L2 or R2 alone and L1 + R1 + the trigger. Force Fight on a trigger opens no
+releasing the trigger confirms. This covers L2 or R2 alone, L1 + R2, R1 + L2 and L1 + R1 + the trigger. Force Fight on a trigger opens no
 radial, because it is a prefix: press a direction on the left stick or the D-pad next. Any other key,
 including B, gets the core's invalid direction help.
 
@@ -201,7 +211,8 @@ radial while its trigger is held, which lasts as long as the trigger.
 
 - **Select** with whichever stick is pushed further, or step with D-pad Left/Right; D-pad
   Up/Down jump to the top and bottom slots. The center hub describes the highlighted item.
-- **A** activates it, **B** closes the radial (R3 also closes the Toggles radial), **L1/R1** change page.
+- **A** activates it, **B** closes the radial (R3 also closes the Toggles radial), **L1/R1** change page;
+  in a Quick radial, the shoulder pressed second to open it closes it.
   **Menu** closes the radial and opens the game menu.
 - **Toggles radial (R3):** More Messages, Status Screen, Auto-Center, Look Mode, Auto-Dig,
   Ignore Stopping, Max Hit Points and Max Mana (the maximum in the health and mana orbs, as
@@ -212,9 +223,11 @@ radial while its trigger is held, which lasts as long as the trigger.
   The first is the **Quick Commands** page: Rest, Search 20 and Extended, then Skills, Polearm and
   Wield Last/Unwield when their buttons would show, each in its own slot whether or not the others are
   shown, and Quick Command 1 and 2 West and Northwest. Every other command of the single commands page
-  follows in alphabetical order, eight per page with no gaps. Back to Game, the count pad and, outside wizard
-  mode, the wizard commands are left out. The hub shows the page number above the page
-  name.
+  and of the command bar in use, which the More list leaves out, follows in alphabetical order, eight per
+  page with no gaps. Back to Game, the count pad and, outside wizard mode, the wizard commands are left
+  out. The hub shows the page number above the page name, and under the highlighted command's name what
+  it does; Cast Quick's description names the quick spell. The Quick radials, the Quick Commands and the
+  command picker in Settings describe their commands the same way.
   **X** switches between the context page and the first commands page; L1/R1 page.
 - **Direction radial** (any direction prompt): violet and see-through,
   with no dimming of the map and slices only 8 % opaque, 16 % when selected, because it is used for
