@@ -512,6 +512,7 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
             renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
+            renderer.HintScale = GHApp.GamepadHintScale;
             renderer.Paint(canvas, e.Info, _pickerRadialState, GetPickerRadialDipScale(e.Info.Width));
         }
 

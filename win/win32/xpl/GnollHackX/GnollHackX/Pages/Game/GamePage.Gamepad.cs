@@ -2253,15 +2253,23 @@ namespace GnollHackX.Pages.Game
            evenly above and below it when taller, but never below the page, and the paint centers the row on the
            bar. With the bar shown while the gamepad is the active input outside replays, the strip sits on the
            bar's top edge, over the map's lowest messages, and the row at its bottom. Otherwise the strip keeps its
-           XAML margin and the row sits at its bottom. The canvas height is fixed, so none depends on the hints.
-           The margin is set only when it changes by a whole DIP, and it does not affect the bar's bounds. */
+           XAML margin and the row sits at its bottom. The canvas height follows Hint Size, so none depends on the
+           hints. The margin is set only when it changes by a whole DIP, and it does not affect the bar's bounds. */
         private void UpdateGamepadHintStripPosition()
         {
             if (!_gamepadHintDefaultMarginSaved)
             {
                 _gamepadHintDefaultMargin = GamepadHintGrid.Margin;
                 _gamepadHintDefaultMarginSaved = true;
-                GamepadHintCanvas.HeightRequest = GamepadHintCanvasHeightDips;
+            }
+            float hintScale = GHApp.GamepadHintScale;
+            if (hintScale != _gamepadHintScaleApplied)
+            {
+                _gamepadHintScaleApplied = hintScale;
+                _gamepadHintCanvasHeightDips = GetGamepadHintCanvasHeightDips(hintScale);
+                GamepadHintCanvas.HeightRequest = _gamepadHintCanvasHeightDips;
+                if (!CanvasViewsShutDown)
+                    GamepadHintCanvas.InvalidateSurface();
             }
             Thickness margin = _gamepadHintDefaultMargin;
             float rowCenter = 0f;
@@ -2276,7 +2284,7 @@ namespace GnollHackX.Pages.Game
                 else
                 {
                     double barCenter = barBottomGap + barHeight * 0.5;
-                    double areaHeight = GamepadHintCanvasHeightDips - GamepadHintExtraHeightDips;
+                    double areaHeight = _gamepadHintCanvasHeightDips - GamepadHintExtraHeightDips;
                     margin.Bottom = Math.Max(0.0, Math.Round(barCenter - areaHeight * 0.5));
                     rowCenter = (float)(barCenter - margin.Bottom);
                 }

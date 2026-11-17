@@ -38,6 +38,7 @@ namespace GnollHackX.Pages.Game
 #endif
         private const float GamepadHintFontSizeDips = 13f;     /* the hint strip's label size */
         private const int GamepadHintMinimumCount = 3;         /* hints kept when dropping ones that do not fit */
+        private const double WikiHintRowPaddingDips = 8.0;     /* around the hint line in the toolbar row */
 
         private readonly GHWebGamepadNavigator _webNavigator;
 #if GNH_AVALONIA || WINDOWS
@@ -104,6 +105,14 @@ namespace GnollHackX.Pages.Game
                 }
             };
 #endif
+            /* The toolbar row holds the hint strip's line at the Hint Size */
+            if (GHApp.IsGamepadAvailable)
+            {
+                double needed = Math.Ceiling(GHGamepadHintRenderer.GetLineBoxHeight(GamepadHintFontSizeDips * GHApp.GamepadHintScale))
+                    + WikiHintRowPaddingDips;
+                if (needed > ButtonRowDefinition.Height.Value)
+                    ButtonRowDefinition.Height = needed;
+            }
         }
 
         private void DisplayWebView_Navigating(object sender, WebNavigatingEventArgs e)
@@ -367,17 +376,23 @@ namespace GnollHackX.Pages.Game
                 scale = GHApp.DisplayDensity > 0 ? GHApp.DisplayDensity : 1.0f;
 
             renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
-            float fontSize = GamepadHintFontSizeDips * scale;
+            float baseFontSize = GamepadHintFontSizeDips * scale;
+            /* The line is centered in the canvas, and a title sits at the canvas top */
+            float usableHeight = pixelHeight;
+            if (TitleLabel.IsVisible)
+                usableHeight -= 2f * (float)(TitleLabel.Y + TitleLabel.Height + TitleLabel.Margin.Bottom) * scale;
+            float fontSize = Math.Max(baseFontSize, Math.Min(baseFontSize * GHApp.GamepadHintScale,
+                GHGamepadHintRenderer.GetFontSizeForLineBox(usableHeight)));
             float maxWidth = pixelWidth - 2f * fontSize * GHGamepadHintRenderer.BackingPadOfFont;
             GHGamepadStyle style = GHGamepadService.Style;
             List<GHGamepadHint> paintHints = _gamepadPaintHints;
             paintHints.Clear();
             paintHints.AddRange(hints);
-            renderer.LayoutRow(paintHints, style, fontSize, maxWidth);
+            renderer.LayoutRowWithin(paintHints, style, fontSize, baseFontSize, maxWidth, 1);
             while (renderer.LineCount > 1 && paintHints.Count > GamepadHintMinimumCount)
             {
                 paintHints.RemoveAt(paintHints.Count - 1);
-                renderer.LayoutRow(paintHints, style, fontSize, maxWidth);
+                renderer.LayoutRowWithin(paintHints, style, fontSize, baseFontSize, maxWidth, 1);
             }
             if (renderer.LineCount == 0)
                 return;

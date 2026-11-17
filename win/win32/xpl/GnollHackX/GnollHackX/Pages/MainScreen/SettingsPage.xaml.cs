@@ -193,6 +193,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Data Consent", ("Manage AI data processing consent.", "Shows whether you have accepted the AI data processing disclosure. Press Reset to revoke your consent; the disclosure will appear again the next time you open Overseer.") },
             { "Use Controller", ("Play with a game controller.", "Play with a game controller or the Steam Deck's built-in controls.\n**Off:** The game ignores the controller, and the keys F2 to F5 act as ordinary keys.") },
             { "Hide Command Bar", ("Hide the command bar while playing with the controller.", "**On:** The command bar and the menus' OK and Cancel buttons are hidden while you play with the controller. Touch, the mouse or a key brings them back.\n**Off:** They stay, the controller hints show above the bar and can cover the lowest messages, and Settings also shows Bar Commands.") },
+            { "Hint Size", ("Size of the controller hints.", "The size of the controller button hints: the strip at the bottom of the game screen, the hints in the Wiki, Overseer and file dialogs, and the hints below radial menus. The rest of the game's text follows Screen Scale.") },
             { "Back Grip L4", GamepadGripDescription("L4", "F2") },
             { "Back Grip L5", GamepadGripDescription("L5", "F3") },
             { "Back Grip R4", GamepadGripDescription("R4", "F4") },
@@ -295,6 +296,7 @@ namespace GnollHackX.Pages.MainScreen
             EngraveQuickEntry.MaxLength = GHConstants.MaxEngraveQuickTextLength;
 
             ScreenScalePicker.ItemsSource = GHApp.ScreenScaleItems;
+            GamepadHintSizePicker.ItemsSource = GHApp.GamepadHintScaleItems;
             ScreenResolutionPicker.ItemsSource = GHApp.ScreenResolutionItems;
             if (!GHApp.IsWindows && !GHApp.IsWindowsAvalonia)
             {
@@ -2413,8 +2415,20 @@ namespace GnollHackX.Pages.MainScreen
             GamepadHideCommandBarSwitch.IsToggled = GHApp.GamepadHideCommandBar;
             UpdateCommandSectionVisibility();
 
-            Picker[] pickers = GamepadGripPickers;
             int i;
+            float hintScale = GHApp.GamepadHintScale;
+            int hintSizeIndex = 0;
+            for (i = 0; i < GHApp.GamepadHintScaleItems.Count; i++)
+            {
+                if (Math.Abs(GHApp.GamepadHintScaleItems[i].Value - hintScale) < 0.001f)
+                {
+                    hintSizeIndex = i;
+                    break;
+                }
+            }
+            GamepadHintSizePicker.SelectedIndex = hintSizeIndex;
+
+            Picker[] pickers = GamepadGripPickers;
             for (i = 0; i < pickers.Length && i < GHApp.GamepadGrips.Length; i++)
             {
                 GHGamepadButton grip = GHApp.GamepadGrips[i];
@@ -2471,6 +2485,12 @@ namespace GnollHackX.Pages.MainScreen
             Preferences.Set("GamepadEnabled", GamepadEnabledSwitch.IsToggled);
             GHApp.GamepadHideCommandBar = GamepadHideCommandBarSwitch.IsToggled;
             Preferences.Set("GamepadHideCommandBar", GamepadHideCommandBarSwitch.IsToggled);
+            ScreenScaleItem hintSizeItem = GamepadHintSizePicker.SelectedItem as ScreenScaleItem;
+            if (hintSizeItem != null)
+            {
+                GHApp.GamepadHintScale = hintSizeItem.Value;
+                Preferences.Set("GamepadHintScale", hintSizeItem.Value);
+            }
 
             Picker[] pickers = GamepadGripPickers;
             int i;

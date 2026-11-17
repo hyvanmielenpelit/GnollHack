@@ -4236,17 +4236,25 @@ namespace GnollHackX
         public static bool GamepadEnabled { get { return Interlocked.CompareExchange(ref _gamepadEnabled, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadEnabled, value ? 1 : 0); GHGamepadService.SetEnabled(value); } }
         /* The Hide Command Bar setting */
         public static bool GamepadHideCommandBar { get { return Interlocked.CompareExchange(ref _gamepadHideCommandBar, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadHideCommandBar, value ? 1 : 0); } }
+        private static float _gamepadHintScale = 1.0f;
+        /* The Hint Size setting: 1 to 2, applied to the controller hints */
+        public static float GamepadHintScale
+        {
+            get { return Interlocked.CompareExchange(ref _gamepadHintScale, 0.0f, 0.0f); }
+            set { Interlocked.Exchange(ref _gamepadHintScale, value >= 1.0f && value <= 2.0f ? value : 1.0f); }
+        }
         /* A controller can be used: see GHGamepadService.IsAvailable; independent of the setting */
         public static bool IsGamepadAvailable { get { return GHGamepadService.IsAvailable; } }
 
         public static readonly GHGamepadButton[] GamepadGrips = { GHGamepadButton.L4, GHGamepadButton.L5, GHGamepadButton.R4, GHGamepadButton.R5 };
 
-        /* Use Controller, Hide Command Bar, the grips, the trigger commands, the Quick radial slots and the quick commands
-           from the preferences, each missing one at its default */
+        /* Use Controller, Hide Command Bar, Hint Size, the grips, the trigger commands, the Quick radial slots and the
+           quick commands from the preferences, each missing one at its default */
         public static void LoadGamepadSettings()
         {
             GamepadEnabled = Preferences.Get("GamepadEnabled", true);
             GamepadHideCommandBar = Preferences.Get("GamepadHideCommandBar", true);
+            GamepadHintScale = Preferences.Get("GamepadHintScale", 1.0f);
             MigrateGamepadDefaultCommands();
             foreach (GHGamepadButton grip in GamepadGrips)
                 SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));
@@ -6845,6 +6853,15 @@ namespace GnollHackX
             new ScreenScaleItem("400%", 4.0f),
             new ScreenScaleItem("450%", 4.5f),
             new ScreenScaleItem("500%", 5.0f),
+        };
+
+        public static readonly List<ScreenScaleItem> GamepadHintScaleItems = new List<ScreenScaleItem>()
+        {
+            new ScreenScaleItem("100%", 1.0f),
+            new ScreenScaleItem("125%", 1.25f),
+            new ScreenScaleItem("150%", 1.5f),
+            new ScreenScaleItem("175%", 1.75f),
+            new ScreenScaleItem("200%", 2.0f),
         };
 
         public static ScreenResolutionItem RecommendedScreenResolution = null;

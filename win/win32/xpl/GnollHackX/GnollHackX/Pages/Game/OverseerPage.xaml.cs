@@ -1182,7 +1182,7 @@ namespace GnollHackX.Pages.Game
         private void WebNavigator_HintsChanged()
         {
             double rowHeight = _gamepadHintsShown && GHGamepadService.IsAvailable && GHGamepadService.IsEnabled
-                ? GamepadHintRowHeight : 0.0;
+                ? Math.Round(GamepadHintRowHeight * GHApp.GamepadHintScale) : 0.0;
             if (HintRowDefinition.Height.Value != rowHeight)
                 HintRowDefinition.Height = rowHeight;
 
@@ -1232,17 +1232,18 @@ namespace GnollHackX.Pages.Game
                 scale = GHApp.DisplayDensity > 0 ? GHApp.DisplayDensity : 1.0f;
 
             renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
-            float fontSize = GamepadHintFontSizeDips * scale;
+            float baseFontSize = GamepadHintFontSizeDips * scale;
+            float fontSize = baseFontSize * GHApp.GamepadHintScale;
             float maxWidth = pixelWidth - 2f * fontSize * GHGamepadHintRenderer.BackingPadOfFont;
             GHGamepadStyle style = GHGamepadService.Style;
             List<GHGamepadHint> paintHints = _gamepadPaintHints;
             paintHints.Clear();
             paintHints.AddRange(hints);
-            renderer.LayoutRow(paintHints, style, fontSize, maxWidth);
+            renderer.LayoutRowWithin(paintHints, style, fontSize, baseFontSize, maxWidth, 1);
             while (renderer.LineCount > 1 && paintHints.Count > GamepadHintMinimumCount)
             {
                 paintHints.RemoveAt(paintHints.Count - 1);
-                renderer.LayoutRow(paintHints, style, fontSize, maxWidth);
+                renderer.LayoutRowWithin(paintHints, style, fontSize, baseFontSize, maxWidth, 1);
             }
             if (renderer.LineCount == 0)
                 return;

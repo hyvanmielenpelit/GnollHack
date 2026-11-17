@@ -29,10 +29,17 @@ namespace GnollHackX.Pages.Game
         private const float GamepadHintMaxWidthShare = 0.9f;    /* of the canvas width, backing included */
         private const float GamepadHintExtraHeightDips = 2f;    /* above the backing */
 
-        /* The hint canvas's fixed height: LayoutRow makes at most two lines and never enlarges the font */
-        private static readonly float GamepadHintCanvasHeightDips = (float)Math.Ceiling(
-            2f * GamepadHintFontSizeDips * GHGamepadHintRenderer.LineHeightOfFont
-            + 2f * GHGamepadHintRenderer.GetBackingPadY(GamepadHintFontSizeDips)) + GamepadHintExtraHeightDips;
+        /* The hint canvas's height at a Hint Size: LayoutRowWithin makes at most two lines and never enlarges the font */
+        private static float GetGamepadHintCanvasHeightDips(float hintScale)
+        {
+            float fontSize = GamepadHintFontSizeDips * hintScale;
+            return (float)Math.Ceiling(2f * fontSize * GHGamepadHintRenderer.LineHeightOfFont
+                + 2f * GHGamepadHintRenderer.GetBackingPadY(fontSize)) + GamepadHintExtraHeightDips;
+        }
+
+        /* Hint Size as the hint canvas was last sized for it, 0 before that, and that height; UI thread only */
+        private float _gamepadHintScaleApplied = 0f;
+        private float _gamepadHintCanvasHeightDips = 0f;
 
         private readonly GHRadialMenuState _radialState = new GHRadialMenuState();
         private GHRadialMenuRenderer _radialRenderer;
@@ -515,8 +522,8 @@ namespace GnollHackX.Pages.Game
         /* The gamepad hint strip, painted on the UI thread: the row is centered horizontally, at most
            GamepadHintMaxWidthShare of the width with its backing, and wraps onto a second line. Its backing box
            is centered on _gamepadHintRowCenterDips above the canvas bottom, kept inside the canvas below the
-           extra height; 0 anchors it to the bottom. The canvas has a fixed height, so a new row is only a
-           repaint. */
+           extra height; 0 anchors it to the bottom. The canvas height follows Hint Size only, so a new row is only
+           a repaint. A row too wide at the Hint Size shrinks back toward the 100% size. */
         private void GamepadHintCanvas_PaintSurface(object sender, SKPaintSurfaceEventArgs e)
         {
             SKCanvas canvas = e.Surface.Canvas;
@@ -538,9 +545,11 @@ namespace GnollHackX.Pages.Game
                 scale = GHApp.DisplayDensity > 0 ? GHApp.DisplayDensity : 1.0f;
 
             renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
-            float fontSize = GamepadHintFontSizeDips * scale;
+            float hintScale = _gamepadHintScaleApplied > 0f ? _gamepadHintScaleApplied : 1f;
+            float baseFontSize = GamepadHintFontSizeDips * scale;
+            float fontSize = baseFontSize * hintScale;
             float maxWidth = pixelWidth * GamepadHintMaxWidthShare - 2f * fontSize * GHGamepadHintRenderer.BackingPadOfFont;
-            renderer.LayoutRow(hints, _gamepadHintStyle, fontSize, maxWidth);
+            renderer.LayoutRowWithin(hints, _gamepadHintStyle, fontSize, baseFontSize, maxWidth, 2);
             if (renderer.LineCount == 0)
                 return;
 
@@ -563,6 +572,7 @@ namespace GnollHackX.Pages.Game
             }
             renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
             renderer.ShowKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
+            renderer.HintScale = GHApp.GamepadHintScale;
             renderer.Paint(canvas, e.Info, _radialState, GetRadialDipScale(e.Info.Width));
         }
 

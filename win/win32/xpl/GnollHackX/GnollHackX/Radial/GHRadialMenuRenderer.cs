@@ -34,6 +34,7 @@ namespace GnollHackX
         public SKTypeface DescriptionTypeface;      /* Underwood */
         public bool UseTextBlobCaching;
         public bool ShowKeyboardShortcuts;
+        public float HintScale = 1f;                /* the Hint Size setting, for the hint bar and the L1/R1 chips */
 
         public static readonly string CurrentlyText = "Currently: ";
         public static readonly string OnText = "On";
@@ -91,6 +92,7 @@ namespace GnollHackX
             public readonly float[] LabelWidths = new float[6];
             public int Count;
             public float TotalWidth;
+            public float FontSize;      /* the labels' size; the badges are BadgeHeightOfFont times it */
         }
 
         private readonly GHSkiaFontPaint _textPaint = new GHSkiaFontPaint();
@@ -203,7 +205,7 @@ namespace GnollHackX
             _textPaint.SyncBlobCache(UseTextBlobCaching);
             BeginBadgePaint();
             GHRadialGeometry g = state.Geometry;
-            g.Update(info.Width, info.Height, dipScale);
+            g.Update(info.Width, info.Height, dipScale, HintScale);
             if (!g.IsValid)
                 return;
             EnsureResources(g);
@@ -233,7 +235,14 @@ namespace GnollHackX
             DrawHeader(canvas, state, def, g, opacity, still);
             DrawChips(canvas, state, def, g, opacity, still);
             HintBar hints = def.IsSwitchedSetPage(state.PageIndex) ? _hintsSwitched : _hintsMain;
-            DrawHintBar(canvas, hints, def.Style, g, g.HintCenterY, opacity, still);
+            float hintCenterY = g.HintCenterY;
+            if (hints.FontSize > g.HintFontSize)
+            {
+                /* A larger bar stays above the screen margin */
+                float margin = (float)(GHRadialTuning.ScreenMarginDip * g.DipScale);
+                hintCenterY = Math.Min(hintCenterY, g.Height - margin - BadgeHeightAt(hints.FontSize) / 2);
+            }
+            DrawHintBar(canvas, hints, def.Style, g, hintCenterY, opacity, still);
 
             if (opacity < 0.997f)
             {
@@ -747,8 +756,8 @@ namespace GnollHackX
         /* The button's badge with the neighboring page's title below it */
         private void DrawChip(SKCanvas canvas, GHRadialGeometry g, float x, GHGamepadButton button, GHGamepadStyle style, string title, float opacity, bool snap)
         {
-            float fs = g.HintFontSize;
-            float badgeHeight = BadgeHeight(g);
+            float fs = g.HintBarFontSize;
+            float badgeHeight = BadgeHeightAt(fs);
             float badgeCenterY = g.CenterY - fs * 0.6f;
             _badgeRenderer.DrawBadge(canvas, button, style, x, badgeCenterY, badgeHeight, opacity, false);
             if (!string.IsNullOrEmpty(title))
@@ -765,10 +774,10 @@ namespace GnollHackX
         {
             if (bar.Count == 0)
                 return;
-            float fs = g.HintFontSize;
+            float fs = bar.FontSize;
             float smallGap = fs * 0.4f;
             float largeGap = fs * 1.4f;
-            float badgeHeight = BadgeHeight(g);
+            float badgeHeight = BadgeHeightAt(fs);
             float x = g.CenterX - bar.TotalWidth / 2;
             _textPaint.Typeface = LabelTypeface;
             _textPaint.TextSize = fs;
@@ -797,7 +806,12 @@ namespace GnollHackX
         /* Controller badges are as tall as a hint strip's badges at the hint font size */
         private static float BadgeHeight(GHRadialGeometry g)
         {
-            return g.HintFontSize * GHGamepadHintRenderer.BadgeHeightOfFont;
+            return BadgeHeightAt(g.HintFontSize);
+        }
+
+        private static float BadgeHeightAt(float fontSize)
+        {
+            return fontSize * GHGamepadHintRenderer.BadgeHeightOfFont;
         }
 
         /* Creates the badge renderer on first use and passes it this renderer's typefaces and text
@@ -914,7 +928,7 @@ namespace GnollHackX
             /* L1/R1 chips: half-width up to the screen edge and up to the ring, whichever is nearer */
             float chipX = g.CenterX - g.ChipOffsetX;
             float chipHalf = Math.Min(chipX - margin, g.CenterX - g.OuterRadius - g.HighlightOffset - margin / 2 - chipX);
-            _chipsVisible = chipHalf > g.HintFontSize * 2;
+            _chipsVisible = chipHalf > g.HintBarFontSize * 2;
             float chipMax = Math.Max(1f, 2 * chipHalf);
 
             int count = def.PageCount;
@@ -935,7 +949,7 @@ namespace GnollHackX
                 _hubIdleTitleSizes[i] = FitSize(page == null ? null : page.DisplayName, TitleTypeface, g.HubTitleFontSize, titleMin, hubWidth);
                 _hubCounterSizes[i] = FitSize(page == null ? null : page.Counter, TitleTypeface, counterBase, counterBase * 0.6f, hubWidth);
                 _emptyTextSizes[i] = FitSize(page == null ? null : page.EmptyText, LabelTypeface, _idleTextBaseSize, _idleTextBaseSize * 0.7f, hubWidth);
-                _chipTitles[i] = _chipsVisible ? Ellipsize(title, LabelTypeface, g.HintFontSize, chipMax) : null;
+                _chipTitles[i] = _chipsVisible ? Ellipsize(title, LabelTypeface, g.HintBarFontSize, chipMax) : null;
             }
             _stickTextSize = FitSize(def.NoHighlightStickText, LabelTypeface, _idleTextBaseSize, _idleTextBaseSize * 0.7f, hubWidth);
             _pointerTextSize = FitSize(def.NoHighlightPointerText, LabelTypeface, _idleTextBaseSize, _idleTextBaseSize * 0.7f, hubWidth);
@@ -1003,23 +1017,32 @@ namespace GnollHackX
             }
         }
 
+        /* At the Hint Size, shrinking back toward the 100% size when the bar is wider than the screen */
         private void BuildHintBar(HintBar bar, GHRadialMenuDefinition def, GHRadialGeometry g, bool switched)
         {
+            MeasureHintBar(bar, def, switched, g.HintBarFontSize);
+            float available = g.Width - 2 * (float)(GHRadialTuning.ScreenMarginDip * g.DipScale);
+            if (bar.TotalWidth > available && bar.TotalWidth > 0f && g.HintBarFontSize > g.HintFontSize)
+                MeasureHintBar(bar, def, switched, Math.Max(g.HintFontSize, g.HintBarFontSize * available / bar.TotalWidth));
+        }
+
+        private void MeasureHintBar(HintBar bar, GHRadialMenuDefinition def, bool switched, float fs)
+        {
             bar.Count = 0;
-            AddHint(bar, new GHGamepadHint(def.ConfirmButton, null, false), def.ConfirmHint, def.Style, g);
-            AddHint(bar, new GHGamepadHint(def.CancelButton, null, false), def.CancelHint, def.Style, g);
+            bar.FontSize = fs;
+            AddHint(bar, new GHGamepadHint(def.ConfirmButton, null, false), def.ConfirmHint, def.Style);
+            AddHint(bar, new GHGamepadHint(def.CancelButton, null, false), def.CancelHint, def.Style);
             if (def.ExtraHints != null)
             {
                 int e;
                 for (e = 0; e < def.ExtraHints.Length; e++)
-                    AddHint(bar, new GHGamepadHint(def.ExtraHints[e].Button, null, false), def.ExtraHints[e].Label, def.Style, g);
+                    AddHint(bar, new GHGamepadHint(def.ExtraHints[e].Button, null, false), def.ExtraHints[e].Label, def.Style);
             }
             if (def.SwitchSetPageIndex > 0)
-                AddHint(bar, new GHGamepadHint(def.SecondaryButton, null, false), switched ? def.SecondaryHintOnSwitchedSet : def.SecondaryHint, def.Style, g);
+                AddHint(bar, new GHGamepadHint(def.SecondaryButton, null, false), switched ? def.SecondaryHintOnSwitchedSet : def.SecondaryHint, def.Style);
             if (def.HasGroups)
-                AddHint(bar, GHGamepadHint.Pair(def.GroupButton, def.GroupButton2, null), def.GroupHint, def.Style, g);
+                AddHint(bar, GHGamepadHint.Pair(def.GroupButton, def.GroupButton2, null), def.GroupHint, def.Style);
 
-            float fs = g.HintFontSize;
             float total = 0f;
             int i;
             for (i = 0; i < bar.Count; i++)
@@ -1031,15 +1054,15 @@ namespace GnollHackX
             bar.TotalWidth = total;
         }
 
-        /* The hint's badges, measured; its label is drawn by this renderer */
-        private void AddHint(HintBar bar, GHGamepadHint hint, string label, GHGamepadStyle style, GHRadialGeometry g)
+        /* The hint's badges, measured at the bar's font size; its label is drawn by this renderer */
+        private void AddHint(HintBar bar, GHGamepadHint hint, string label, GHGamepadStyle style)
         {
             if (string.IsNullOrEmpty(label) || bar.Count >= bar.Hints.Length)
                 return;
             bar.Hints[bar.Count] = hint;
             bar.Labels[bar.Count] = label;
-            bar.BadgeWidths[bar.Count] = _badgeRenderer.MeasureHintBadges(hint, style, BadgeHeight(g));
-            bar.LabelWidths[bar.Count] = MeasureLabel(label, g.HintFontSize);
+            bar.BadgeWidths[bar.Count] = _badgeRenderer.MeasureHintBadges(hint, style, BadgeHeightAt(bar.FontSize));
+            bar.LabelWidths[bar.Count] = MeasureLabel(label, bar.FontSize);
             bar.Count++;
         }
 

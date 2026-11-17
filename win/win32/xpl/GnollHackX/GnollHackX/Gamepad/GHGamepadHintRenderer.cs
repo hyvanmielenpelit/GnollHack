@@ -134,6 +134,19 @@ namespace GnollHackX
             return Math.Max(0f, fontSize * (BackingPadOfFont - (LineHeightOfFont - BadgeHeightOfFont) * 0.5f));
         }
 
+        /* The height of one line with its backing at a font size */
+        public static float GetLineBoxHeight(float fontSize)
+        {
+            return fontSize * LineHeightOfFont + 2f * GetBackingPadY(fontSize);
+        }
+
+        /* The font size whose one line with its backing is boxHeight tall */
+        public static float GetFontSizeForLineBox(float boxHeight)
+        {
+            float perFont = LineHeightOfFont + 2f * Math.Max(0f, BackingPadOfFont - (LineHeightOfFont - BadgeHeightOfFont) * 0.5f);
+            return perFont > 0f ? boxHeight / perFont : 0f;
+        }
+
         /* Call once at the top of a paint that draws badges without DrawRow, before any badge;
            DrawRow calls it itself */
         public void BeginPaint()
@@ -289,6 +302,20 @@ namespace GnollHackX
                     x = 0f;
                 _entryOffsets.Add(x);
                 x += _entryWidths[i] + gap;
+            }
+        }
+
+        /* LayoutRow at fontSize; while the row is wider than maxWidth or has more than maxLines lines, again at a
+           smaller size, never below minFontSize. With fontSize at or below minFontSize it is LayoutRow. */
+        public void LayoutRowWithin(IList<GHGamepadHint> hints, GHGamepadStyle style, float fontSize, float minFontSize, float maxWidth, int maxLines)
+        {
+            LayoutRow(hints, style, fontSize, maxWidth);
+            int attempt;
+            for (attempt = 0; attempt < 8 && fontSize > minFontSize
+                && (LineCount > maxLines || (maxWidth > 0f && RowWidth > maxWidth)); attempt++)
+            {
+                fontSize = Math.Max(minFontSize, fontSize * 0.85f);
+                LayoutRow(hints, style, fontSize, maxWidth);
             }
         }
 

@@ -32,6 +32,9 @@ namespace GnollHackX
         public float HubDescriptionFontSize { get; private set; }
         public float PageTitleFontSize { get; private set; }
         public float HintFontSize { get; private set; }
+        public float HintScale { get; private set; }
+        /* The hint bar and the L1/R1 chips: HintFontSize times HintScale */
+        public float HintBarFontSize { get; private set; }
         public float PillFontSize { get; private set; }
         public float PageTitleBaselineY { get; private set; }
         public float DotsCenterY { get; private set; }
@@ -51,19 +54,28 @@ namespace GnollHackX
         /* Returns true when the layout changed */
         public bool Update(float width, float height, float dipScale)
         {
+            return Update(width, height, dipScale, 1f);
+        }
+
+        /* hintScale is the Hint Size setting, 1 for 100%. Returns true when the layout changed. */
+        public bool Update(float width, float height, float dipScale, float hintScale)
+        {
             if (!(dipScale > 0))
                 dipScale = 1;
+            if (!(hintScale > 0))
+                hintScale = 1;
             if (!(width > 0) || !(height > 0))
             {
                 width = 0;
                 height = 0;
             }
-            if (width == Width && height == Height && dipScale == DipScale && Version != 0)
+            if (width == Width && height == Height && dipScale == DipScale && hintScale == HintScale && Version != 0)
                 return false;
 
             Width = width;
             Height = height;
             DipScale = dipScale;
+            HintScale = hintScale;
 
             float shortSide = Math.Min(width, height);
             float ro = (float)Math.Min(GHRadialTuning.OuterRadiusOfShortSide * shortSide, GHRadialTuning.OuterRadiusMaxDip * dipScale);
@@ -84,6 +96,7 @@ namespace GnollHackX
             HubDescriptionFontSize = (float)(GHRadialTuning.HubDescriptionFont * ro);
             PageTitleFontSize = (float)(GHRadialTuning.PageTitleFont * ro);
             HintFontSize = (float)(GHRadialTuning.HintFont * ro);
+            HintBarFontSize = HintFontSize * hintScale;
             PillFontSize = (float)(GHRadialTuning.PillFont * ro);
             PageTitleBaselineY = CenterY - ro - (float)(GHRadialTuning.PageTitleOffset * ro);
             DotsCenterY = CenterY - ro - (float)(GHRadialTuning.DotsOffset * ro);

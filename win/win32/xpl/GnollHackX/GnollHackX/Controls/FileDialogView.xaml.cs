@@ -27,6 +27,7 @@ namespace GnollHackX.Controls
         private const double RowHeight = 56;
         private const double RowImageSize = 44;
         private const float GamepadHintFontSizeDips = 13f;
+        private const double FileDialogHintRowHeightDips = 40.0;    /* the hint canvas's XAML height, at 100% */
         private const int GamepadHintMinimumCount = 2;
         private const int LayoutWaitMilliseconds = 40;
         private const int MaxLayoutWaits = 10;
@@ -403,6 +404,9 @@ namespace GnollHackX.Controls
                 _hints.Add(new GHGamepadHint(GHGamepadButton.B, _behavior.CanGoUp ? "Back" : "Cancel", false));
             }
             bool show = GHGamepadService.IsActive;
+            double hintHeight = Math.Round(FileDialogHintRowHeightDips * GHApp.GamepadHintScale);
+            if (GamepadHintCanvas.HeightRequest != hintHeight)
+                GamepadHintCanvas.HeightRequest = hintHeight;
             if (GamepadHintCanvas.IsVisible != show)
                 GamepadHintCanvas.IsVisible = show;
             GamepadHintCanvas.InvalidateSurface();
@@ -439,16 +443,17 @@ namespace GnollHackX.Controls
                 scale = GHApp.DisplayDensity > 0 ? GHApp.DisplayDensity : 1.0f;
 
             renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
-            float fontSize = GamepadHintFontSizeDips * scale;
+            float baseFontSize = GamepadHintFontSizeDips * scale;
+            float fontSize = baseFontSize * GHApp.GamepadHintScale;
             float maxWidth = pixelWidth - 2f * fontSize * GHGamepadHintRenderer.BackingPadOfFont;
             GHGamepadStyle style = GHGamepadService.Style;
             _paintHints.Clear();
             _paintHints.AddRange(_hints);
-            renderer.LayoutRow(_paintHints, style, fontSize, maxWidth);
+            renderer.LayoutRowWithin(_paintHints, style, fontSize, baseFontSize, maxWidth, 1);
             while (renderer.LineCount > 1 && _paintHints.Count > GamepadHintMinimumCount)
             {
                 _paintHints.RemoveAt(_paintHints.Count - 1);
-                renderer.LayoutRow(_paintHints, style, fontSize, maxWidth);
+                renderer.LayoutRowWithin(_paintHints, style, fontSize, baseFontSize, maxWidth, 1);
             }
             if (renderer.LineCount == 0)
                 return;

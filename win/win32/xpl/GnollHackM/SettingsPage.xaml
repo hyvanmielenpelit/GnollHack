@@ -851,6 +851,25 @@
                                     <Switch Grid.Column="1" x:Name="GamepadHideCommandBarSwitch" HorizontalOptions="End" VerticalOptions="Center" Toggled="GamepadHideCommandBarSwitch_Toggled" />
                                 </Grid>
                                 <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
+                                    <Label Text="Hint Size" x:Name="GamepadHintSizeLabel"
+                                                FontFamily="Underwood" TextColor="Black"
+                                                FontSize="15"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="Start" />
+                                    <Picker Grid.Column="1" x:Name="GamepadHintSizePicker"
+                                                Title="Select size"
+                                                FontFamily="Underwood"
+                                                FontSize="17"
+                                                TextColor="Black"
+                                                TitleColor="Black"
+                                                HorizontalTextAlignment="End"
+                                                BackgroundColor="Transparent"
+                                                WidthRequest="200"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="End" >
+                                    </Picker>
+                                </Grid>
+                                <Grid ColumnSpacing="6" ColumnDefinitions="*,Auto" HorizontalOptions="Fill" HeightRequest="40">
                                     <Label Text="R2 Action" x:Name="GamepadTriggerRTLabel"
                                                 FontFamily="Underwood" TextColor="Black"
                                                 FontSize="15"

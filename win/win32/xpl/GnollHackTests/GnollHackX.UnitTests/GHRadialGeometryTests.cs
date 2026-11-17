@@ -86,6 +86,35 @@ namespace GnollHackX.UnitTests
             Assert.True(g.IsValid);
         }
 
+        [Fact]
+        public void HintScale_DefaultsToOne()
+        {
+            GHRadialGeometry g = Make(1280, 800, 1);
+            Assert.Equal(1f, g.HintScale, 6);
+            Assert.Equal(g.HintFontSize, g.HintBarFontSize, 6);
+        }
+
+        [Fact]
+        public void HintScale_ScalesOnlyTheHintBar()
+        {
+            GHRadialGeometry g = new GHRadialGeometry();
+            g.Update(1280, 800, 1, 2);
+            Assert.InRange(g.HintBarFontSize, 31f, 33f);
+            Assert.InRange(g.HintFontSize, 15.5f, 16.5f);
+            Assert.InRange(g.LabelFontSize, 14.5f, 15.5f);
+        }
+
+        [Fact]
+        public void Update_HintScaleChangeAdvancesVersion()
+        {
+            GHRadialGeometry g = new GHRadialGeometry();
+            g.Update(1280, 800, 1, 1);
+            int v = g.Version;
+            Assert.True(g.Update(1280, 800, 1, 2));
+            Assert.NotEqual(v, g.Version);
+            Assert.False(g.Update(1280, 800, 1, 2));
+        }
+
         [Theory]
         [InlineData(0.0, -1.0, 0.0)]     /* up is north */
         [InlineData(1.0, 0.0, 90.0)]     /* right is east */
