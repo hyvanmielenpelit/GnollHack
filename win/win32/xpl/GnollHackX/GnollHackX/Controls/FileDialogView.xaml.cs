@@ -449,12 +449,15 @@ namespace GnollHackX.Controls
             GHGamepadStyle style = GHGamepadService.Style;
             _paintHints.Clear();
             _paintHints.AddRange(_hints);
-            renderer.LayoutRowWithin(_paintHints, style, fontSize, baseFontSize, maxWidth, 1);
+            renderer.LayoutRow(_paintHints, style, fontSize, maxWidth);
             while (renderer.LineCount > 1 && _paintHints.Count > GamepadHintMinimumCount)
             {
                 _paintHints.RemoveAt(_paintHints.Count - 1);
-                renderer.LayoutRowWithin(_paintHints, style, fontSize, baseFontSize, maxWidth, 1);
+                renderer.LayoutRow(_paintHints, style, fontSize, maxWidth);
             }
+            /* Still two lines at the fewest hints: back toward the 100% size */
+            if (renderer.LineCount > 1)
+                renderer.LayoutRowWithin(_paintHints, style, fontSize, baseFontSize, maxWidth, 1);
             if (renderer.LineCount == 0)
                 return;
 

@@ -390,12 +390,15 @@ namespace GnollHackX.Pages.Game
             List<GHGamepadHint> paintHints = _gamepadPaintHints;
             paintHints.Clear();
             paintHints.AddRange(hints);
-            renderer.LayoutRowWithin(paintHints, style, fontSize, baseFontSize, maxWidth, 1);
+            renderer.LayoutRow(paintHints, style, fontSize, maxWidth);
             while (renderer.LineCount > 1 && paintHints.Count > GamepadHintMinimumCount)
             {
                 paintHints.RemoveAt(paintHints.Count - 1);
-                renderer.LayoutRowWithin(paintHints, style, fontSize, baseFontSize, maxWidth, 1);
+                renderer.LayoutRow(paintHints, style, fontSize, maxWidth);
             }
+            /* Still two lines at the fewest hints: back toward the 100% size */
+            if (renderer.LineCount > 1)
+                renderer.LayoutRowWithin(paintHints, style, fontSize, baseFontSize, maxWidth, 1);
             if (renderer.LineCount == 0)
                 return;
 

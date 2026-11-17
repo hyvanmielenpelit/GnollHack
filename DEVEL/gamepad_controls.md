@@ -201,8 +201,9 @@ squares, and the D-pad and sticks as a plus and a ring. An outlined up arrow aft
 the map strip starts its second line at L1.
 
 **Hint size.** **Settings, Controller, Hint Size** (100% to 200%) enlarges every hint strip, the
-hint bar below radial menus and their L1/R1 page chips. A strip that runs out of width shrinks back
-toward 100% before it drops hints. The game page strip, the Wiki's toolbar row and the Overseer's
+hint bar below radial menus and their L1/R1 page chips. When a strip runs out of width, the game
+page strip shrinks back toward 100%, and the one-line strips of the Wiki, the Overseer and the file
+dialogs first drop their last hints. The game page strip, the Wiki's toolbar row and the Overseer's
 and file dialogs' hint rows grow with it.
 
 **Command bar.** While the controller is the active input (outside replays), the bottom command
