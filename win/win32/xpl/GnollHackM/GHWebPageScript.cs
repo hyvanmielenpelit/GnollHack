@@ -1,4 +1,4 @@
-#if WINDOWS || GNH_AVALONIA || ANDROID
+#if WINDOWS || GNH_AVALONIA || ANDROID || IOS
 using System;
 using System.IO;
 using GnollHackX;

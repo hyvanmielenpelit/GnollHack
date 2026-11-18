@@ -309,6 +309,7 @@
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHWebGamepadProfile.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHAndroidGamepadMapping.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHAndroidGamepadDevice.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHAppleGamepadMapping.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialTuning.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialGeometry.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialSelector.cs" />
@@ -628,6 +629,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHWebGamepadProfile.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHAndroidGamepadMapping.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHAndroidGamepadDevice.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHAppleGamepadMapping.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialTuning.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialGeometry.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialSelector.cs" />
@@ -1217,6 +1219,10 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.Contains('-android'))">
+    <EmbeddedResource Include="Platforms\Avalonia\Web\gamepad_web.js" LogicalName="GnollHackM.GamepadWeb.js" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework.Contains('-ios'))">
     <EmbeddedResource Include="Platforms\Avalonia\Web\gamepad_web.js" LogicalName="GnollHackM.GamepadWeb.js" />
   </ItemGroup>
 

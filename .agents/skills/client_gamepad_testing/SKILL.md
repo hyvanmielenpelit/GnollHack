@@ -7,7 +7,7 @@ description: >-
   Xbox controller on the Avalonia Windows build as a backup; the packaging and Deploy-SteamDeck.ps1
   sequence, what to do when the Deck cannot be reached, what the user must test, and how to read the
   Deck's logs afterward. Read whenever you plan, change or review anything that alters what a
-  controller does or shows: GHGamepad* or GHEvdev* code, GHXInput, GHWinUI, GHGameController or GHAndroid code, radial menus, hint strips, focus navigation
+  controller does or shows: GHGamepad* or GHEvdev* code, GHXInput, GHWinUI, GHGameController, GHAndroid or GHiOS code, radial menus, hint strips, focus navigation
   on a page, controller settings, Steam Input layouts, or the Steam keyboard. Read before reporting
   such work as finished.
 ---
@@ -35,9 +35,9 @@ The devices:
 | Windows PC, Xbox controller | Avalonia Windows | No | **Platform** for its own code; otherwise a backup and extra check | Directly, from the build output; see [Xbox on Avalonia Windows](#xbox-on-avalonia-windows) |
 | Mac, Xbox or PlayStation controller | Avalonia macOS | No | **Platform** for its own code | From Terminal on the Mac; see [Controller on Avalonia macOS](#controller-on-avalonia-macos) |
 | Android phone, USB-C clip-on or Bluetooth controller | MAUI Android | Yes | **Platform** | Debug build installed with dotnet; see [Controller on Android](#controller-on-android) |
+| iPhone or iPad, clip-on or Bluetooth controller | MAUI iOS | Yes | **Platform** | Debug build deployed from Visual Studio with `GnollHackM.sln`, paired to the Mac; see [Controller on iOS](#controller-on-ios) |
 
-iOS has no controller support yet. When it gains it, add a row with the role **Platform**, and
-write its procedure in this skill. Its first implementation gets a full pass there; after that this rule applies.
+A platform's first implementation gets a full pass on its device; after that this rule applies.
 
 ### Shared or Platform-Specific
 
@@ -56,6 +56,7 @@ navigation, hint strips, in-page popups, `FileDialogView`, controller settings, 
 | Desktop Linux | The `!IsSteamDeck` branches of the evdev backend and `GHAvaloniaGamepad`, and physical pads in `GHEvdev*` |
 | Both Windows builds | `GnollHackM/GHXInputGamepadBackend.cs`. Test on WinUI 3 |
 | Android | `Platforms/Android/GHAndroid*`, `GHAndroidGamepadMapping` and `GHAndroidGamepadDevice` (shared files only Android uses), `#elif ANDROID` branches in controller code, the `WA-MAUI-0013` dialog hook |
+| iOS | `Platforms/iOS/GHiOS*`, `GHAppleGamepadMapping` (a shared file only iOS uses), `#elif IOS` branches in controller code, the gamepad calls in `GnollHackX.iOS/GHUIApplication.cs`, the iOS Wiki condition in `GameMenuPage.OpenWikiPage` |
 
 Other code in `Platforms/Avalonia/`, such as `GHAvaloniaGamepad`, runs on the Deck too, so the Deck covers it.
 `Platforms/Avalonia/Web/gamepad_web.js` is shared, whatever its folder.
@@ -72,8 +73,8 @@ change needs no Deck.
 ### Before a Release
 
 Shared code is tested on the primary device only, so before releasing a build with a **Platform** row that ships, the user
-runs its smoke list, about 10 minutes, against the release candidate. This applies to WinUI 3, to Android, which has its
-own list below, and also to the Avalonia Windows build if it starts to ship.
+runs its smoke list, about 10 minutes, against the release candidate. This applies to WinUI 3, to Android and iOS, which
+have their own lists below, and also to the Avalonia Windows build if it starts to ship.
 
 1. No controller connected: Settings has no Controller section, and mouse and keyboard play is unchanged.
 2. Connect a controller and wait 3 s: A shows the focus on the main menu.
@@ -95,6 +96,17 @@ On Android:
 7. Open the Wiki: the ring moves, and A follows a link.
 8. Open the Overseer: Menu leaves.
 
+On iOS:
+
+1. No controller connected: Settings has no Controller section, and touch play is unchanged.
+2. Connect the controller and wait 3 s: A shows the focus on the main menu.
+3. Walk Settings to the bottom, and close it with B.
+4. Start a game: walk, open a radial, open the inventory with View and pick an item, answer a y/n prompt.
+5. Open Control Center while holding a direction, and close it: nothing moves or repeats.
+6. Touch the status bar: focus and hints go. Press a button: they return.
+7. Open the Wiki from the game menu: it opens in the app, the ring moves, and A follows a link. Then open a link on the About page: the buttons do nothing while the system browser is up, and work again after it is closed.
+8. Open the Overseer: the ring moves, and Menu leaves.
+
 A failure there is a bug to fix before release, whichever code it is in.
 
 ## When This Applies
@@ -111,6 +123,9 @@ Anything that changes controller behavior, in any of these:
 - `win/win32/xpl/GnollHackM/Platforms/Android/GHAndroid*.cs`: the Android backend, the modal window hook, the
   Android keyboard and the in-app browser's script host; and the shared `Gamepad/GHAndroidGamepadMapping.cs` and
   `Gamepad/GHAndroidGamepadDevice.cs`, which only Android uses
+- `win/win32/xpl/GnollHackM/Platforms/iOS/GHiOS*.cs`: the iOS backend, its glue, the iOS keyboard and the in-app
+  browser's script host; the gamepad calls in `win/win32/xpl/GnollHackX/GnollHackX.iOS/GHUIApplication.cs`; and the
+  shared `Gamepad/GHAppleGamepadMapping.cs`, which only iOS uses
 - `win/win32/xpl/GnollHackM/GHXInputGamepadBackend.cs`, `GHWebPageScript.cs`, and the WinUI 3 glue:
   `Platforms/Windows/GHWinUI*.cs`, `GHWebView2FileChooser.cs`, and `KeyboardHook`'s key note in `MauiProgram.cs`
 - `Platforms/Linux/Packaging/steam/input/` and `steamdeck/run-gnollhack.sh`
@@ -127,8 +142,8 @@ Run these too, but none of them satisfies the rule:
 
 - **Unit tests.** They cover decoding and routing, not what happens on the device.
 - **WSL.** It has no gamepad drivers.
-- **A build without a device run.** An iOS build, which has no controller support, and an Android build that no
-  controller drives only prove that shared code compiles, so the usual verification builds still apply.
+- **A build without a device run.** An iOS or Android build that no controller drives only proves that the code
+  compiles, so the usual verification builds still apply.
 - **The Deck's Desktop Mode.** Game Mode is the real target; `DEVEL/gamepad_controls.md` lists the differences.
 - **Another platform's device, for that platform's code.** Each row tests its own.
 
@@ -288,6 +303,37 @@ such as the Backbone One or a Bluetooth one, and needs no Deck.
 **What it cannot cover:** the back grips, Steam Input and its layouts, evdev and device filtering, the Steam keyboard,
 Gaming Mode and the Deck itself. A Bluetooth Xbox controller is a second Android controller, for Android's own code; it
 is not a substitute for the Deck.
+
+## Controller on iOS
+
+The iOS build's controller code is tested on an iPhone or iPad with a real controller, a clip-on controller such as the
+Backbone One or a Bluetooth one, and needs no Deck.
+
+1. An agent cannot build the app for a device. It compiles the C# for iOS on Windows, from `win\win32\xpl\GnollHackM`,
+   and then deletes the DLL that leaves behind, which has no embedded resources and which Visual Studio would otherwise
+   deploy. `<ios-tfm>` is the iOS entry of `TargetFrameworks` in `GnollHackM.csproj`:
+
+   ```powershell
+   dotnet restore GnollHackM.csproj
+   dotnet build GnollHackM.csproj -c Debug -f <ios-tfm> -t:Compile
+   Remove-Item obj\Debug\<ios-tfm>\ios-arm64\GnollHackM.dll
+   ```
+
+2. The user builds and deploys from Visual Studio, with `win\win32\xpl\GnollHackM\GnollHackM.sln`, Debug, paired to the
+   Mac, to the device. A change to C# only reuses the `libgnollhackios.a` and `nhdat` already in `Platforms\iOS`, so
+   `GnollHack.sln` and WSL are not needed. That is a `BUILD` step of the task's Developer Runbook, with `Where` =
+   `Visual Studio`.
+3. The user starts the game on the device and connects the controller. With **Developer Mode** and **Debug Logging** on
+   in Settings, the `GAMEPAD ios` lines go to the app log, which **About**, **View App Log** shows. The first line,
+   `GAMEPAD ios started`, is written a second after the game starts, so turn the two settings on and then restart the
+   game before a test whose log matters.
+4. The checks are a `TEST` session in the task's Developer Runbook with `Where` = `iOS`.
+5. If anything goes wrong, ask for the `GAMEPAD` lines of the app log; their meanings are in the Diagnostics section of
+   `DEVEL/gamepad_controls.md`.
+
+**What it cannot cover:** the back grips, Steam Input and its layouts, evdev and device filtering, the Steam keyboard,
+Gaming Mode and the Deck itself. An iOS version below 18 runs without `GCEventInteraction`, so a device on iOS 18 or
+later says nothing about that path. The iPad app on a Mac runs the same code and is not covered by an iPhone test.
 
 ## First-Time Setup
 

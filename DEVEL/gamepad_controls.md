@@ -4,7 +4,7 @@ GnollHack's native gamepad controls are built for the **Steam Deck**: the Avalon
 build, launched through Steam. They also work with an **Xbox controller** in the WinUI 3
 build, on desktop Linux and in the Avalonia Windows build, which is for development, and with any controller
 macOS supports in the Avalonia macOS build. They also work with a USB or Bluetooth controller in
-the Android build. iOS has no gamepad support yet.
+the Android build, and with any controller iOS supports in the iOS build.
 
 Contents:
 
@@ -80,9 +80,9 @@ allows it on any Linux session, and `GNOLLHACK_STEAM_KEYBOARD_LAUNCH` (`xdg-open
 `steam` or `launcher`) picks how the `steam://open/keyboard` link is opened. On Android, A on a
 text field focuses it and opens the Android keyboard, a getline prompt opens it as soon as it
 appears, and Y reopens it; typing on it keeps controller mode, and with a hardware keyboard
-connected it does not open. Windows has no on-screen keyboard here. Where none is available,
-text is typed on a physical keyboard: A only focuses a page's field, and in a getline prompt A is
-OK and submits what has been typed.
+connected it does not open. iOS does the same with its own keyboard. Windows has no on-screen
+keyboard here. Where none is available, text is typed on a physical keyboard: A only focuses a
+page's field, and in a getline prompt A is OK and submits what has been typed.
 
 Pages that keep the keyboard adapter (the tombstone, and the developer-only editor and performance
 suite) receive A as Enter, B as Escape, directions as arrow keys and L1/R1 as Page Up and Page
@@ -303,7 +303,10 @@ Top Scores, popup links) opens in its in-app browser. The controller moves a gol
 between the links and controls of the page itself; the ring is drawn by a script the browser
 injects into each page. These controls exist in the Avalonia and WinUI 3 builds, and in the Android
 build for the game menu's Wiki and the Overseer; on Android every other web link opens the system
-browser. The Steam Deck's right trackpad stays a mouse.
+browser. In the iOS build they exist for the Overseer, and for the game menu's Wiki while Use
+Controller is on and a controller has been seen in the session. Without a controller the Wiki opens
+the system browser, as every other web link does there; it takes touch only and holds the
+controller back while it is up. The Steam Deck's right trackpad stays a mouse.
 
 | Control | Action |
 |---------|--------|
@@ -520,6 +523,7 @@ A keyboard template produces no virtual pad, so keys behave as they always did.
 | XInput | Windows (WinUI 3 and Avalonia) | Always; available once a controller has been seen. Xbox controllers through `xinput1_4.dll` |
 | GameController | Avalonia macOS | Always; available once a controller has been seen. Controllers macOS supports with an extended gamepad profile (Xbox, PlayStation, MFi) |
 | Android | MAUI Android | Always; available once a controller has been seen. Devices with a gamepad source, or a joystick source with an X axis, that are not virtual |
+| iOS | MAUI iOS | Always; available once a controller has been seen. Controllers iOS supports with an extended gamepad profile (clip-on controllers, Xbox, PlayStation, Nintendo, MFi) |
 
 A **Steam launch** is any of `SteamGameId`, `SteamAppId` (non-empty and not `0`),
 `SteamClientLaunch=1`, or `SDL_GAMECONTROLLER_ALLOW_STEAM_VIRTUAL_GAMEPAD`. Non-Steam shortcuts
@@ -541,10 +545,11 @@ The evdev backend honors `SDL_GAMECONTROLLER_IGNORE_DEVICES` and
 It never grabs a device.
 
 The bridge only takes F2-F5 without modifiers. **Settings, Controller, Use Controller** turns
-the whole feature off: evdev, XInput and GameController input is discarded, Android passes controller events on
-to the system unconsumed (see [Android](#android)), and F2-F5 pass through to the game
+the whole feature off: evdev, XInput and GameController input is discarded, Android passes controller
+events on to the system unconsumed (see [Android](#android)), iOS gives the Menu and View buttons
+their system gestures back (see [iOS](#ios)), and F2-F5 pass through to the game
 as keys. The Controller section is shown only when a backend is available: evdev on a Steam Deck
-and the key bridge from their start, evdev elsewhere, XInput, GameController and Android once a controller has
+and the key bridge from their start, evdev elsewhere, XInput, GameController, Android and iOS once a controller has
 been seen in the session.
 
 ## Diagnostics
@@ -561,7 +566,7 @@ debug logging on also to the app log, at startup and on every hot-plug, with lin
 | `GAMEPAD keys bridge on (...)` / `off (...)` | Whether the back-grip bridge runs, and its keys |
 | `GAMEPAD hint: no Steam virtual gamepad (GnollHack's Steam Input layout is not a gamepad layout?)` | A Steam launch with no virtual pad: the layout outputs keyboard and mouse. Select the GnollHack layout or "Gamepad with Mouse Trackpad" |
 | `GAMEPAD hint: only valve-physical device present (Steam Input off?)` | Only the Deck's physical controller is visible. Turn Steam Input on for the game |
-| `GAMEPAD inactive: <cause>` | Controller mode ended, and why: `key <name>`, `key (character)` (a typed character is never named), `pointer move dx,dy`, `pointer press Mouse\|Touch\|Pen` (`Touchpad` too on WinUI) or `Use Controller off`. Every build writes it, to standard error and as a Sentry breadcrumb, and to the app log with debug logging on |
+| `GAMEPAD inactive: <cause>` | Controller mode ended, and why: `key <name>`, `key (character)` (a typed character is never named), `pointer move dx,dy`, `pointer press Mouse\|Touch\|Pen` (`Touchpad` too on WinUI) or `Use Controller off`. On Android the cause is `key` or `touch`, and on iOS `key command`, `key press` or `touch` followed by the touch type. Every build writes it, to standard error and as a Sentry breadcrumb, and to the app log with debug logging on |
 | `GAMEPAD pointer re-entry ignored dx,dy` | Avalonia: the first pointer move after the pointer left the window, or the window was deactivated, landed away from the old position and was not taken as mouse use |
 
 The hints are written once, 10 s after the backend starts. A frame that throws is
@@ -586,6 +591,19 @@ app log. Read them with `adb logcat -d`, filtered for `GAMEPAD`: `adb logcat -d 
 | `GAMEPAD android unmapped key=... device=...` | A controller key the game does not map, once per key and device; Android handles it. The Guide button is key 110 |
 
 `GAMEPAD Android backend not started: ...` in the app log means the backend could not start.
+
+The iOS build writes its `GAMEPAD ios` lines to standard error, which the debugger's output shows, and
+with debug logging on also to the app log, which About, View App Log shows on the device.
+
+| Line | Meaning |
+|------|---------|
+| `GAMEPAD ios started controllers=N` | The backend started, a second after the first frame. `N` is how many controllers iOS reported then, of any profile; later ones arrive as `+connect` lines |
+| `GAMEPAD ios +connect id=... name="..." category="..." profile=... style=... analogTriggers=0\|1 stickClicks=0\|1 options=0\|1 home=0\|1 gestures=menu:0\|1,options:0\|1,home:0\|1 a="..."` | A controller was added. `profile` is its GameController profile class, `options` and `home` say whether it has those buttons, `gestures` says which of the three report a system gesture, and `a` is the symbol on the button the framework reports as A |
+| `GAMEPAD ios -disconnect id=...` | The controller was removed |
+| `GAMEPAD ios skip "name" category="...": no extended gamepad profile` | A controller without the standard layout, once per controller |
+| `GAMEPAD ios uikit press type=...` | While a controller was connected, UIKit delivered a press that has no key: a controller button that UIKit received as well. Once per press type, at most 16 types per run. In the iPad app on a Mac, where a keyboard key can arrive without a key too, it may be one of those |
+
+`GAMEPAD iOS backend not started: ...` in the app log means the backend could not start.
 
 On the Deck's development shortcut, standard error goes to
 `~/gnollhack-dev/logs/latest.log`.
@@ -725,4 +743,56 @@ dotnet build GnollHackM.csproj -c Debug -f net11.0-android -t:Install
 
 `adb` is in the Android SDK's platform-tools. A clip-on controller takes the phone's USB-C port,
 so `adb` reaches the phone over Android's Wireless debugging. The log lines are in
+[Diagnostics](#diagnostics).
+
+### iOS
+
+The iOS build reads controllers through Apple's GameController framework
+(`Platforms/iOS/GHiOSGamepadBackend.cs`), with the framework's managed binding: any controller iOS
+supports that has an extended gamepad profile, such as a clip-on controller (the Backbone One), an
+Xbox, DualShock 4 or DualSense controller, or a Nintendo Switch controller. Controllers can come and
+go during the game. The backend starts a second after the first frame and counts as available from
+its first controller, so Settings shows the Controller section once a controller has been seen in
+the session. The glyph style follows the profile class, then the product category, then the vendor
+name: `GHAppleGamepadMapping` in `GnollHackX/Gamepad/`, a shared file that only iOS uses, covered by
+unit tests. There are no back grips: an Xbox Elite controller's paddles are not read. The Home
+button and an Xbox controller's Share button keep their iOS actions. A Nintendo controller has not
+been tested; the `a="..."` field of its connect line says which button the framework reports as A.
+
+**Reading.** A controller's buttons and axes are resolved once, when it connects, and read every
+frame. Connects and disconnects come from the framework's notifications and take effect at the next
+frame. Y is inverted, because GameController has +Y up.
+
+**What the game takes.** With **Use Controller** on, the game disables the system gestures of the
+Menu and View (Options) buttons, which iOS would otherwise wait for before passing a press on. On
+iOS 18 and later it also adds a `GCEventInteraction` to its window while a controller is connected,
+so that UIKit does not act on the controller too. With Use Controller off the game ignores the
+controller, gives the gestures back and removes the interaction, so iOS and UIKit treat the
+controller as they would in any app. iOS 15 to 17 has no such interaction; the
+`GAMEPAD ios uikit press` lines show what UIKit received.
+
+**When the controller is held back.** Once a controller has been seen, the game counts its window
+as active only while the app is active and no view controller other than its own pages is presented
+on top. So Control Center, the notification shade, the app switcher, a system alert, a share sheet,
+a file or photo picker and the system browser all hold the controller back, and a button held
+through one of them stays silent until it is released. iOS delivers no controller input to an app
+in the background.
+
+**The Wiki.** With Use Controller on and a controller seen in the session, the game menu's Wiki
+opens in the in-app browser, as on Android, so the controller can browse it. Otherwise it opens the
+system browser (`WA-MAUI-0011` in `DEVEL/workarounds/maui.md`). Every other web link opens the
+system browser.
+
+**Touch and keys.** A touch in the game's window or a hardware key ends controller mode. A modifier
+key or Caps Lock alone does not, and neither does typing on the iOS keyboard.
+
+**Text fields.** A on a text field makes it first responder, which opens the iOS keyboard; with a
+hardware keyboard connected the keyboard is not offered, as on Android. In a web page WebKit decides
+whether a field focused by script opens the keyboard; if it does not, a tap on the field does.
+
+**The iPad app on a Mac** runs the same code. The app does not declare controller support in its
+`Info.plist`, so macOS offers it no Game Control settings.
+
+**Testing.** Build and deploy from Visual Studio, paired to the Mac, to an iPhone or iPad, then
+follow "Controller on iOS" in the `client_gamepad_testing` skill. The log lines are in
 [Diagnostics](#diagnostics).

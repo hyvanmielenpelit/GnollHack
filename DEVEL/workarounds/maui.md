@@ -419,13 +419,16 @@ its navigation buttons from that event. This was observed with the .NET 9 previe
 workload; whether MAUI 10 still behaves so is unknown (`OverseerPage` relies on MAUI's
 iOS navigation delegate routing these events).
 
-**Workaround.** On iOS the wiki opens with `GHApp.OpenBrowser` instead of `WikiPage`.
+**Workaround.** On iOS the wiki opens with `GHApp.OpenBrowser` instead of `WikiPage`, unless Use
+Controller is on and a controller has been seen in the session. The system browser takes no
+controller input, so with a controller the wiki opens `WikiPage`, which the controller browses as
+on Android and the desktop builds. That path relies on the `Navigated` event this workaround avoids.
 
-**Verify removal.** In `OpenWikiPage`, drop `GHApp.IsiOS` from the browser condition.
-Then:
+**Verify removal.** In `OpenWikiPage`, drop the `GHApp.IsiOS` clause, with its controller test,
+from the browser condition. Then:
 - Build for iOS and run on a device.
-- Open the wiki from the game menu, follow two links, and confirm the back and forward
-  buttons enable and work.
+- With no controller connected, open the wiki from the game menu by touch, follow two links, and
+  confirm the back and forward buttons enable and work.
 
 Checks:
 - 2026-10-23 | Microsoft.Maui.Controls 10.0.120 | unverified | No upstream issue found. Possibly obsolete.

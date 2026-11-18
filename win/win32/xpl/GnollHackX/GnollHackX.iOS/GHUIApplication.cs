@@ -42,6 +42,9 @@ namespace GnollHackX.iOS
         public override void SendEvent(UIEvent uievent)
         {
             FlexGestureSuppressor.BeforeEvent(uievent);
+            /* A touch that begins in the game's window ends controller mode */
+            if (GHGamepadService.IsActive)
+                GHiOSGamepad.NoteTouches(uievent);
             bool trace = IsMacTouchTraceOn;
             if (trace)
                 TraceTouches(uievent, "before");
@@ -339,6 +342,9 @@ namespace GnollHackX.iOS
         {
             if (cmd?.Input == null || cmd.Input.Length < 1)
                 return;
+#if GNH_MAUI
+            GHiOSGamepad.NoteKey("key command");
+#endif
 
             bool isCtrl = (cmd.ModifierFlags & UIKeyModifierFlags.Control) != 0;
             bool isMeta = (cmd.ModifierFlags & UIKeyModifierFlags.Alternate) != 0;
@@ -366,6 +372,9 @@ namespace GnollHackX.iOS
         {
             if (cmd?.Input == null)
                 return;
+#if GNH_MAUI
+            GHiOSGamepad.NoteKey("key command");
+#endif
 
             bool isCtrl = (cmd.ModifierFlags & UIKeyModifierFlags.Control) != 0;
             bool isMeta = (cmd.ModifierFlags & UIKeyModifierFlags.Alternate) != 0;
@@ -467,6 +476,9 @@ namespace GnollHackX.iOS
         {
             if (presses == null || evt == null)
                 return;
+#if GNH_MAUI
+            GHiOSGamepad.NotePresses(presses);
+#endif
 
             bool wasHandled = false;
             int cnt = 0;

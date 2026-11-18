@@ -25,6 +25,8 @@ using GHPlatformWebScriptHost = GnollHackM.GHAvaloniaWebScriptHost;
 using GHPlatformWebScriptHost = GnollHackM.GHWinUIWebScriptHost;
 #elif ANDROID
 using GHPlatformWebScriptHost = GnollHackM.GHAndroidWebScriptHost;
+#elif IOS
+using GHPlatformWebScriptHost = GnollHackM.GHiOSWebScriptHost;
 #endif
 
 namespace GnollHackM
@@ -118,7 +120,7 @@ namespace GnollHackX.Pages.Game
             _webNavigator.GoBack = () => TitleArea_Tapped(TitleArea, EventArgs.Empty);
             _webNavigator.CanGoForward = () => false;
             _webNavigator.ClosePage = LeaveFromGamepad;
-#if GNH_AVALONIA || WINDOWS || ANDROID
+#if GNH_AVALONIA || WINDOWS || ANDROID || IOS
             _webScriptHost = new GHPlatformWebScriptHost(DisplayWebView);
             _webNavigator.Host = _webScriptHost;
 #endif
@@ -182,7 +184,7 @@ namespace GnollHackX.Pages.Game
             GHFileDialogHost.ActiveViewChanged += UpdateAvaloniaWebViewVisibility;
             UpdateAvaloniaWebViewVisibility();
 #endif
-#if GNH_AVALONIA || WINDOWS || ANDROID
+#if GNH_AVALONIA || WINDOWS || ANDROID || IOS
             if (_webScriptHost == null)
             {
                 _webScriptHost = new GHPlatformWebScriptHost(DisplayWebView);
@@ -215,7 +217,7 @@ namespace GnollHackX.Pages.Game
 #if GNH_AVALONIA
             GHFileDialogHost.ActiveViewChanged -= UpdateAvaloniaWebViewVisibility;
 #endif
-#if GNH_AVALONIA || WINDOWS || ANDROID
+#if GNH_AVALONIA || WINDOWS || ANDROID || IOS
             _webNavigator.Host = null;
             if (_webScriptHost != null)
             {
@@ -1087,7 +1089,7 @@ namespace GnollHackX.Pages.Game
         private readonly GHGamepadPageNavigator _overlayNavigator = new GHGamepadPageNavigator();
         private readonly GHGamepadPageNavigator _toolbarNavigator = new GHGamepadPageNavigator();
         private readonly GHWebGamepadNavigator _webNavigator;
-#if GNH_AVALONIA || WINDOWS || ANDROID
+#if GNH_AVALONIA || WINDOWS || ANDROID || IOS
         private GHPlatformWebScriptHost _webScriptHost;
 #endif
         private GHGamepadHintRenderer _gamepadHintRenderer;

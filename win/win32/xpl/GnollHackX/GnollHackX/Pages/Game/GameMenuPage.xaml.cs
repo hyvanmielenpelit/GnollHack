@@ -789,7 +789,8 @@ namespace GnollHackX.Pages.Game
                 MainLayout.IsEnabled = true;
                 return;
             }
-            if (GHApp.IsiOS || !GHApp.IsWebViewAvailable)
+            if ((GHApp.IsiOS && !(GHGamepadService.IsEnabled && GHGamepadService.IsAvailable))
+                || !GHApp.IsWebViewAvailable)
             {
                 // WORKAROUND(WA-MAUI-0011): WebView Navigated event is not raised on iOS
                 /* Navigated event does not trigger with WebView on iOS, making navigation buttons inactivate all the time; use OpenBrowser instead (does not trigger OnSleep / OnResume on iOS) */

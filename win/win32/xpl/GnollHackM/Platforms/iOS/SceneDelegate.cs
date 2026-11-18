@@ -12,6 +12,7 @@ public class SceneDelegate : MauiUISceneDelegate
         if (Window != null)
         {
             Window.BackgroundColor = UIColor.FromRGB(0x00, 0x00, 0x00); // Black behind the page, as on the former app-delegate window
+            GHiOSGamepad.SetWindow(Window);
         }
     }
 }

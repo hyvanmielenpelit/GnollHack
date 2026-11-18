@@ -1398,6 +1398,8 @@ namespace GnollHackX
             GHWinUIGamepad.OnFrame(Stopwatch.GetTimestamp());
 #elif ANDROID
             GHAndroidGamepad.OnFrame(Stopwatch.GetTimestamp());
+#elif IOS
+            GHiOSGamepad.OnFrame(Stopwatch.GetTimestamp());
 #endif
             long counter = Interlocked.Increment(ref _renderingCounter);
             if (counter == long.MaxValue)
