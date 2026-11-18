@@ -1873,14 +1873,14 @@
     </ItemGroup>
     <Delete Files="@(NativePdbFiles)" />
   </Target>
-  <!-- Publish copies package files from the NuGet cache, not from the build output that DeleteNativePdbs cleans,
-       so native PDBs from packages are removed from the publish list; the app's own PDB stays -->
-  <Target Name="RemoveNativePdbsFromPublish" AfterTargets="ComputeResolvedFilesToPublishList" Condition="'$(Configuration)' == 'Release' And '$(DesignTimeBuild)' != 'true'">
+  <!-- Publish copies files from the NuGet cache and obj, not from the build output that DeleteNativePdbs cleans,
+       so PDBs are removed from the publish list; Sentry uploads them from the build output before that cleanup -->
+  <Target Name="RemovePdbsFromPublish" AfterTargets="ComputeResolvedFilesToPublishList" Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
     <ItemGroup>
-      <_GnhNativePdbToPublish Include="@(ResolvedFileToPublish)" Condition="'%(ResolvedFileToPublish.Extension)' == '.pdb' And '%(ResolvedFileToPublish.AssetType)' == 'native'" />
-      <ResolvedFileToPublish Remove="@(_GnhNativePdbToPublish)" />
+      <_GnhPdbToPublish Include="@(ResolvedFileToPublish)" Condition="'%(ResolvedFileToPublish.Extension)' == '.pdb'" />
+      <ResolvedFileToPublish Remove="@(_GnhPdbToPublish)" />
     </ItemGroup>
-    <Message Importance="high" Condition="'@(_GnhNativePdbToPublish)' != ''" Text="Excluded native PDBs from publish: @(_GnhNativePdbToPublish->'%(Filename)%(Extension)', ', ')" />
+    <Message Importance="high" Condition="'@(_GnhPdbToPublish)' != ''" Text="Excluded PDBs from publish: @(_GnhPdbToPublish->'%(Filename)%(Extension)', ', ')" />
   </Target>
 
   <!-- Print the value of IsMonoRuntime -->
