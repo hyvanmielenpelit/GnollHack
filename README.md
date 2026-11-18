@@ -13,7 +13,7 @@
 [![License: NGPL](https://img.shields.io/badge/License-NetHack%20GPL-yellow.svg)](LICENSE.md)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/cQuExnzUQy)
 
-[Website](https://gnollhack.com/) · [Wiki](https://wiki.gnollhack.com/) · [Features](https://wiki.gnollhack.com/Features) · [Developer Docs](https://wiki.gnollhack.com/Development%20Information) · [Gnoll Overseer AI Assistant](https://overseer.gnollhack.com/) · [Leaderboards](https://account.gnollhack.com/)
+[Website](https://gnollhack.com/) · [Wiki](https://wiki.gnollhack.com/) · [Features](https://wiki.gnollhack.com/Features) · [Developer Docs](https://wiki.gnollhack.com/Development%20Information) · [Gnoll Overseer Game Advisor](https://overseer.gnollhack.com/) · [Leaderboards](https://account.gnollhack.com/)
 
 <br />
 
