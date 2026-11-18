@@ -4,8 +4,9 @@ using Xunit;
 
 namespace GnollHackX.UnitTests
 {
-    /* Covers GHWindowsCodePage on Windows: representability in explicit code pages, independent of the machine's
-       own code page, the path check and the ASCII test. Each test returns at once elsewhere. */
+    /* Covers GHWindowsCodePage: representability in explicit code pages, independent of the machine's own code
+       page, the path check, the ASCII test, the system code page read and the code page text. The tests that call
+       Windows return at once elsewhere. */
     public class GHWindowsCodePageTests
     {
         private const string DataPath = "C:\\Users\\x\\AppData\\Local\\Hyv\u00e4n mielen pelit ry\\Data";
@@ -44,6 +45,25 @@ namespace GnollHackX.UnitTests
                 return;
 
             Assert.True(GHWindowsCodePage.CanMarshalPath("C:\\plain\\path"));
+        }
+
+        [Theory]
+        [InlineData(65001u, 932u, "65001 (S 932)")]
+        [InlineData(65001u, 65001u, "65001 (S 65001)")]
+        [InlineData(1252u, 1252u, "1252 (S 1252)")]
+        [InlineData(65001u, 0u, "65001")]
+        public void FormatCodePages_ShowsSystemCodePageWhenKnown(uint processCodePage, uint systemCodePage, string expected)
+        {
+            Assert.Equal(expected, GHWindowsCodePage.FormatCodePages(processCodePage, systemCodePage));
+        }
+
+        [Fact]
+        public void SystemAnsiCodePage_OnWindows_IsKnown()
+        {
+            if (!OperatingSystem.IsWindows())
+                return;
+
+            Assert.True(GHWindowsCodePage.SystemAnsiCodePage > 0);
         }
 
         [Theory]

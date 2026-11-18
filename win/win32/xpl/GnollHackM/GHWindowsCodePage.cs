@@ -1,6 +1,8 @@
 #if !ANDROID && !IOS
 using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 namespace GnollHackM
 {
@@ -21,6 +23,41 @@ namespace GnollHackM
 
         /* Windows only */
         public static uint AnsiCodePage => GetACP();
+
+        private static readonly Lazy<uint> _systemAnsiCodePage = new Lazy<uint>(ReadSystemAnsiCodePage);
+
+        /* The system's ANSI code page, which processes without activeCodePage use; 0 when it cannot be read.
+           Read once: it changes only at a restart. */
+        public static uint SystemAnsiCodePage => _systemAnsiCodePage.Value;
+
+        private static uint ReadSystemAnsiCodePage()
+        {
+            if (!OperatingSystem.IsWindows())
+                return 0;
+            try
+            {
+                using (RegistryKey key = Registry.LocalMachine.OpenSubKey(@"SYSTEM\CurrentControlSet\Control\Nls\CodePage"))
+                {
+                    string value = key != null ? key.GetValue("ACP") as string : null;
+                    uint codePage;
+                    return value != null && uint.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out codePage)
+                        ? codePage : 0;
+                }
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        /* "<process> (S <system>)", or "<process>" when the system code page is unknown */
+        public static string FormatCodePages(uint processCodePage, uint systemCodePage)
+        {
+            string text = processCodePage.ToString(CultureInfo.InvariantCulture);
+            if (systemCodePage != 0)
+                text += " (S " + systemCodePage.ToString(CultureInfo.InvariantCulture) + ")";
+            return text;
+        }
 
         /* Whether text survives conversion to codePage unchanged: no default character, no best-fit
            substitute. UTF-8 represents everything, and takes neither argument. Windows only. */

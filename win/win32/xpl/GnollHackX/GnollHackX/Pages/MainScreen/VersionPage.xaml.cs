@@ -345,7 +345,7 @@ namespace GnollHackX.Pages.MainScreen
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
 #if WINDOWS || WINDOWS_AVALONIA
-            CodePageLabel.Text = GHWindowsCodePage.AnsiCodePage.ToString(CultureInfo.InvariantCulture);
+            CodePageLabel.Text = GHWindowsCodePage.FormatCodePages(GHWindowsCodePage.AnsiCodePage, GHWindowsCodePage.SystemAnsiCodePage);
 #else
             CodePageLabel.Text = "";
             CodePageLabel.IsVisible = false;

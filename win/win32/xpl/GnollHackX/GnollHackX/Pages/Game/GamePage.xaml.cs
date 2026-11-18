@@ -3287,9 +3287,11 @@ namespace GnollHackX.Pages.Game
             GHApp.MaybeWriteGHLog("Engine start failed: " + kind, true, GHConstants.SentryGnollHackGeneralCategoryName);
 #if SENTRY
             string codePage = "n/a";
+            string systemCodePage = "n/a";
             string pathIsAscii = "n/a";
 #if WINDOWS || WINDOWS_AVALONIA
             codePage = GHWindowsCodePage.AnsiCodePage.ToString(CultureInfo.InvariantCulture);
+            systemCodePage = GHWindowsCodePage.SystemAnsiCodePage.ToString(CultureInfo.InvariantCulture);
             pathIsAscii = GHWindowsCodePage.IsAscii(dataPath) ? "true" : "false";
 #endif
             /* The path itself is never sent: it contains the user name */
@@ -3297,6 +3299,7 @@ namespace GnollHackX.Pages.Game
             {
                 scope.SetTag("engine_start_failure", kind);
                 scope.SetTag("ansi_code_page", codePage);
+                scope.SetTag("system_code_page", systemCodePage);
                 scope.SetTag("data_path_ascii", pathIsAscii);
             }, SentryLevel.Error);
 #endif
