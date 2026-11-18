@@ -1875,7 +1875,8 @@
   </Target>
   <!-- Publish copies files from the NuGet cache and obj, not from the build output that DeleteNativePdbs cleans,
        so PDBs are removed from the publish list; Sentry uploads them from the build output before that cleanup -->
-  <Target Name="RemovePdbsFromPublish" AfterTargets="ComputeResolvedFilesToPublishList" Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(DesignTimeBuild)' != 'true'">
+  <!-- MSIX packaging is excluded: it moves PDBs from the publish list into the .appxsym symbol package, not the .msix -->
+  <Target Name="RemovePdbsFromPublish" AfterTargets="ComputeResolvedFilesToPublishList" Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(WindowsPackageType)' != 'MSIX' And '$(GNHWindowsPackageType)' != 'MSIX' And '$(PublishAppxPackage)' != 'true' And '$(GenerateAppxPackageOnBuild)' != 'true' And '$(DesignTimeBuild)' != 'true'">
     <ItemGroup>
       <_GnhPdbToPublish Include="@(ResolvedFileToPublish)" Condition="'%(ResolvedFileToPublish.Extension)' == '.pdb'" />
       <ResolvedFileToPublish Remove="@(_GnhPdbToPublish)" />
