@@ -7,13 +7,13 @@
 **A modern, cross-platform graphical roguelike built on the classic NetHack engine**
 
 [![Release](https://img.shields.io/github/v/release/hyvanmielenpelit/GnollHack?label=Release&color=2ea44f)](https://github.com/hyvanmielenpelit/GnollHack/releases)
-[![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Android%20%7C%20iOS%20%7C%20macOS-0078D4)](https://wiki.gnollhack.com/Download)
+[![Platforms](https://img.shields.io/badge/Platforms-Windows%20%7C%20Android%20%7C%20iOS%20%7C%20macOS%20%7C%20Linux%20%7C%20Steam%20Deck-0078D4)](https://wiki.gnollhack.com/Download)
 [![.NET MAUI](https://img.shields.io/badge/.NET%20MAUI-10.0-512BD4)](https://wiki.gnollhack.com/Technological%20Features)
 [![Language](https://img.shields.io/badge/Language-C99%20%7C%20C%23-00599C)](https://wiki.gnollhack.com/Development/Repository%20Structure)
 [![License: NGPL](https://img.shields.io/badge/License-NetHack%20GPL-yellow.svg)](LICENSE.md)
 [![Discord](https://img.shields.io/badge/Discord-Join%20Server-5865F2?logo=discord&logoColor=white)](https://discord.gg/cQuExnzUQy)
 
-[Website](https://gnollhack.com/) · [Wiki](https://wiki.gnollhack.com/) · [Features](https://wiki.gnollhack.com/Features) · [Developer Docs](https://wiki.gnollhack.com/Development%20Information) · [Gnoll Overseer AI Assistant](https://overseer.gnollhack.com/) · [Leaderboards](https://account.gnollhack.com/)
+[Website](https://gnollhack.com/) · [Wiki](https://wiki.gnollhack.com/) · [Features](https://wiki.gnollhack.com/Features) · [Developer Docs](https://wiki.gnollhack.com/Development%20Information) · [Gnoll Overseer Game Advisor](https://overseer.gnollhack.com/) · [Leaderboards](https://account.gnollhack.com/)
 
 <br />
 
