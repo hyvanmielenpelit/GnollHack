@@ -1873,6 +1873,15 @@
     </ItemGroup>
     <Delete Files="@(NativePdbFiles)" />
   </Target>
+  <!-- Publish copies package files from the NuGet cache, not from the build output that DeleteNativePdbs cleans,
+       so native PDBs from packages are removed from the publish list; the app's own PDB stays -->
+  <Target Name="RemoveNativePdbsFromPublish" AfterTargets="ComputeResolvedFilesToPublishList" Condition="'$(Configuration)' == 'Release' And '$(DesignTimeBuild)' != 'true'">
+    <ItemGroup>
+      <_GnhNativePdbToPublish Include="@(ResolvedFileToPublish)" Condition="'%(ResolvedFileToPublish.Extension)' == '.pdb' And '%(ResolvedFileToPublish.AssetType)' == 'native'" />
+      <ResolvedFileToPublish Remove="@(_GnhNativePdbToPublish)" />
+    </ItemGroup>
+    <Message Importance="high" Condition="'@(_GnhNativePdbToPublish)' != ''" Text="Excluded native PDBs from publish: @(_GnhNativePdbToPublish->'%(Filename)%(Extension)', ', ')" />
+  </Target>
 
   <!-- Print the value of IsMonoRuntime -->
   <Target Name="PrintMonoRuntimeStatus" BeforeTargets="BeforeBuild">
