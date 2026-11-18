@@ -82,8 +82,8 @@ namespace GnollHackX.Unknown
         public static extern int RunGnollHack(
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
-            [MarshalAs(UnmanagedType.LPStr)] string engrave_quicktext,
-            [MarshalAs(UnmanagedType.LPStr)] string last_used_player_name,
+            [MarshalAs(GHConstants.GHStringMarshallingType)] string engrave_quicktext,
+            [MarshalAs(GHConstants.GHStringMarshallingType)] string last_used_player_name,
             int right_mouse_button,
             int middle_mouse_button,
             int engrave_quickstyle,
@@ -297,7 +297,7 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetPetMID(uint m_id);
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibChmod(string filename, uint mode);
+        public static extern int LibChmod([MarshalAs(UnmanagedType.LPStr)] string filename, uint mode);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSaveAndRestoreSavedGame(int save_style);
         [DllImport(PlatformConstants.dll)]
@@ -309,17 +309,17 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern int LibGetNumCatalogues();
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibGetMaxMajorConsultations(string filename);
+        public static extern int LibGetMaxMajorConsultations([MarshalAs(UnmanagedType.LPStr)] string filename);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibIsDebug();
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibValidateSaveFile(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_buffer);
+        public static extern int LibValidateSaveFile([MarshalAs(UnmanagedType.LPStr)] string filename,[MarshalAs(UnmanagedType.LPArray), Out] byte[] out_buffer);
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibGetSaveFileInfo(string filename, ref ulong out_version, ref ulong out_compat, ref uint out_save_flags, ref long out_time_stamp, ref int out_glyph, ref int out_gui_glyph, ref long out_umoves);
+        public static extern int LibGetSaveFileInfo([MarshalAs(UnmanagedType.LPStr)] string filename,ref ulong out_version, ref ulong out_compat, ref uint out_save_flags, ref long out_time_stamp, ref int out_glyph, ref int out_gui_glyph, ref long out_umoves);
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibGetSaveFileDescription(string filename, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_char_desc, int char_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_loc_desc, int loc_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_mode_desc, int mode_desc_len);
+        public static extern int LibGetSaveFileDescription([MarshalAs(UnmanagedType.LPStr)] string filename,[MarshalAs(UnmanagedType.LPArray), Out] byte[] out_char_desc, int char_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_loc_desc, int loc_desc_len, [MarshalAs(UnmanagedType.LPArray), Out] byte[] out_mode_desc, int mode_desc_len);
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibCheckCurrentFileDescriptor(string dir);
+        public static extern int LibCheckCurrentFileDescriptor([MarshalAs(UnmanagedType.LPStr)] string dir);
         [DllImport(PlatformConstants.dll)]
         public static extern int LibReportFileDescriptors();
         [DllImport(PlatformConstants.dll)]
@@ -360,7 +360,7 @@ namespace GnollHackX.Unknown
         public static extern void LibSetMouseCommand(int new_value, int is_middle);
 
         [DllImport(PlatformConstants.dll)]
-        public static extern void LibSetEngraveQuickText(string newValue);
+        public static extern void LibSetEngraveQuickText([MarshalAs(GHConstants.GHStringMarshallingType)] string newValue);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetEngraveQuickStyle(int newValue);
 
@@ -993,13 +993,13 @@ namespace GnollHackX.Unknown
         public string GetVersionString()
         {
             IntPtr resptr = LibGetVersionString();
-            string ret = Marshal.PtrToStringAnsi(resptr);
+            string ret = GHUtils.PtrToEngineString(resptr);
             return ret;
         }
         public string GetVersionId()
         {
             IntPtr resptr = LibGetVersionId();
-            string ret = Marshal.PtrToStringAnsi(resptr);
+            string ret = GHUtils.PtrToEngineString(resptr);
             return ret;
         }
         public ulong GetVersionNumber()
@@ -1013,13 +1013,13 @@ namespace GnollHackX.Unknown
         public string GetPropertyName(int prop_index)
         {
             IntPtr resptr = LibGetPropertyName(prop_index);
-            string ret = Marshal.PtrToStringAnsi(resptr);
+            string ret = GHUtils.PtrToEngineString(resptr);
             return ret;
         }
         public string DumplogDateString(long startdate)
         {
             IntPtr resptr = LibDumplogDateString(startdate);
-            string ret = Marshal.PtrToStringAnsi(resptr);
+            string ret = GHUtils.PtrToEngineString(resptr);
             return ret;
         }
         public List<string> GetExtendedCommands()
@@ -1036,6 +1036,13 @@ namespace GnollHackX.Unknown
 
         public int Chmod(string filename, uint mode)
         {
+#if WINDOWS || WINDOWS_AVALONIA
+            if (!GHWindowsCodePage.CanMarshalPath(filename))
+            {
+                GHApp.MaybeWriteGHLog("Chmod: path cannot be passed in code page " + GHWindowsCodePage.AnsiCodePage);
+                return -1;
+            }
+#endif
             int res = LibChmod(filename, mode);
             return res;
         }
@@ -1057,6 +1064,13 @@ namespace GnollHackX.Unknown
         public int GetMaxMajorConsultations()
         {
             string filesdir = GetGnollHackPath();
+#if WINDOWS || WINDOWS_AVALONIA
+            if (!GHWindowsCodePage.CanMarshalPath(filesdir))
+            {
+                GHApp.MaybeWriteGHLog("GetMaxMajorConsultations: path cannot be passed in code page " + GHWindowsCodePage.AnsiCodePage);
+                return 0;
+            }
+#endif
             return LibGetMaxMajorConsultations(filesdir);
         }
 
@@ -1079,6 +1093,14 @@ namespace GnollHackX.Unknown
         {
             GHApp.AddSentryBreadcrumb("ValidateSaveFile: " + (filename != null ? filename : "null"), GHConstants.SentryGnollHackGeneralCategoryName);
 
+#if WINDOWS || WINDOWS_AVALONIA
+            if (!GHWindowsCodePage.CanMarshalPath(filename))
+            {
+                GHApp.MaybeWriteGHLog("ValidateSaveFile: path cannot be passed in code page " + GHWindowsCodePage.AnsiCodePage);
+                res_str = "The file path contains characters that cannot be passed to the game engine on this system.";
+                return false;
+            }
+#endif
             byte[] buffer = new byte[256 * 4];
             Array.Clear(buffer, 0, buffer.Length);
             int res = LibValidateSaveFile(filename, buffer);
@@ -1098,6 +1120,21 @@ namespace GnollHackX.Unknown
         public bool GetSaveFileInfo(string filename, out ulong version, out ulong compat, out uint saveFlags, out long timeStamp, out int glyph, out int guiGlyph, out long turnCount)
         {
             GHApp.AddSentryBreadcrumb("GetSaveFileInfo: " + (filename != null ? filename : "null"), GHConstants.SentryGnollHackGeneralCategoryName);
+
+#if WINDOWS || WINDOWS_AVALONIA
+            if (!GHWindowsCodePage.CanMarshalPath(filename))
+            {
+                GHApp.MaybeWriteGHLog("GetSaveFileInfo: path cannot be passed in code page " + GHWindowsCodePage.AnsiCodePage);
+                version = 0;
+                compat = 0;
+                saveFlags = 0;
+                timeStamp = 0;
+                glyph = 0;
+                guiGlyph = 0;
+                turnCount = 0;
+                return false;
+            }
+#endif
 
             ulong ver = 0;
             ulong comp = 0;
@@ -1124,6 +1161,14 @@ namespace GnollHackX.Unknown
             characterDesc = "";
             locationDesc = "";
             modeDesc = "";
+
+#if WINDOWS || WINDOWS_AVALONIA
+            if (!GHWindowsCodePage.CanMarshalPath(filename))
+            {
+                GHApp.MaybeWriteGHLog("GetSaveFileDescription: path cannot be passed in code page " + GHWindowsCodePage.AnsiCodePage);
+                return false;
+            }
+#endif
 
             byte[] charBuf = new byte[512];
             byte[] locBuf = new byte[512];
@@ -1154,7 +1199,15 @@ namespace GnollHackX.Unknown
 
         public int CheckCurrentFileDescriptor()
         {
-            return LibCheckCurrentFileDescriptor(GetGnollHackPath());
+            string filesdir = GetGnollHackPath();
+#if WINDOWS || WINDOWS_AVALONIA
+            if (!GHWindowsCodePage.CanMarshalPath(filesdir))
+            {
+                GHApp.MaybeWriteGHLog("CheckCurrentFileDescriptor: path cannot be passed in code page " + GHWindowsCodePage.AnsiCodePage);
+                return -4;
+            }
+#endif
+            return LibCheckCurrentFileDescriptor(filesdir);
         }
 
         public void ReportFileDescriptors()
@@ -1262,7 +1315,7 @@ namespace GnollHackX.Unknown
         public string GetEventPathForGHSound(int ghsound)
         {
             IntPtr resptr = LibGetEventPathForGHSound(ghsound);
-            string ret = Marshal.PtrToStringAnsi(resptr);
+            string ret = GHUtils.PtrToEngineString(resptr);
             return ret;
         }
 
@@ -1300,6 +1353,17 @@ namespace GnollHackX.Unknown
             GHApp.AddSentryBreadcrumb("StartGnollHack", GHConstants.SentryGnollHackGeneralCategoryName);
             GHApp.SetMirroredOptionsToDefaults();
             string filesdir = GetGnollHackPath();
+#if DEBUG
+            string simulatedFailure = System.Environment.GetEnvironmentVariable("GNOLLHACK_SIMULATE_START_FAILURE");
+            if (simulatedFailure == "data-directory")
+                return GHConstants.RunGnollHackErrorDataDirectory;
+            if (simulatedFailure == "path")
+                return GHConstants.RunGnollHackErrorPathNotRepresentable;
+#endif
+#if WINDOWS || WINDOWS_AVALONIA
+            if (!GHWindowsCodePage.CanMarshalPath(filesdir))
+                return GHConstants.RunGnollHackErrorPathNotRepresentable;
+#endif
             bool allowbones = GHApp.AllowBones;
             bool getposarrows = GHApp.GetPositionArrows;
             bool nopet = GHApp.MirroredPetsNotGifted;

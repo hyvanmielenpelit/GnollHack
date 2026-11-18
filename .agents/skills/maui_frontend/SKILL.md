@@ -312,7 +312,7 @@ All platforms delegate lifecycle to `GHApp.OnStart()`, `GHApp.OnResume()`, `GHAp
 ## P/Invoke Bridge (`GnollHackService.cs`)
 - All calls to the C engine pass through `GnollHackService`.
 - **Delegates**: C# callbacks reach C as the delegate parameters of `RunGnollHack` (for example `callback_init_nhwindows` and `callback_askname`).
-- Keep `[MarshalAs(UnmanagedType.LPStr)]` on strings crossing the bridge. `LPStr` marshals as UTF-8 on Android and iOS, but as the system ANSI code page on Windows: the Windows app manifest does not opt into UTF-8 (`activeCodePage`). Do not assume non-ASCII text survives the bridge on Windows.
+- **Strings crossing the bridge.** Engine text is UTF-8 on every platform: delegate parameters use `[MarshalAs(GHConstants.GHStringMarshallingType)]`, returned pointers are read with `GHUtils.PtrToEngineString`, and text written back to the engine uses `Encoding.UTF8`. File paths the engine opens are different: the narrow C runtime reads them in the process ANSI code page, so they stay `[MarshalAs(UnmanagedType.LPStr)]`, and on Windows the wrapper checks `GHWindowsCodePage.CanMarshalPath` first. Both executable manifests (`activeCodePage`) and both appx manifests (`uap8:ActiveCodePage`) set that code page to UTF-8, which works on Windows 10 1903 and later; the Version page's `Platform:` row and the `ansi_code_page` Sentry tag show the code page in effect. Two engine-text values remain ANSI, harmless wherever the manifests apply: `monst_info.name` (`ByValTStr` in `GHStructs.cs`) and `PlayImmediateSoundCallback.parameterNames` (`GHDelegates.cs`).
 
 ## Related Skills
 

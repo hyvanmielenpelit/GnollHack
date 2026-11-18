@@ -178,25 +178,25 @@ namespace GnollHackX
     public delegate int NhPosKeyCallback(out int x, out int y, out int mod);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void StatusUpdateCallback(int value1, string value2, long value3, int value4, int value5, int value6, IntPtr value7);
+    public delegate void StatusUpdateCallback(int value1, [MarshalAs(GHConstants.GHStringMarshallingType)] string value2, long value3, int value4, int value5, int value6, IntPtr value7);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void VoidUlongCallback(ulong value);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void StatusEnableFieldCallback(int value1, string value2, string value3, byte value4);
+    public delegate void StatusEnableFieldCallback(int value1, [MarshalAs(GHConstants.GHStringMarshallingType)] string value2, [MarshalAs(GHConstants.GHStringMarshallingType)] string value3, byte value4);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void FreeMemoryCallback(IntPtr ptr);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void ReportPlayerNameCallback(string used_player_name);
+    public delegate void ReportPlayerNameCallback([MarshalAs(GHConstants.GHStringMarshallingType)] string used_player_name);
  
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void ReportPlayTimeCallback(long timePassed, long currentPlayTime);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void AddContextMenuCallback(int value1, int value2, int value3, int value4, string value5, string value6, int value7, int value8);
+    public delegate void AddContextMenuCallback(int value1, int value2, int value3, int value4, [MarshalAs(GHConstants.GHStringMarshallingType)] string value5, [MarshalAs(GHConstants.GHStringMarshallingType)] string value6, int value7, int value8);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void UpdateStatusButtonCallback(int value1, int value2, int value3, ulong value4);
@@ -205,13 +205,13 @@ namespace GnollHackX
     public delegate void ToggleAnimationTimerCallback(int value1, int value2, int value3, int value4, int value5, int value6, ulong value7);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void DisplayFloatingTextCallback(int x, int y, string text, int style, int attr, int color, ulong tflags);
+    public delegate void DisplayFloatingTextCallback(int x, int y, [MarshalAs(GHConstants.GHStringMarshallingType)] string text, int style, int attr, int color, ulong tflags);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void DisplayScreenTextCallback(string text, string supertext, string subtext, int style, int attr, int color, ulong tflags);
+    public delegate void DisplayScreenTextCallback([MarshalAs(GHConstants.GHStringMarshallingType)] string text, [MarshalAs(GHConstants.GHStringMarshallingType)] string supertext, [MarshalAs(GHConstants.GHStringMarshallingType)] string subtext, int style, int attr, int color, ulong tflags);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void DisplayPopupTextCallback(string text, string title, int style, int attr, int color, int glyph, ulong tflags);
+    public delegate void DisplayPopupTextCallback([MarshalAs(GHConstants.GHStringMarshallingType)] string text, [MarshalAs(GHConstants.GHStringMarshallingType)] string title, int style, int attr, int color, int glyph, ulong tflags);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
     public delegate void DisplayGUIEffectCallback(int style, int subtype, int x, int y, int x2, int y2, ulong tflags);
@@ -229,5 +229,5 @@ namespace GnollHackX
     public delegate void SendMonsterDataCallback(int cmdtype, int x, int y, IntPtr monster_data_ptr, ulong oflags);
 
     [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-    public delegate void SendEngravingDataCallback(int cmdtype, int x, int y, string engraving_text, int etype, ulong eflags, ulong gflags);
+    public delegate void SendEngravingDataCallback(int cmdtype, int x, int y, [MarshalAs(GHConstants.GHStringMarshallingType)] string engraving_text, int etype, ulong eflags, ulong gflags);
 }

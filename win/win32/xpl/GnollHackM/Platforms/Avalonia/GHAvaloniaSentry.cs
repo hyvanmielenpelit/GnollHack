@@ -44,6 +44,9 @@ namespace GnollHackM
                         options.Release = release;
                     if (environment != null)
                         options.Environment = environment;
+#if WINDOWS_AVALONIA
+                    options.DefaultTags["ansi_code_page"] = GHWindowsCodePage.AnsiCodePage.ToString(System.Globalization.CultureInfo.InvariantCulture);
+#endif
                     /* One scope shared by all threads, and release-health sessions, as Sentry.Maui sets them */
                     options.IsGlobalModeEnabled = true;
                     options.AutoSessionTracking = true;

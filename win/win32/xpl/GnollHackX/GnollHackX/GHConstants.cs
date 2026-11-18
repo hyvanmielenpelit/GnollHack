@@ -426,6 +426,9 @@ namespace GnollHackX
         public const string AssetsTilesetDirectory = "tileset";
         public const string AssetsBanksDirectory = "banks";
         public const double StartUpTimeOut = 8.0;
+        /* StartGnollHack results; RunGnollHackErrorDataDirectory is RUNGNOLLHACK_ERROR_DATA_DIRECTORY in gnhapi.h */
+        public const int RunGnollHackErrorDataDirectory = -1;
+        public const int RunGnollHackErrorPathNotRepresentable = -2;
 
 #if GNH_MAUI
         public const string PortName = "GnollHackM";

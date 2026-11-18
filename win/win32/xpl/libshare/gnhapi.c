@@ -1252,7 +1252,7 @@ DLLEXPORT int RunGnollHack(char* gnhdir, char* cmdlineargs, char* engrave_quickt
     if (res != 0)
     {
         /* Failed to change to right directory */
-        return 0;
+        return RUNGNOLLHACK_ERROR_DATA_DIRECTORY;
     }
 
     /* Start GnollHack by calling main */

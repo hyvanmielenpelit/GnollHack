@@ -1627,8 +1627,13 @@ namespace GnollHackX.Pages.Game
         private IDispatcherTimer _pollingTimer = null;
         private IDispatcherTimer _updateTimer = null;
 #endif
+        /* Completed when StartGame has finished; written and read on the main thread only */
+        private TaskCompletionSource<bool> _startGameCompleted = null;
+
         public async Task StartGame(string replayFileName, int fromTurn, bool useRestart = false)
         {
+            TaskCompletionSource<bool> startGameCompleted = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+            _startGameCompleted = startGameCompleted;
             try
             {
                 ReplayFileName = replayFileName;
@@ -1864,6 +1869,10 @@ namespace GnollHackX.Pages.Game
                 SentrySdk.CaptureException(ex);
 #endif
                 await GHApp.DisplayMessageBox(this, "Error", "Error occurred when setting up the game: " + ex.Message, "OK");
+            }
+            finally
+            {
+                startGameCompleted.TrySetResult(true);
             }
         }
 
@@ -3268,6 +3277,72 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        /* Called on the engine thread when the engine never started. Waits for StartGame, which may still be
+           starting the timers, then shows why and returns to the main menu. */
+        private void HandleEngineStartFailure(GHGame game, int startResult)
+        {
+            bool pathNotRepresentable = startResult == GHConstants.RunGnollHackErrorPathNotRepresentable;
+            string kind = pathNotRepresentable ? "path-not-representable" : "data-directory";
+            string dataPath = _gnollHackService.GetGnollHackPath();
+            GHApp.MaybeWriteGHLog("Engine start failed: " + kind, true, GHConstants.SentryGnollHackGeneralCategoryName);
+#if SENTRY
+            string codePage = "n/a";
+            string pathIsAscii = "n/a";
+#if WINDOWS || WINDOWS_AVALONIA
+            codePage = GHWindowsCodePage.AnsiCodePage.ToString(CultureInfo.InvariantCulture);
+            pathIsAscii = GHWindowsCodePage.IsAscii(dataPath) ? "true" : "false";
+#endif
+            /* The path itself is never sent: it contains the user name */
+            SentrySdk.CaptureMessage("Engine start failed: " + kind, scope =>
+            {
+                scope.SetTag("engine_start_failure", kind);
+                scope.SetTag("ansi_code_page", codePage);
+                scope.SetTag("data_path_ascii", pathIsAscii);
+            }, SentryLevel.Error);
+#endif
+            string message;
+            if (pathNotRepresentable)
+            {
+                string utf8Setting = "open Region in Control Panel, go to the Administrative tab, press \"Change system " +
+                    "locale...\", tick \"Beta: Use Unicode UTF-8 for worldwide language support\", and restart the computer.";
+                bool olderThan1903 = System.Environment.OSVersion.Version.Build < 18362;
+                message = "GnollHack cannot start the game, because the path of its data folder contains characters " +
+                    "that Windows cannot pass to the game engine with the current system locale.\n\n" +
+                    (olderThan1903
+                        ? "Update Windows to version 1903 or later, or " + utf8Setting
+                        : "To fix this, " + utf8Setting) +
+                    "\n\nData folder: " + dataPath;
+            }
+            else
+            {
+                message = "GnollHack could not open its data folder, so the game cannot start. Restart GnollHack and " +
+                    "try again.\n\nData folder: " + dataPath;
+            }
+            MainThread.BeginInvokeOnMainThread(async () =>
+            {
+                try
+                {
+                    Task startGameTask = _startGameCompleted != null ? _startGameCompleted.Task : null;
+                    if (startGameTask != null)
+                        await startGameTask;
+                    try
+                    {
+                        await GHApp.DisplayMessageBox(this, "Cannot Start Game", message, "OK");
+                    }
+                    catch (Exception ex)
+                    {
+                        GHApp.ReportCaughtException(ex);
+                    }
+                    game.RequestQueue.Enqueue(new GHRequest(game, GHRequestType.ReturnToMainMenu));
+                    DoPolling();
+                }
+                catch (Exception ex)
+                {
+                    GHApp.ReportCaughtException(ex);
+                }
+            });
+        }
+
         protected void GNHThreadProc()
         {
             try
@@ -3276,7 +3351,9 @@ namespace GnollHackX.Pages.Game
                 GHGame curGame = new GHGame(RunGnollHackFlags.None);
                 GHApp.CurrentGHGame = curGame;
                 curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
-                _gnollHackService.StartGnollHack(curGame);
+                int startResult = _gnollHackService.StartGnollHack(curGame);
+                if (startResult < 0)
+                    HandleEngineStartFailure(curGame, startResult);
             }
             catch (Exception ex)
             {
@@ -3308,7 +3385,9 @@ namespace GnollHackX.Pages.Game
                 curGame.AdoptReplayRestartHandover(GHApp.TakeReplayRestartHandover());
                 GHApp.CurrentGHGame = curGame;
                 curGame.UseAscii = (GraphicsStyle == GHGraphicsStyle.ASCII);
-                _gnollHackService.StartGnollHack(curGame);
+                int startResult = _gnollHackService.StartGnollHack(curGame);
+                if (startResult < 0)
+                    HandleEngineStartFailure(curGame, startResult);
             }
             catch (Exception ex)
             {

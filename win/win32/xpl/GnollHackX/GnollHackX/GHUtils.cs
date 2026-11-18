@@ -236,6 +236,16 @@ namespace GnollHackX
             return;
         }
 
+        /* Engine text is UTF-8; GHConstants.GHStringMarshallingType says the same for delegate parameters */
+        public static string PtrToEngineString(IntPtr ptr)
+        {
+#if GNH_MAUI
+            return Marshal.PtrToStringUTF8(ptr);
+#else
+            return Marshal.PtrToStringAnsi(ptr);
+#endif
+        }
+
         public static List<string> GetAllStringsFromZeroTerminatedArray(IntPtr ptr)
         {
             return GetAllStringsFromZeroTerminatedArray(ptr, 0);
@@ -252,7 +262,7 @@ namespace GnollHackX
                 {
                     if (maxsize > 0 && cnt >= maxsize)
                         break;
-                    list.Add(Marshal.PtrToStringAnsi(strPtr));
+                    list.Add(PtrToEngineString(strPtr));
                     ptr = new IntPtr(ptr.ToInt64() + IntPtr.Size);
                     cnt++;
                 }
@@ -270,7 +280,7 @@ namespace GnollHackX
                     IntPtr strPtr = (IntPtr)Marshal.PtrToStructure(ptr, typeof(IntPtr));
                     if (strPtr != IntPtr.Zero)
                     {
-                        list.Add(Marshal.PtrToStringAnsi(strPtr));
+                        list.Add(PtrToEngineString(strPtr));
                     }
                     ptr = new IntPtr(ptr.ToInt64() + IntPtr.Size);
                 }

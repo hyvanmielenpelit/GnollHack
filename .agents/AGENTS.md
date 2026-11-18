@@ -36,7 +36,7 @@ AI Agents MUST adhere strictly to the following:
 - **Interop struct fields**: Use `snake_case` to match the C side (e.g., `animation_name`, `number_of_tiles`, `layer_flags`)
 - **Interop enums and defines**: Use `ALL_CAPS_WITH_UNDERSCORES` to match C `#define`s and enum values (e.g., `LAYER_FLOOR`, `MENU_FLAGS_IS_HEADING`). The enum type name itself also uses `snake_case` on the C# side (e.g., `layer_types`) for interop consistency.
 - Always marshal UI updates to the main thread via `MainThread.BeginInvokeOnMainThread()`
-- P/Invoke strings use `MarshalAs(UnmanagedType.LPStr)` for C interop
+- P/Invoke strings: engine **text** uses `[MarshalAs(GHConstants.GHStringMarshallingType)]` (UTF-8) and is read with `GHUtils.PtrToEngineString`; **file paths** the engine opens use `[MarshalAs(UnmanagedType.LPStr)]`, because the narrow C runtime reads them in the process ANSI code page, and on Windows they are checked with `GHWindowsCodePage.CanMarshalPath` before the call. The Windows manifests set that code page to UTF-8 (`activeCodePage`)
 - Shared code between GnollHackM and GnollHackX uses `<Compile Include>` file-linking, NOT project references
 - **File-linked platform code**: GnollHackM also compiles platform-specific `.cs` files from legacy `GnollHackX.Android/` and `GnollHackX.iOS/` directories via `<Compile Include>` (within platform-conditioned `<ItemGroup>` blocks). These files may import platform-specific NuGet packages (e.g., `Xamarin.Google.Android.Play.Core` for in-app reviews). When evaluating NuGet dependencies in `GnollHackM.csproj`, always check file-linked sources in `GnollHackX.*` directories — not just `GnollHackM/` itself.
 

@@ -36,6 +36,9 @@ DLLEXPORT int GnollHackStart(char*);
 #define GHRUNFLAGS_METRIC_SYSTEM            0x00200000UL
 #define GHRUNFLAGS_DAMAGE_FORMULA           0x00400000UL
 
+/* RunGnollHack return value: the engine never started, because chdir to gnhdir failed */
+#define RUNGNOLLHACK_ERROR_DATA_DIRECTORY (-1)
+
 
 /* Main GnollHack routine with all the necessary callback functions */
 DLLEXPORT int RunGnollHack(

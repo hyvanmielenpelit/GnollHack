@@ -329,6 +329,9 @@ namespace GnollHackX.Pages.MainScreen
 #endif
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
+#if WINDOWS || WINDOWS_AVALONIA
+            PlatformLabel.Text += ", code page " + GHWindowsCodePage.AnsiCodePage.ToString(CultureInfo.InvariantCulture);
+#endif
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
             TotalMemoryLabel.Text = (UsedMemInMB >= 0 ? (UsedMemInMB+ " MB / ") : "") +  TotalMemInMB + " MB";
             DiskSpaceLabel.Text = FreeDiskSpaceInGB + " GB" + " / " + TotalDiskSpaceInGB + " GB";

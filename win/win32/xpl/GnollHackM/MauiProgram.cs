@@ -206,6 +206,7 @@ public static class MauiProgram
                 options.Dsn = WindowsSentryNative.Dsn ?? "";
                 options.Release = WindowsSentryNative.Release;
                 options.Environment = WindowsSentryNative.Environment;
+                options.DefaultTags["ansi_code_page"] = GHWindowsCodePage.AnsiCodePage.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 // WORKAROUND(WA-SENTRY-0013): Sentry .NET 7 makes the native scope-sync and crashed-last-run options internal
                 if (WindowsSentryNative.NativeInitialized)
                     GHSentryOptionsInternals.TrySetNativeHooks(options, new GHSentryNativeScopeObserver(), () => WindowsSentryNative.CrashedLastRun);
