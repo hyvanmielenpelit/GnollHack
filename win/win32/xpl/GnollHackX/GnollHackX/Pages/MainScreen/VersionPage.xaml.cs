@@ -262,10 +262,11 @@ namespace GnollHackX.Pages.MainScreen
             AvaloniaMauiRowDefinition.Height = 0;
 #endif
 
+            string gpuWindowsSetting = null;
 #if WINDOWS || WINDOWS_AVALONIA
             if (GHApp.DeviceGPUs.Count > 1)
             {
-                ActiveGPULabel.Text = GetActiveGPUText();
+                ActiveGPULabel.Text = GetActiveGPUText(out gpuWindowsSetting);
             }
             else
 #endif
@@ -276,6 +277,20 @@ namespace GnollHackX.Pages.MainScreen
                 VersionInfoGrid.Children.Remove(ActiveGPULabel);
                 VersionInfoGrid.Children.Remove(ActiveGPUTitleLabel);
                 ActiveGPURowDefinition.Height = 0;
+            }
+
+            if (!string.IsNullOrEmpty(gpuWindowsSetting))
+            {
+                GPUWindowsSettingLabel.Text = gpuWindowsSetting;
+            }
+            else
+            {
+                GPUWindowsSettingLabel.Text = "";
+                GPUWindowsSettingLabel.IsVisible = false;
+                GPUWindowsSettingTitleLabel.IsVisible = false;
+                VersionInfoGrid.Children.Remove(GPUWindowsSettingLabel);
+                VersionInfoGrid.Children.Remove(GPUWindowsSettingTitleLabel);
+                GPUWindowsSettingRowDefinition.Height = 0;
             }
 
             PortVersionLabel.Text = GHApp.GetPortVersionString();
@@ -330,7 +345,14 @@ namespace GnollHackX.Pages.MainScreen
             RuntimeVersionLabel.Text = GHApp.RuntimeVersionString;
             PlatformLabel.Text = DeviceInfo.Platform + " " + DeviceInfo.VersionString;
 #if WINDOWS || WINDOWS_AVALONIA
-            PlatformLabel.Text += ", code page " + GHWindowsCodePage.AnsiCodePage.ToString(CultureInfo.InvariantCulture);
+            CodePageLabel.Text = GHWindowsCodePage.AnsiCodePage.ToString(CultureInfo.InvariantCulture);
+#else
+            CodePageLabel.Text = "";
+            CodePageLabel.IsVisible = false;
+            CodePageTitleLabel.IsVisible = false;
+            VersionInfoGrid.Children.Remove(CodePageLabel);
+            VersionInfoGrid.Children.Remove(CodePageTitleLabel);
+            CodePageRowDefinition.Height = 0;
 #endif
             DeviceLabel.Text = manufacturer + " " + DeviceInfo.Model;
             TotalMemoryLabel.Text = (UsedMemInMB >= 0 ? (UsedMemInMB+ " MB / ") : "") +  TotalMemInMB + " MB";
@@ -346,10 +368,12 @@ namespace GnollHackX.Pages.MainScreen
         }
 
 #if WINDOWS || WINDOWS_AVALONIA
-        /* "<adapter in use> (Windows setting: <GetActiveGPU, or Not set>; <n> GPUs)": the adapter the GPU selection
-           chose, else the default adapter; "<GetActiveGPU> (<n> GPUs)" when no adapter is known */
-        private static string GetActiveGPUText()
+        /* "<adapter in use> (<n> GPUs)", with the Windows setting (GetActiveGPU, or Not set) in windowsSetting: the
+           adapter the GPU selection chose, else the default adapter; "<GetActiveGPU> (<n> GPUs)" and no
+           windowsSetting when no adapter is known */
+        private static string GetActiveGPUText(out string windowsSetting)
         {
+            windowsSetting = null;
             string activeGPU = GHApp.GetActiveGPU();
             int count = GHApp.DeviceGPUs.Count;
             try
@@ -371,8 +395,8 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 if (render != null && !string.IsNullOrWhiteSpace(render.Name))
                 {
-                    string setting = string.IsNullOrEmpty(activeGPU) ? "Not set" : activeGPU;
-                    return render.Name.Trim() + " (Windows setting: " + setting + "; " + count + " GPUs)";
+                    windowsSetting = string.IsNullOrEmpty(activeGPU) ? "Not set" : activeGPU;
+                    return render.Name.Trim() + " (" + count + " GPUs)";
                 }
             }
             catch (Exception ex)
@@ -502,7 +526,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
                     ) - MainGrid.Margin.Left - MainGrid.Margin.Right
                     - MainGrid.Padding.Left - MainGrid.Padding.Right - margins.Left - margins.Right);
-                double newsize = (width >= height ? 14.25 : 14.75) * Math.Min(1.0, target_width / 400);
+                double newsize = (width >= height ? 13.5 : 14.75) * Math.Min(1.0, target_width / 400);
 
                 foreach (View v in VersionInfoGrid.Children)
                 {
