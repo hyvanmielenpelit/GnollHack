@@ -4473,7 +4473,7 @@ namespace GnollHackX
                 case GHGamepadButton.LT:
                     return 't'; // GHUtils.Meta('X');
                 case GHGamepadButton.RT:
-                    return GamepadByRoleCommand;
+                    return 'Z'; // GamepadByRoleCommand;
                 default:
                     return 0;
             }
