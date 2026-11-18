@@ -548,8 +548,9 @@ Checks:
 - Platforms: Windows, Linux, macOS
 - Upstream issue: https://github.com/getsentry/sentry-dotnet/pull/5930
 - Upstream status when added: reported
-- Upstream status: reported
-- Last checked: 2026-11-16
+- Upstream status: released
+- Fixed upstream in: https://github.com/getsentry/sentry-dotnet/pull/5930 (contained in Sentry 7.0.1; partial: `CrashedLastRun` stays internal)
+- Last checked: 2026-11-18
 - Code: `win/win32/xpl/GnollHackM/GHSentryOptionsInternals.cs` (`GHSentryOptionsInternals.TrySetNativeHooks`); `win/win32/xpl/GnollHackM/MauiProgram.cs` (`MauiProgram.CreateMauiApp`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/GHAvaloniaSentry.cs` (`GHAvaloniaSentry.Init`)
 - Remove when: Sentry .NET exposes a public way to set a scope observer, scope sync and the crashed-last-run check from a `UseSentry` callback and from `SentrySdk.Init`, GnollHack uses that release, and Verify removal passes; or WA-SENTRY-0003 is removed.
 - Related: WA-SENTRY-0003
@@ -565,10 +566,10 @@ session of a run that crashed natively does not end as crashed.
 https://github.com/getsentry/sentry-dotnet/issues/4529); `IScopeObserver` stays public. The
 SDK sets them only for its own native SDKs: the Android and Cocoa `SentrySdk` set scope sync
 and their own observers, and `InitNativeSdk` sets all three only when Sentry's sentry-native
-is enabled, which `SentryNative=false` prevents. The open pull request
-https://github.com/getsentry/sentry-dotnet/pull/5930 would make `ScopeObserver` and
-`EnableScopeSync` `protected internal`, settable only inside a `SentryOptions` subclass, and
-keeps `CrashedLastRun` internal.
+is enabled, which `SentryNative=false` prevents. Sentry .NET 7.0.1
+(https://github.com/getsentry/sentry-dotnet/pull/5930) makes `ScopeObserver` and
+`EnableScopeSync` `protected internal`, settable only inside a `SentryOptions` subclass, which
+the Windows `UseSentry` callback does not get, and keeps `CrashedLastRun` internal.
 
 **Workaround.** `GHSentryOptionsInternals.TrySetNativeHooks` sets the three through
 `[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "set_...")]` accessors to their internal
@@ -588,3 +589,4 @@ message "Sentry options internals unavailable: ..." after Sentry starts.
 
 Checks:
 - 2026-11-16 | Sentry 7.0.0 | still-needed | Internal since PR #5631; UnsafeAccessor binding verified by GHSentryOptionsInternalsTests.
+- 2026-11-18 | Sentry 7.0.1 | still-needed | PR #5930 makes ScopeObserver and EnableScopeSync protected internal; CrashedLastRun stays internal and the UseSentry callback has no subclass, so the accessors stay.
