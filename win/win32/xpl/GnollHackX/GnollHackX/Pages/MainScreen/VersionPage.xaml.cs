@@ -526,7 +526,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
                     ) - MainGrid.Margin.Left - MainGrid.Margin.Right
                     - MainGrid.Padding.Left - MainGrid.Padding.Right - margins.Left - margins.Right);
-                double newsize = (width >= height ? 13.5 : 14.75) * Math.Min(1.0, target_width / 400);
+                double newsize = (width >= height ? 13.5 : 14.5) * Math.Min(1.0, target_width / 400);
 
                 foreach (View v in VersionInfoGrid.Children)
                 {
