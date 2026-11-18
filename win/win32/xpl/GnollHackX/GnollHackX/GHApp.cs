@@ -4471,7 +4471,7 @@ namespace GnollHackX
             switch (trigger)
             {
                 case GHGamepadButton.LT:
-                    return GHUtils.Meta('X');
+                    return 't'; // GHUtils.Meta('X');
                 case GHGamepadButton.RT:
                     return GamepadByRoleCommand;
                 default:
