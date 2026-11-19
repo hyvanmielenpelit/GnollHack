@@ -1136,9 +1136,11 @@ dump_everything(int how, time_t when)
             putstr(0, ATR_NONE, linebuf);
         }
         putstr(0, ATR_NONE,
-               "Status key: MC = magic cancellation level/percent chance, MS ="
-               " movement speed (12 is normal; monster speeds use the same"
-               " scale), XL = experience level/points, S = score, T ="
+               "Status key: MC = magic cancellation level/percent chance that"
+               " the special effect of a monster's attack or spell is blocked"
+               " (some attacks shift the chance or bypass it); it is not magic"
+               " resistance. MS = movement speed (12 is normal; monster"
+               " speeds use the same scale), XL = experience level/points, S = score, T ="
                " turns, \"Skill\" = a skill can be advanced now, \"2Weap\" ="
                " fighting with two weapons. The game mode and difficulty"
                " letters are spelled out under \"Game:\". Fields the player"
@@ -1199,8 +1201,10 @@ dump_everything(int how, time_t when)
                " maps appearances to types, and only the absence of the tag"
                " means identified. A quoted name, player-named or"
                " player-labelled = the player's own note, no evidence of what"
-               " the item is. [BUC unknown] = blessed or cursed state not"
-               " known. [contents not yet seen] = a container not yet looked"
+               " the item is; the one exception is a chest labeled \"<hero"
+               " name>'s stash\" in the starting room, a label the game itself"
+               " writes on the magic chest there. [BUC unknown] = blessed or"
+               " cursed state not known. [contents not yet seen] = a container not yet looked"
                " into; one known to be empty says \"empty\" in its name.");
         putstr(0, ATR_NONE,
                "Each item's weight follows it in parentheses; a stack shows"
@@ -3228,7 +3232,14 @@ magic_chest_contents(boolean identified, boolean all_containers, boolean reporte
 
         count = 0;
 
-        Sprintf(buf, "Contents of your %s:", chest_name);
+        if (iflags.dumping_ai_snapshot)
+            Sprintf(buf,
+                    "Contents of the shared %s storage (every %s, which looks like a %s,"
+                    " opens onto this one list):",
+                    OBJ_NAME(objects[MAGIC_CHEST]), OBJ_NAME(objects[MAGIC_CHEST]),
+                    OBJ_DESCR(objects[MAGIC_CHEST]));
+        else
+            Sprintf(buf, "Contents of your %s:", chest_name);
         putstr(tmpwin, ATR_TITLE, buf);
         if (!dumping)
             putstr(tmpwin, ATR_HALF_SIZE, " ");
