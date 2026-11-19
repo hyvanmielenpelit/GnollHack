@@ -14,6 +14,8 @@
     The Steam content root also gets the .vdf files of Packaging\steam\input\ as steam_input\: the Steam Input Action
     Manifest and the controller_neptune.vdf layout exported from the Steam client. A missing layout is a warning.
 
+    SHA256SUMS lists the AppImage and the tar.gz in the output folder, whether this run built them or an earlier one.
+
     The script never downloads, uploads, publishes or signs in to anything. The pinned appimagetool
     and AppImage runtime must already be in $HOME/.cache/gnollhack-packaging/tools/ in WSL.
 
@@ -32,10 +34,10 @@
     The Linux depot ID for both .vdf files. When empty, the {DEPOT_ID} placeholder stays in the files.
 
 .PARAMETER SteamBranch
-    The branch the Steam build is set live on. When empty, the {BRANCH} placeholder stays in the file.
+    The branch the Steam build is set live on. When empty, the build is set live on no branch ("SetLive" "").
 
 .PARAMETER BuildDescription
-    The Steam build description. When empty, the {BUILD_DESC} placeholder stays in the file.
+    The Steam build description. May be empty.
 
 .PARAMETER RunbookPath
     Optional Markdown file added to the tar.gz as gnollhack/README-LINUX-TEST.md.
@@ -209,15 +211,20 @@ function Get-ProjectProperty
     return $nodes[0].InnerText.Trim()
 }
 
-# Fills the placeholders of a VDF template. An empty value leaves its placeholder in place.
+# Fills the placeholders of a VDF template. An empty value leaves its placeholder in place, except for the keys in
+# $AllowEmpty, whose placeholders an empty value replaces with the empty string.
 function Expand-VdfTemplate
 {
-    param([string]$TemplatePath, [System.Collections.Specialized.OrderedDictionary]$Values)
+    param(
+        [string]$TemplatePath,
+        [System.Collections.Specialized.OrderedDictionary]$Values,
+        [string[]]$AllowEmpty = @()
+    )
     $text = [System.IO.File]::ReadAllText($TemplatePath, [System.Text.Encoding]::UTF8)
     foreach ($key in $Values.Keys)
     {
         $value = [string]$Values[$key]
-        if (-not [string]::IsNullOrEmpty($value))
+        if ((-not [string]::IsNullOrEmpty($value)) -or ($AllowEmpty -contains $key))
         {
             $text = $text.Replace('{' + $key + '}', (ConvertTo-VdfString $value))
         }
@@ -311,6 +318,21 @@ OUT="$STAGE/out"
 TOOLS="$WORK/tools"
 fail() { echo "error: $*" >&2; exit 1; }
 warn() { echo "warning: $*" >&2; }
+check_pinned_file() {
+    local path="$1"
+    local expected="$2"
+    local actual
+    [ -f "$path" ] || fail "$path is missing. Put the pinned file there; its name and SHA-256 are set at the top of Build-LinuxPackages.ps1. The download commands are in the wiki page \"Build Instructions for Avalonia Linux Version on Windows\", step 1.3.6."
+    actual=$(sha256sum "$path" | cut -d ' ' -f 1)
+    [ "$actual" = "$expected" ] || fail "$path has SHA-256 $actual, expected $expected. Replace it with the pinned file."
+}
+'@
+
+# The pinned AppImage tools, checked before the publish.
+$BashCheckTools = @'
+check_pinned_file "$TOOLS/$APPIMAGETOOL_FILE" "$APPIMAGETOOL_SHA256"
+check_pinned_file "$TOOLS/$RUNTIME_FILE" "$RUNTIME_SHA256"
+echo "Found $APPIMAGETOOL_FILE and $RUNTIME_FILE in $TOOLS"
 '@
 
 # Staging: a clean copy of the publish with Linux permissions, and an empty output folder.
@@ -389,14 +411,6 @@ mkdir -p "$OUT"
 $BashAppImage = @'
 APPIMAGETOOL="$TOOLS/$APPIMAGETOOL_FILE"
 RUNTIME="$TOOLS/$RUNTIME_FILE"
-check_pinned_file() {
-    local path="$1"
-    local expected="$2"
-    local actual
-    [ -f "$path" ] || fail "$path is missing. Put the pinned file there; its name and SHA-256 are set at the top of Build-LinuxPackages.ps1."
-    actual=$(sha256sum "$path" | cut -d ' ' -f 1)
-    [ "$actual" = "$expected" ] || fail "$path has SHA-256 $actual, expected $expected. Replace it with the pinned file."
-}
 check_pinned_file "$APPIMAGETOOL" "$APPIMAGETOOL_SHA256"
 check_pinned_file "$RUNTIME" "$RUNTIME_SHA256"
 [ -x "$APPIMAGETOOL" ] || chmod 755 "$APPIMAGETOOL"
@@ -475,18 +489,8 @@ cp "$DEPOT_VDF" "$STEAM_DIR/depot_build_linux.vdf"
 chmod 644 "$STEAM_DIR/app_build_linux.vdf" "$STEAM_DIR/depot_build_linux.vdf"
 '@
 
-# Checksums for the AppImage and the tar.gz of this run, then the copy to the Windows output folder.
+# The copy of this run's outputs to the Windows output folder.
 $BashFinish = @'
-cd "$OUT"
-sums=()
-for name in "$APPIMAGE_NAME" "$TARGZ_NAME"; do
-    if [ -f "$name" ]; then
-        sums+=("$name")
-    fi
-done
-if [ "${#sums[@]}" -gt 0 ]; then
-    sha256sum -- "${sums[@]}" > "$SUMS_NAME"
-fi
 echo "Copying the outputs to $WIN_OUT"
 mkdir -p "$WIN_OUT"
 for item in "$OUT"/*; do
@@ -665,6 +669,19 @@ $VersionOutputDir = Join-Path $OutputRootFull $Version
 
 Write-Host "Version $Version; targets: $($Targets -join ', ')"
 
+if ($BuildAppImage)
+{
+    Write-Step 'Checking the AppImage tools in WSL'
+    $toolVariables = [ordered]@{
+        VERSION             = $Version
+        APPIMAGETOOL_FILE   = $AppImageToolFile
+        APPIMAGETOOL_SHA256 = $AppImageToolSha256.ToLowerInvariant()
+        RUNTIME_FILE        = $AppImageRuntimeFile
+        RUNTIME_SHA256      = $AppImageRuntimeSha256.ToLowerInvariant()
+    }
+    Invoke-WslScript -StepName 'AppImage tools' -Body $BashCheckTools -Variables $toolVariables -Common $BashCommon -Distro $WslDistro
+}
+
 # ---------------------------------------------------------------------------------------------------
 # 3. Publish
 # ---------------------------------------------------------------------------------------------------
@@ -716,7 +733,6 @@ $wslVariables = [ordered]@{
     VERSION             = $Version
     APPIMAGE_NAME       = $AppImageName
     TARGZ_NAME          = $TarGzName
-    SUMS_NAME           = $SumsName
     PUBLISH_DIR         = (ConvertTo-WslPath $PublishDir)
     PACKAGING_DIR       = (ConvertTo-WslPath $PackagingDir)
     WIN_OUT             = (ConvertTo-WslPath $VersionOutputDir)
@@ -753,11 +769,11 @@ try
         $tempDir = [System.IO.Path]::GetTempPath()
         $AppVdfTempPath = Join-Path $tempDir ('gnollhack-app-' + [guid]::NewGuid().ToString('N') + '.vdf')
         $DepotVdfTempPath = Join-Path $tempDir ('gnollhack-depot-' + [guid]::NewGuid().ToString('N') + '.vdf')
-        $appVdf = Expand-VdfTemplate -TemplatePath $AppVdfTemplatePath -Values $vdfValues
-        $depotVdf = Expand-VdfTemplate -TemplatePath $DepotVdfTemplatePath -Values $vdfValues
+        $appVdf = Expand-VdfTemplate -TemplatePath $AppVdfTemplatePath -Values $vdfValues -AllowEmpty 'BRANCH', 'BUILD_DESC'
+        $depotVdf = Expand-VdfTemplate -TemplatePath $DepotVdfTemplatePath -Values $vdfValues -AllowEmpty 'BRANCH', 'BUILD_DESC'
         Write-TextFileLf -Path $AppVdfTempPath -Text $appVdf
         Write-TextFileLf -Path $DepotVdfTempPath -Text $depotVdf
-        foreach ($match in [regex]::Matches($appVdf + $depotVdf, '\{(APP_ID|DEPOT_ID|BUILD_DESC|BRANCH)\}'))
+        foreach ($match in [regex]::Matches($appVdf + $depotVdf, '\{(APP_ID|DEPOT_ID)\}'))
         {
             if ($PlaceholdersLeft -notcontains $match.Value)
             {
@@ -794,8 +810,8 @@ try
         Invoke-WslScript -StepName 'Steam' -Body $BashSteam -Variables $wslVariables -Common $BashCommon -Distro $WslDistro
     }
 
-    Write-Step "Writing $SumsName and copying the outputs"
-    Invoke-WslScript -StepName 'checksums' -Body $BashFinish -Variables $wslVariables -Common $BashCommon -Distro $WslDistro
+    Write-Step 'Copying the outputs'
+    Invoke-WslScript -StepName 'copy' -Body $BashFinish -Variables $wslVariables -Common $BashCommon -Distro $WslDistro
 }
 finally
 {
@@ -808,39 +824,62 @@ finally
     }
 }
 
+# SHA256SUMS lists the packages in the output folder, built by this run or an earlier one, in the format sha256sum -c
+# reads
+$PackageHashes = @{}
+$sumsLines = @()
+foreach ($name in @($AppImageName, $TarGzName))
+{
+    $path = Join-Path $VersionOutputDir $name
+    if (Test-Path -LiteralPath $path -PathType Leaf)
+    {
+        $PackageHashes[$name] = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
+        $sumsLines += "$($PackageHashes[$name])  $name"
+    }
+}
+if ($sumsLines.Count -gt 0)
+{
+    Write-Step "Writing $SumsName"
+    Write-TextFileLf -Path (Join-Path $VersionOutputDir $SumsName) -Text (($sumsLines -join "`n") + "`n")
+}
+
 # ---------------------------------------------------------------------------------------------------
 # 10. Summary
 # ---------------------------------------------------------------------------------------------------
 
 Write-Step "Outputs of $Version"
 
-$outputNames = @()
-if ($BuildAppImage)
-{
-    $outputNames += $AppImageName
-    $outputNames += "$AppImageName.zsync"
-}
-if ($BuildTarGz)
-{
-    $outputNames += $TarGzName
-}
-if ($BuildAppImage -or $BuildTarGz)
-{
-    $outputNames += $SumsName
-}
+# Every output in the folder is listed; ThisRun tells whether this run made it
+$outputs = @(
+    @{ Name = $AppImageName; ThisRun = $BuildAppImage },
+    @{ Name = "$AppImageName.zsync"; ThisRun = $BuildAppImage },
+    @{ Name = $TarGzName; ThisRun = $BuildTarGz },
+    @{ Name = $SumsName; ThisRun = ($sumsLines.Count -gt 0) }
+)
 
-foreach ($name in $outputNames)
+foreach ($output in $outputs)
 {
-    $path = Join-Path $VersionOutputDir $name
+    $path = Join-Path $VersionOutputDir $output.Name
     if (Test-Path -LiteralPath $path -PathType Leaf)
     {
         $item = Get-Item -LiteralPath $path
-        $hash = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
+        if ($PackageHashes.ContainsKey($output.Name))
+        {
+            $hash = $PackageHashes[$output.Name]
+        }
+        else
+        {
+            $hash = (Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()
+        }
         Write-Host $path
         Write-Host "    size    $(Format-ByteSize $item.Length)"
         Write-Host "    sha256  $hash"
+        if (-not $output.ThisRun)
+        {
+            Write-Host '    (from an earlier run)'
+        }
     }
-    else
+    elseif ($output.ThisRun)
     {
         Write-Host "$path    (not created)"
     }

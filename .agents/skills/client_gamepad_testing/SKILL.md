@@ -198,7 +198,7 @@ Only the orchestrating agent does this, after every subagent has returned.
 |-------------------------|---------|------------|
 | `Cannot resolve` or `Cannot reach` | Asleep, off, or on another network | Ask the user once to wake the Deck, retry once, then treat it as unreachable. Never retry in a loop |
 | `no SSH server is running` | sshd is off | The user enables it on the Deck; the script prints the command |
-| `The one-time SSH setup ... is missing` | No trusted key | The user runs the printed `ssh-copy-id`. It needs the deck password, which an agent never handles |
+| `The one-time SSH setup ... is missing` | No trusted key | The user runs the printed `ssh-copy-id`, which needs the deck password; an agent never handles it. Without the password (sshd already on): the agent shows WSL's **public** key, the user appends it to `~/.ssh/authorized_keys` in Konsole and reads the Deck's fingerprint with `ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub`, and the agent saves the host key under `-HostKeyAlias` only after the user confirms it equals the one the script printed. Creating the WSL key is the user's step |
 | `is not the one trusted as` | A different device, or a reinstall | Stop and tell the user. Never edit `known_hosts` |
 | `GnollHackM is running on the Deck` | The game is open, maybe with a game in progress | Ask the user to quit it. Pass `-Force` only if the user says to |
 | `No staged build` | Packaging did not run for this version | Run step 4 |

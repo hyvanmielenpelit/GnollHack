@@ -33,7 +33,8 @@
         3. Run .\Deploy-SteamDeck.ps1 (with -DeckHost if needed). The first run stops at the connection check and
            prints the exact command for the Deck's current address, for example
                wsl -d Ubuntu-20.04 ssh-copy-id -o HostKeyAlias=steamdeck deck@192.0.2.10
-           Run it, confirm the host key and enter the deck password once.
+           Run it, confirm the host key and compare the fingerprint it prints with the one the Deck shows, and enter
+           the deck password once.
         4. After the first deploy, in Desktop Mode, in Steam: Add a Game, Add a Non-Steam Game, and browse to
            /home/deck/gnollhack-dev/run-gnollhack.sh. The shortcut then appears in the Gaming Mode library.
 
@@ -318,9 +319,21 @@ if ! check_errors=$(remote true 2>&1 >/dev/null); then
             copy_id="$copy_id -i $SSH_KEY.pub"
         fi
         copy_id="$copy_id -o HostKeyAlias=$HOST_KEY_ALIAS $TARGET"
+        # A Deck whose key is not trusted yet: the fingerprint it presents, for the person to compare with the Deck's own
+        fingerprint_note=""
+        if ! ssh-keygen -F "$HOST_KEY_ALIAS" >/dev/null 2>&1; then
+            fingerprint=$(ssh-keyscan -T 5 -t ed25519 "$DECK_ADDRESS" 2>/dev/null | ssh-keygen -lf - 2>/dev/null | awk '{print $2}' || true)
+            if [ -n "$fingerprint" ]; then
+                fingerprint_note="
+Before you answer yes, check that the Deck is the device at that address: in Desktop Mode, in Konsole, run
+    ssh-keygen -lf /etc/ssh/ssh_host_ed25519_key.pub
+It must print $fingerprint.
+If you do not know the deck password, the wiki page \"Testing Avalonia Linux Version on Steam Deck\" shows how to install the key without it."
+            fi
+        fi
         fail "The one-time SSH setup for $TARGET is missing. Run this, confirm the Deck's host key and enter the deck password once:
     $copy_id
-If WSL has no SSH key yet, first run: wsl -d $WSL_DISTRO ssh-keygen -t ed25519"
+If WSL has no SSH key yet, first run: wsl -d $WSL_DISTRO ssh-keygen -t ed25519$fingerprint_note"
         ;;
     *"Connection refused"*)
         fail "$where answered, but no SSH server is running on it. On the Deck, in Desktop Mode, in Konsole, run: passwd (once, if the deck user has no password yet), then sudo systemctl enable --now sshd"
