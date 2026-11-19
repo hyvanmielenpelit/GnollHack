@@ -1447,6 +1447,16 @@ namespace GnollHackX
 
         private async Task StartUpTasks()
         {
+            /* About a hundred PNG decodes, run alongside the rest of the start-up; only pages opened after
+               startup read these images. Started first so that a MainPage built after an activity restart
+               always waits for this decode. */
+            _startUpBitmapsTask = Task.Run(() =>
+            {
+                GHApp.InitAdditionalCachedBitmaps();
+                GHApp.InitSymbolBitmaps();
+                GHApp.InitGameBitmaps();
+            });
+
             // WORKAROUND(WA-MAUI-0033): An awaited MAUI animation resumes inside the animation frame callback
             /* StartFadeLogoIn completes inside the logo fade's last animation frame */
             await Task.Yield();
@@ -1463,13 +1473,6 @@ namespace GnollHackX
             TryDeleteOverseerDebugLogs();
 
             GHApp.InitAdditionalTypefaces();
-            /* About a hundred PNG decodes; only pages opened after startup read these images */
-            _startUpBitmapsTask = Task.Run(() =>
-            {
-                GHApp.InitAdditionalCachedBitmaps();
-                GHApp.InitSymbolBitmaps();
-                GHApp.InitGameBitmaps();
-            });
             await _startUpBitmapsTask;
 #if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
             GHApp.InitRuntimeEffects();

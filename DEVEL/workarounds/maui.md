@@ -1298,8 +1298,9 @@ last frame. The inline completion is the same on every platform; its effect was 
 Read in MAUI's source at tag 11.0.10 (`src/Controls/src/Core/ViewExtensions.cs`,
 `src/Core/src/Animations/PlatformTicker.Android.cs`).
 
-**Workaround.** `MainPage.StartUpTasks` begins with `await Task.Yield()`, which moves the rest of it to
-a later message on the UI thread, after the animation frame has finished.
+**Workaround.** `MainPage.StartUpTasks` starts its image decode on a worker and then awaits
+`Task.Yield()`, which moves the rest of it to a later message on the UI thread, after the animation frame
+has finished.
 
 **Verify removal.** Remove the `await Task.Yield();` line and its tag from `MainPage.StartUpTasks`, and
 put `System.Diagnostics.Debug.WriteLine("StartUpTasks stack: " + Environment.StackTrace);` as its first
