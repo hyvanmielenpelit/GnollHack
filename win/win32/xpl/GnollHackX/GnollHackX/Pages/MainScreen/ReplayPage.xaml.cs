@@ -15,7 +15,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Azure;
-using Azure.Identity;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Blobs.Specialized;
@@ -894,8 +893,14 @@ namespace GnollHackX.Pages.MainScreen
                 if(GHApp.ValidateReplayFile(filePath, out outstr))
                 {
                     var gamePage = new GamePage(_mainPage);
-                    await GHApp.PushModalPageAsync(gamePage);
-                    await gamePage.StartReplay(filePath, -1);
+                    if (await GHApp.TryPushModalPageAsync(gamePage))
+                    {
+                        await gamePage.StartReplay(filePath, -1);
+                    }
+                    else
+                    {
+                        await GHApp.DisplayMessageBox(this, "Replay Failed", "The game screen could not be opened.", "OK");
+                    }
                 }
                 else
                 {

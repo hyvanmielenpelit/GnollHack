@@ -43,6 +43,7 @@ namespace GnollHackX
     {
         private static int _unavailable = 0;
         private static string _lastError = null;
+        private static int _timedOut = 0;
 
         /// <summary>
         /// False once a store operation has failed. The caller should then keep the value in
@@ -63,29 +64,53 @@ namespace GnollHackX
         }
 
         /// <summary>
+        /// True once an operation has timed out. Its platform call may still be running, so a
+        /// caller with a deadline, such as the startup credential load, makes no further calls.
+        /// </summary>
+        public static bool HasTimedOut
+        {
+            get { return Interlocked.CompareExchange(ref _timedOut, 0, 0) != 0; }
+        }
+
+        /// <summary>
         /// Reads a value from the secure store.
         /// </summary>
         /// <param name="key">The secure store key.</param>
         /// <returns>The stored value, or null when the key is absent or the read failed.</returns>
         public static string Get(string key)
         {
+            string value;
+            TryGet(key, out value);
+            return value;
+        }
+
+        /// <summary>
+        /// Reads a value from the secure store, telling an absent key from a failed read.
+        /// </summary>
+        /// <param name="key">The secure store key.</param>
+        /// <param name="value">The stored value, or null when the key is absent or the read failed.</param>
+        /// <returns>False when the key is empty or the read failed or timed out.</returns>
+        public static bool TryGet(string key, out string value)
+        {
+            value = null;
             if (string.IsNullOrEmpty(key))
-                return null;
+                return false;
 
             try
             {
                 Task<string> task = Task.Run(() => SecureStorage.GetAsync(key));
                 if (!task.Wait(GHConstants.SecureStoreTimeoutMs))
                 {
-                    MarkFailure("Get", "timed out after " + GHConstants.SecureStoreTimeoutMs + " ms");
-                    return null;
+                    MarkTimeout("Get");
+                    return false;
                 }
-                return task.Result;
+                value = task.Result;
+                return true;
             }
             catch (Exception ex)
             {
                 MarkFailure("Get", ex.Message);
-                return null;
+                return false;
             }
         }
 
@@ -110,7 +135,7 @@ namespace GnollHackX
                 Task task = Task.Run(() => SecureStorage.SetAsync(key, value));
                 if (!task.Wait(GHConstants.SecureStoreTimeoutMs))
                 {
-                    MarkFailure("Set", "timed out after " + GHConstants.SecureStoreTimeoutMs + " ms");
+                    MarkTimeout("Set");
                     return false;
                 }
                 return true;
@@ -163,6 +188,12 @@ namespace GnollHackX
             }
         }
 
+        private static void MarkTimeout(string operation)
+        {
+            Interlocked.Exchange(ref _timedOut, 1);
+            MarkFailure(operation, "timed out after " + GHConstants.SecureStoreTimeoutMs + " ms");
+        }
+
         /// <summary>
         /// Records a failure and marks the store unavailable. Deliberately logs the failing
         /// operation and message only -- never a key's value.
@@ -176,7 +207,7 @@ namespace GnollHackX
             Debug.WriteLine(logtext);
             try
             {
-                GHApp.MaybeWriteGHLog(logtext);
+                GHApp.MaybeWriteGHLog(logtext, true, GHConstants.SentryGnollHackGeneralCategoryName);
             }
             catch (Exception)
             {

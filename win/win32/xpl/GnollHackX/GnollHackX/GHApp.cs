@@ -46,7 +46,6 @@ using System.Security.Cryptography;
 using System.Timers;
 using System.Collections;
 using static System.Net.Mime.MediaTypeNames;
-using Azure.Identity;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure;
@@ -210,6 +209,7 @@ namespace GnollHackX
 
         public static void Initialize()
         {
+            GHStartupTimeline.Current.MilestoneReached += OnStartupMilestoneReached;
             GHStartupTimeline.Current.Mark(GHStartupMilestone.AppInit);
             GHDiagnosticsScheduler.Configure(
                 () => IsInGameForDiagnostics,
@@ -238,6 +238,9 @@ namespace GnollHackX
             InitBaseCachedBitmaps();
             InitBaseButtonBitmaps();
             InitializeSentryScopeDiagnostics();
+#if GNH_MAUI && ANDROID
+            TagTranslatedProcess();
+#endif
 
             DoMigrations();
 
@@ -343,6 +346,11 @@ namespace GnollHackX
                 Debug.WriteLine(ex.Message);
                 Interlocked.Exchange(ref _isMetalAvailable, 0);
             }
+            Interlocked.Exchange(ref _isOpenGLESAvailable, ProbeOpenGLES() ? 1 : 0);
+            if (!IsOpenGLESAvailable)
+                MaybeWriteGHLog("OpenGL ES is unavailable; " + (IsMetalAvailable ? "the GPU canvases use Metal" : "the canvases draw without the GPU"),
+                    true, GHConstants.SentryGnollHackGeneralCategoryName);
+            SetSentryTag(GHConstants.SentryTagOpenGLES, IsOpenGLESAvailable ? "available" : "unavailable");
 #endif
             UseMetal = Preferences.Get("UseMetal", IsUseMetalDefault);
             ApplyGPUCacheLimits(UseMetal);
@@ -2033,6 +2041,62 @@ namespace GnollHackX
             }
         }
 
+        /* False when the page could not be presented; the page is then off the modal stack and its handlers are disconnected */
+        public static async Task<bool> TryPushModalPageAsync(Page page)
+        {
+            bool pushed = false;
+            try
+            {
+                PushingModalPage = true;
+                await Task.Yield();
+                await Navigation.PushModalAsync(page);
+                pushed = true;
+            }
+            catch (Exception ex)
+            {
+                ReportCaughtException(ex);
+            }
+            finally
+            {
+                PushingModalPage = false;
+            }
+
+            if (pushed)
+            {
+                try
+                {
+                    _platformService?.EnsureWindowFocus();
+                }
+                catch (Exception ex)
+                {
+                    ReportCaughtException(ex);
+                }
+                return true;
+            }
+
+            await RemoveFailedModalPageAsync(page);
+            return false;
+        }
+
+        /* MAUI keeps a page whose presentation threw on its modal stack */
+        private static async Task RemoveFailedModalPageAsync(Page page)
+        {
+            try
+            {
+                INavigation navigation = Navigation;
+                IReadOnlyList<Page> modalStack = navigation?.ModalStack;
+                if (modalStack != null && modalStack.Count > 0 && modalStack[modalStack.Count - 1] == page)
+                    await navigation.PopModalAsync(false);
+            }
+            catch (Exception ex)
+            {
+                ReportCaughtException(ex);
+            }
+            DisconnectIViewHandlers(page);
+            if (page is GamePage gp)
+                await gp.CleanupAsync();
+        }
+
         public static async Task PushModalPageAsync(Page page, bool animated)
         {
             try
@@ -2693,7 +2757,12 @@ namespace GnollHackX
         private static int _isMetalAvailable = 0;
         /* MAUI iOS with a Metal device; set once in Initialize */
         public static bool IsMetalAvailable { get { return Interlocked.CompareExchange(ref _isMetalAvailable, 0, 0) != 0; } }
-        public static bool IsUseMetalDefault { get { return IsMetalAvailable && GHConstants.DefaultUseMetalRendering; } }
+        private static int _isOpenGLESAvailable = 1;
+        /* False only on MAUI iOS when no OpenGL ES context can be created, as on Apple's virtual iPhones; set once in Initialize */
+        public static bool IsOpenGLESAvailable { get { return Interlocked.CompareExchange(ref _isOpenGLESAvailable, 0, 0) != 0; } }
+        /* The GPU canvases draw with Metal whatever the setting says, because OpenGL ES is unavailable */
+        public static bool IsMetalRenderingForced { get { return IsMetalAvailable && !IsOpenGLESAvailable; } }
+        public static bool IsUseMetalDefault { get { return IsMetalAvailable && (GHConstants.DefaultUseMetalRendering || !IsOpenGLESAvailable); } }
         /* macOS Avalonia: the Metal Rendering setting chooses Avalonia.Native's rendering backend when the process starts;
            a change applies after a restart */
         public static readonly bool IsMetalRenderingStartupSetting =
@@ -2704,7 +2773,28 @@ namespace GnollHackX
 #endif
         private static int _useMetal = 0;
         /* The GPU canvases draw with Metal instead of OpenGL ES. Read when a GamePage is constructed; see SwitchableCanvasView.CreateGLView */
-        public static bool UseMetal { get { return IsMetalAvailable && Interlocked.CompareExchange(ref _useMetal, 0, 0) != 0; } set { Interlocked.Exchange(ref _useMetal, value ? 1 : 0); } }
+        public static bool UseMetal { get { return IsMetalAvailable && (!IsOpenGLESAvailable || Interlocked.CompareExchange(ref _useMetal, 0, 0) != 0); } set { Interlocked.Exchange(ref _useMetal, value ? 1 : 0); } }
+
+#if GNH_MAUI && IOS
+        /* SkiaSharp's iOS SKGLView needs an OpenGL ES 2 context */
+        private static bool ProbeOpenGLES()
+        {
+            try
+            {
+#pragma warning disable CA1422 // EAGLContext is obsolete in favor of Metal
+                using (var context = new OpenGLES.EAGLContext(OpenGLES.EAGLRenderingAPI.OpenGLES2))
+                {
+                    return context.Handle != ObjCRuntime.NativeHandle.Zero;
+                }
+#pragma warning restore CA1422
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return false;
+            }
+        }
+#endif
 
         private static int _useTextBlobCaching = 0;
         /* Read once per frame by each paint handler and applied via GHSkiaFontPaint.SyncBlobCache */
@@ -3003,7 +3093,7 @@ namespace GnollHackX
         {
             get
             {
-                return true;
+                return IsOpenGLESAvailable || IsMetalAvailable;
                 //#if WINDOWS
                 //                return IsPackaged;
                 //#else
@@ -4142,6 +4232,67 @@ namespace GnollHackX
             }
 #endif
         }
+
+        /* The milestones every platform passes through, latest first. AppCreate, Activity and Focused are
+           Android-only, and MainActivity marks Activity after MainPage, so they do not set the phase. */
+        private static readonly GHStartupMilestone[] _startupPhaseOrder =
+        {
+            GHStartupMilestone.MainMenu, GHStartupMilestone.StartUpTasks, GHStartupMilestone.MainPage,
+            GHStartupMilestone.AppReady, GHStartupMilestone.CredentialsDone, GHStartupMilestone.Credentials,
+            GHStartupMilestone.AppInit
+        };
+
+        /* The scope is persisted, so an ANR or crash during startup names the furthest phase it reached */
+        private static void OnStartupMilestoneReached(GHStartupMilestone milestone)
+        {
+#if SENTRY
+            try
+            {
+                GHStartupTimeline timeline = GHStartupTimeline.Current;
+                string phase = null;
+                foreach (GHStartupMilestone candidate in _startupPhaseOrder)
+                {
+                    if (timeline.HasReached(candidate))
+                    {
+                        phase = candidate == GHStartupMilestone.MainMenu ? "done" : GHStartupTimeline.Name(candidate);
+                        break;
+                    }
+                }
+                string timings = timeline.FormatTimings();
+                SentrySdk.ConfigureScope(scope =>
+                {
+                    if (phase != null)
+                        scope.SetTag(GHConstants.SentryTagAppStartup, phase);
+                    scope.SetExtra(GHConstants.SentryExtraStartupTiming, timings);
+                });
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+#endif
+        }
+
+#if GNH_MAUI && ANDROID
+        /* An x86 device running the arm64 build through binary translation, as automated test farms do */
+        private static void TagTranslatedProcess()
+        {
+            try
+            {
+                IList<string> abis = Android.OS.Build.SupportedAbis;
+                string primaryAbi = abis != null && abis.Count > 0 ? abis[0] : null;
+                System.Runtime.InteropServices.Architecture processArchitecture = RuntimeInformation.ProcessArchitecture;
+                bool translated = primaryAbi != null && primaryAbi.StartsWith("x86", StringComparison.Ordinal)
+                    && (processArchitecture == System.Runtime.InteropServices.Architecture.Arm64
+                        || processArchitecture == System.Runtime.InteropServices.Architecture.Arm);
+                SetSentryTag(GHConstants.SentryTagDeviceTranslated, translated ? "yes" : "no");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+#endif
 
 
         public static void ReadCommands(int customKeyBindingsRead)
@@ -8144,7 +8295,7 @@ namespace GnollHackX
                             Preferences.Remove(oldKey);
                             cleared++;
                         }
-                        else if (GHSecureStore.Set(secureKey, plainValue))
+                        else if (!GHSecureStore.HasTimedOut && GHSecureStore.Set(secureKey, plainValue))
                         {
                             Preferences.Remove(oldKey);
                             migrated++;
@@ -8170,16 +8321,42 @@ namespace GnollHackX
                     MaybeWriteGHLog("Credential migration to the secure store: " + migrated + " moved, " + cleared + " empty entries removed, " + failed + " failed.");
             }
 
-            XlogUserName = GHSecureStore.Get(GHConstants.SecureXlogUserNameKey) ?? "";
-            XlogPassword = GHSecureStore.Get(GHConstants.SecureXlogPasswordKey) ?? "";
-            CustomCloudStorageConnectionString = GHSecureStore.Get(GHConstants.SecureCloudStorageConnectionStringKey) ?? "";
+            XlogUserName = ReadSecureCredentialAtStartup(GHConstants.SecureXlogUserNameKey) ?? "";
+            XlogPassword = ReadSecureCredentialAtStartup(GHConstants.SecureXlogPasswordKey) ?? "";
+            CustomCloudStorageConnectionString = ReadSecureCredentialAtStartup(GHConstants.SecureCloudStorageConnectionStringKey) ?? "";
 #if DEBUG
-            LocalOverseerUserName = GHSecureStore.Get(GHConstants.SecureLocalOverseerUserNameKey);
-            LocalOverseerPassword = GHSecureStore.Get(GHConstants.SecureLocalOverseerPasswordKey);
+            LocalOverseerUserName = ReadSecureCredentialAtStartup(GHConstants.SecureLocalOverseerUserNameKey);
+            LocalOverseerPassword = ReadSecureCredentialAtStartup(GHConstants.SecureLocalOverseerPasswordKey);
 #endif
 
             if (!GHSecureStore.IsAvailable)
                 MaybeWriteGHLog("The platform secure store is unavailable; credentials will not be saved between sessions. Last error: " + (GHSecureStore.LastError ?? "unknown"));
+        }
+
+        /* Secure-store keys whose stored value could not be read at startup; their in-memory values are blank */
+        private static readonly HashSet<string> _secureCredentialsNotLoaded = new HashSet<string>();
+
+        public static bool IsSecureCredentialNotLoaded(string key)
+        {
+            lock (_secureCredentialsNotLoaded)
+            {
+                return _secureCredentialsNotLoaded.Contains(key);
+            }
+        }
+
+        /* Each read blocks the main thread for up to SecureStoreTimeoutMs, so none is made after a timeout */
+        private static string ReadSecureCredentialAtStartup(string key)
+        {
+            string value;
+            if (GHSecureStore.HasTimedOut || !GHSecureStore.TryGet(key, out value))
+            {
+                lock (_secureCredentialsNotLoaded)
+                {
+                    _secureCredentialsNotLoaded.Add(key);
+                }
+                return null;
+            }
+            return value;
         }
 
         public static bool AreCredentialsVerified(string username, string password)

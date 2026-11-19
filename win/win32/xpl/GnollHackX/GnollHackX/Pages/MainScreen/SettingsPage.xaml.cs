@@ -1056,9 +1056,9 @@ namespace GnollHackX.Pages.MainScreen
                player is told below. */
             bool securestoreok = true;
             GHApp.XlogUserName = PostXlogUserNameEntry.Text;
-            securestoreok &= GHSecureStore.Set(GHConstants.SecureXlogUserNameKey, PostXlogUserNameEntry.Text);
+            securestoreok &= SetSecureCredential(GHConstants.SecureXlogUserNameKey, PostXlogUserNameEntry.Text);
             GHApp.XlogPassword = PostXlogPasswordEntry.Text;
-            securestoreok &= GHSecureStore.Set(GHConstants.SecureXlogPasswordKey, PostXlogPasswordEntry.Text);
+            securestoreok &= SetSecureCredential(GHConstants.SecureXlogPasswordKey, PostXlogPasswordEntry.Text);
             GHApp.BonesAllowedUsers = BonesAllowedUsersEntry.Text;
             Preferences.Set("BonesAllowedUsers", BonesAllowedUsersEntry.Text);
             GHApp.XlogReleaseAccount = XlogReleaseAccountSwitch.IsToggled;
@@ -1075,7 +1075,7 @@ namespace GnollHackX.Pages.MainScreen
             }
 
             GHApp.CustomCloudStorageConnectionString = _customCloudStorageConnectionString;
-            securestoreok &= GHSecureStore.Set(GHConstants.SecureCloudStorageConnectionStringKey, _customCloudStorageConnectionString);
+            securestoreok &= SetSecureCredential(GHConstants.SecureCloudStorageConnectionStringKey, _customCloudStorageConnectionString);
 
             GHApp.XlogCredentialsIncorrect = false;
             if (!GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
@@ -1238,9 +1238,9 @@ namespace GnollHackX.Pages.MainScreen
                 GHApp.LocalOverseerAddress = OverseerLocalAddressEntry.Text;
                 Preferences.Set("LocalOverseerAddress", OverseerLocalAddressEntry.Text ?? "");
                 GHApp.LocalOverseerUserName = OverseerLocalUserNameEntry.Text;
-                securestoreok &= GHSecureStore.Set(GHConstants.SecureLocalOverseerUserNameKey, OverseerLocalUserNameEntry.Text ?? "");
+                securestoreok &= SetSecureCredential(GHConstants.SecureLocalOverseerUserNameKey, OverseerLocalUserNameEntry.Text ?? "");
                 GHApp.LocalOverseerPassword = OverseerLocalPasswordEntry.Text;
-                securestoreok &= GHSecureStore.Set(GHConstants.SecureLocalOverseerPasswordKey, OverseerLocalPasswordEntry.Text ?? "");
+                securestoreok &= SetSecureCredential(GHConstants.SecureLocalOverseerPasswordKey, OverseerLocalPasswordEntry.Text ?? "");
             }
 #endif
             GHApp.DebugLogMessages = LogMessageSwitch.IsToggled;
@@ -1609,6 +1609,17 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
+        /* A blank field over a credential that could not be read at startup keeps the stored value,
+           and after a timeout no write waits on the store again */
+        private static bool SetSecureCredential(string key, string value)
+        {
+            if (string.IsNullOrEmpty(value) && GHApp.IsSecureCredentialNotLoaded(key))
+                return true;
+            if (GHSecureStore.HasTimedOut)
+                return false;
+            return GHSecureStore.Set(key, value);
+        }
+
         private void SetInitialValues()
         {
             int cursor = 0, graphics = 0, gridopacity = 0, savestyle = 0, maprefresh = -1, msgnum = 0, petrows = 0;
@@ -1714,6 +1725,8 @@ namespace GnollHackX.Pages.MainScreen
             surfaceview = Preferences.Get("UseSurfaceView", GHApp.IsUseSurfaceViewDefault);
             metal = GHApp.IsMetalRenderingStartupSetting ? Preferences.Get("UseMetal", GHConstants.DefaultUseMetalRenderingMac)
                 : Preferences.Get("UseMetal", GHApp.IsUseMetalDefault);
+            if (GHApp.IsMetalRenderingForced)
+                metal = true;
 #if GNH_AVALONIA && MACOS
             if (_metalRenderingAtStartup < 0)
                 _metalRenderingAtStartup = metal ? 1 : 0;
@@ -1995,7 +2008,7 @@ namespace GnollHackX.Pages.MainScreen
                 SurfaceViewSwitch.IsEnabled = gpu && _gamePage == null; /* The map's GL view is created with the game page */
                 SurfaceViewLabel.TextColor = gpu && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
                 /* The GL views are created with the game page; on macOS the setting is read at startup */
-                bool metalEnabled = GHApp.IsMetalRenderingStartupSetting || (gpu && _gamePage == null);
+                bool metalEnabled = GHApp.IsMetalRenderingStartupSetting || (gpu && _gamePage == null && !GHApp.IsMetalRenderingForced);
                 MetalSwitch.IsEnabled = metalEnabled;
                 MetalLabel.TextColor = metalEnabled ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             }
@@ -3579,7 +3592,7 @@ namespace GnollHackX.Pages.MainScreen
             MipMapLabel.TextColor = e.Value ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
             SurfaceViewSwitch.IsEnabled = e.Value && _gamePage == null;
             SurfaceViewLabel.TextColor = e.Value && _gamePage == null ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
-            bool metalEnabled = GHApp.IsMetalRenderingStartupSetting || (e.Value && _gamePage == null);
+            bool metalEnabled = GHApp.IsMetalRenderingStartupSetting || (e.Value && _gamePage == null && !GHApp.IsMetalRenderingForced);
             MetalSwitch.IsEnabled = metalEnabled;
             MetalLabel.TextColor = metalEnabled ? (GHApp.DarkMode ? GHColors.White : GHColors.Black) : GHColors.Gray;
 

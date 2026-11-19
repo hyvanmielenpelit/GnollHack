@@ -842,8 +842,16 @@ namespace GnollHackX
                     gamePage.EnableWizardMode = wizardModeSwitch.IsToggled;
                     gamePage.EnableCasualMode = casualModeSwitch.IsToggled;
                     gamePage.EnableModernMode = !classicModeSwitch.IsToggled;
-                    await GHApp.PushModalPageAsync(gamePage);
-                    await gamePage.StartNewGame();
+                    if (await GHApp.TryPushModalPageAsync(gamePage))
+                    {
+                        await gamePage.StartNewGame();
+                    }
+                    else
+                    {
+                        ActivateLocalGameButton();
+                        carouselView.Play();
+                        DisplayAlertGrid("Error", "Error occurred when starting the game: the game screen could not be opened.", "OK", GHColors.Red);
+                    }
                 }
             }
             catch (Exception ex)
@@ -941,6 +949,7 @@ namespace GnollHackX
             if (_firsttime && (curGame != null || GHApp.MainPageConstructorRunNumber > 1)) // Restart
             {
                 _firsttime = false;
+                await _startUpBitmapsTask;
                 GHApp.SetWindowFocus();
                 GnollHackLabel.Text = "GnollHack";
                 FinishedLogoFadeIn = true;
@@ -1438,6 +1447,9 @@ namespace GnollHackX
 
         private async Task StartUpTasks()
         {
+            // WORKAROUND(WA-MAUI-0033): An awaited MAUI animation resumes inside the animation frame callback
+            /* StartFadeLogoIn completes inside the logo fade's last animation frame */
+            await Task.Yield();
             GHApp.InitFileDescriptors();
             GHApp.MigrateMapRefreshRatePreference();
 
@@ -1451,9 +1463,14 @@ namespace GnollHackX
             TryDeleteOverseerDebugLogs();
 
             GHApp.InitAdditionalTypefaces();
-            GHApp.InitAdditionalCachedBitmaps();
-            GHApp.InitSymbolBitmaps();
-            GHApp.InitGameBitmaps();
+            /* About a hundred PNG decodes; only pages opened after startup read these images */
+            _startUpBitmapsTask = Task.Run(() =>
+            {
+                GHApp.InitAdditionalCachedBitmaps();
+                GHApp.InitSymbolBitmaps();
+                GHApp.InitGameBitmaps();
+            });
+            await _startUpBitmapsTask;
 #if GNH_MAUI && ENABLE_RUNTIME_EFFECTS
             GHApp.InitRuntimeEffects();
 #endif
@@ -1790,6 +1807,8 @@ namespace GnollHackX
 
         //private readonly object _startUpLock = new object();
         private int _finishedLogoFadeIn = 0;
+        /* The first MainPage's startup image decode; a MainPage built after an activity restart waits for it */
+        private static Task _startUpBitmapsTask = Task.CompletedTask;
         private bool FinishedLogoFadeIn { get { return Interlocked.CompareExchange(ref _finishedLogoFadeIn, 0, 0) != 0; } set { Interlocked.Exchange(ref _finishedLogoFadeIn, value ? 1 : 0); } }
         /* Set when StartUpTasks has loaded the banks and tried the main screen music */
         private int _mainScreenMusicAttempted = 0;

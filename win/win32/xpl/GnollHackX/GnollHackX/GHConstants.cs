@@ -527,6 +527,7 @@ namespace GnollHackX
         public const string SentryTagFmodMixer = "fmod.mixer";
         public const string SentryTagAppLifecycle = "app.lifecycle";
         public const string SentryTagMapSurface = "map.surface";
+        public const string SentryTagOpenGLES = "gpu.opengles";
         public const string SentryTagFmodOutput = "fmod.output";
         public const string SentryTagFmodVersion = "fmod.version";
         public const string SentryTagProcessPrivate = "process.private";
@@ -547,6 +548,9 @@ namespace GnollHackX
         public const string SentryTagMacPackage = "macos.package";
         public const string SentryTagWindowsPackage = "windows.package";
         public const string SentryTagCaughtIn = "caught.in";
+        public const string SentryExtraStartupTiming = "Startup Timing";
+        public const string SentryTagAppStartup = "app.startup";
+        public const string SentryTagDeviceTranslated = "device.translated";
         public const string SentryContextProcessMemory = "Process Memory";
         /* Handles above the startup baseline that trigger one handle growth warning per process */
         public const int HandleGrowthWarningThreshold = 5000;

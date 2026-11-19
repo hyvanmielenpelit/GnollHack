@@ -1267,3 +1267,47 @@ canvas back.
 
 Checks:
 - 2026-11-17 | Microsoft.Maui.Controls 11.0.10 | unverified | Read in MAUI's source at tag 11.0.10; unchanged on main at efe63adf42. The user reported the missing box. The workaround has not yet been tested. Issue searches found only the closed dotnet/maui#17389 and dotnet/maui#23436.
+
+## WA-MAUI-0033: An awaited MAUI animation resumes inside the animation frame callback
+
+- Status: active
+- Added: 2026-11-19
+- GnollHack version: 3.43 (443)
+- Component: .NET MAUI
+- Package: Microsoft.Maui.Controls
+- Defective version: Microsoft.Maui.Controls 11.0.10
+- Platforms: all
+- Upstream issue: none
+- Upstream status when added: unreported
+- Upstream status: unreported
+- Last checked: 2026-11-19
+- Code: `win/win32/xpl/GnollHackX/GnollHackX/MainPage.xaml.cs` (`MainPage.StartUpTasks`)
+- Remove when: `AnimateToAsync` completes its task asynchronously in a Microsoft.Maui.Controls release GnollHack uses, and Verify removal passes.
+
+**Symptom.** On Android the whole first-launch `StartUpTasks` ran inside `Choreographer.doFrame`, in a
+`ValueAnimator` update callback, so no frame was drawn and no posted message, the window's first-draw
+report included, ran until it finished. A player's device hit an "Application does not have a focused
+window" ANR there (GNOLLHACK-JP).
+
+**Cause.** `ViewExtensions.AnimateToAsync` creates its `TaskCompletionSource<bool>` without
+`TaskCreationOptions.RunContinuationsAsynchronously` and completes it from the animation's finished
+callback. On Android that callback runs in `PlatformTicker`'s `ValueAnimator.Update` handler, and with
+the UI thread's `SynchronizationContext` current, `await view.FadeToAsync(...)` resumes inline there.
+`MainPage.StartFadeLogoIn` awaits two such fades, so `StartUpTasks` started inside the second fade's
+last frame. The inline completion is the same on every platform; its effect was observed on Android.
+Read in MAUI's source at tag 11.0.10 (`src/Controls/src/Core/ViewExtensions.cs`,
+`src/Core/src/Animations/PlatformTicker.Android.cs`).
+
+**Workaround.** `MainPage.StartUpTasks` begins with `await Task.Yield()`, which moves the rest of it to
+a later message on the UI thread, after the animation frame has finished.
+
+**Verify removal.** Remove the `await Task.Yield();` line and its tag from `MainPage.StartUpTasks`, and
+put `System.Diagnostics.Debug.WriteLine("StartUpTasks stack: " + Environment.StackTrace);` as its first
+statement. Then:
+- Build for Android, Debug, and start debugging on a device, so that the process starts fresh.
+- Read the `StartUpTasks stack:` line in Visual Studio's Output window.
+- The workaround is no longer needed if that stack has no `OnAnimationUpdate` and no `PlatformTicker`
+  frame.
+
+Checks:
+- 2026-11-19 | Microsoft.Maui.Controls 11.0.10 | unverified | Read in MAUI's source at tag 11.0.10. Runbook check M2 of sentry_startup_fixes_aggregate observes the stack before and after the yield on a device. Searches of dotnet/maui for AnimateToAsync, RunContinuationsAsynchronously and FadeTo continuations found nothing.
