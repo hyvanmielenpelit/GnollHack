@@ -111,8 +111,8 @@ Y for Rest, cancels that.
 | B | **Search**; first closes an overlay, and interrupts running and other occupations instead | Search 20 times | -- | -- |
 | X | Pick up | Pick and Stash | -- | -- |
 | Y | **Repeat** | Wait | -- | Rest |
-| R2 | R2's **command** (default By Role: Cast Quick, Polearm or Fire) | **L1 + R2 Action** (default By Role: **Cast**, the spell list, or **Throw**) | -- | R2's command |
-| L2 | L2's **command** (default Kick) | -- | **R1 + L2 Action** (default **Pick-axe**) | L2's command |
+| R2 | R2's **command** (default By Role: Cast Quick, Polearm or Fire) | **L1 + R2 Action** (default **Cast**, the spell list) | -- | R2's command |
+| L2 | L2's **command** (default Kick) | -- | **R1 + L2 Action** (default **Throw**) | L2's command |
 | R1 | Modifier | **Right Quick** radial, on release | | |
 | L1 | Modifier | | **Left Quick** radial, on release | |
 | Menu | Open the game menu (Menu again closes it) | Abilities | -- | -- |
@@ -133,8 +133,8 @@ buttons can hold, None, or By Role, by default By Role and Kick. By Role runs Ca
 Monks, Priests and Wizards (Cast while no quick spell is set), Polearm for Knights, and Fire for the
 others, from the role the game reports at its start (GUI_CMD_REPORT_ROLE_CLICK_COMMAND). They suit a
 command that asks for a direction. L1 + R2 Action and R1 + L2 Action are each trigger's **secondary
-command**, run with that side's own modifier held; they take the same choices, by default By Role and
-Pick-axe. Their By Role runs Cast for Healers, Monks, Priests and Wizards and Throw for the others. A
+command**, run with that side's own modifier held; they take the same choices, by default Cast and
+Throw. Their By Role runs Cast for Healers, Monks, Priests and Wizards and Throw for the others. A
 trigger's label on the hint strip names the quick spell when its command is Cast Quick (`Cast Minor
 Healing`), and while R2 is Cast Quick the strip also shows L1 + R2's command.
 

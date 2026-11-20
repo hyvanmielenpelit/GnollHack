@@ -4621,7 +4621,7 @@ namespace GnollHackX
             }
         }
 
-        /* L1 + R2 By Role, R1 + L2 Pick-axe */
+        /* L1 + R2 Cast, R1 + L2 Throw */
         public static int DefaultGamepadTriggerSecondaryCommand(GHGamepadButton trigger)
         {
             switch (trigger)
