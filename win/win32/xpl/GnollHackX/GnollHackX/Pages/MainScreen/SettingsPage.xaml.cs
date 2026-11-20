@@ -114,6 +114,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Colored X-Ray Vision", ("Tint areas seen exclusively with X-ray vision.", "**Off:** Areas seen in X-ray vision and normal vision are colored in the same way.\n**On:** Areas seen exclusively with X-ray vision have a tinting color.") },
             { "Draw Wall Ends", ("Draw wall end graphics. Disable to save CPU.", "Determines if the game draws wall end graphics. Can be disabled to save processor time.") },
             { "Breathing Animations", ("Show breathing animations for creatures.", "Determines if the game shows the breathing animations of various creatures.") },
+            { "Item Twinkles", ("Make small items you have not examined twinkle now and then.", "**Off:** Items never twinkle.\n**Small Items:** Wands, rings, amulets, gems, coins, items of gold, platinum, orichalcum, mithril, adamantium or crystal, and exceptional, mythic or elementally enchanted items always twinkle now and then, less often once you have seen them up close. Daggers and other small items you have not examined twinkle a few times each.\n**Small and Medium:** Potions, scrolls and other medium-sized items you have not examined twinkle too.") },
             { "Empty Wish is Nothing", ("Receive nothing on blank wish to preserve wishless conduct.", "**Off:** A random item is received if the wish is left blank.\n**On:** Nothing is received. Keep on to preserve wishless conduct.") },
             { "Character Click Action", ("Clicking the player performs a context-appropriate action.", "Binds clicking or tapping on the player character to execute an action appropriate to the location (e.g., descending stairs or resting). Mirrors the `self_click_action` option.") },
             { "OK on Double Click", ("Double-clicking a menu item also presses OK.", "Double-clicking a menu item also presses OK button automatically in menus.") },
@@ -717,6 +718,13 @@ namespace GnollHackX.Pages.MainScreen
                 if (_gamePage != null)
                     _gamePage.GridOpacity = GridOpacityPicker.SelectedIndex;
                 Preferences.Set("GridOpacity", GridOpacityPicker.SelectedIndex);
+            }
+
+            if (ItemTwinklesPicker.SelectedIndex > -1)
+            {
+                if (_gamePage != null)
+                    _gamePage.ItemTwinkles = ItemTwinklesPicker.SelectedIndex;
+                Preferences.Set("ItemTwinkles", ItemTwinklesPicker.SelectedIndex);
             }
 
             if (RefreshRatePicker.SelectedIndex > -1 && RefreshRatePicker.SelectedItem != null && RefreshRatePicker.SelectedItem is MapRefreshRateItem)
@@ -1625,6 +1633,7 @@ namespace GnollHackX.Pages.MainScreen
             int cursor = 0, graphics = 0, gridopacity = 0, savestyle = 0, maprefresh = -1, msgnum = 0, petrows = 0;
             bool mem = false, fps = false, zoom = false, battery = false, lowdiskspace = true, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, platformloop = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, showaltzoom = !GHConstants.DefaultSimpleCmdLayout, showtravelmode = !GHConstants.DefaultSimpleCmdLayout, showautodig = false, showignore = false, darkmode = false, windowedmode = false, edge2edge = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
             bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = true, xrayvision = true, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
+            int itemtwinkles = GHConstants.DefaultItemTwinkles;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, screenlogging = false, frameprofiler = false, framemarker = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
             bool forcemaxmsg = false, showexstatus = false, noclipmode = GHConstants.DefaultMapNoClipMode, silentmode = false, characterclickaction = false, metricsystem = false, diceasranges = true, damageformula = false, wornshowsequipment = true, autodig = false, ignorestopping = false;
@@ -1804,6 +1813,7 @@ namespace GnollHackX.Pages.MainScreen
                 accuratedrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
                 wallends = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
                 breatheanimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
+                itemtwinkles = Preferences.Get("ItemTwinkles", GHConstants.DefaultItemTwinkles);
                 //put2bag = Preferences.Get("ShowPut2BagContextCommand", GHConstants.DefaultShowPickNStashContextCommand);
                 //prevwep = Preferences.Get("ShowPrevWepContextCommand", GHConstants.DefaultShowPrevWepContextCommand);
                 longermsghistory = GHApp.SavedLongerMessageHistory; // Preferences.Get("LongerMessageHistory", false);
@@ -1872,6 +1882,7 @@ namespace GnollHackX.Pages.MainScreen
                 accuratedrawing = _gamePage.AlternativeLayerDrawing;
                 wallends = _gamePage.DrawWallEnds;
                 breatheanimations = _gamePage.BreatheAnimations;
+                itemtwinkles = _gamePage.ItemTwinkles;
                 //put2bag = _gamePage.ShowPut2BagContextCommand;
                 //prevwep = _gamePage.ShowPrevWepContextCommand;
                 longermsghistory = _gamePage.LongerMessageHistory;
@@ -1894,6 +1905,7 @@ namespace GnollHackX.Pages.MainScreen
             CursorPicker.SelectedIndex = cursor;
             GraphicsPicker.SelectedIndex = graphics;
             GridOpacityPicker.SelectedIndex = gridopacity;
+            ItemTwinklesPicker.SelectedIndex = Math.Max(0, Math.Min(2, itemtwinkles));
             //RefreshRatePicker.SelectedIndex = Math.Min(RefreshRatePicker.Items.Count - 1, maprefresh);
             SelectMapRefreshRateItem(maprefresh);
 

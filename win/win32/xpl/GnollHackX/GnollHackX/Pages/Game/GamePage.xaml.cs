@@ -514,6 +514,9 @@ namespace GnollHackX.Pages.Game
         private int _breatheAnimations = 0;
         public bool BreatheAnimations { get { return Interlocked.CompareExchange(ref _breatheAnimations, 0, 0) != 0; } set { Interlocked.Exchange(ref _breatheAnimations, value ? 1 : 0); } }
 
+        private int _itemTwinkles = GHConstants.DefaultItemTwinkles;
+        public int ItemTwinkles { get { return Interlocked.CompareExchange(ref _itemTwinkles, 0, 0); } set { Interlocked.Exchange(ref _itemTwinkles, value); } }
+
         int _longerMessageHistory = 0;
         public bool LongerMessageHistory
         {
@@ -978,6 +981,326 @@ namespace GnollHackX.Pages.Game
         private float UsedMapFontAscent { get { return Interlocked.CompareExchange(ref _mapFontAscent, 0.0f, 0.0f); } set { Interlocked.Exchange(ref _mapFontAscent, value); } }
         public SKImage[] TileMap { get { return GHApp._tileMap; } }
 
+        /* Item twinkles; everything below is used on the map's paint thread only */
+        private struct ItemTwinkleState { public long Cycle; public byte Count; public bool Drawing; }
+        private struct ItemSpriteRecord { public ObjectDataItem Item; public bool HFlip, VFlip; public int Sheet; public SKRect Source; public SKRect Dest; }
+        private struct ItemTwinkleCandidate { public uint Key; public int MapX, MapY; public SKRect Opaque; public long Cycle; public int Phase; public bool IsNew; public byte Count; }
+
+        private readonly Dictionary<uint, ItemTwinkleState> _itemTwinkleStates = new Dictionary<uint, ItemTwinkleState>(1024);
+        private readonly Dictionary<long, TileOpacity> _itemTileOpacity = new Dictionary<long, TileOpacity>(512);
+        private readonly ItemTwinkleCandidate[] _itemTwinkleCandidates = new ItemTwinkleCandidate[128];
+        private readonly List<uint> _itemTwinkleEvictKeys = new List<uint>(256);
+        private readonly SKImage[] _itemPixmapSources = new SKImage[GHConstants.MaxTileSheets];
+        private readonly SKPixmap[] _itemPixmaps = new SKPixmap[GHConstants.MaxTileSheets];
+        private readonly bool[] _itemPixmapUsable = new bool[GHConstants.MaxTileSheets];
+        private SKPaint _itemTwinklePaint = null;
+        private int _itemTwinkleCandidateCount = 0;
+        private GHGame _itemTwinkleGame = null;
+        private long _itemTwinkleLastMainCounter = -1;
+        private double _itemTwinkleClock = 0;
+        private long _lastItemTwinkleStartTick = long.MinValue / 2;
+        private int _itemAckX = -1, _itemAckY = -1, _itemAckCount = -1;
+        private ObjectDataItem _itemAckTop = null;
+
+        private const int ItemTwinkleStateLimit = 8192;
+
+        private void ResetItemTwinkleGameState(GHGame curGame)
+        {
+            _itemTwinkleStates.Clear();
+            _itemTwinkleGame = curGame;
+            _itemTwinkleLastMainCounter = -1;
+            _itemTwinkleClock = 0;
+            _lastItemTwinkleStartTick = long.MinValue / 2;
+            _itemAckX = -1;
+            _itemAckY = -1;
+            _itemAckCount = -1;
+            _itemAckTop = null;
+        }
+
+        private void TrimItemTwinkleStates()
+        {
+            if (_itemTwinkleStates.Count <= ItemTwinkleStateLimit)
+                return;
+
+            /* Acknowledged and spent items stay; the rest restart their budgets */
+            _itemTwinkleEvictKeys.Clear();
+            foreach (KeyValuePair<uint, ItemTwinkleState> kvp in _itemTwinkleStates)
+            {
+                if (kvp.Value.Count < GHItemTwinkle.MaxTwinklesPerItem)
+                    _itemTwinkleEvictKeys.Add(kvp.Key);
+            }
+            for (int i = 0; i < _itemTwinkleEvictKeys.Count; i++)
+                _itemTwinkleStates.Remove(_itemTwinkleEvictKeys[i]);
+            _itemTwinkleEvictKeys.Clear();
+            if (_itemTwinkleStates.Count > ItemTwinkleStateLimit)
+                _itemTwinkleStates.Clear();
+        }
+
+        /* A missing entry is a fresh item, never cycle 0 */
+        private void GetItemTwinkleState(uint key, out ItemTwinkleState st)
+        {
+            if (!_itemTwinkleStates.TryGetValue(key, out st))
+            {
+                st.Cycle = -1;
+                st.Count = 0;
+                st.Drawing = false;
+            }
+        }
+
+        /* False when the sheet's pixels cannot be read; otherwise the cached or new measurement */
+        private bool GetTileOpacity(int sheet, SKRect source, out TileOpacity result)
+        {
+            result = default(TileOpacity);
+            if (sheet < 0 || sheet >= GHConstants.MaxTileSheets)
+                return false;
+
+            SKImage img = TileMap[sheet];
+            if (!ReferenceEquals(img, _itemPixmapSources[sheet]))
+            {
+                if (_itemPixmaps[sheet] != null)
+                    _itemPixmaps[sheet].Dispose();
+                SKPixmap pixmap = img?.PeekPixels();
+                _itemPixmaps[sheet] = pixmap;
+                _itemPixmapSources[sheet] = img;
+                _itemPixmapUsable[sheet] = pixmap != null
+                    && (pixmap.ColorType == SKColorType.Rgba8888 || pixmap.ColorType == SKColorType.Bgra8888);
+                _itemTileOpacity.Clear();
+            }
+            if (!_itemPixmapUsable[sheet])
+                return false;
+
+            int left = (int)source.Left, top = (int)source.Top, srcWidth = (int)source.Width, srcHeight = (int)source.Height;
+            long key = ((long)sheet << 48) | ((long)left << 28) | ((long)top << 8) | (long)(srcHeight & 0xFF);
+            if (_itemTileOpacity.TryGetValue(key, out result))
+                return true;
+
+            SKPixmap pm = _itemPixmaps[sheet];
+            if (left < 0 || top < 0 || srcWidth <= 0 || srcHeight <= 0 || left + srcWidth > pm.Width || top + srcHeight > pm.Height)
+            {
+                result = default(TileOpacity);
+            }
+            else
+            {
+                unsafe
+                {
+                    result = GHItemTwinkle.MeasureOpaque((byte*)pm.GetPixels(), pm.RowBytes, left, top, srcWidth, srcHeight);
+                }
+            }
+            _itemTileOpacity[key] = result;
+            return true;
+        }
+
+        private void CollectItemTwinkleCandidate(int mapx, int mapy, ref LayerInfo currentLayerInfo, ObjectData currentObjCell, ref ItemSpriteRecord spriteRecord,
+            int itemTwinkles, bool zoomMiniMode, long twinkleTick, float width)
+        {
+            ulong layerFlags = currentLayerInfo.layer_flags;
+            if ((layerFlags & (ulong)LayerFlags.LFLAGS_CAN_SEE) == 0
+                || (layerFlags & (ulong)(LayerFlags.LFLAGS_SHOWING_MEMORY | LayerFlags.LFLAGS_SHOWING_DETECTION)) != 0)
+                return;
+
+            List<ObjectDataItem> list = currentObjCell == null ? null : currentObjCell.FloorObjectList;
+            if (list == null || list.Count == 0)
+                return;
+
+            ObjectDataItem top = list[0];
+            if ((layerFlags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
+            {
+                /* A resent square has new items, so an unchanged top item means an unchanged pile */
+                if (mapx == _itemAckX && mapy == _itemAckY && list.Count == _itemAckCount && ReferenceEquals(top, _itemAckTop))
+                    return;
+
+                ItemTwinkleState ack = new ItemTwinkleState { Cycle = -1, Count = GHItemTwinkle.MaxTwinklesPerItem, Drawing = false };
+                for (int i = 0, cnt = list.Count; i < cnt; i++)
+                {
+                    ObjectDataItem item = list[i];
+                    if (item != null && item.TwinkleEligible)
+                        _itemTwinkleStates[GHItemTwinkle.GetKey(item.ObjData.o_id, mapx, mapy)] = ack;
+                }
+                _itemAckX = mapx;
+                _itemAckY = mapy;
+                _itemAckCount = list.Count;
+                _itemAckTop = top;
+                return;
+            }
+
+            if (itemTwinkles == 0 || zoomMiniMode)
+                return;
+
+            unsafe
+            {
+                if (currentLayerInfo.layer_gui_glyphs[(int)layer_types.LAYER_MONSTER] != GHApp.NoGlyph)
+                    return;
+            }
+
+            if (top == null || !top.TwinkleEligible || !ReferenceEquals(spriteRecord.Item, top))
+                return;
+
+            uint key = GHItemTwinkle.GetKey(top.ObjData.o_id, mapx, mapy);
+            bool always = top.TwinkleAlways;
+            long cycle;
+            int phase;
+            ItemTwinkleState st;
+            bool continuing;
+            if (always && top.TwinkleKnown)
+            {
+                /* Known always-twinkle items stay on the slow rhythm */
+                if (!GHItemTwinkle.TryGetActiveTwinkle(key, twinkleTick, true, out cycle, out phase))
+                    return;
+                GetItemTwinkleState(key, out st);
+                continuing = st.Drawing && st.Cycle == cycle;
+            }
+            else if (GHItemTwinkle.TryGetActiveTwinkle(key, twinkleTick, false, out cycle, out phase))
+            {
+                GetItemTwinkleState(key, out st);
+                continuing = st.Drawing && st.Cycle == cycle;
+                if (st.Count >= GHItemTwinkle.MaxTwinklesPerItem && !continuing)
+                {
+                    /* Spent or stood on: an always-twinkle item continues slowly, others stop */
+                    if (!always || !GHItemTwinkle.TryGetActiveTwinkle(key, twinkleTick, true, out cycle, out phase))
+                        return;
+                    continuing = st.Drawing && st.Cycle == cycle;
+                }
+            }
+            else if (always && GHItemTwinkle.TryGetActiveTwinkle(key, twinkleTick, true, out cycle, out phase))
+            {
+                GetItemTwinkleState(key, out st);
+                if (st.Count < GHItemTwinkle.MaxTwinklesPerItem)
+                    return;
+                continuing = st.Drawing && st.Cycle == cycle;
+            }
+            else
+            {
+                return;
+            }
+            if (st.Cycle == cycle && !st.Drawing)
+                return;
+
+            if (_itemTwinkleCandidateCount >= _itemTwinkleCandidates.Length)
+                return;
+
+            SKRect dest = spriteRecord.Dest;
+            SKRect source = spriteRecord.Source;
+            if (dest.Width <= 0 || dest.Height <= 0 || source.Width <= 0 || source.Height <= 0 || width <= 0)
+                return;
+
+            byte tier;
+            SKRect opaque;
+            TileOpacity opacity;
+            if (!GetTileOpacity(spriteRecord.Sheet, source, out opacity))
+            {
+                tier = always || GHItemTwinkle.IsFallbackSmall(top.ObjData.oclass) ? GHItemTwinkle.TierSmall : GHItemTwinkle.TierNone;
+                opaque = dest;
+            }
+            else if (!opacity.Valid)
+            {
+                if (!always)
+                    return;
+                tier = GHItemTwinkle.TierSmall;
+                opaque = dest;
+            }
+            else
+            {
+                float s = dest.Width * GHItemTwinkle.NativeTileWidth / (width * source.Width);
+                int opaqueW = opacity.MaxX - opacity.MinX + 1;
+                int opaqueH = opacity.MaxY - opacity.MinY + 1;
+                /* Always-twinkle items skip the size rule */
+                tier = always ? GHItemTwinkle.TierSmall : GHItemTwinkle.GetSizeTier(opacity.Area * s * s, Math.Max(opaqueW, opaqueH) * s);
+                float kx = dest.Width / source.Width;
+                float ky = dest.Height / source.Height;
+                float oLeft = spriteRecord.HFlip ? dest.Right - (opacity.MaxX + 1) * kx : dest.Left + opacity.MinX * kx;
+                float oTop = spriteRecord.VFlip ? dest.Bottom - (opacity.MaxY + 1) * ky : dest.Top + opacity.MinY * ky;
+                opaque = new SKRect(oLeft, oTop, oLeft + opaqueW * kx, oTop + opaqueH * ky);
+            }
+
+            if (!GHItemTwinkle.IsShown(tier, itemTwinkles))
+                return;
+
+            ref ItemTwinkleCandidate c = ref _itemTwinkleCandidates[_itemTwinkleCandidateCount++];
+            c.Key = key;
+            c.MapX = mapx;
+            c.MapY = mapy;
+            c.Opaque = opaque;
+            c.Cycle = cycle;
+            c.Phase = phase;
+            c.IsNew = !continuing;
+            c.Count = st.Count;
+        }
+
+        private void DrawItemTwinkles(SKCanvas canvas, long twinkleTick, float width, double ticksPerFrame)
+        {
+            int cnt = _itemTwinkleCandidateCount;
+            if (cnt == 0)
+                return;
+
+            int active = 0;
+            int nearest = -1;
+            int nearestDistance = int.MaxValue;
+            for (int i = 0; i < cnt; i++)
+            {
+                ref ItemTwinkleCandidate c = ref _itemTwinkleCandidates[i];
+                if (!c.IsNew)
+                {
+                    active++;
+                }
+                else if (GHItemTwinkle.IsAdmissionPhase(c.Phase, ticksPerFrame))
+                {
+                    int d = Math.Max(Math.Abs(c.MapX - _local_ux), Math.Abs(c.MapY - _local_uy));
+                    if (d < nearestDistance)
+                    {
+                        nearestDistance = d;
+                        nearest = i;
+                    }
+                }
+            }
+
+            int admitted = -1;
+            if (nearest >= 0 && active < GHItemTwinkle.MaxActiveTwinkles
+                && twinkleTick - _lastItemTwinkleStartTick >= GHItemTwinkle.MinStartSpacingTicks)
+            {
+                admitted = nearest;
+                _lastItemTwinkleStartTick = twinkleTick;
+            }
+
+            for (int i = 0; i < cnt; i++)
+            {
+                ref ItemTwinkleCandidate c = ref _itemTwinkleCandidates[i];
+                if (!c.IsNew)
+                    continue;
+                /* A new candidate that is not admitted waits for its next slot */
+                bool isAdmitted = i == admitted;
+                _itemTwinkleStates[c.Key] = new ItemTwinkleState
+                {
+                    Cycle = c.Cycle,
+                    Drawing = isAdmitted,
+                    Count = isAdmitted ? GHItemTwinkle.IncrementCount(c.Count) : c.Count,
+                };
+                if (isAdmitted)
+                    c.IsNew = false;
+            }
+
+            if (_itemTwinklePaint == null)
+            {
+                _itemTwinklePaint = new SKPaint();
+                _itemTwinklePaint.Color = SKColors.White;
+                _itemTwinklePaint.Style = SKPaintStyle.Fill;
+                _itemTwinklePaint.BlendMode = SKBlendMode.SrcOver;
+                _itemTwinklePaint.IsAntialias = true;
+            }
+
+            for (int i = 0; i < cnt; i++)
+            {
+                ref ItemTwinkleCandidate c = ref _itemTwinkleCandidates[i];
+                if (c.IsNew)
+                    continue;
+                float fx, fy;
+                GHItemTwinkle.GetAnchor(c.Key, c.Cycle, out fx, out fy);
+                SKRect r = c.Opaque;
+                UIUtils.DrawItemTwinkle(canvas, _itemTwinklePaint, r.Left + fx * r.Width, r.Top + fy * r.Height,
+                    GHItemTwinkle.GetPeakRadius(r.Width, width), GHItemTwinkle.GetEnvelope(c.Phase),
+                    GHItemTwinkle.GetRotationDegrees(c.Phase));
+            }
+        }
+
         public readonly object _floatingTextLock = new object();
         public readonly List<GHFloatingText> _floatingTexts = new List<GHFloatingText>();
         public readonly object _screenTextLock = new object();
@@ -1108,6 +1431,7 @@ namespace GnollHackX.Pages.Game
             ColoredXRayVision = Preferences.Get("ColoredXRayVision", GHConstants.DefaultColoredXRayVision);
             DrawWallEnds = Preferences.Get("DrawWallEnds", GHConstants.DefaultDrawWallEnds);
             BreatheAnimations = Preferences.Get("BreatheAnimations", GHConstants.DefaultBreatheAnimations);
+            ItemTwinkles = Preferences.Get("ItemTwinkles", GHConstants.DefaultItemTwinkles);
             AlternativeLayerDrawing = Preferences.Get("AlternativeLayerDrawing", GHConstants.DefaultAlternativeLayerDrawing);
             Interlocked.Exchange(ref _longerMessageHistory, GHApp.SavedLongerMessageHistory ? 1 : 0); /* Cannot send response command yet, hence using private variable */
 
@@ -1394,6 +1718,16 @@ namespace GnollHackX.Pages.Game
                 _menuGamepadFocusGlowPaint?.Dispose();
                 _menuGamepadFocusFillPaint?.Dispose();
                 _menuGamepadFocusImagePaint?.Dispose();
+                _itemTwinklePaint?.Dispose();
+                _itemTwinklePaint = null;
+                for (int i = 0; i < _itemPixmaps.Length; i++)
+                {
+                    _itemPixmaps[i]?.Dispose();
+                    _itemPixmaps[i] = null;
+                    _itemPixmapSources[i] = null;
+                    _itemPixmapUsable[i] = false;
+                }
+                _itemTileOpacity.Clear();
             }
             catch (Exception ex)
             {
@@ -6318,7 +6652,7 @@ namespace GnollHackX.Pages.Game
             bool loc_is_you, bool canspotself, bool tileflag_halfsize, bool tileflag_normalobjmissile, bool tileflag_fullsizeditem, bool tileflag_floortile, bool tileflag_height_is_clipping,
             bool hflip_glyph, bool vflip_glyph,
             ObjectDataItem otmp_round, int autodraw, bool drawwallends, bool breatheanimations, long generalcounterdiff, float canvaswidth, float canvasheight, int enlargement, bool usingGL, bool usingMipMap, bool fixRects, bool fixFiltering,
-            bool pointerIsHoveringOnTile, bool mapLookMode, bool lighterDarkening, bool alternativeLayerDrawing, bool tileBatching) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
+            bool pointerIsHoveringOnTile, bool mapLookMode, bool lighterDarkening, bool alternativeLayerDrawing, bool tileBatching, ref ItemSpriteRecord spriteRecord) //, ref float minDrawX, ref float maxDrawX, ref float minDrawY, ref float maxDrawY,
             //ref float enlMinDrawX, ref float enlMaxDrawX, ref float enlMinDrawY, ref float enlMaxDrawY)
         {
             if (!GHUtils.isok(draw_map_x, draw_map_y))
@@ -6690,6 +7024,20 @@ namespace GnollHackX.Pages.Game
                         targetrect = new SKRect(scaled_x_padding, height / 4 + scaled_y_padding, scaled_x_padding + scaled_tile_width, height / 4 + scaled_y_padding + scaled_tile_height);
                     else
                         targetrect = new SKRect(scaled_x_padding, scaled_y_padding, scaled_x_padding + scaled_tile_width, scaled_y_padding + scaled_tile_height);
+                }
+
+                /* The drawn object sprite, in canvas coordinates, for item twinkles. Object padding is
+                   centred horizontally, so a horizontal flip maps the rectangle onto itself. */
+                if (is_object_like_layer && otmp_round != null && dx == 0 && dy == 0)
+                {
+                    spriteRecord.Item = otmp_round;
+                    spriteRecord.HFlip = hflip_glyph;
+                    spriteRecord.VFlip = vflip_glyph;
+                    spriteRecord.Sheet = sheet_idx;
+                    spriteRecord.Source = sourcerect;
+                    spriteRecord.Dest = vflip_glyph
+                        ? new SKRect(tx + targetrect.Left, ty + height - targetrect.Bottom, tx + targetrect.Right, ty + height - targetrect.Top)
+                        : new SKRect(tx + targetrect.Left, ty + targetrect.Top, tx + targetrect.Right, ty + targetrect.Bottom);
                 }
 
                 //SKRect baseUpdateRect = new SKRect();
@@ -8301,6 +8649,7 @@ namespace GnollHackX.Pages.Game
 
             bool drawwallends = DrawWallEnds;
             bool breatheanimations = BreatheAnimations;
+            int itemTwinkles = ItemTwinkles;
             bool fixRects = GHApp.FixRects;
             bool fixFiltering = false; /* Applies only to menus */ // GHApp.FixFiltering;
             bool tileBatching = GHApp.UseTileBatching;
@@ -8449,6 +8798,17 @@ namespace GnollHackX.Pages.Game
             generalcountervalue = curGame.GeneralAnimationCounter; // Interlocked.CompareExchange(ref AnimationTimers.general_animation_counter, 0L, 0L);;
             _paintedMainCounterValue = maincountervalue;
             _paintedGeneralCounterValue = generalcountervalue;
+
+            /* Twinkle clock: 60 Hz GUI ticks accumulated from counter differences, so a change in
+               the effective map FPS never makes it jump */
+            if (!ReferenceEquals(curGame, _itemTwinkleGame))
+                ResetItemTwinkleGameState(curGame);
+            long twinkleCounterDelta = maincountervalue - _itemTwinkleLastMainCounter;
+            if (_itemTwinkleLastMainCounter < 0 || twinkleCounterDelta < 0)
+                twinkleCounterDelta = 0;
+            _itemTwinkleLastMainCounter = maincountervalue;
+            _itemTwinkleClock += twinkleCounterDelta * mainCounter2AnimationMultiplier;
+            long twinkleTick = (long)_itemTwinkleClock;
             //lock (AnimationTimerLock)
             //{
             //    /* Note that animation timer is updated too frequently so that it does not make sense to use TryEnter; however, since InvalidateSurface is called after IncrementCounters, there should practically never be a conflict here due to IncrementCounters */
@@ -9196,13 +9556,15 @@ namespace GnollHackX.Pages.Game
                                                                         //float minDrawX = 0, maxDrawX = 0, minDrawY = 0, maxDrawY = 0;
                                                                         //float enlMinDrawX = 0, enlMaxDrawX = 0, enlMinDrawY = 0, enlMaxDrawY = 0;
 
+                                                                        /* This drawing path has no item twinkles */
+                                                                        ItemSpriteRecord unusedSpriteRecord = default(ItemSpriteRecord);
                                                                         PaintMapTile(canvas, false, textPaint, paint, ref sourceCell, ref sourceLayerInfo, layer_idx, source_x, source_y, draw_map_x, draw_map_y, dx, dy, ntile, width, height,
                                                                             offsetX, offsetY, usedOffsetX, usedOffsetY, base_move_offset_x, base_move_offset_y, object_move_offset_x, object_move_offset_y,
                                                                             scaled_y_height_change, pit_border, targetscale, generalcountervalue, usedFontSize, mapFontAscent,
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, alternativeLayerDrawing, tileBatching); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, alternativeLayerDrawing, tileBatching, ref unusedSpriteRecord); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref enlMinDrawX, ref enlMaxDrawX, ref enlMinDrawY, ref enlMaxDrawY);
                                                                     }
                                                                 }
                                                             }
@@ -9213,6 +9575,9 @@ namespace GnollHackX.Pages.Game
                                         }
                                         else
                                         {
+                                            ItemSpriteRecord spriteRecord = default(ItemSpriteRecord);
+                                            _itemTwinkleCandidateCount = 0;
+                                            TrimItemTwinkleStates();
                                             for (int layer_idx = 0; layer_idx < (int)layer_types.MAX_LAYERS + 2; layer_idx++)
                                             {
                                                 bool is_monster_or_shadow_layer = (layer_idx == (int)layer_types.LAYER_MONSTER || layer_idx == (int)layer_types.MAX_LAYERS);
@@ -9275,6 +9640,8 @@ namespace GnollHackX.Pages.Game
                                                             {
                                                                 bool is_source_dir;
                                                                 int sub_layer_cnt = GetSubLayerCount(ref currentCell, ref currentLayerInfo, currentObjCell, layer_idx, out is_source_dir);
+                                                                if (layer_idx == (int)layer_types.LAYER_OBJECT)
+                                                                    spriteRecord.Item = null;
                                                                 for (int sub_layer_idx = sub_layer_cnt - 1; sub_layer_idx >= 0; sub_layer_idx--)
                                                                 {
                                                                     int signed_glyph = GHApp.NoGlyph; //Default
@@ -9353,9 +9720,12 @@ namespace GnollHackX.Pages.Game
                                                                             monster_height, is_monster_like_layer, is_object_like_layer, obj_in_pit, obj_height, is_missile_layer, missile_height,
                                                                             loc_is_you, canspotself, tileflag_halfsize, tileflag_normalobjmissile, tileflag_fullsizeditem, tileflag_floortile, tileflag_height_is_clipping,
                                                                             hflip_glyph, vflip_glyph, otmp_round, autodraw, drawwallends, breatheanimations, generalcounterdiff, canvaswidth, canvasheight, enlargement, usingGL, usingMipMap, fixRects, fixFiltering,
-                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, alternativeLayerDrawing, tileBatching); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
+                                                                            isPointerHoveringOnTile, mapLookMode, lighterDarkening, alternativeLayerDrawing, tileBatching, ref spriteRecord); //, ref minDrawX, ref maxDrawX, ref minDrawY, ref maxDrawY, ref _enlBmpMinX, ref _enlBmpMaxX, ref _enlBmpMinY, ref _enlBmpMaxY);
                                                                     }
                                                                 }
+
+                                                                if (layer_idx == (int)layer_types.LAYER_OBJECT)
+                                                                    CollectItemTwinkleCandidate(mapx, mapy, ref currentLayerInfo, currentObjCell, ref spriteRecord, itemTwinkles, zoomMiniMode, twinkleTick, width);
                                                             }
                                                         }
                                                     }
@@ -9457,6 +9827,8 @@ namespace GnollHackX.Pages.Game
                                                                 }
                                                             }
                                                         }
+                                                        /* Above every object, below monsters */
+                                                        DrawItemTwinkles(canvas, twinkleTick, width, mainCounter2AnimationMultiplier);
                                                         break;
                                                     }
                                                     /* Enlargement bitmaps */

@@ -1290,6 +1290,86 @@ namespace GnollHackX
             paint.Color = oldColor;
         }
 
+        private static SKPath _itemTwinklePath = null;
+
+        /* Unit four-point star; built once, drawn scaled. Published atomically, so that two paint
+           threads racing on the first call share one path and the loser's is disposed. */
+        private static SKPath GetItemTwinklePath()
+        {
+            SKPath existing = System.Threading.Volatile.Read(ref _itemTwinklePath);
+            if (existing != null)
+                return existing;
+
+            SKPath created;
+#if GNH_MAUI && !SKIASHARP_3119
+            using (SKPathBuilder path = new SKPathBuilder())
+#else
+            SKPath path = new SKPath();
+#endif
+            {
+                path.MoveTo(-0.1f, -0.1f);
+                path.LineTo(0f, -1f);
+                path.LineTo(0.1f, -0.1f);
+                path.LineTo(1f, 0f);
+                path.LineTo(0.1f, 0.1f);
+                path.LineTo(0f, 1f);
+                path.LineTo(-0.1f, 0.1f);
+                path.LineTo(-1f, 0f);
+                path.LineTo(-0.1f, -0.1f);
+                path.Close();
+#if GNH_MAUI && !SKIASHARP_3119
+                created = path.Detach();
+#else
+                created = path;
+#endif
+            }
+
+            existing = System.Threading.Interlocked.CompareExchange(ref _itemTwinklePath, created, null);
+            if (existing != null)
+            {
+                created.Dispose();
+                return existing;
+            }
+            return created;
+        }
+
+        /* Draws an item twinkle centered at (x, y). The paint is the caller's dedicated white fill
+           paint with no filter or shader; only its alpha is changed. Paint thread only. */
+        public static void DrawItemTwinkle(SKCanvas canvas, SKPaint paint, float x, float y, float radius, float envelope, float rotationDegrees)
+        {
+            if (envelope <= 0f || radius <= 0f)
+                return;
+
+            SKPath star = GetItemTwinklePath();
+            float r = radius * envelope;
+            canvas.Save();
+            try
+            {
+                canvas.Translate(x, y);
+                canvas.RotateDegrees(rotationDegrees);
+
+                canvas.Save();
+                canvas.Scale(r);
+                paint.Color = SKColors.White.WithAlpha((byte)(235f * envelope));
+                canvas.DrawPath(star, paint);
+                canvas.Restore();
+
+                canvas.Save();
+                canvas.RotateDegrees(45f);
+                canvas.Scale(0.5f * r);
+                paint.Color = SKColors.White.WithAlpha((byte)(150f * envelope));
+                canvas.DrawPath(star, paint);
+                canvas.Restore();
+
+                paint.Color = SKColors.White.WithAlpha((byte)(255f * envelope));
+                canvas.DrawCircle(0f, 0f, 0.12f * r, paint);
+            }
+            finally
+            {
+                canvas.Restore();
+            }
+        }
+
         private static List<SKPoint> sparkleList = new List<SKPoint>();
 
         public static void DrawRandomSparkles(SKCanvas canvas, SKPaint paint, float canvaswidth, float canvasheight, float scale, long generalcounter)

@@ -197,29 +197,49 @@ namespace GnollHackX
         public readonly bool IsThrowingWeapon;
         public readonly bool PreviousWeaponFound;
         public readonly bool PreviousUnwield;
+        public readonly bool TwinkleEligible;
+        public readonly bool TwinkleAlways;
+        public readonly bool TwinkleKnown;
+
+        /* By reference, so that the large Obj and ObjClassData structs are not copied; fields only, since a
+           property read through an in parameter of a non-readonly struct copies the struct */
+        private static void GetTwinkleFlags(in Obj objData, in ObjClassData otypdata, bool hallucinated, out bool eligible, out bool always, out bool known)
+        {
+            bool dknown = (objData.bitflags & (ulong)obj_bitfield_types.OBJFLAG_DKNOWN) != 0;
+            /* Gem-class items have their own rule, which keeps metal ores out */
+            bool special = GHItemTwinkle.IsSpecialQuality(objData.elemental_enchantment, objData.mythic_prefix, objData.mythic_suffix, objData.exceptionality)
+                || (objData.oclass != (sbyte)obj_class_types.GEM_CLASS && GHItemTwinkle.IsAlwaysTwinkleMaterial(objData.material));
+            eligible = GHItemTwinkle.IsEligible(objData.oclass, objData.material, hallucinated,
+                dknown, otypdata.is_uchain != 0 || otypdata.is_uball != 0, special);
+            always = GHItemTwinkle.IsAlwaysTwinkle(objData.oclass, objData.material, special);
+            known = dknown && GHItemTwinkle.DknownIsMeaningful(objData.oclass);
+        }
 
         public ObjectDataItem()
         {
 
         }
-        public ObjectDataItem(Obj objData, ObjClassData otypdata, bool hallucinated)
+        public ObjectDataItem(in Obj objData, in ObjClassData otypdata, bool hallucinated)
         {
             ObjData = objData;
             OtypData = otypdata;
             Hallucinated = hallucinated;
+            GetTwinkleFlags(in objData, in otypdata, hallucinated, out TwinkleEligible, out TwinkleAlways, out TwinkleKnown);
         }
-        public ObjectDataItem(Obj objData, ObjClassData otypdata, bool hallucinated, bool foundthisturn)
+        public ObjectDataItem(in Obj objData, in ObjClassData otypdata, bool hallucinated, bool foundthisturn)
         {
             ObjData = objData;
             OtypData = otypdata;
             Hallucinated = hallucinated;
+            GetTwinkleFlags(in objData, in otypdata, hallucinated, out TwinkleEligible, out TwinkleAlways, out TwinkleKnown);
             FoundThisTurn = foundthisturn;
         }
-        public ObjectDataItem(Obj objData, ObjClassData otypdata, bool hallucinated, bool outofammo, bool wrongammo, bool notbeingused,  bool notweapon, bool foundthisturn, bool isammo, bool isthrowingweapon, bool prevwepfound, bool prevunwield)
+        public ObjectDataItem(in Obj objData, in ObjClassData otypdata, bool hallucinated, bool outofammo, bool wrongammo, bool notbeingused,  bool notweapon, bool foundthisturn, bool isammo, bool isthrowingweapon, bool prevwepfound, bool prevunwield)
         {
             ObjData = objData;
             OtypData = otypdata;
             Hallucinated = hallucinated;
+            GetTwinkleFlags(in objData, in otypdata, hallucinated, out TwinkleEligible, out TwinkleAlways, out TwinkleKnown);
             OutOfAmmo = outofammo;
             WrongAmmoType = wrongammo;
             NotBeingUsed = notbeingused;
@@ -230,11 +250,12 @@ namespace GnollHackX
             PreviousWeaponFound = prevwepfound;
             PreviousUnwield = prevunwield;
         }
-        public ObjectDataItem(Obj objData, ObjClassData otypdata, bool hallucinated, bool outofammo, bool wrongammo, bool notbeingused, bool notweapon, bool foundthisturn, bool isammo, bool isthrowingweapon, bool prevwepfound, bool prevunwield, List<ObjectDataItem> containedItems)
+        public ObjectDataItem(in Obj objData, in ObjClassData otypdata, bool hallucinated, bool outofammo, bool wrongammo, bool notbeingused, bool notweapon, bool foundthisturn, bool isammo, bool isthrowingweapon, bool prevwepfound, bool prevunwield, List<ObjectDataItem> containedItems)
         {
             ObjData = objData;
             OtypData = otypdata;
             Hallucinated = hallucinated;
+            GetTwinkleFlags(in objData, in otypdata, hallucinated, out TwinkleEligible, out TwinkleAlways, out TwinkleKnown);
             OutOfAmmo = outofammo;
             WrongAmmoType = wrongammo;
             NotBeingUsed = notbeingused;

@@ -2522,7 +2522,7 @@ namespace GnollHackX
             AddObjectData(x, y, otmp, cmdtype, where, otypdata, oflags);
         }
 
-        public void AddObjectData(int x, int y, Obj otmp, int cmdtype, int where, ObjClassData otypdata, ulong oflags)
+        public void AddObjectData(int x, int y, in Obj otmp, int cmdtype, int where, in ObjClassData otypdata, ulong oflags)
         {
             bool is_uwep = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP) != 0UL;
             bool is_uwep2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP2) != 0UL;
@@ -2651,7 +2651,7 @@ namespace GnollHackX
         public ObjectDataItem[] _weaponStyleObjDataItem = new ObjectDataItem[3];
         public readonly object _weaponStyleObjDataItemLock = new object();
 
-        public void AddEquippedObjectData(int x, int y, Obj otmp, int cmdtype, int where, ObjClassData otypdata, ulong oflags)
+        public void AddEquippedObjectData(int x, int y, in Obj otmp, int cmdtype, int where, in ObjClassData otypdata, ulong oflags)
         {
             bool is_uwep = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP) != 0UL;
             bool is_uwep2 = (oflags & (ulong)objdata_flags.OBJDATA_FLAGS_UWEP2) != 0UL;

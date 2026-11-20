@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -285,6 +285,7 @@
     <None Remove="..\GnollHackX\GnollHackX\GHGcPauseTracker.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHStartupTimeline.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHMapFps.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHItemTwinkle.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHGamepadTypes.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHEvdevProtocol.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Gamepad\GHEvdevDeviceFilter.cs" />
@@ -606,6 +607,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\FileDialog\GHFileDialogBehavior.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\FileDialog\GHFileDialogHost.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHMapFps.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHItemTwinkle.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHGamepadTypes.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHEvdevProtocol.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Gamepad\GHEvdevDeviceFilter.cs" />

@@ -631,9 +631,12 @@ void lib_print_glyph(winid wid, xchar x, xchar y, struct layer_info layers)
                         mimic_obj.oclass = objects[mimic_obj.otyp].oc_class;
                         mimic_obj.corpsenm = has_mcorpsenm(mtmp) ? MCORPSENM(mtmp) : PM_TENGU;
                         mimic_obj.quan = 1L;
+                        mimic_obj.material = objects[mimic_obj.otyp].oc_material;
                     }
                     mimic_obj.ox = x;
                     mimic_obj.oy = y;
+                    if (M_AP_FLAG(mtmp) & M_AP_F_DKNOWN)
+                        set_obj_dknown(&mimic_obj, 1);
                     mimic_obj.glyph = obj_to_glyph(&mimic_obj, newsym_rn2);
                     mimic_obj.gui_glyph = maybe_get_replaced_glyph(mimic_obj.glyph, x, y, data_to_replacement_info(mimic_obj.glyph,
                         is_obj_drawn_in_front(&mimic_obj) ? LAYER_COVER_OBJECT : LAYER_OBJECT, &mimic_obj, (struct monst*)0, 0UL, 0UL, 0UL, MAT_NONE, 0));

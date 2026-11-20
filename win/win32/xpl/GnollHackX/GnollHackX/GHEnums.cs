@@ -795,6 +795,59 @@ namespace GnollHackX
 
         MAX_OBJECT_CLASSES = 21
     }
+
+    /* Mirrors enum obj_material_types in include/general.h */
+    public enum obj_material_types
+    {
+        MAT_NONE = 0,
+        MAT_LIQUID = 1,
+        MAT_OIL = 2,
+        MAT_WAX = 3,
+        MAT_VEGGY = 4,
+        MAT_FLESH = 5,
+        MAT_ORGANIC = 6,
+        MAT_PAPER = 7,
+        MAT_CLOTH = 8,
+        MAT_COTTON = 9,
+        MAT_SILK = 10,
+        MAT_LEATHER = 11,
+        MAT_WOOD = 12,
+        MAT_BONE = 13,
+        MAT_CHITIN = 14,
+        MAT_TOOTH = 15,
+        MAT_DRAGON_HIDE = 16,
+        MAT_IRON = 17,
+        MAT_STEEL = 18,
+        MAT_METAL = 19,
+        MAT_LEAD = 20,
+        MAT_COPPER = 21,
+        MAT_BRASS = 22,
+        MAT_BRONZE = 23,
+        MAT_SILVER = 24,
+        MAT_GOLD = 25,
+        MAT_PLATINUM = 26,
+        MAT_ORICHALCUM = 27,
+        MAT_ADAMANTIUM = 28,
+        MAT_MITHRIL = 29,
+        MAT_PLASTIC = 30,
+        MAT_GLASS = 31,
+        MAT_CRYSTAL = 32,
+        MAT_HARD_CRYSTAL = 33,
+        MAT_GEMSTONE = 34,
+        MAT_MINERAL = 35,
+        MAT_MODRONITE = 36,
+        MAT_PLANARRIFT = 37,
+        MAT_FORCEFIELD = 38,
+        MAT_AIR = 39,
+        MAT_FIRE = 40,
+        MAT_ENERGY = 41,
+        MAT_INCORPOREAL = 42,
+        MAT_ICE = 43,
+        MAT_SOIL = 44,
+
+        MAX_MATERIAL_TYPES = 45
+    }
+
     public enum obj_armor_types : sbyte
     {
         ARM_SUIT = 0,

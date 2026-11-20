@@ -11,6 +11,7 @@
     <AssemblyName>GnollHackX.UnitTests</AssemblyName>
     <InvariantGlobalization>true</InvariantGlobalization>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <!-- The linked files take their MAUI branch, which is the one the shipping app compiles. -->
     <DefineConstants>$(DefineConstants);GNH_MAUI;SENTRY</DefineConstants>
     <!-- Sentry at the version GnollHackM ships, read from GnollHackM.csproj -->
@@ -54,6 +55,8 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\GHSaveFileTrackingResults.cs" Link="Shared\GHSaveFileTrackingResults.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHBonesFiles.cs" Link="Shared\GHBonesFiles.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHMapFps.cs" Link="Shared\GHMapFps.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHEnums.cs" Link="Shared\GHEnums.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHItemTwinkle.cs" Link="Shared\GHItemTwinkle.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHCaughtExceptionPolicy.cs" Link="Shared\GHCaughtExceptionPolicy.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHGamepadTypes.cs" Link="Shared\GHGamepadTypes.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Gamepad\GHEvdevProtocol.cs" Link="Shared\GHEvdevProtocol.cs" />
