@@ -377,7 +377,8 @@ if command -v rsync >/dev/null 2>&1 && remote 'command -v rsync' >/dev/null 2>&1
     fi
     echo "Copying $STAGED to $TARGET:$REMOTE/gnollhack/ with rsync"
     # DRY_RUN_FLAGS is unquoted, so that it vanishes when empty
-    rsync -a --delete --compress --info=stats1 ${DRY_RUN_FLAGS} -e "ssh ${SSH_OPTS[*]}" \
+    # WORKAROUND(WA-BUILD-0009): rsync 3.1.3 hangs sending to a newer rsync with --compress
+    rsync -a --delete --info=stats1 ${DRY_RUN_FLAGS} -e "ssh ${SSH_OPTS[*]}" \
         "$STAGED/" "$TARGET:$REMOTE/gnollhack/"
 else
     warn "rsync is missing in WSL or on the Deck; copying the whole build with tar."

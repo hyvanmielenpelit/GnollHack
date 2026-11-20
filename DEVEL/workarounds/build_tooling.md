@@ -309,3 +309,44 @@ state. The Avalonia property group sets its own `Version` after it.
 
 Checks:
 - 2026-11-17 | Visual Studio 2026 18.12.0, Microsoft.Maui.Controls 11.0.10 | still-needed | Reproduced by evaluation: on the outputs of an Avalonia restore, Windows reports PackageVersion 1.0.0, and Android and iOS 3.42; with the property all three report 3.42. NuGet/Home#6461 is open, and NuGet/Home#13304 was closed as not planned.
+
+## WA-BUILD-0009: rsync 3.1.3 hangs sending to a newer rsync with --compress
+
+- Status: active
+- Added: 2026-11-20
+- GnollHack version: 3.43 (443)
+- Component: rsync
+- Package: rsync
+- Defective version: rsync 3.1.3 (Ubuntu 20.04, sender) to rsync 3.4.4 (SteamOS 3.9.5, receiver)
+- Platforms: Linux (Avalonia)
+- Upstream issue: https://github.com/RsyncProject/rsync/issues/433
+- Upstream status when added: reported
+- Upstream status: reported
+- Last checked: 2026-11-20
+- Code: `win/win32/xpl/GnollHackM/Platforms/Linux/Packaging/Deploy-SteamDeck.ps1` (`rsync`)
+- Remove when: the WSL distribution that deploys ships an rsync that no longer hangs with `--compress` against the Deck's, and Verify removal passes. Compression gains nothing on a local network, so keeping it off is also fine.
+
+**Symptom.** `Deploy-SteamDeck.ps1` stops at `Copying ... with rsync` and never finishes. On
+2026-11-20 a deploy of a new version ran for 11 minutes without writing a file on the Deck: the
+Deck had received about 4 MB, both rsync processes on each end were idle in `poll`, and the TCP
+connection had no queued data. A deploy of an unchanged version, which sends only a few
+megabytes, finishes, so the hang shows only when a new version is deployed.
+
+**Cause.** Not proven beyond the reproduction. With `--compress`, rsync 3.1.3 sending to rsync
+3.4.4 stops after the first few megabytes of file data; without it the same transfer finishes.
+The network and ssh are not involved: 200 MB piped through the same ssh from WSL arrived in under
+9 seconds, and `-o IPQoS=throughput` did not help. RsyncProject/rsync#433 reports 3.1.3 and 3.2.7
+getting stuck against each other with `--compress`.
+
+**Workaround.** The deploy's rsync runs without `--compress`. On a local network compression
+only costs CPU: the uncompressed sync of a new version took about 3.5 seconds.
+
+**Verify removal.** Add `--compress` back to the rsync command. Then:
+- Build a new version with `Build-LinuxPackages.ps1 -Targets TarGz -NoSentryUpload`, so that
+  most files differ from what the Deck has.
+- Run `Deploy-SteamDeck.ps1` from the WSL distribution the packaging used.
+- Confirm that it finishes within a minute, and that the Deck's `~/gnollhack-dev/gnollhack/`
+  matches the staged tree.
+
+Checks:
+- 2026-11-20 | rsync 3.1.3, rsync 3.4.4 | still-needed | Reproduced twice with `--compress`, and once more with `-o IPQoS=throughput` added; without `--compress` the same deploy finished in seconds. RsyncProject/rsync#433 is open.
