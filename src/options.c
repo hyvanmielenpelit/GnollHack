@@ -4703,7 +4703,7 @@ parseoptions(char *opts, boolean tinitial, boolean tfrom_file)
         if (negated)
         {
             bad_negation(fullname, TRUE);
-            itmp = GNH_DEF_TALK_COUNT;
+            itmp = DEF_LAST_ITEM_SHOW_DURATION;
             retval = FALSE;
         }
         else if (op)
@@ -4718,7 +4718,7 @@ parseoptions(char *opts, boolean tinitial, boolean tfrom_file)
         }
         else
         {
-            flags.talk_effect_length = itmp;
+            flags.last_item_show_duration = itmp;
         }
         return retval;
     }
