@@ -37,6 +37,15 @@ public static class AndroidMemorySampler
     private static long _samplePssMB = -1;
     private static long _sampleGraphicsMB = -1;
     private static long _sampleNativeHeapMB = -1;
+    private static readonly GHGcPauseTracker _gcTracker = new GHGcPauseTracker();
+    private static long _lastEphemeralGcIndex = 0L;
+    private static long _lastFullBlockingGcIndex = 0L;
+    private static long _lastBackgroundGcIndex = 0L;
+    private static long _gcNetCount = -1;     /* the last sample's cumulative figures, for the breadcrumb */
+    private static long _gcNetPauseMs = -1;
+    private static long _gcJavaCount = -1;
+    private static long _gcJavaTimeMs = -1;
+    private static long _gcBridgeGeneration = -1;
 
     /* The caller checks for API 30 */
     public static void Start()
@@ -123,6 +132,7 @@ public static class AndroidMemorySampler
                     Volatile.Write(ref _job, job);
                     GHDiagnosticsScheduler.Register(job);
                 }
+                SampleGarbageCollections();
                 WriteSnapshot();
                 if (allowFull && IsFullSampleDue())
                 {
@@ -196,6 +206,7 @@ public static class AndroidMemorySampler
             summary.RssMB = rssKB < 0 ? -1 : rssKB / 1024;
             summary.SwapMB = swapKB < 0 ? -1 : swapKB / 1024;
             summary.ManagedHeapMB = GC.GetGCMemoryInfo().HeapSizeBytes / (1024 * 1024);
+            FillGcWindow(summary, now);
             WriteIfChanged(summary, now);
             return;
         }
@@ -240,7 +251,83 @@ public static class AndroidMemorySampler
         GHApp.FmodService?.GetStats(out soundCurrent, out soundMax);
         summary.SoundMB = soundCurrent < 0 ? -1 : soundCurrent / (1024 * 1024);
         summary.ManagedHeapMB = GC.GetGCMemoryInfo().HeapSizeBytes / (1024 * 1024);
+        FillGcWindow(summary, now);
         WriteIfChanged(summary, now);
+    }
+
+    private static void FillGcWindow(GHExitStateSummary summary, long nowUtcTicks)
+    {
+        long gcNet, gcJava, gcJavaCount, gcBridgeCount;
+        _gcTracker.GetWindow(nowUtcTicks, out gcNet, out gcJava, out gcJavaCount, out gcBridgeCount);
+        summary.GcNetLongestMs = gcNet;
+        summary.GcJavaLongestMs = gcJava;
+        summary.GcJavaCount = gcJavaCount;
+    }
+
+    /* Cumulative .NET and Java collection figures and the GC bridge generation, at each pass */
+    private static void SampleGarbageCollections()
+    {
+        long netCount = -1, netPauseMs = -1, netNewestPauseMs = -1, bridgeGeneration = -1;
+#if CORECLR
+        long ephemeralIndex, fullBlockingIndex, backgroundIndex;
+        long ephemeralPause = NewPauseMs(GCKind.Ephemeral, ref _lastEphemeralGcIndex, out ephemeralIndex);
+        long fullBlockingPause = NewPauseMs(GCKind.FullBlocking, ref _lastFullBlockingGcIndex, out fullBlockingIndex);
+        long backgroundPause = NewPauseMs(GCKind.Background, ref _lastBackgroundGcIndex, out backgroundIndex);
+        netNewestPauseMs = Math.Max(ephemeralPause, Math.Max(fullBlockingPause, backgroundPause));
+        /* The newest collection's number; GC.CollectionCount(0) misses background collections */
+        netCount = Math.Max(ephemeralIndex, Math.Max(fullBlockingIndex, backgroundIndex));
+        netPauseMs = (long)GC.GetTotalPauseDuration().TotalMilliseconds;
+        /* Completed bridge passes; a field read, no JNI call */
+        bridgeGeneration = Android.Runtime.JNIEnv.BridgeProcessingGeneration;
+#endif
+        long javaCount = RuntimeStat("art.gc.gc-count");
+        long javaTimeMs = RuntimeStat("art.gc.gc-time");
+        _gcTracker.AddSample(DateTime.UtcNow.Ticks, netCount, netPauseMs, netNewestPauseMs, javaCount, javaTimeMs, bridgeGeneration);
+        _gcNetCount = netCount;
+        _gcNetPauseMs = netPauseMs;
+        _gcJavaCount = javaCount;
+        _gcJavaTimeMs = javaTimeMs;
+        _gcBridgeGeneration = bridgeGeneration;
+
+        if (IsAppReady && _gcTracker.LastIntervalIsLong)
+        {
+            GHApp.AddSentryBreadcrumb("Long GC: longest .NET pause " + Number(_gcTracker.LastIntervalNetLongestMs)
+                + " ms; Java GC " + Number(_gcTracker.LastIntervalJavaLongestMs) + " ms per collection over " + Number(_gcTracker.LastIntervalJavaCount)
+                + "; " + Number(_gcTracker.LastIntervalBridgeCount) + " bridge passes; in the " + Number(_gcTracker.LastIntervalSeconds)
+                + " s before this sample", GHConstants.SentryGnollHackGeneralCategoryName);
+        }
+    }
+
+#if CORECLR
+    /* The kind's newest collection's total pause when it is newer than the one seen last time, else -1 */
+    private static long NewPauseMs(GCKind kind, ref long lastIndex, out long index)
+    {
+        GCMemoryInfo info = GC.GetGCMemoryInfo(kind);
+        index = info.Index;
+        if (info.Index <= lastIndex)
+            return -1;
+        double pauseMs = 0;
+        foreach (TimeSpan pause in info.PauseDurations)
+            pauseMs += pause.TotalMilliseconds;
+        lastIndex = info.Index;
+        return (long)pauseMs;
+    }
+#endif
+
+    /* An ART runtime statistic as a number, -1 when unavailable */
+    private static long RuntimeStat(string name)
+    {
+        try
+        {
+            string text = Android.OS.Debug.GetRuntimeStat(name);
+            long value;
+            return text != null && long.TryParse(text, NumberStyles.None, CultureInfo.InvariantCulture, out value) ? value : -1;
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("AndroidMemorySampler runtime stat " + name + ": " + ex.Message);
+            return -1;
+        }
     }
 
     /* GHExitStateSummary.GameState coding; only after AppReady */
@@ -332,7 +419,12 @@ public static class AndroidMemorySampler
             + "/" + Mb(gpuLimit < 0 ? -1 : gpuLimit / (1024 * 1024)) + " MB"
             + "; bitmaps " + Mb((long)(GHApp.UsedBitmapBytes / (1024UL * 1024UL))) + " MB"
             + ", tile sheets " + Mb(Math.Max(0L, GHApp.TileSheetBytes) / (1024L * 1024L)) + " MB"
-            + "; sound " + Mb(soundCurrent < 0 ? -1 : soundCurrent / (1024 * 1024)) + " MB"
+            + "; sound " + Mb(soundCurrent < 0 ? -1 : soundCurrent / (1024 * 1024)) + " MB";
+        long gcNet, gcJava, gcJavaCount, gcBridgeCount;
+        _gcTracker.GetWindow(DateTime.UtcNow.Ticks, out gcNet, out gcJava, out gcJavaCount, out gcBridgeCount);
+        message += "; GC .NET " + Number(_gcNetCount) + " (" + Number(_gcNetPauseMs) + " ms paused), Java " + Number(_gcJavaCount)
+            + " (" + Number(_gcJavaTimeMs) + " ms), bridge passes " + Number(_gcBridgeGeneration)
+            + ", in " + (GHGcPauseTracker.WindowSeconds / 60).ToString(CultureInfo.InvariantCulture) + " min: longest .NET " + Number(gcNet) + " ms, Java " + Number(gcJava) + " ms, " + Number(gcBridgeCount) + " bridge passes"
             + "; " + game;
         GHApp.AddSentryBreadcrumb(message, GHConstants.SentryGnollHackGeneralCategoryName);
     }
@@ -358,6 +450,11 @@ public static class AndroidMemorySampler
     }
 
     private static string Mb(long value)
+    {
+        return value < 0 ? "?" : value.ToString(CultureInfo.InvariantCulture);
+    }
+
+    private static string Number(long value)
     {
         return value < 0 ? "?" : value.ToString(CultureInfo.InvariantCulture);
     }

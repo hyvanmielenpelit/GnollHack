@@ -976,6 +976,20 @@ namespace GnollHackX
                 }
             }
 
+            /* Raised before the collection below starts, so that a listener's work is not queued behind it */
+            Action<MemoryPressureLevel> handler = MemoryPressureReceived;
+            if (handler != null)
+            {
+                try
+                {
+                    handler(level);
+                }
+                catch (Exception ex)
+                {
+                    MaybeWriteGHLog("MemoryPressureReceived: " + ex.Message);
+                }
+            }
+
             switch (level)
             {
                 case MemoryPressureLevel.Low:
@@ -1015,19 +1029,6 @@ namespace GnollHackX
                         CurrentGamePage?.RequestClearCaches((int)level);
                     }
                     break;
-            }
-
-            Action<MemoryPressureLevel> handler = MemoryPressureReceived;
-            if (handler != null)
-            {
-                try
-                {
-                    handler(level);
-                }
-                catch (Exception ex)
-                {
-                    MaybeWriteGHLog("MemoryPressureReceived: " + ex.Message);
-                }
             }
         }
 

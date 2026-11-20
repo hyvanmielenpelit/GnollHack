@@ -335,7 +335,19 @@ After retrieval, extract and record the following for each event:
   (`Exit Snapshot` / `ANR Snapshot`) taken during a game therefore dates from
   the last heavy spot, the last light spot after its 15 s timer marked it due,
   or the last memory warning: read its `snapshot N s before exit` before
-  trusting its in-game figures.
+  trusting its in-game figures. Its `x=` part (`GC in last 10 min:` in the
+  extra, tag `exit.gc_longest` or `anr.gc_longest`) holds the longest .NET GC
+  pause and the longest Java GC seen at the sampler's passes in the 10 minutes
+  before the snapshot, and the number of Java GCs. Both longest values are
+  lower bounds, because an interval with several collections gives their
+  average. The figures describe the time **before** the snapshot: when an ANR
+  killed the process mid-stall, the stall itself is not in them, so low figures
+  do not clear garbage collection. ART's count includes natural Java
+  collections as well as the one that each CoreCLR GC bridge pass runs. A long
+  Java GC implicates the bridge, but a short one does not clear it, because
+  the bridge's per-peer JNI work is not timed. A `Long GC:` breadcrumb marks a
+  pass that followed a collection of 1 s or more; it and the `Android memory:`
+  breadcrumb also give the number of completed bridge passes.
 
 ### A.6 Subagent Considerations
 

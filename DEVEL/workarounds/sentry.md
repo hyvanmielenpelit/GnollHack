@@ -421,7 +421,8 @@ ANR exits Android recorded since the last report and sends each as a warning mes
 `Android ANR exit info: <type>`, with the description, the trace `Subject:` and dump-time
 lines, and the exit time in the `anr.exit_time` tag and the `ANR Exit Time` extra. From the
 `gs1` state summary of WA-SENTRY-0012 it also carries `anr.startup`, the startup milestone the
-process had reached (`done` after the main menu), and the `ANR Snapshot` text.
+process had reached (`done` after the main menu), `anr.gc_longest`, the bucket of the longest
+garbage collection of the last 10 minutes, and the `ANR Snapshot` text.
 
 **Verify removal.** With a Sentry release whose ANR events are expected to carry the
 description:
@@ -517,12 +518,13 @@ first colon or white space. A `REASON_OTHER` exit with a description is grouped 
 `other <word>`, so that vendor kills such as Xiaomi's `OptimizationClean` (GNOLLHACK-JG) and Sentry's
 own `MemoryLimiter:` exits get separate issues. `AndroidMemorySampler`, started from
 `MainApplication.OnCreate` before the app is created, keeps a `gs1` process state summary (game
-state, process age and startup milestone, memory warnings, memory figures) current every 15 s
+state, process age and startup milestone, memory warnings, memory figures, and the longest .NET
+and Java garbage collection times of the last 10 minutes) current every 15 s
 outside a game, and during one at diagnostics spots (heavy: level change, game-menu close, the
 loading-screen hide at game start, game end, backgrounding; light, at most every 15 s: prompt answers
 and menu or text window closes), on each memory warning and on each startup milestone, and the
 report parses it into `exit.in_game`,
-`exit.memory_warning`, `exit.snapshot`, `exit.startup`, `device.memory` and `Exit Snapshot`. A `SIGNALED` exit with signal 9 within 10 s of a close recorded in
+`exit.memory_warning`, `exit.snapshot`, `exit.startup`, `exit.gc_longest`, `device.memory` and `Exit Snapshot`. A `SIGNALED` exit with signal 9 within 10 s of a close recorded in
 the `AndroidExitInfoCloseRequestedTimestamp` preference is skipped too, in case Android refused the
 marker.
 

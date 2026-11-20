@@ -18,7 +18,8 @@ namespace GnollHackX
         public long SecondsInGame = -1;            /* t */
         public long SecondsSinceLoaded = -1;       /* d: seconds since the game finished loading */
         public long ProcessAgeSeconds = -1;        /* a: process age, then the last startup milestone (GHStartupMilestone), */
-        public int StartupMilestone = -1;          /*    seconds since it, and the reached-milestone mask */
+        public int StartupMilestone = -1;          /*    seconds since it, and the reached-milestone mask; the age only */
+                                                   /*    once startup is done */
         public long StartupMilestoneAgeSeconds = -1;
         public int StartupMilestoneMask = -1;
         public int MemoryWarningLevel = -1;        /* w: last warning; 0 none, else (int)MemoryPressureLevel + 1 */
@@ -35,6 +36,9 @@ namespace GnollHackX
         public long GpuCacheSampleAgeSeconds = -1;
         public long BitmapMB = -1;                 /* b: all bitmaps, then the tile sheets */
         public long TileSheetMB = -1;
+        public long GcNetLongestMs = -1;           /* x: longest .NET GC pause, longest Java GC and the */
+        public long GcJavaLongestMs = -1;          /*    number of Java GCs in GHGcPauseTracker.WindowSeconds; */
+        public long GcJavaCount = -1;              /*    the longest values are lower bounds */
         public long SoundMB = -1;                  /* f */
         public long ManagedHeapMB = -1;            /* h */
 
@@ -47,15 +51,19 @@ namespace GnollHackX
             AppendField(sb, ref full, "g", GameState);
             AppendField(sb, ref full, "t", SecondsInGame);
             AppendField(sb, ref full, "d", SecondsSinceLoaded);
-            AppendField(sb, ref full, "a", ProcessAgeSeconds, StartupMilestone, StartupMilestoneAgeSeconds, StartupMilestoneMask);
+            if (IsStartupDone)
+                AppendField(sb, ref full, "a", ProcessAgeSeconds);
+            else
+                AppendField(sb, ref full, "a", ProcessAgeSeconds, StartupMilestone, StartupMilestoneAgeSeconds, StartupMilestoneMask);
             AppendField(sb, ref full, "w", MemoryWarningLevel, MemoryWarningAgeSeconds, HighestMemoryWarningLevel);
             AppendField(sb, ref full, "r", RssMB);
             AppendField(sb, ref full, "s", SwapMB);
             AppendField(sb, ref full, "p", PssMB, GraphicsMB, NativeHeapMB, PssSampleAgeSeconds);
             AppendField(sb, ref full, "c", GpuCacheUsedMB, GpuCacheLimitMB, GpuCacheSampleAgeSeconds);
             AppendField(sb, ref full, "b", BitmapMB, TileSheetMB);
-            AppendField(sb, ref full, "f", SoundMB);
+            AppendField(sb, ref full, "x", GcNetLongestMs, GcJavaLongestMs, GcJavaCount);
             AppendField(sb, ref full, "h", ManagedHeapMB);
+            AppendField(sb, ref full, "f", SoundMB);
             return sb.ToString();
         }
 
@@ -127,9 +135,19 @@ namespace GnollHackX
                         break;
                     case "a":
                         res.ProcessAgeSeconds = ParsePart(parts, 0);
-                        res.StartupMilestone = ParseIntPart(parts, 1);
-                        res.StartupMilestoneAgeSeconds = ParsePart(parts, 2);
-                        res.StartupMilestoneMask = ParseIntPart(parts, 3);
+                        /* One part is written only once startup is done; older builds always write four */
+                        if (parts.Length == 1 && res.ProcessAgeSeconds != -1)
+                        {
+                            res.StartupMilestone = (int)GHStartupMilestone.MainMenu;
+                            res.StartupMilestoneAgeSeconds = -1;
+                            res.StartupMilestoneMask = 1 << (int)GHStartupMilestone.MainMenu;
+                        }
+                        else
+                        {
+                            res.StartupMilestone = ParseIntPart(parts, 1);
+                            res.StartupMilestoneAgeSeconds = ParsePart(parts, 2);
+                            res.StartupMilestoneMask = ParseIntPart(parts, 3);
+                        }
                         break;
                     case "w":
                         res.MemoryWarningLevel = ParseIntPart(parts, 0);
@@ -156,6 +174,11 @@ namespace GnollHackX
                     case "b":
                         res.BitmapMB = ParsePart(parts, 0);
                         res.TileSheetMB = ParsePart(parts, 1);
+                        break;
+                    case "x":
+                        res.GcNetLongestMs = ParsePart(parts, 0);
+                        res.GcJavaLongestMs = ParsePart(parts, 1);
+                        res.GcJavaCount = ParsePart(parts, 2);
                         break;
                     case "f":
                         res.SoundMB = ParsePart(parts, 0);
@@ -284,6 +307,16 @@ namespace GnollHackX
                 if (TileSheetMB != -1)
                     sb.Append(" (tile sheets ").Append(Mb(TileSheetMB)).Append(')');
             }
+            if (GcNetLongestMs != -1 || GcJavaLongestMs != -1 || GcJavaCount != -1)
+            {
+                AppendSeparator(sb);
+                sb.Append("GC in last ").Append((GHGcPauseTracker.WindowSeconds / 60).ToString(CultureInfo.InvariantCulture)).Append(" min: ");
+                if (GcNetLongestMs == -1 && GcJavaLongestMs == -1 && GcJavaCount == 0)
+                    sb.Append("none seen");
+                else
+                    sb.Append("longest .NET pause ").Append(Mb(GcNetLongestMs)).Append(" ms, longest Java GC ").Append(Mb(GcJavaLongestMs))
+                        .Append(" ms, ").Append(Mb(GcJavaCount)).Append(" Java GCs");
+            }
             if (SoundMB != -1)
             {
                 AppendSeparator(sb);
@@ -375,8 +408,26 @@ namespace GnollHackX
                 && GpuCacheSampleAgeSeconds == other.GpuCacheSampleAgeSeconds
                 && BitmapMB == other.BitmapMB
                 && TileSheetMB == other.TileSheetMB
+                && GcNetLongestMs == other.GcNetLongestMs
+                && GcJavaLongestMs == other.GcJavaLongestMs
+                && GcJavaCount == other.GcJavaCount
                 && SoundMB == other.SoundMB
                 && ManagedHeapMB == other.ManagedHeapMB;
+        }
+
+        /* On the larger known value; for the exit.gc_longest and anr.gc_longest tags */
+        public static string GcLongestBucket(long netLongestMs, long javaLongestMs)
+        {
+            long longest = Math.Max(netLongestMs, javaLongestMs);
+            if (longest < 0)
+                return "unknown";
+            if (longest < 100)
+                return "under 100 ms";
+            if (longest < 1000)
+                return "100-999 ms";
+            if (longest < 5000)
+                return "1-4.9 s";
+            return "5 s or more";
         }
 
         /* Approximate rated RAM from ActivityManager.MemoryInfo.TotalMem, which is below the rated size;

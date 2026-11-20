@@ -288,6 +288,7 @@ public static class AndroidExitInfoReporter
             scope.SetTag(tagPrefix + ".in_game", GHExitStateSummary.GameStateName(summary.GameState));
             scope.SetTag(tagPrefix + ".memory_warning", GHExitStateSummary.MemoryWarningName(summary.MemoryWarningLevel));
             scope.SetTag(tagPrefix + ".snapshot", "yes");
+            scope.SetTag(tagPrefix + ".gc_longest", GHExitStateSummary.GcLongestBucket(summary.GcNetLongestMs, summary.GcJavaLongestMs));
             string startup = summary.StartupTagValue();
             if (startup != null)
                 scope.SetTag(tagPrefix + ".startup", startup);

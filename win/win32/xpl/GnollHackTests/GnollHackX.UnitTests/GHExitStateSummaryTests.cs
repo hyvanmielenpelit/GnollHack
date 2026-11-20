@@ -32,9 +32,20 @@ namespace GnollHackX.UnitTests
             s.GpuCacheUsedMB = 380;
             s.GpuCacheLimitMB = 384;
             s.BitmapMB = 570;
+            s.GcNetLongestMs = 45;
+            s.GcJavaLongestMs = 180;
+            s.GcJavaCount = 12;
             s.SoundMB = 120;
             s.ManagedHeapMB = 40;
             return s;
+        }
+
+        /* What a compact startup field parses back to */
+        private static void DoneStartup(GHExitStateSummary s)
+        {
+            s.StartupMilestone = (int)GHStartupMilestone.MainMenu;
+            s.StartupMilestoneAgeSeconds = -1;
+            s.StartupMilestoneMask = 1 << (int)GHStartupMilestone.MainMenu;
         }
 
         [Fact]
@@ -43,10 +54,11 @@ namespace GnollHackX.UnitTests
             GHExitStateSummary s = Full();
             string text = s.Format();
 
-            Assert.Equal("gs1 u=1794567890 g=1 t=245 a=300/10/290/2046 w=3/12/3 r=1530 s=610 p=2100/320/900/40 c=380/384 b=570 f=120 h=40", text);
-            Assert.True(Encoding.ASCII.GetByteCount(text) <= GHExitStateSummary.MaxBytes);
+            Assert.Equal("gs1 u=1794567890 g=1 t=245 a=300 w=3/12/3 r=1530 s=610 p=2100/320/900/40 c=380/384 b=570 x=45/180/12 h=40 f=120", text);
+            Assert.Equal(111, Encoding.ASCII.GetByteCount(text));
             GHExitStateSummary parsed;
             Assert.True(GHExitStateSummary.TryParse(text, out parsed));
+            DoneStartup(s);
             Assert.True(s.ContentEquals(parsed));
             Assert.Equal(s.UnixSeconds, parsed.UnixSeconds);
         }
@@ -108,9 +120,11 @@ namespace GnollHackX.UnitTests
             GHExitStateSummary s = FullWithLoadAndSheets();
             string text = s.Format();
 
-            Assert.Equal("gs1 u=1794567890 g=1 t=245 d=70 a=300/10/290/2046 w=3/12/3 r=1530 s=610 p=2100/320/900/40 c=380/384/9 b=570/570 f=120 h=40", text);
+            Assert.Equal("gs1 u=1794567890 g=1 t=245 d=70 a=300 w=3/12/3 r=1530 s=610 p=2100/320/900/40 c=380/384/9 b=570/570 x=45/180/12 h=40 f=120", text);
+            Assert.Equal(122, Encoding.ASCII.GetByteCount(text));
             GHExitStateSummary parsed;
             Assert.True(GHExitStateSummary.TryParse(text, out parsed));
+            DoneStartup(s);
             Assert.True(s.ContentEquals(parsed));
             Assert.Equal(70, parsed.SecondsSinceLoaded);
             Assert.Equal(9, parsed.GpuCacheSampleAgeSeconds);
@@ -143,13 +157,113 @@ namespace GnollHackX.UnitTests
             s.GpuCacheSampleAgeSeconds = 9;
             s.BitmapMB = 705;
             s.TileSheetMB = 570;
+            s.GcNetLongestMs = 300;
+            s.GcJavaLongestMs = 2500;
+            s.GcJavaCount = 45;
             s.SoundMB = 11;
             s.ManagedHeapMB = 80;
 
             string text = s.Format();
 
+            Assert.Equal(126, Encoding.ASCII.GetByteCount(text));
             Assert.True(Encoding.ASCII.GetByteCount(text) <= GHExitStateSummary.MaxBytes);
-            Assert.EndsWith(" h=80", text);
+            Assert.EndsWith(" f=11", text);
+        }
+
+        [Fact]
+        public void Format_HeavyLongGame_KeepsGcFieldBeforeHeapAndSound()
+        {
+            GHExitStateSummary s = new GHExitStateSummary();
+            s.UnixSeconds = 1794567890;
+            s.GameState = 1;
+            s.SecondsInGame = 36000;
+            s.SecondsSinceLoaded = 35990;
+            s.ProcessAgeSeconds = 36100;
+            s.StartupMilestone = (int)GHStartupMilestone.MainMenu;
+            s.StartupMilestoneAgeSeconds = 36050;
+            s.StartupMilestoneMask = 2046;
+            s.MemoryWarningLevel = 4;
+            s.MemoryWarningAgeSeconds = 0;
+            s.HighestMemoryWarningLevel = 5;
+            s.RssMB = 1500;
+            s.SwapMB = 1165;
+            s.PssMB = 2100;
+            s.GraphicsMB = 643;
+            s.NativeHeapMB = 835;
+            s.PssSampleAgeSeconds = 300;
+            s.GpuCacheUsedMB = 596;
+            s.GpuCacheLimitMB = 768;
+            s.GpuCacheSampleAgeSeconds = 120;
+            s.BitmapMB = 708;
+            s.TileSheetMB = 600;
+            s.GcNetLongestMs = 21000;
+            s.GcJavaLongestMs = 30000;
+            s.GcJavaCount = 240;
+            s.ManagedHeapMB = 120;
+            s.SoundMB = 21;
+
+            string text = s.Format();
+
+            Assert.Equal(127, Encoding.ASCII.GetByteCount(text));
+            Assert.EndsWith(" x=21000/30000/240", text);
+            Assert.DoesNotContain(" h=", text);
+            Assert.DoesNotContain(" f=", text);
+        }
+
+        [Fact]
+        public void TryParse_OldFieldOrder_StillParses()
+        {
+            GHExitStateSummary parsed;
+            Assert.True(GHExitStateSummary.TryParse("gs1 u=5 g=1 b=570 f=120 h=40", out parsed));
+
+            Assert.Equal(120, parsed.SoundMB);
+            Assert.Equal(40, parsed.ManagedHeapMB);
+        }
+
+        [Fact]
+        public void TryParse_OnePartStartupField_IsDone()
+        {
+            GHExitStateSummary parsed;
+            Assert.True(GHExitStateSummary.TryParse("gs1 u=5 g=1 a=3700", out parsed));
+
+            Assert.Equal(3700, parsed.ProcessAgeSeconds);
+            Assert.Equal("done", parsed.StartupTagValue());
+            Assert.Contains("process 3700 s; startup done", parsed.Describe(0));
+        }
+
+        [Fact]
+        public void TryParse_OldFourPartStartupField_StillParses()
+        {
+            GHExitStateSummary parsed;
+            Assert.True(GHExitStateSummary.TryParse("gs1 u=5 g=1 a=3700/10/3650/2046", out parsed));
+
+            Assert.Equal(3700, parsed.ProcessAgeSeconds);
+            Assert.Equal(10, parsed.StartupMilestone);
+            Assert.Equal(3650, parsed.StartupMilestoneAgeSeconds);
+            Assert.Equal(2046, parsed.StartupMilestoneMask);
+        }
+
+        [Fact]
+        public void Describe_GcNoneSeenAndUnknownParts()
+        {
+            GHExitStateSummary s = new GHExitStateSummary();
+            s.GcJavaCount = 0;
+            Assert.Equal("GC in last 10 min: none seen", s.Describe(0));
+
+            s.GcJavaLongestMs = 700;
+            s.GcJavaCount = 3;
+            Assert.Equal("GC in last 10 min: longest .NET pause ? ms, longest Java GC 700 ms, 3 Java GCs", s.Describe(0));
+        }
+
+        [Theory]
+        [InlineData(-1L, -1L, "unknown")]
+        [InlineData(50L, -1L, "under 100 ms")]
+        [InlineData(-1L, 100L, "100-999 ms")]
+        [InlineData(999L, 1000L, "1-4.9 s")]
+        [InlineData(5000L, 10L, "5 s or more")]
+        public void GcLongestBucket_Buckets(long netLongestMs, long javaLongestMs, string expected)
+        {
+            Assert.Equal(expected, GHExitStateSummary.GcLongestBucket(netLongestMs, javaLongestMs));
         }
 
         [Fact]
@@ -190,7 +304,8 @@ namespace GnollHackX.UnitTests
             string text = s.Describe(s.UnixSeconds + 8);
 
             Assert.StartsWith("game, 245 s in, loaded 70 s before snapshot; process 300 s;", text);
-            Assert.Contains("GPU cache 380 / 384 MB sampled 9 s before snapshot; bitmaps 570 MB (tile sheets 570); sound", text);
+            Assert.Contains("GPU cache 380 / 384 MB sampled 9 s before snapshot; bitmaps 570 MB (tile sheets 570); "
+                + "GC in last 10 min: longest .NET pause 45 ms, longest Java GC 180 ms, 12 Java GCs; sound", text);
         }
 
         [Fact]
@@ -254,6 +369,7 @@ namespace GnollHackX.UnitTests
 
             Assert.Equal("game, 245 s in; process 300 s; startup done; warning Critical 12 s before snapshot, highest Critical; rss 1530 MB, swap 610 MB; "
                 + "pss 2100 MB (graphics 320, native 900) 40 s before snapshot; GPU cache 380 / 384 MB; bitmaps 570 MB; "
+                + "GC in last 10 min: longest .NET pause 45 ms, longest Java GC 180 ms, 12 Java GCs; "
                 + "sound 120 MB; managed heap 40 MB; snapshot 8 s before exit", text);
         }
 
@@ -354,6 +470,10 @@ namespace GnollHackX.UnitTests
             b.RssMB = a.RssMB + 1;
             Assert.False(a.ContentEquals(b));
             Assert.False(a.ContentEquals(null));
+
+            GHExitStateSummary c = Full();
+            c.GcJavaCount = a.GcJavaCount + 1;
+            Assert.False(a.ContentEquals(c));
         }
 
         [Theory]
