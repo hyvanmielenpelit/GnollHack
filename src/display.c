@@ -3331,6 +3331,8 @@ flush_screen(int cursor_on_u)
      */
 
     int x, y;
+    int run_step_ms;
+    uint64_t run_step_mflags;
 
     if (cursor_on_u == -1)
         delay_flushing = !delay_flushing;
@@ -3491,15 +3493,34 @@ flush_screen(int cursor_on_u)
 
 #endif
     issue_simple_gui_command(Is_really_rogue_level(&u.uz) ? GUI_CMD_FORCE_ASCII : GUI_CMD_UNFORCE_ASCII);
+    run_step_ms = run_step_display_interval();
+    run_step_mflags = run_step_ms <= 0 ? 0UL
+        : ((uint64_t)(run_step_ms > LMFLAGS_RUN_STEP_INTERVAL_MAX ? LMFLAGS_RUN_STEP_INTERVAL_MAX : run_step_ms)) << LMFLAGS_RUN_STEP_INTERVAL_SHIFT;
+
     issue_simple_gui_command(GUI_CMD_START_FLUSH);
-    for (y = 0; y < ROWNO; y++) {
+    for (y = 0; y < ROWNO; y++)
+    {
         gbuf_entry *gptr = &gbuf[y][x = gbuf_start[y]];
 
         for (; x <= gbuf_stop[y]; gptr++, x++)
-            if (gptr->isnew) {
-                print_glyph(WIN_MAP, x, y, gptr->layers);
+        {
+            if (gptr->isnew)
+            {
+                if (run_step_mflags != 0UL
+                    && (gptr->layers.m_id != 0 || gptr->layers.o_id != 0 || (gptr->layers.layer_flags & LFLAGS_UXUY) != 0))
+                {
+                    struct layer_info run_layers = gptr->layers;
+
+                    run_layers.monster_flags |= run_step_mflags;
+                    print_glyph(WIN_MAP, x, y, run_layers);
+                }
+                else
+                {
+                    print_glyph(WIN_MAP, x, y, gptr->layers);
+                }
                 gptr->isnew = 0;
             }
+        }
     }
     issue_simple_gui_command(GUI_CMD_FINISH_FLUSH);
 

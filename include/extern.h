@@ -1604,6 +1604,8 @@ E void strbuf_reserve(strbuf_t *, size_t);
 E void strbuf_empty(strbuf_t *);
 E void strbuf_nl_to_crlf(strbuf_t *);
 E void adjusted_delay_output(void);
+E int run_step_interval(void);
+E int run_step_display_interval(void);
 E void copyUTF8toCP437(char*, size_t, char*, size_t);
 E void convertUTF8toCP437(char*, size_t);
 E char unicode_to_CP437(nhsym);

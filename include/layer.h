@@ -167,6 +167,11 @@ struct layer_info {
 #define LMFLAGS_ANIMAL_BREATHE_ANIMATION    0x40000000UL
 #define LMFLAGS_STONED                      0x80000000UL
 
+/* Bits 32-47: milliseconds between the displayed steps of a run or travel; set only on printed copies, 0 when not running */
+#define LMFLAGS_RUN_STEP_INTERVAL_SHIFT     32
+#define LMFLAGS_RUN_STEP_INTERVAL_MAX       0xFFFF
+#define LMFLAGS_RUN_STEP_INTERVAL_MASK      0x0000FFFF00000000ULL
+
 #define MISSILE_FLAGS_CORRODEABLE   0x00000001UL
 #define MISSILE_FLAGS_ROTTABLE      0x00000002UL
 #define MISSILE_FLAGS_FLAMMABLE     0x00000004UL

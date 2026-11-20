@@ -893,7 +893,7 @@ namespace GnollHackX.Pages.Game
         private float _originMapOffsetWithNewClipY;
         private bool _targetClipOn;
         private long _targetClipStartCounterValue;
-        private long _targetClipPanTime;
+        private double _targetClipPanTime;
 
         private int _clipX;
         private int _clipY;
@@ -2857,17 +2857,18 @@ namespace GnollHackX.Pages.Game
             lock (_mapOffsetLock)
             {
                 if (_targetClipOn && (maincountervalue < _targetClipStartCounterValue
-                    || maincountervalue > _targetClipStartCounterValue + _targetClipPanTime))
+                    || (double)(maincountervalue - _targetClipStartCounterValue) > _targetClipPanTime))
                 {
                     _targetClipOn = false;
                     _mapOffsetX = 0;
                     _mapOffsetY = 0;
                 }
 
-                if (_targetClipOn && _targetClipPanTime != 0)
+                if (_targetClipOn && _targetClipPanTime > 0)
                 {
-                    _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
-                    _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - (float)(maincountervalue - _targetClipStartCounterValue) / (float)_targetClipPanTime);
+                    float panProgress = (float)((double)(maincountervalue - _targetClipStartCounterValue) / _targetClipPanTime);
+                    _mapOffsetX = _originMapOffsetWithNewClipX * Math.Max(0.0f, 1.0f - panProgress);
+                    _mapOffsetY = _originMapOffsetWithNewClipY * Math.Max(0.0f, 1.0f - panProgress);
                 }
             }
 
@@ -7967,17 +7968,31 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+        /* Main-counter frames per millisecond of a run step: the map frame rate, sped up by the replay speed */
+        private float GetRunStepFramesPerMs(int mapRefreshRate)
+        {
+            double framesPerMs = (double)UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate) / 1000.0;
+            if (PlayingReplay)
+            {
+                double replaySpeed = GHApp.ReplaySpeed;
+                if (replaySpeed > 0)
+                    framesPerMs /= replaySpeed;
+            }
+            return (float)framesPerMs;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void GetBaseMoveOffsets(int mapx, int mapy, sbyte monster_origin_x, sbyte monster_origin_y, float width, float height, long maincounterdiff, long moveIntervals, ref float base_move_offset_x, ref float base_move_offset_y)
+        void GetBaseMoveOffsets(int mapx, int mapy, sbyte monster_origin_x, sbyte monster_origin_y, float width, float height, long maincounterdiff, float moveFrames, ref float base_move_offset_x, ref float base_move_offset_y)
         {
             int movediffx = (int)monster_origin_x - mapx;
             int movediffy = (int)monster_origin_y - mapy;
             if (GHUtils.isok(monster_origin_x, monster_origin_y)
                 && (movediffx != 0 || movediffy != 0)
-                && maincounterdiff >= 0 && maincounterdiff < moveIntervals && moveIntervals != 0)
+                && maincounterdiff >= 0 && maincounterdiff < moveFrames && moveFrames > 0)
             {
-                base_move_offset_x = width * (float)movediffx * (float)(moveIntervals - maincounterdiff) / (float)moveIntervals;
-                base_move_offset_y = height * (float)movediffy * (float)(moveIntervals - maincounterdiff) / (float)moveIntervals;
+                float remaining = (moveFrames - (float)maincounterdiff) / moveFrames;
+                base_move_offset_x = width * (float)movediffx * remaining;
+                base_move_offset_y = height * (float)movediffy * remaining;
             }
 
         }
@@ -7987,7 +8002,7 @@ namespace GnollHackX.Pages.Game
         private float[] _foundAnimationFactor = { 0.10f, 0.20f, 0.30f, 0.40f, 0.50f, 0.60f, 0.70f, 0.80f, 0.88f, 0.94f, 0.98f, 1.0f, 0.98f, 0.94f, 0.88f, 0.80f, 0.70f, 0.60f, 0.50f, 0.40f, 0.30f, 0.20f, 0.10f, 0f };
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        void GetObjectMoveOffsets(int mapx, int mapy, ref MapData currentCell, ref LayerInfo currentLayerInfo, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, long moveIntervals, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, int sub_layer_cnt, float targetscale, bool loc_is_you, float obj_height, ObjectDataItem otmp_round, ref float object_move_offset_x, ref float object_move_offset_y)
+        void GetObjectMoveOffsets(int mapx, int mapy, ref MapData currentCell, ref LayerInfo currentLayerInfo, sbyte object_origin_x, sbyte object_origin_y, float width, float height, long objectcounterdiff, float moveFrames, long generalcounterdiff, bool foundthisturn, int sub_layer_idx, int sub_layer_cnt, float targetscale, bool loc_is_you, float obj_height, ObjectDataItem otmp_round, ref float object_move_offset_x, ref float object_move_offset_y)
         {
             if(GHUtils.isok(object_origin_x, object_origin_y))
             {
@@ -7998,10 +8013,11 @@ namespace GnollHackX.Pages.Game
                 {
                     bool use_objcounter = otmp_round == null || (otmp_round.ObjData.o_id > 0 && otmp_round.ObjData.o_id == currentLayerInfo.o_id);
                     long usedcounterdiff = use_objcounter ? objectcounterdiff : generalcounterdiff;
-                    if (usedcounterdiff >= 0 && usedcounterdiff < moveIntervals && moveIntervals != 0)
+                    if (usedcounterdiff >= 0 && usedcounterdiff < moveFrames && moveFrames > 0)
                     {
-                        object_move_offset_x = width * (float)objectmovediffx * (float)(moveIntervals - usedcounterdiff) / (float)moveIntervals;
-                        object_move_offset_y = height * (float)objectmovediffy * (float)(moveIntervals - usedcounterdiff) / (float)moveIntervals;
+                        float remaining = (moveFrames - (float)usedcounterdiff) / moveFrames;
+                        object_move_offset_x = width * (float)objectmovediffx * remaining;
+                        object_move_offset_y = height * (float)objectmovediffy * remaining;
                     }
                 }
             }
@@ -8757,6 +8773,7 @@ namespace GnollHackX.Pages.Game
             //lockTaken = false;
 
             long moveIntervals = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate) / 10.0));
+            float runStepFramesPerMs = GetRunStepFramesPerMs(mapRefreshRate);
             bool lighterDarkening = LighterDarkening;
             bool coloredXRayVision = ColoredXRayVision;
 #if WINDOWS || GNH_AVALONIA
@@ -9244,7 +9261,9 @@ namespace GnollHackX.Pages.Game
                                                         bool isPointerHoveringOnTile = hasMapHoverLocation && mapx == mapHoverX && mapy == mapHoverY;
 
                                                         float base_move_offset_x = 0, base_move_offset_y = 0;
-                                                        GetBaseMoveOffsets(mapx, mapy, monster_origin_x, monster_origin_y, width, height, maincounterdiff, moveIntervals, ref base_move_offset_x, ref base_move_offset_y);
+                                                        int runStepMs = GHUtils.GetRunStepIntervalMs(currentLayerInfo.monster_flags);
+                                                        float cellMoveFrames = runStepMs > 0 ? Math.Max(1f, runStepMs * runStepFramesPerMs) : (float)moveIntervals;
+                                                        GetBaseMoveOffsets(mapx, mapy, monster_origin_x, monster_origin_y, width, height, maincounterdiff, cellMoveFrames, ref base_move_offset_x, ref base_move_offset_y);
 
                                                         //lock (_objectDataLock)
                                                         {
@@ -9283,7 +9302,7 @@ namespace GnollHackX.Pages.Game
                                                                         continue;
 
                                                                     float object_move_offset_x = 0, object_move_offset_y = 0;
-                                                                    GetObjectMoveOffsets(mapx, mapy, ref currentCell, ref currentLayerInfo, object_origin_x, object_origin_y, width, height, objectcounterdiff, moveIntervals, generalcounterdiff,
+                                                                    GetObjectMoveOffsets(mapx, mapy, ref currentCell, ref currentLayerInfo, object_origin_x, object_origin_y, width, height, objectcounterdiff, cellMoveFrames, generalcounterdiff,
                                                                         foundthisturn, sub_layer_idx, sub_layer_cnt, targetscale, loc_is_you, obj_height, otmp_round, ref object_move_offset_x, ref object_move_offset_y);
 
                                                                     bool vflip_glyph = false;
@@ -18241,9 +18260,10 @@ namespace GnollHackX.Pages.Game
         //}
 
 
-        public void SetTargetClip(int x, int y, bool immediate_pan, long curtimervalue)
+        public void SetTargetClip(int x, int y, bool immediate_pan, long curtimervalue, int runStepIntervalMs = 0)
         {
-            long pantime = Math.Max(2, (long)Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(MapRefreshRate) / 8.0));
+            int mapRefreshRate = MapRefreshRate;
+            double pantime = Math.Max(2, Math.Ceiling((double)UIUtils.GetMainCanvasAnimationFrequency(mapRefreshRate) / 8.0));
 
             /* Copy some values to local variables to avoid nested locks */
             bool forceAscii = ForceAscii;
@@ -18272,6 +18292,10 @@ namespace GnollHackX.Pages.Game
                 _clipX = x;
                 _clipY = y;
             }
+
+            /* A run step pans over the step's own interval, as its slide does */
+            if (runStepIntervalMs > 0 && (x != clipX || y != clipY))
+                pantime = Math.Max(1.0, runStepIntervalMs * (double)GetRunStepFramesPerMs(mapRefreshRate));
 
             /* While the gamepad pans the map, the view stays where it is: the offset absorbs the clip change */
             bool gamepadPanHold = !immediate_pan && GamepadPanHold;

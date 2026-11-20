@@ -1170,14 +1170,20 @@ namespace GnollHackX
 
         private void SetMapSymbolOnTimerUnlocked(int x, int y, int glyph, int bkglyph, Int32 c, int color, UInt64 special, ref LayerInfo layers, long generalCounter, long mainCounter)
         {
-            if (((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0 && (_mapDataMaster[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) == 0) ||
-                (layers.m_id != 0 && layers.m_id != _mapDataMaster[x, y].Layers.m_id))
+            bool heroArrived = (layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0 && (_mapDataMaster[x, y].Layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) == 0;
+            if (heroArrived || (layers.m_id != 0 && layers.m_id != _mapDataMaster[x, y].Layers.m_id))
             {
                 /* Update counter value only if the monster just moved here, not, e.g. if it changes action in the same square,
                  * or is printed in the same square again with the same origin coordinates. This way, the movement action is played only once. 
                  */
                 _mapDataMaster[x, y].GlyphPrintAnimationCounterValue = generalCounter;
                 _mapDataMaster[x, y].GlyphPrintMainCounterValue = mainCounter;
+            }
+            if (heroArrived)
+            {
+                int runStepMs = GHUtils.GetRunStepIntervalMs(layers.monster_flags);
+                _heroArrivalRunStepIntervalMs = runStepMs;
+                _pendingRunStepDelayMs = runStepMs;
             }
             if ((layers.layer_flags & (ulong)LayerFlags.LFLAGS_UXUY) != 0)
             {
@@ -1627,7 +1633,7 @@ namespace GnollHackX
             //This may be slightly slower to register, but likely more often in UI thread, so should cause fewer lock conflicts
             //RequestQueue.Enqueue(new GHRequest(this, GHRequestType.ClipAround, x, y, force == 1));
 
-            gamePage.SetTargetClip(x, y, force == 1, MainCounterValue);
+            gamePage.SetTargetClip(x, y, force == 1, MainCounterValue, _heroArrivalRunStepIntervalMs);
         }
 
         public void ClientCallback_RawPrint(string str)
@@ -1782,12 +1788,49 @@ namespace GnollHackX
             {
                 RecordFunctionCall(RecordedFunctionID.DelayOutputMilliseconds, milliseconds);
             }
+            int runStepDelayMs = _pendingRunStepDelayMs;
+            _pendingRunStepDelayMs = 0;
             if (ClientCallback_UIHasInput() > 0)
+            {
+                _lastRunStepDelayEndTicks = 0;
                 return;
+            }
             if (!PlayingReplay || !GHApp.IsReplaySearching)
             {
-                Thread.Sleep(milliseconds);
+                if (runStepDelayMs > 0 && runStepDelayMs == milliseconds)
+                {
+                    SleepUntilRunStepDeadline(milliseconds);
+                }
+                else
+                {
+                    _lastRunStepDelayEndTicks = 0;
+                    Thread.Sleep(milliseconds);
+                }
                 GHApp.FmodService?.PollTasks();
+            }
+        }
+
+        /* Consecutive run steps are paced against a deadline, so the engine's work between them does not lengthen the step */
+        private void SleepUntilRunStepDeadline(int milliseconds)
+        {
+            long now = Stopwatch.GetTimestamp();
+            long intervalTicks = (long)milliseconds * Stopwatch.Frequency / 1000L;
+            long deadline = now + intervalTicks;
+            long last = _lastRunStepDelayEndTicks;
+            if (last != 0 && now - last < 2 * intervalTicks)
+                deadline = last + intervalTicks;
+
+            long remainingTicks = deadline - now;
+            if (remainingTicks > 0)
+            {
+                int sleepMs = (int)(remainingTicks * 1000L / Stopwatch.Frequency);
+                if (sleepMs > 0)
+                    Thread.Sleep(sleepMs);
+                _lastRunStepDelayEndTicks = deadline;
+            }
+            else
+            {
+                _lastRunStepDelayEndTicks = now;
             }
         }
         public void ClientCallback_DelayOutputIntervals(int intervals)
@@ -3146,6 +3189,11 @@ namespace GnollHackX
 
         //private readonly object _mainCounterLock = new object();
         private long _mainCounterValue = 0;
+
+        /* Game thread only: the run step interval of the hero's latest arrival, and the delay it expects */
+        private int _heroArrivalRunStepIntervalMs = 0;
+        private int _pendingRunStepDelayMs = 0;
+        private long _lastRunStepDelayEndTicks = 0;
         public long MainCounterValue
         {
             get

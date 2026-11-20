@@ -353,6 +353,7 @@ namespace GnollHackX
         LMFLAGS_HUMAN_BREATHE_ANIMATION =   0x20000000UL,
         LMFLAGS_ANIMAL_BREATHE_ANIMATION =  0x40000000UL,
         LMFLAGS_STONED =                    0x80000000UL,
+        LMFLAGS_RUN_STEP_INTERVAL_MASK =    0x0000FFFF00000000UL, /* Bits 32-47: run step interval in ms, see GHUtils.GetRunStepIntervalMs */
     }
 
     [Flags]

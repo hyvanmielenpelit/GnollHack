@@ -53,6 +53,7 @@ namespace GnollHackX
         public const int MapCols = 80;
         public const int MapRows = 21;        
         public const int DelayOutputDurationInMilliseconds = 50;
+        public const int RunStepIntervalShift = 32; /* LMFLAGS_RUN_STEP_INTERVAL_SHIFT in include/layer.h */
         public const int ExitWindowsWithStringDelay = 1100;
         public const int FadeToBlackDelay = 325;
         public const int FadeToBlackDuration = 200;

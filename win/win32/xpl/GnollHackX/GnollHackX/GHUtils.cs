@@ -100,6 +100,12 @@ namespace GnollHackX
             return true;
         }
 
+        /* Milliseconds between the displayed steps of the run or travel that printed these flags; 0 when not running */
+        public static int GetRunStepIntervalMs(ulong monster_flags)
+        {
+            return (int)((monster_flags & (ulong)LayerMonsterFlags.LMFLAGS_RUN_STEP_INTERVAL_MASK) >> GHConstants.RunStepIntervalShift);
+        }
+
         //public static string GetIndentationString(string usedtext, int usedattributes)
         //{
         //    if (string.IsNullOrEmpty(usedtext))

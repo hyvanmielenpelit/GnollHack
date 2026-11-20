@@ -2517,10 +2517,7 @@ finish_move:
             if (flags.time)
                 context.botl = 1;
             curs_on_u();
-            if(flags.runmode == RUN_CRAWL)
-                delay_output_milliseconds(flags.crawl_interval_in_milliseconds <= 0 ? DEFAULT_CRAWL_INTERVAL : flags.crawl_interval_in_milliseconds);
-            else
-                delay_output_milliseconds(flags.move_interval_in_milliseconds <= 0 ? DEFAULT_MOVE_INTERVAL : flags.move_interval_in_milliseconds);
+            delay_output_milliseconds(run_step_interval());
         }
     }
 }
@@ -4133,6 +4130,32 @@ adjusted_delay_output(void)
     {
         delay_output();
     }
+}
+
+/* Milliseconds between the displayed steps of a run or travel */
+int
+run_step_interval(void)
+{
+    if (flags.runmode == RUN_CRAWL)
+        return flags.crawl_interval_in_milliseconds <= 0 ? DEFAULT_CRAWL_INTERVAL : flags.crawl_interval_in_milliseconds;
+    else
+        return flags.move_interval_in_milliseconds <= 0 ? DEFAULT_MOVE_INTERVAL : flags.move_interval_in_milliseconds;
+}
+
+/* run_step_interval() while a run or travel displays every step, otherwise 0 */
+int
+run_step_display_interval(void)
+{
+    boolean travel_walk;
+
+    if (!context.run)
+        return 0;
+
+    travel_walk = (context.travel && context.travel_mode > TRAVEL_MODE_NORMAL);
+    if (!travel_walk && (flags.runmode == RUN_TPORT || flags.runmode == RUN_LEAP))
+        return 0;
+
+    return run_step_interval();
 }
 
 void
