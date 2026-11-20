@@ -987,8 +987,8 @@ namespace GnollHackX
                         ulong TotalMemInMB = TotalMemory / (1024 * 1024);
                         long UsedMemInBytes = GetUsedMemoryInBytes();
                         long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
-                        CurrentGamePage?.RequestClearCaches((int)level);
                         AddSentryBreadcrumb("MemoryWarning at " + level.ToString() + " (" + UsedMemInMB + " / " + TotalMemInMB + " MB)", GHConstants.SentryGnollHackGeneralCategoryName);
+                        CurrentGamePage?.RequestClearCaches((int)level);
                     }
                     break;
                 case MemoryPressureLevel.Background:
@@ -997,9 +997,10 @@ namespace GnollHackX
                         ulong TotalMemInMB = TotalMemory / (1024 * 1024);
                         long UsedMemInBytes = GetUsedMemoryInBytes();
                         long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
+                        /* Written before the collection starts, so that it survives a freeze or a kill during it */
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString() + " (" + UsedMemInMB + " / " + TotalMemInMB + " MB)", GHConstants.SentryGnollHackGeneralCategoryName);
                         CollectGarbageForMemoryPressure(true); /* Due to backgrounding must be done first */
                         CurrentGamePage?.RequestClearCaches((int)level);
-                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString() + " (" + UsedMemInMB + " / " + TotalMemInMB + " MB)", GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                     break;
                 case MemoryPressureLevel.Complete:
@@ -1008,9 +1009,10 @@ namespace GnollHackX
                         ulong TotalMemInMB = TotalMemory / (1024 * 1024);
                         long UsedMemInBytes = GetUsedMemoryInBytes();
                         long UsedMemInMB = UsedMemInBytes == -1 ? -1 : UsedMemInBytes / (1024 * 1024);
+                        /* Written before the collection starts, so that it survives a freeze or a kill during it */
+                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString() + " (" + UsedMemInMB + " / " + TotalMemInMB + " MB)", GHConstants.SentryGnollHackGeneralCategoryName);
                         CollectGarbageForMemoryPressure(true); /* Do this already here too, as we may not be able to wait until after clearing caches */
                         CurrentGamePage?.RequestClearCaches((int)level);
-                        AddSentryBreadcrumb("MemoryWarning at " + level.ToString() + " (" + UsedMemInMB + " / " + TotalMemInMB + " MB)", GHConstants.SentryGnollHackGeneralCategoryName);
                     }
                     break;
             }
