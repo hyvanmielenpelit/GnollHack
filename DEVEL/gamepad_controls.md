@@ -790,8 +790,14 @@ key or Caps Lock alone does not, and neither does typing on the iOS keyboard.
 hardware keyboard connected the keyboard is not offered, as on Android. In a web page WebKit decides
 whether a field focused by script opens the keyboard; if it does not, a tap on the field does.
 
-**The iPad app on a Mac** runs the same code. The app does not declare controller support in its
-`Info.plist`, so macOS offers it no Game Control settings.
+**Declared support.** `Info.plist` declares controller support with
+`GCSupportsControllerUserInteraction` and an `ExtendedGamepad` entry in `GCSupportedGameControllers`.
+The framework delivers input without them; they give the App Store listing its controller badge and
+the app its button remapping in the iOS Settings app.
+
+**The iPad app on a Mac** runs the same code. The declared support gives it Game Control settings
+in macOS, where a player can turn on Controller Emulation, which presents the keyboard and mouse as
+a controller. GnollHack reads the keyboard itself there as well.
 
 **Testing.** Build and deploy from Visual Studio, paired to the Mac, to an iPhone or iPad, then
 follow "Controller on iOS" in the `client_gamepad_testing` skill. The log lines are in
