@@ -13,7 +13,6 @@ namespace GnollHackX.UnitTests
         [InlineData(obj_class_types.RING_CLASS, obj_material_types.MAT_GOLD)]
         [InlineData(obj_class_types.AMULET_CLASS, obj_material_types.MAT_IRON)]
         [InlineData(obj_class_types.WAND_CLASS, obj_material_types.MAT_WOOD)]
-        [InlineData(obj_class_types.WEAPON_CLASS, obj_material_types.MAT_IRON)]
         [InlineData(obj_class_types.ARMOR_CLASS, obj_material_types.MAT_LEATHER)]
         [InlineData(obj_class_types.TOOL_CLASS, obj_material_types.MAT_WOOD)]
         [InlineData(obj_class_types.POTION_CLASS, obj_material_types.MAT_GLASS)]
@@ -31,6 +30,7 @@ namespace GnollHackX.UnitTests
         [InlineData(obj_class_types.GEM_CLASS, obj_material_types.MAT_MINERAL)]
         [InlineData(obj_class_types.GEM_CLASS, obj_material_types.MAT_IRON)]
         [InlineData(obj_class_types.FOOD_CLASS, obj_material_types.MAT_VEGGY)]
+        [InlineData(obj_class_types.WEAPON_CLASS, obj_material_types.MAT_IRON)]
         [InlineData(obj_class_types.ROCK_CLASS, obj_material_types.MAT_MINERAL)]
         [InlineData(obj_class_types.BALL_CLASS, obj_material_types.MAT_IRON)]
         [InlineData(obj_class_types.CHAIN_CLASS, obj_material_types.MAT_IRON)]
@@ -136,7 +136,10 @@ namespace GnollHackX.UnitTests
             Assert.True(GHItemTwinkle.IsAlwaysTwinkle(weapon, iron, true));
             Assert.False(GHItemTwinkle.IsAlwaysTwinkle(weapon, iron, false));
             Assert.True(GHItemTwinkle.IsEligible(weapon, iron, false, true, false, true));
+            Assert.True(GHItemTwinkle.IsEligible(weapon, iron, false, false, false, true));
             Assert.False(GHItemTwinkle.IsEligible(weapon, iron, false, true, false, false));
+            /* A plain weapon never twinkles, even small and unexamined */
+            Assert.False(GHItemTwinkle.IsEligible(weapon, iron, false, false, false, false));
 
             /* Special qualities override the class and material exclusions too */
             Assert.True(GHItemTwinkle.IsEligible((sbyte)obj_class_types.GEM_CLASS, (byte)obj_material_types.MAT_MINERAL, false, false, false, true));

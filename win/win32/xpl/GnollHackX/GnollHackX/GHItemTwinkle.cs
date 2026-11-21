@@ -148,6 +148,8 @@ namespace GnollHackX
 
             switch ((obj_class_types)oclass)
             {
+                /* Weapons twinkle only as always-twinkle items, so thrown and trap missiles stay quiet */
+                case obj_class_types.WEAPON_CLASS:
                 case obj_class_types.FOOD_CLASS:
                 case obj_class_types.COIN_CLASS:
                 case obj_class_types.ROCK_CLASS:
