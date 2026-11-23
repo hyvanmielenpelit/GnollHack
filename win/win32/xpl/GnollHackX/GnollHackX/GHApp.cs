@@ -267,6 +267,9 @@ namespace GnollHackX
             bool wentToSleepWithGameOn = Preferences.Get("WentToSleepWithGameOn", false);
             bool wentToSleepBeforeGameStart = Preferences.Get("WentToSleepBeforeGameStart", false);
             InformAboutGameTermination = wentToSleepWithGameOn && !wentToSleepBeforeGameStart;
+            PreviousSessionEndedSuspended = Preferences.Get("AppSuspended", false);
+            Preferences.Set("AppSuspended", false);
+            CrashInfoWarnings = Preferences.Get("CrashInfoWarnings", GHConstants.DefaultCrashInfoWarnings);
             Preferences.Set("WentToSleepWithGameOn", false);
             Preferences.Set("WentToSleepBeforeGameStart", false);
             InformAboutSaveFailedOnBackground = Preferences.Get("SaveFailedOnBackground", false);
@@ -957,6 +960,38 @@ namespace GnollHackX
         /* Background excluded, since it arrives only after the app has left the foreground */
         public static int HighestMemoryPressureLevel { get { return Interlocked.CompareExchange(ref _highestMemoryPressureLevel, 0, 0); } }
         public static event Action<MemoryPressureLevel> MemoryPressureReceived;
+
+        /* Off the UI thread, once per process, from MainPage's first appearance */
+        public static LowMemoryExitNoticeKind CheckPreviousLowMemoryExit()
+        {
+            try
+            {
+                if (!CrashInfoWarnings)
+                    return LowMemoryExitNoticeKind.None;
+                GHPreviousProcessExit exit = PlatformService?.GetPreviousProcessExit();
+                if (exit == null)
+                    return LowMemoryExitNoticeKind.None;
+                if (IsDebug && File.Exists(Path.Combine(GHPath, GHConstants.LowMemoryExitNoticeOverrideFileName)))
+                    exit.Reason = GHLowMemoryExitNotice.ReasonLowMemory;
+                long lastShown = Preferences.Get("LowMemoryExitNoticeTimestamp", 0L);
+                long now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
+                bool firstLaunchOfThisBuild = VersionTracking.IsFirstLaunchForCurrentBuild;
+                LowMemoryExitNoticeKind kind = GHLowMemoryExitNotice.Classify(exit, PreviousSessionEndedSuspended,
+                    firstLaunchOfThisBuild, lastShown, now);
+                /* On a build's first launch the exit is marked seen as well, so that it cannot come back on a
+                   later launch whose own previous process died without an exit record, such as on power loss */
+                if (kind != LowMemoryExitNoticeKind.None || (firstLaunchOfThisBuild && exit.TimestampUnixMs > lastShown))
+                    Preferences.Set("LowMemoryExitNoticeTimestamp", exit.TimestampUnixMs);
+                if (kind != LowMemoryExitNoticeKind.None)
+                    AddSentryBreadcrumb("Previous session ended for lack of memory: " + kind, GHConstants.SentryGnollHackGeneralCategoryName);
+                return kind;
+            }
+            catch (Exception ex)
+            {
+                MaybeWriteGHLog("CheckPreviousLowMemoryExit: " + ex.Message);
+                return LowMemoryExitNoticeKind.None;
+            }
+        }
 
         private static void HandleMemoryWarning(MemoryPressureLevel level)
         {
@@ -2922,6 +2957,10 @@ namespace GnollHackX
 
         public static int GameSaveStatus = 0;
         public static bool InformAboutGameTermination = false;
+        /* Whether the previous process was in the background when it ended */
+        public static bool PreviousSessionEndedSuspended { get; private set; }
+        /* Whether the startup notice about the previous session's low-memory exit is shown */
+        public static bool CrashInfoWarnings { get; set; }
         public static bool InformAboutCrashReport = false;
         public static bool InformAboutSaveFailedOnBackground = false;
         public static bool InformAboutIncompatibleSavedGames = false;
@@ -3635,6 +3674,14 @@ namespace GnollHackX
             MaybeWriteGHLog("GHApp.OnSleep: Start", true, GHConstants.SentryGnollHackGeneralCategoryName);
             SetSentryTag(GHConstants.SentryTagAppLifecycle, "sleeping");
             IsSuspended = true;
+            try
+            {
+                Preferences.Set("AppSuspended", true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
             GHFrameTimeline.NoteLifecycleBreak();
             if (!UsePlatformRenderLoop)
                 PlatformService?.RevertAnimatorDuration(false);
@@ -3861,6 +3908,14 @@ namespace GnollHackX
             MaybeWriteGHLog("GHApp.HandleResume: Start (isRestart=" + isRestart + ")" + ForegroundStateSuffix(), true, GHConstants.SentryGnollHackGeneralCategoryName);
             SetSentryTag(GHConstants.SentryTagAppLifecycle, "active");
             IsSuspended = false;
+            try
+            {
+                Preferences.Set("AppSuspended", false);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
             GHFrameTimeline.NoteLifecycleBreak();
             /* Save style 2 produces no GUI_CMD_WAIT_FOR_RESUME callback, so the flag would otherwise stay raised into the next save */
             BackgroundSaveInProgress = false;

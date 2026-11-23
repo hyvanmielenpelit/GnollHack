@@ -45,6 +45,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHDiagnosisScene.cs" Link="Shared\GHDiagnosisScene.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceDiagnosticSupport.cs" Link="Shared\GHPerformanceDiagnosticSupport.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHExitStateSummary.cs" Link="Shared\GHExitStateSummary.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHLowMemoryExitNotice.cs" Link="Shared\GHLowMemoryExitNotice.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHGcPauseTracker.cs" Link="Shared\GHGcPauseTracker.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\GHStartupTimeline.cs" Link="Shared\GHStartupTimeline.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Performance\GHPerformanceSuiteId.cs" Link="Shared\GHPerformanceSuiteId.cs" />

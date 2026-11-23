@@ -516,6 +516,9 @@ namespace GnollHackX
         public const long LowMemoryPrimaryGPUCacheCap = 256L * 1024 * 1024;
         public const long LowMemorySecondaryGPUCacheCap = 128L * 1024 * 1024;
         public const string LowMemoryPolicyOverrideFileName = "force_low_memory_policy";
+        /* Debug builds: with this file in GHPath, the previous exit counts as a low-memory exit */
+        public const string LowMemoryExitNoticeOverrideFileName = "force_low_memory_exit_notice";
+        public const bool DefaultCrashInfoWarnings = true;
         /* Sentry extra data keys. The same keys are used both for the per-event extras
            attached to impossible() and panic() events and for the periodic scope
            snapshot posted from rhack(). Event-level extras win over scope-level ones

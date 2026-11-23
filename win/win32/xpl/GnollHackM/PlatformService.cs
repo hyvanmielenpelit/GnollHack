@@ -73,6 +73,11 @@ namespace GnollHackM
             throw new NotImplementedException();
         }
 
+        public GHPreviousProcessExit GetPreviousProcessExit()
+        {
+            throw new NotImplementedException();
+        }
+
         public ulong GetDeviceTotalDiskSpaceInBytes()
         {
             throw new NotImplementedException();

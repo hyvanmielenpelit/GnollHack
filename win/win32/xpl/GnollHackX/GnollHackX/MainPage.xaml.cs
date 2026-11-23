@@ -1120,10 +1120,25 @@ namespace GnollHackX
                     Preferences.Set("ShowUpcomingVersion" + GHApp.UpcomingSaveGameBreakingVersionShortText + "AutoUpdateAlert", true);
                     previousInformationShown = true;
                 }
+                LowMemoryExitNoticeKind lowMemoryExit = LowMemoryExitNoticeKind.None;
+                try
+                {
+                    lowMemoryExit = await Task.Run(() => GHApp.CheckPreviousLowMemoryExit());
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
                 if (GHApp.InformAboutGameTermination && (GHApp.DebugLogMessages || GHApp.GameSaveStatus == 0))
                 {
                     GHApp.InformAboutGameTermination = false;
-                    DisplayAlertGrid("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. This may have been instructed by the operating system or the user." + (GHApp.GameSaveStatus == 0 ? " Your game may be recoverable from the crash." : " Your game was saved before the termination."), "OK", GHColors.Orange);
+                    DisplayAlertGrid("Unexpected Game Termination", "GnollHack was unexpectedly terminated when running on background. " + (lowMemoryExit == LowMemoryExitNoticeKind.InBackground ? GHLowMemoryExitNotice.BackgroundTerminationText : "This may have been instructed by the operating system or the user.") + (GHApp.GameSaveStatus == 0 ? " Your game may be recoverable from the crash." : " Your game was saved before the termination."), "OK", GHColors.Orange);
+                    previousInformationShown = true;
+                }
+                string lowMemoryMessage = GHLowMemoryExitNotice.Message(lowMemoryExit);
+                if (lowMemoryMessage != null)
+                {
+                    DisplayAlertGrid(GHLowMemoryExitNotice.Title, lowMemoryMessage, "OK", GHColors.Orange);
                     previousInformationShown = true;
                 }
                 if (DisplaySaveFailedOnBackgroundInfo())

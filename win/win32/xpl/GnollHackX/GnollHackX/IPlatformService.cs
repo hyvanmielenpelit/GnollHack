@@ -26,6 +26,8 @@ namespace GnollHackX
         string GetVersionString();
         ulong GetUsedMemoryInBytes();
         ulong GetDeviceMemoryInBytes();
+        /* The newest exit record of this app's processes, or null where the platform keeps none */
+        GHPreviousProcessExit GetPreviousProcessExit();
         ulong GetDeviceFreeDiskSpaceInBytes();
         ulong GetDeviceTotalDiskSpaceInBytes();
         void SetStatusBarHidden(bool ishidden);

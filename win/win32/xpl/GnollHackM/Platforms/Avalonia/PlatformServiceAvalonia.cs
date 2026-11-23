@@ -104,6 +104,12 @@ namespace GnollHackM
             }
         }
 
+        /* No per-process exit records on this platform */
+        public GHPreviousProcessExit GetPreviousProcessExit()
+        {
+            return null;
+        }
+
         public ulong GetDeviceTotalDiskSpaceInBytes()
         {
             try

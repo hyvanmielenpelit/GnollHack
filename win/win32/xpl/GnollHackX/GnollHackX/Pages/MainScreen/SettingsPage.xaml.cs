@@ -156,6 +156,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Debug Post Channel", ("Alternative channel for debug progress posting.", "Use an alternative post channel instead of the one specified under Post Game Progress.") },
             { "Show Memory", ("Show managed memory usage on the game screen.", "Shows the current managed memory usage on the game screen.") },
             { "Low Disk Space Warning", ("Warn if free disk space is under 5 GB to protect saves.", "Displays a warning if free disk space is low (less than 5 GB) to prevent save game corruption.") },
+            { "Crash Info Warnings", ("Tell you at startup if Android closed GnollHack for lack of memory.", "Shows a notice when GnollHack starts if Android closed it during the previous session because the device ran out of memory, with advice on freeing memory. Not shown on the first start after an update or a fresh install.") },
             { "Alternative Layer Drawing", ("(Legacy) Draw the map tile by tile instead of layer by layer.", "*(Legacy)* **Off:** The map is drawn one layer at a time across all tiles.\n**On:** Each tile is drawn through all of its layers before moving on to the next tile. Hidden in release builds unless it is already turned on.") },
             { "Load Sound Banks", ("Load sound banks. Disable to save memory (mutes game).", "Determines if the sound banks are loaded. Can be disabled to save memory, but the game will have no sounds.") },
             { "Streaming Banks to Memory", ("Load streamed sounds to memory (uses more memory).", "**Off:** Streamed from their default location (or to disk).\n**On:** Read to memory and streamed from there (uses more memory).") },
@@ -1497,6 +1498,9 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.LoadBanks = SoundBankSwitch.IsToggled;
             Preferences.Set("LoadSoundBanks", SoundBankSwitch.IsToggled);
 
+            GHApp.CrashInfoWarnings = CrashInfoWarningsSwitch.IsToggled;
+            Preferences.Set("CrashInfoWarnings", CrashInfoWarningsSwitch.IsToggled);
+
             GHApp.UseHTMLDumpLogs = HTMLDumpLogSwitch.IsToggled;
             Preferences.Set("UseHTMLDumpLogs", HTMLDumpLogSwitch.IsToggled);
 
@@ -1643,6 +1647,7 @@ namespace GnollHackX.Pages.MainScreen
 #endif
             bool longermsghistory = false, hidemsghistory = false, xlog_release_account = false, forcepostbones = false, fixrects = false, fixvertical = true, runtimeeffects = GHConstants.DefaultRuntimeEffects, tilebatching = GHConstants.DefaultTileBatching, textblobcaching = GHConstants.DefaultTextBlobCaching, surfaceview = GHApp.IsUseSurfaceViewDefault, metal = GHApp.IsUseMetalDefault, save_file_tracking = false, disablewindowskey = false, allowoptionkeys = false, defaultvikeys = false;
             bool experimental = GHConstants.EnableExperimentalFeatures;
+            bool crashinfowarnings = GHConstants.DefaultCrashInfoWarnings;
             long primarygpucache = -2, secondarygpucache = -2;
             int rightmouse = GHConstants.DefaultRightMouseCommand, middlemouse = GHConstants.DefaultMiddleMouseCommand;
             float screenscale = 0.0f;
@@ -1699,6 +1704,7 @@ namespace GnollHackX.Pages.MainScreen
             debugpostchannel = GHApp.DebugPostChannel;
             tournament = GHApp.TournamentMode;
             bank = Preferences.Get("LoadSoundBanks", true);
+            crashinfowarnings = GHApp.CrashInfoWarnings;
             html = Preferences.Get("UseHTMLDumpLogs", GHConstants.DefaultHTMLDumpLogs);
             singledumplog = Preferences.Get("UseSingleDumpLog", GHConstants.DefaultUseSingleDumpLog);
             streamingbanktomemory = Preferences.Get("ReadStreamingBankToMemory", GHApp.DefaultStreamingBankToMemory);
@@ -2160,6 +2166,9 @@ namespace GnollHackX.Pages.MainScreen
                 TournamentLabel.TextColor = GHColors.Gray;
             }
             SoundBankSwitch.IsToggled = bank;
+            CrashInfoWarningsSwitch.IsToggled = crashinfowarnings;
+            if (!GHApp.IsAndroid)
+                CrashInfoWarningsGrid.IsVisible = false;
             SingleDumpLogSwitch.IsToggled = singledumplog;
             HTMLDumpLogSwitch.IsToggled = html;
             if (!singledumplog)

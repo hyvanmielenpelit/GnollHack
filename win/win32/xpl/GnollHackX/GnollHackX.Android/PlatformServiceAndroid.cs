@@ -96,6 +96,37 @@ namespace GnollHackX.Droid
             }
         }
 
+        public GHPreviousProcessExit GetPreviousProcessExit()
+        {
+#if GNH_MAUI
+            if (!OperatingSystem.IsAndroidVersionAtLeast(30))
+                return null;
+            try
+            {
+                Context context = Android.App.Application.Context;
+                ActivityManager activityManager = context.GetSystemService(Context.ActivityService) as ActivityManager;
+                IList<ApplicationExitInfo> exitInfos = activityManager?.GetHistoricalProcessExitReasons(context.PackageName, 0, 1);
+                if (exitInfos == null || exitInfos.Count == 0 || exitInfos[0] == null)
+                    return null;
+                ApplicationExitInfo exitInfo = exitInfos[0];
+                byte[] summary = exitInfo.GetProcessStateSummary();
+                GHPreviousProcessExit res = new GHPreviousProcessExit();
+                res.Reason = exitInfo.Reason;
+                res.Importance = exitInfo.Importance;
+                res.TimestampUnixMs = exitInfo.Timestamp;
+                res.StateSummary = summary != null && summary.Length > 0 ? Encoding.ASCII.GetString(summary) : null;
+                return res;
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("GetPreviousProcessExit: " + ex.Message);
+                return null;
+            }
+#else
+            return null;
+#endif
+        }
+
         public bool IsRunningOnDesktop()
         {
             try
