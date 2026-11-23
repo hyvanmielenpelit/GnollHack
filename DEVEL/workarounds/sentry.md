@@ -400,7 +400,7 @@ Checks:
 - Upstream issue: none
 - Upstream status when added: unreported
 - Upstream status: unreported
-- Last checked: 2026-11-23
+- Last checked: 2026-11-24
 - Code: `win/win32/xpl/GnollHackM/Platforms/Android/AndroidExitInfoReporter.cs` (`AndroidExitInfoReporter`); `win/win32/xpl/GnollHackM/Platforms/Android/MainActivity.cs` (`MainActivity.OnCreate`); `win/win32/xpl/GnollHackM/Platforms/Android/AndroidManifest.xml` (`io.sentry.anr.attach-thread-dumps`)
 - Remove when: Sentry's Android ANR events carry the exit description or the trace header, GnollHack uses that release, and Verify removal passes.
 - Related: GNOLLHACK-DQ, GNOLLHACK-DR, GNOLLHACK-JQ, GNOLLHACK-JR, WA-SENTRY-0008
@@ -411,7 +411,9 @@ focused window, a service timeout or a broadcast timeout, or says when the dump 
 
 **Cause.** sentry-android's ANR integration reads the exit reason, importance, timestamp and
 trace stream from `ApplicationExitInfo` but never `getDescription()`, and it parses the
-trace into threads without keeping its `Subject:` header. Its `attachAnrThreadDump` option
+trace into threads without keeping its `Subject:` header. That parser also files a native
+frame in an anonymous mapping, where managed code runs, under the preceding frame's APK path,
+and leaves out threads not attached to Java. Its `attachAnrThreadDump` option
 attaches the raw dump. Sentry .NET does not expose it in `NativeOptions`, but sentry-android
 reads it from the manifest key `io.sentry.anr.attach-thread-dumps`:
 `SentryAndroid` applies the manifest meta-data before Sentry .NET's options callback, and
@@ -444,6 +446,7 @@ Checks:
 - 2026-10-25 | Sentry 6.12.1 (sentry-android 8.60.0) | still-needed | No ANR or exit-info class in sentry-android-core 8.60.0 references getDescription; Sentry 6.12.1 NativeOptions has no AttachAnrThreadDump; no upstream issue found.
 - 2026-11-16 | Sentry 7.0.0 (sentry-android 8.63.0) | still-needed | AnrV2Integration, ApplicationExitInfoEventProcessor and the thread-dump parsers at 8.63.0 never call getDescription or keep Subject:; Sentry 7.0.0 NativeOptions has no AttachAnrThreadDump; no upstream issue found.
 - 2026-11-23 | Sentry 7.0.1 (sentry-android 8.64.0) | unverified | AnrV2Integration still never calls getDescription; attachAnrThreadDump is set through the manifest key io.sentry.anr.attach-thread-dumps, device confirmation pending (task 2026-11-23/sentry_jr_background_anr, M1); no upstream issue found.
+- 2026-11-24 | Sentry 7.0.1 (sentry-android 8.64.0) | still-needed | Device runs M1 and M2 on 2026-11-23 (Pixel 6a, Android 17, Release 3.44+444): Sentry's ANR events carried thread-dump.txt and still no description; GnollHack's exit-info events carried the native frames; Sentry's parsed stack gives a frame in an anonymous mapping the preceding frame's APK path and leaves out threads not attached to Java; no upstream issue found.
 
 ## WA-SENTRY-0011: UploadDebugInfoToSentry uploads dSYMs only for iOS and Mac Catalyst
 
