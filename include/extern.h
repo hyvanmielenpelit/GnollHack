@@ -2628,6 +2628,7 @@ E char *doname(struct obj *);
 E void ai_corpse_age_text(struct obj *, char *);
 E char* doname_with_flags(struct obj* obj, unsigned, char**, char**);
 E char* doname_payobj(struct obj*);
+E char* doname_hide_blessedness(struct obj*);
 E char* doname_in_text(struct obj*);
 E char* doname_in_text_with_price_and_weight_last(struct obj*);
 E char* doname_in_text_with_price_and_weight_last_and_comparison(struct obj*, char**, char**);

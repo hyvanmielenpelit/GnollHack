@@ -5719,7 +5719,7 @@ count_buc(struct obj *list, int type, boolean (*filterfunc)(struct obj*), boolea
 
     for (; list; list = (bynexthere ? list->nexthere : list->nobj)) {
         /* priests always know bless/curse state */
-        if (Role_if(PM_PRIEST))
+        if (Role_if(PM_PRIEST) || See_blessedness)
             set_obj_bknown(list, (list->oclass != COIN_CLASS));
         /* some actions exclude some or most items */
         if (filterfunc && !(*filterfunc)(list))
@@ -5758,7 +5758,7 @@ tally_BUCX(struct obj *list, boolean by_nexthere, int *bcp, int *ucp, int *ccp, 
         ++(*tcp);
 
         /* priests always know bless/curse state */
-        if (Role_if(PM_PRIEST))
+        if (Role_if(PM_PRIEST) || See_blessedness)
             set_obj_bknown(list, (list->oclass != COIN_CLASS));
         /* coins are either uncursed or unknown based upon option setting */
         if (list->oclass == COIN_CLASS) {
@@ -7052,7 +7052,7 @@ mergable(struct obj *otmp, struct obj *obj)
         return FALSE;
 
     if (is_obj_dknown(obj) != is_obj_dknown(otmp)
-        || (is_obj_bknown(obj) != is_obj_bknown(otmp) && !Role_if(PM_PRIEST))
+        || (is_obj_bknown(obj) != is_obj_bknown(otmp) && !Role_if(PM_PRIEST) && !See_blessedness)
         || obj->oeroded != otmp->oeroded || obj->oeroded2 != otmp->oeroded2
         || is_obj_greased(obj) != is_obj_greased(otmp))
         return FALSE;

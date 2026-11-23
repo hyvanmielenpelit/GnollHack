@@ -193,6 +193,7 @@ const struct propname propertynames[] = {
     { CORPSE_PROPERTY_APPRAISAL, "recognizing corpse properties", "recognition of corpse properties" },
     { TRUE_SEEING, "having true seeing", "true seeing" },
     { KNIGHT_JUMPING, "able to jump like a chess knight", "chess knight jumping" },
+    { SEE_BLESSEDNESS, "seeing blessedness", "see blessedness" },
     {  0, 0, 0 },
 };
 

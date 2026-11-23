@@ -4931,6 +4931,8 @@ attributes_enlightenment(int unused_mode UNUSED, int final)
         you_are("sensing the presence of monsters", "");
     if (Enhanced_untrap)
         you_have("enhanced untrapping", from_what(ENHANCED_UNTRAP));
+    if (See_blessedness)
+        you_can("see blessedness of items", from_what(SEE_BLESSEDNESS));
     if (u.umconf)
         you_are("going to confuse monsters", "");
 

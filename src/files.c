@@ -5329,7 +5329,7 @@ wizkit_addinv(struct obj *obj)
 
     /* subset of starting inventory pre-ID */
     set_obj_dknown(obj, 1);
-    if (Role_if(PM_PRIEST))
+    if (Role_if(PM_PRIEST) || See_blessedness)
         set_obj_bknown(obj, 1);
     debugprint_pos();
     /* same criteria as lift_object()'s check for available inventory slot */

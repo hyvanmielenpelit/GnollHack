@@ -311,6 +311,10 @@
 #define ETrue_seeing u.uprops[TRUE_SEEING].extrinsic
 #define True_seeing (HTrue_seeing || ETrue_seeing)
 
+#define HSee_blessedness u.uprops[SEE_BLESSEDNESS].intrinsic
+#define ESee_blessedness u.uprops[SEE_BLESSEDNESS].extrinsic
+#define See_blessedness (HSee_blessedness || ESee_blessedness)
+
 #define HSee_invisible u.uprops[SEE_INVISIBLE].intrinsic
 #define ESee_invisible u.uprops[SEE_INVISIBLE].extrinsic
 #define See_invisible (HSee_invisible || ESee_invisible)

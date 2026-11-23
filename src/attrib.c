@@ -63,8 +63,9 @@ static const struct innate
                  { 34, TELEPORT_CONTROL, "controlled", "uncontrolled" },
                  { 0, 0, 0, 0 } },
 
-  pri_abil[] = { {  4, CORPSE_PROPERTY_APPRAISAL, "sensitive to corpses", "" },
-                 {  7, WARN_UNDEAD, "sensitive to undead", "" },
+  pri_abil[] = { { 1, SEE_BLESSEDNESS, "", "" },
+                 { 4, CORPSE_PROPERTY_APPRAISAL, "sensitive to corpses", "" },
+                 { 7, WARN_UNDEAD, "sensitive to undead", "" },
                  { 10, WARN_DEMON, "sensitive to demons", "" },
                  { 13, WARN_ANGEL, "sensitive to angels", "" },
                  { 16, CURSE_RESISTANCE, "holy", "less holy" },

@@ -469,7 +469,7 @@ allow_category(struct obj *obj)
                        : unknown_filter ? FALSE :
                           TRUE; /* catchall: no filters specified, so accept */
 
-    if (Role_if(PM_PRIEST))
+    if (Role_if(PM_PRIEST) || See_blessedness)
         set_obj_bknown(obj, TRUE);
 
     /*

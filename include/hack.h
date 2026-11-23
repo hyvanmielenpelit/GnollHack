@@ -174,6 +174,7 @@ enum dismount_types {
 #define CXN_ARTICLE 8   /* include a/an/the prefix */
 #define CXN_NOCORPSE 16 /* suppress " corpse" suffix */
 #define CXN_BARE 32     /* suppress various details, etc. tin */
+#define CXN_HIDE_BLESSEDNESS 64 /* suppress blessed status, and its detection by priest */
 
 #define KXNFLAGS_NO_ARTICLE 0x01
 #define KXNFLAGS_SPELL      0x02  // Not the book, but the spell from it

@@ -631,6 +631,7 @@ enum context_menu_styles {
 #define DONAME_HIDE_UNPAID                  0x0400
 #define DONAME_USE_SPECIAL_QUAN             0x0800
 #define DONAME_SHOW_QUICK_ITEMS             0x1000
+#define DONAME_HIDE_BLESSEDNESS             0x2000
 
 /* Moved from shk.c */
 #define NOTANGRY(mon) (is_mon_mpeaceful((mon)))

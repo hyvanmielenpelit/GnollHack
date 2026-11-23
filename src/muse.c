@@ -274,8 +274,6 @@ mreadmsg(struct monst *mtmp, struct obj *otmp)
 
     boolean vismon = canseemon(mtmp);
     char onambuf[BUFSZ];
-    short saverole;
-    unsigned savebknown;
 
     if (!vismon && Deaf)
         return; /* no feedback */
@@ -283,16 +281,7 @@ mreadmsg(struct monst *mtmp, struct obj *otmp)
     set_obj_dknown(otmp, 1); /* seeing or hearing it read reveals its label */
     /* shouldn't be able to hear curse/bless status of unseen scrolls;
        for priest characters, bknown will always be set during naming */
-    savebknown = is_obj_bknown(otmp);
-    saverole = Role_switch;
-    if (!vismon) {
-        set_obj_bknown(otmp, 0);
-        if (Role_if(PM_PRIEST))
-            Role_switch = 0;
-    }
-    Strcpy(onambuf, singular(otmp, doname));
-    Role_switch = saverole;
-    set_obj_bknown(otmp, savebknown);
+    Strcpy(onambuf, singular(otmp, vismon ? doname : doname_hide_blessedness));
     play_simple_object_sound(otmp, OBJECT_SOUND_TYPE_READ);
     if (vismon)
         pline_ex(ATR_NONE, CLR_MSG_ATTENTION, "%s reads %s!", Monnam(mtmp), onambuf);

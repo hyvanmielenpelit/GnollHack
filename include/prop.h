@@ -197,7 +197,8 @@ enum prop_types {
     CORPSE_PROPERTY_APPRAISAL = 174,
     TRUE_SEEING = 175,
     KNIGHT_JUMPING = 176,
-    RESERVED_PROP_8 = 177,
+    SEE_BLESSEDNESS = 177,
+    RESERVED_PROP_9 = 178,
     RESERVED_PROP_24  = 193,  /* Keep this - 1 divisible by 24 so MAX_BUFF_TILES is exactly an integer */
     MAX_PROPS         = 194   /* Keep this - 2 divisible by 24 so MAX_BUFF_TILES is exactly an integer */
 };

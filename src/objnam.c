@@ -506,6 +506,7 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
     boolean makeThelower = FALSE;
     boolean hasnamed = FALSE;
     boolean bare = (cxn_flags & CXN_BARE) != 0;
+    boolean hide_blessedness = (cxn_flags & CXN_HIDE_BLESSEDNESS) != 0;
 
     buf = next_offset_init_obuf(); /* leave room for "17 -3 " */
 
@@ -597,7 +598,7 @@ xname_flags(struct obj *obj, unsigned cxn_flags)
         set_obj_known(obj, 0);
     if (!Blind && !distantname)
         set_obj_dknown(obj, TRUE);
-    if (Role_if(PM_PRIEST))
+    if (!hide_blessedness && (Role_if(PM_PRIEST) || See_blessedness))
         set_obj_bknown(obj, TRUE);
     if (obj->oartifact && !is_obj_nknown(obj) && True_seeing)
         set_obj_nknown(obj, TRUE);
@@ -1562,14 +1563,15 @@ doname_with_flags(struct obj *obj, unsigned doname_flags, char **attrs_ptr, char
             hide_worn = (doname_flags & DONAME_HIDE_WORN) != 0,
             comparison_stats = (doname_flags & DONAME_COMPARISON) != 0 && iflags.show_comparison_stats && !iflags.in_dumplog && !program_state.gameover,
             do_library = (doname_flags & DONAME_NO_LIBRARY) == 0 && !iflags.in_dumplog,
-            show_quick = (doname_flags & DONAME_SHOW_QUICK_ITEMS) != 0 && !iflags.in_dumplog;
+            show_quick = (doname_flags & DONAME_SHOW_QUICK_ITEMS) != 0 && !iflags.in_dumplog,
+            hide_blessedness = (doname_flags & DONAME_HIDE_BLESSEDNESS) != 0 && !iflags.in_dumplog;
     boolean known, dknown, cknown, bknown, lknown, tknown;
     int omndx = obj->corpsenm, isenchanted = 0;
     char prefix[PREFIXBUFSZ] = "";
     char tmpbuf[PREFIXBUFSZ + 1] = ""; /* for when we have to add something at
                                 the start of prefix instead of the
                                 end (Strcat is used on the end) */
-    char *bp = xname(obj);
+    char *bp = xname_flags(obj, hide_blessedness ? CXN_HIDE_BLESSEDNESS : CXN_NORMAL);
 
     if (iflags.override_ID)
     {
@@ -1673,7 +1675,7 @@ doname_with_flags(struct obj *obj, unsigned doname_flags, char **attrs_ptr, char
                 && !Has_contained_contents(obj)))))
         Strcat(prefix, "empty ");
 
-    if (bknown && obj->oclass != COIN_CLASS
+    if (bknown && !hide_blessedness && obj->oclass != COIN_CLASS
         && (obj->otyp != POT_WATER || !objects[POT_WATER].oc_name_known
             || (!is_obj_cursed(obj) && !is_obj_blessed(obj)))) 
     {
@@ -2433,6 +2435,12 @@ char *
 doname(struct obj *obj)
 {
     return doname_with_flags(obj, 0U, (char **)0, (char **)0);
+}
+
+char*
+doname_hide_blessedness(struct obj* obj)
+{
+    return doname_with_flags(obj, DONAME_HIDE_BLESSEDNESS, (char**)0, (char**)0);
 }
 
 char*

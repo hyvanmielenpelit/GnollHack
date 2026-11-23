@@ -324,6 +324,13 @@ NEARDATA const struct mythic_definition mythic_prefix_qualities[MAX_MYTHIC_PREFI
         MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_BOOTS_REQUIRED,
         MYTHIC_FLAG2_NONE
     },
+    {
+        "bishop's", "bishop's ", "Confers blessedness detection (helmet only)",
+        10, MYTHIC_STANDARD_PRICE_MULTIPLIER, MYTHIC_STANDARD_PRICE_ADDITION,
+        MYTHIC_PREFIX_POWER_SEE_BLESSEDNESS,
+        MYTHIC_FLAG_DIRECTLY_WISHABLE | MYTHIC_FLAG_HELMET_REQUIRED,
+        MYTHIC_FLAG2_NONE
+    },
 };
 
 #define MYTHIC_VAMPIRIC_DESC "Heals " MYTHIC_DESC_XSTR(MYTHIC_LIFE_DRAINING_DICE) "d" MYTHIC_DESC_XSTR(MYTHIC_LIFE_DRAINING_DIESIZE) " hit points plus enchantment bonus on hit"
@@ -357,6 +364,7 @@ NEARDATA const struct mythic_power_definition mythic_prefix_powers[MAX_MYTHIC_PR
     { "Great accuracy", MYTHIC_GREAT_ACCURACY_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Great damage", MYTHIC_GREAT_DAMAGE_DESC, MYTHIC_POWER_TYPE_GENERAL, 0L, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_WEAPON_ONLY },
     { "Knight jumping", "Chess knight jumping", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, KNIGHT_JUMPING, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_ARMOR_ONLY },
+    { "See blessedness", "Enables seeing of blessedness of items", MYTHIC_POWER_TYPE_CONFERS_PROPERTY, SEE_BLESSEDNESS, 0.0, 0, 0UL, MYTHIC_POWER_FLAG_HELMET_ONLY },
 };
 
 NEARDATA const struct mythic_definition mythic_suffix_qualities[MAX_MYTHIC_SUFFIXES] =
