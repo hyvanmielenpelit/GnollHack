@@ -11,7 +11,7 @@ namespace GnollHackM;
 // WORKAROUND(WA-SENTRY-0010): Sentry's Android ANR events omit the ApplicationExitInfo description
 /* Reports the ANR exits and the other foreground process deaths that Android recorded since the last
    report, each as a Sentry message. The ANR messages carry the exit description and trace header that
-   Sentry's own ANR event lacks. */
+   Sentry's own ANR event lacks, and a summary of the trace's native frames. */
 public static class AndroidExitInfoReporter
 {
     private const string LastReportedTimestampKey = "AndroidExitInfoLastReportedAnrTimestamp";
@@ -47,10 +47,18 @@ public static class AndroidExitInfoReporter
     private const int MaxReportsPerLaunch = 5;
     /* The header before the thread dump can run to dozens of lines; reading stops at the dump line */
     private const int MaxTraceHeaderLines = 1000;
+    /* Thread dump lines parsed after the header; GHAnrTraceSummary keeps only capped summaries */
+    private const int MaxTraceLines = 50000;
     private const int MaxExtraLength = 1000;
+    private const int MaxTraceExtraLength = 8000;
     private const int MaxDescriptionKeyLength = 64;
+    /* "<mode>|<unix ms>", written by AndroidAnrCalibration just before it blocks the UI thread */
+    private const string AnrCalibrationKey = "AndroidExitInfoAnrCalibration";
+    private const long AnrCalibrationMatchMilliseconds = 120L * 1000L;
+    private const long AnrCalibrationMaxAgeMilliseconds = 24L * 60L * 60L * 1000L;
 
     private static int _started = 0;
+    private static readonly object _anrCalibrationLock = new object();
 
     /* Serializes the snapshot writes with the close marker, so that no snapshot replaces the marker */
     private static readonly object _stateSummaryLock = new object();
@@ -97,6 +105,22 @@ public static class AndroidExitInfoReporter
             catch (Exception ex)
             {
                 GHApp.MaybeWriteGHLog("AndroidExitInfoReporter mark: " + ex.Message);
+            }
+        }
+    }
+
+    /* Called on the UI thread just before AndroidAnrCalibration blocks it; the next launch tags the ANR */
+    public static void MarkAnrCalibration(string mode)
+    {
+        lock (_anrCalibrationLock)
+        {
+            try
+            {
+                Preferences.Set(AnrCalibrationKey, mode + "|" + Java.Lang.JavaSystem.CurrentTimeMillis().ToString(CultureInfo.InvariantCulture));
+            }
+            catch (Exception ex)
+            {
+                GHApp.MaybeWriteGHLog("AndroidExitInfoReporter calibration mark: " + ex.Message);
             }
         }
     }
@@ -188,6 +212,10 @@ public static class AndroidExitInfoReporter
     {
         long lastReported = Preferences.Get(LastReportedTimestampKey, 0L);
         long cutoff = lastReported > 0 ? lastReported : Java.Lang.JavaSystem.CurrentTimeMillis() - FirstRunLookbackMilliseconds;
+        string calibrationValue;
+        string calibrationMode;
+        long calibrationTime;
+        ReadAnrCalibration(out calibrationValue, out calibrationMode, out calibrationTime);
         List<ApplicationExitInfo> anrs = new List<ApplicationExitInfo>();
         foreach (ApplicationExitInfo exitInfo in exitInfos)
         {
@@ -195,16 +223,67 @@ public static class AndroidExitInfoReporter
                 anrs.Add(exitInfo);
         }
         if (anrs.Count == 0)
+        {
+            FinishAnrCalibration(calibrationValue, calibrationTime, false);
             return;
+        }
 
         /* Oldest first; only the newest MaxReportsPerLaunch are sent */
         anrs.Sort((a, b) => a.Timestamp.CompareTo(b.Timestamp));
+        bool calibrationMatched = false;
         int i;
         for (i = Math.Max(0, anrs.Count - MaxReportsPerLaunch); i < anrs.Count; i++)
         {
-            ReportAnr(anrs[i]);
+            string calibration = null;
+            if (calibrationMode != null && anrs[i].Timestamp >= calibrationTime
+                && anrs[i].Timestamp - calibrationTime <= AnrCalibrationMatchMilliseconds)
+            {
+                calibration = calibrationMode;
+                calibrationMatched = true;
+            }
+            ReportAnr(anrs[i], calibration);
         }
         Preferences.Set(LastReportedTimestampKey, anrs[anrs.Count - 1].Timestamp);
+        FinishAnrCalibration(calibrationValue, calibrationTime, calibrationMatched);
+    }
+
+    /* A malformed marker is removed and reads as none */
+    private static void ReadAnrCalibration(out string value, out string mode, out long markedAt)
+    {
+        value = null;
+        mode = null;
+        markedAt = 0;
+        lock (_anrCalibrationLock)
+        {
+            string stored = Preferences.Get(AnrCalibrationKey, (string)null);
+            if (string.IsNullOrEmpty(stored))
+                return;
+            int separator = stored.LastIndexOf('|');
+            long parsed;
+            if (separator <= 0
+                || !long.TryParse(stored.Substring(separator + 1), NumberStyles.Integer, CultureInfo.InvariantCulture, out parsed))
+            {
+                Preferences.Remove(AnrCalibrationKey);
+                return;
+            }
+            value = stored;
+            mode = stored.Substring(0, separator);
+            markedAt = parsed;
+        }
+    }
+
+    /* Removes the marker once it has matched or grown stale, unless a newer calibration replaced it */
+    private static void FinishAnrCalibration(string value, long markedAt, bool matched)
+    {
+        if (value == null)
+            return;
+        if (!matched && Java.Lang.JavaSystem.CurrentTimeMillis() - markedAt <= AnrCalibrationMaxAgeMilliseconds)
+            return;
+        lock (_anrCalibrationLock)
+        {
+            if (Preferences.Get(AnrCalibrationKey, (string)null) == value)
+                Preferences.Remove(AnrCalibrationKey);
+        }
     }
 
     // WORKAROUND(WA-SENTRY-0012): Sentry reports no Android process deaths other than native crashes and ANRs
@@ -383,12 +462,13 @@ public static class AndroidExitInfoReporter
     }
 
     [SupportedOSPlatform("android30.0")]
-    private static void ReportAnr(ApplicationExitInfo exitInfo)
+    /* calibration is the AndroidAnrCalibration mode that caused this ANR, or null */
+    private static void ReportAnr(ApplicationExitInfo exitInfo, string calibration)
     {
         string description = exitInfo.Description;
         string subject;
         string dumpLine;
-        ReadTraceHeader(exitInfo, out subject, out dumpLine);
+        GHAnrTraceSummary trace = ReadTrace(exitInfo, out subject, out dumpLine);
 
         string anrType = ClassifyAnr(!string.IsNullOrEmpty(description) ? description : subject);
         bool isForeground = exitInfo.Importance == (int)Importance.Foreground;
@@ -397,7 +477,12 @@ public static class AndroidExitInfoReporter
 
         SentrySdk.CaptureMessage("Android ANR exit info: " + anrType, scope =>
         {
-            scope.Fingerprint = new[] { "android-anr-exit-info", anrType };
+            /* Calibration ANRs form their own issues */
+            scope.Fingerprint = calibration != null
+                ? new[] { "android-anr-exit-info", anrType, "calibration", calibration }
+                : new[] { "android-anr-exit-info", anrType };
+            if (calibration != null)
+                scope.SetTag("anr.calibration", calibration);
             scope.SetTag("anr.type", anrType);
             scope.SetTag("anr.foreground", isForeground ? "yes" : "no");
             scope.SetTag("anr.exit_time", exitTime);
@@ -410,12 +495,26 @@ public static class AndroidExitInfoReporter
             scope.SetExtra("ANR Pss KB", exitInfo.Pss.ToString(CultureInfo.InvariantCulture));
             scope.SetExtra("ANR Rss KB", exitInfo.Rss.ToString(CultureInfo.InvariantCulture));
             scope.SetExtra("ANR Process Name", Shorten(exitInfo.ProcessName));
+            if (trace != null)
+            {
+                scope.SetTag("anr.main_native", trace.MainSignature);
+                scope.SetTag("anr.same_wait", GHAnrTraceSummary.SameWaitBucket(trace.SameWaitThreadCount));
+                scope.SetExtra("ANR Main Native Frames", ShortenTrace(trace.MainNativeFrames));
+                scope.SetExtra("ANR APK Threads", ShortenTrace(trace.ApkThreads));
+                scope.SetExtra("ANR Thread Count", trace.ThreadCount.ToString(CultureInfo.InvariantCulture));
+            }
+            else
+            {
+                scope.SetTag("anr.main_native", "no-trace");
+            }
             AttachStateSummary(scope, exitInfo, "anr", "ANR Snapshot");
         }, SentryLevel.Warning);
     }
 
+    /* Reads the header's Subject: and dump lines, then summarizes the thread dump after the dump line;
+       null when the trace or its dump line is missing */
     [SupportedOSPlatform("android30.0")]
-    private static void ReadTraceHeader(ApplicationExitInfo exitInfo, out string subject, out string dumpLine)
+    private static GHAnrTraceSummary ReadTrace(ApplicationExitInfo exitInfo, out string subject, out string dumpLine)
     {
         subject = null;
         dumpLine = null;
@@ -424,7 +523,7 @@ public static class AndroidExitInfoReporter
             using (Stream stream = exitInfo.TraceInputStream)
             {
                 if (stream == null)
-                    return;
+                    return null;
                 using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
                 {
                     int lineCount;
@@ -440,7 +539,7 @@ public static class AndroidExitInfoReporter
                         else if (line.StartsWith("----- pid ", StringComparison.Ordinal))
                         {
                             dumpLine = line;
-                            break;
+                            return GHAnrTraceSummary.Parse(reader, MaxTraceLines);
                         }
                     }
                 }
@@ -450,6 +549,7 @@ public static class AndroidExitInfoReporter
         {
             GHApp.MaybeWriteGHLog("AndroidExitInfoReporter trace: " + ex.Message);
         }
+        return null;
     }
 
     private static string ClassifyAnr(string text)
@@ -479,6 +579,13 @@ public static class AndroidExitInfoReporter
         if (string.IsNullOrEmpty(text))
             return "(none)";
         return text.Length <= MaxExtraLength ? text : text.Substring(0, MaxExtraLength) + " [truncated]";
+    }
+
+    private static string ShortenTrace(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return "(none)";
+        return text.Length <= MaxTraceExtraLength ? text : text.Substring(0, MaxTraceExtraLength) + " [truncated]";
     }
 }
 #endif

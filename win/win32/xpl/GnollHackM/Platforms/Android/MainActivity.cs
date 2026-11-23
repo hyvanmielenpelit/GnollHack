@@ -50,6 +50,7 @@ public class MainActivity : MauiAppCompatActivity
 #if SENTRY
         // WORKAROUND(WA-SENTRY-0010): Sentry's Android ANR events omit the ApplicationExitInfo description
         AndroidExitInfoReporter.StartReporting(this);
+        AndroidAnrCalibration.MaybeSchedule(Intent);
 #endif
         GHStartupTimeline.Current.Mark(GHStartupMilestone.Activity);
     }
