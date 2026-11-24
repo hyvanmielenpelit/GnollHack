@@ -98,6 +98,8 @@ namespace GnollHackX
         {
             switch (_data.style)
             {
+                case (int)screen_text_types.SCREEN_TEXT_ACTION_INTERRUPTED:
+                    return "Disrobing interrupted";
                 default:
                     break;
             }
@@ -107,6 +109,8 @@ namespace GnollHackX
         {
             switch (_data.style)
             {
+                case (int)screen_text_types.SCREEN_TEXT_ACTION_INTERRUPTED:
+                    return 0.85f;
                 default:
                     break;
             }

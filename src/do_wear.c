@@ -65,6 +65,7 @@ static void print_covering_items(struct obj*, char*);
 static boolean is_armor_covered(struct obj*);
 static boolean wear_precheck(void);
 static int wear_oid_bit_to_index(int64_t);
+static void display_wear_interrupted_text(const char *);
 
 void
 off_msg(struct obj *otmp)
@@ -1339,6 +1340,8 @@ stop_donning(struct obj *stolenobj)
         result = -multi; /* remember this before calling unmul() */
     }
     unmul_ex(ATR_NONE, CLR_MSG_WARNING, buf);
+    if (buf[0])
+        display_wear_interrupted_text(putting_on ? "wearing" : "disrobing");
     /* while putting on, item becomes worn immediately but side-effects are
        deferred until the delay expires; when interrupted, make it unworn
        (while taking off, item stays worn until the delay expires; when
@@ -1347,6 +1350,41 @@ stop_donning(struct obj *stolenobj)
         remove_worn_item(otmp, FALSE);
 
     return result;
+}
+
+static int64_t last_shown_move = 0;
+
+/* at most one per turn, since steal() calls both stop_donning() and stop_occupation() */
+static void
+display_wear_interrupted_text(const char *verb)
+{
+    char txtbuf[BUFSZ];
+
+    if (!verb || !*verb || last_shown_move == moves)
+        return;
+
+    last_shown_move = moves;
+    play_sfx_sound(SFX_WARNING);
+    if (!(windowprocs.wincap2 & WC2_SCREEN_TEXT))
+        return;
+
+    Sprintf(txtbuf, "%s interrupted", verb);
+    (void) upstart(txtbuf);
+    /* 2UL shows it as a condition text */
+    display_screen_text(txtbuf, (const char *) 0, (const char *) 0, SCREEN_TEXT_ACTION_INTERRUPTED, ATR_NONE,
+                        NO_COLOR, 2UL);
+}
+
+/* called by stop_occupation() before the occupation is cleared */
+void
+take_off_occupation_interrupted(void)
+{
+    if (occupation != take_off)
+        return;
+
+    display_wear_interrupted_text(!strcmp(context.takeoff.disrobing, "adjusting your equipment")
+                                      ? "equipping"
+                                      : context.takeoff.disrobing);
 }
 
 /* both 'clothes' and 'accessories' now include both armor and accessories;
@@ -4413,6 +4451,7 @@ reset_dowear(void)
 {
     Narmorpieces = 0;
     Naccessories = 0;
+    last_shown_move = 0;
 }
 
 /*do_wear.c*/

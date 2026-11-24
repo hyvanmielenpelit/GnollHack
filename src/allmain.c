@@ -1149,6 +1149,7 @@ stop_occupation(void)
     if (occupation) {
         if (!maybe_finished_meal(TRUE))
             You_ex(occattr, occclr, "stop %s.", occtxt);
+        take_off_occupation_interrupted();
         stop_occupation_ambient_sound(occsoundset, occtyp);
         play_occupation_immediate_sound(occsoundset, occtyp, OCCUPATION_SOUND_TYPE_INTERRUPTED);
         occupation = 0;

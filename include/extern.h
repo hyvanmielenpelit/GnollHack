@@ -851,6 +851,7 @@ E boolean doffing(struct obj *);
 E void cancel_doff(struct obj *, int64_t);
 E void cancel_don(void);
 E int stop_donning(struct obj *);
+E void take_off_occupation_interrupted(void);
 E int Armor_off(void);
 E int Armor_gone(void);
 E int Helmet_off(void);

@@ -559,6 +559,7 @@ namespace GnollHackX
         SCREEN_TEXT_BOSS_FIGHT,
         SCREEN_TEXT_EXTRA_LIFE_SPENT,
         SCREEN_TEXT_SNAPSHOT,
+        SCREEN_TEXT_ACTION_INTERRUPTED,
     }
 
     public enum game_cursor_types
