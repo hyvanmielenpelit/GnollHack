@@ -64,7 +64,7 @@ namespace GnollHackX.Pages.Game
         {
             try
             {
-                if(!_playingReplay && !_tapHide)
+                if(!_playingReplay && !_tapHide && GHApp.PageFromTopOfModalNavigationStack() == this)
                 {
                     _tapHide = true;
                     OutRipGrid.IsEnabled = false;
@@ -86,7 +86,7 @@ namespace GnollHackX.Pages.Game
                 {
                     try
                     {
-                        if (!_playingReplay && !_tapHide)
+                        if (!_playingReplay && !_tapHide && GHApp.PageFromTopOfModalNavigationStack() == this)
                         {
                             _tapHide = true;
                             OutRipGrid.IsEnabled = false;

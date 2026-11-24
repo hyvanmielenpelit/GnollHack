@@ -3861,18 +3861,31 @@ namespace GnollHackX
         public static bool PopAllModalRequested = false; /* Always used from MainThread */
         public static async Task PopAllModalPagesAsync(bool animated)
         {
-            bool popagain = false;
-            do
+            try
             {
-                var page = await Navigation.PopModalAsync(animated);
-                popagain = !(page is GamePage || page == null);
-                DisconnectIViewHandlers(page);
-                if (page is GamePage gp)
+                bool popagain = false;
+                do
                 {
-                    await gp.CleanupAsync();
-                }
-            } while (popagain);
-            CurrentGamePage = null;
+                    /* A page that closed itself while this loop awaited may have emptied the stack already */
+                    if ((Navigation?.ModalStack?.Count ?? 0) == 0)
+                        break;
+                    var page = await Navigation.PopModalAsync(animated);
+                    popagain = !(page is GamePage || page == null);
+                    DisconnectIViewHandlers(page);
+                    if (page is GamePage gp)
+                    {
+                        await gp.CleanupAsync();
+                    }
+                } while (popagain);
+            }
+            catch (Exception ex)
+            {
+                ReportCaughtException(ex);
+            }
+            finally
+            {
+                CurrentGamePage = null;
+            }
         }
 
         public static async Task PopAllModalPagesAboveGamePageAsync()
