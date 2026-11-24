@@ -163,19 +163,22 @@ repeat delay. R1 + A, or L3 and then A, runs once. Releasing the stick ends the 
 with the stick centered A is the context button as usual. The D-pad and position and direction prompts
 are unchanged.
 
-**Add New Spells to Hotbar.** With **Settings, Controller, Add New Spells to Hotbar** on (the default)
-and Use Controller on, a newly learned spell goes to the first empty slot of the Spells radial's Hotbar,
-and a new caster's starting spells are placed there at character creation. After the learn message,
-the game says the spell has been added to your Hotbar, or that it is in Known Spells when the Hotbar is
-full. The setting reaches the game when it starts and again whenever it or Use Controller changes. The
+**Add New Spells to Favorites.** With **Settings, Controller, Add New Spells to Favorites** on (the
+default) and Use Controller on, a newly learned spell goes to the first empty slot of the Hotbar, which the
+Spells radial and the lists call Favorites, and a new caster's starting spells are placed there at
+character creation. After the learn message, the game says the spell has been added to your Favorites,
+or that it is in Known Spells when the Hotbar is full. The setting reaches the game when it starts and again whenever it or Use Controller changes. The
 Hotbar is saved with the character, in the spells' hotkey field: slots 1-10 are also the spell table's
 hotkeys `1`..`0` when `spell_table_format` is on. The game sends it to the GUI inside the Cast menu: each
 spell row on the Hotbar carries `MENU_FLAGS_HOTBAR_SLOT` with its slot in the row's `style`, and the
 spell's long-tap menu has two rows only the radial uses, Set Hotbar Slot (the slot is the item's count)
 and Remove from Hotbar, which the touch list never shows. The list shows the Hotbar's spells as Favorites
 instead: the Cast, Mix Spells, View Spells and Set Quick Spell lists put them first, under a Favorites
-heading in slot order, each with its slot number in a gold circle at the right end of its row (drawn from
-`MENU_FLAGS_HOTBAR_SLOT`, which these rows all carry), and the rest under Spells. The Cast list's long tap
+heading in slot order, and the rest under Spells. When the menu opens from the controller (Use Controller on
+and the last input the controller's), each favorite's row ends in a half-transparent gold circle with its
+radial position in small type, page and letter, 1A to 3H (drawn from `MENU_FLAGS_HOTBAR_SLOT`, which these
+rows all carry); a menu opened by touch, the mouse or a key leaves out the circles and the room kept for
+them. The Cast list's long tap
 has Mark as Favorite (the first empty slot) or Unmark as Favorite, and for a favorite Move First (to slot
 1, the favorites before it each one slot later) and Move Last (to the last used slot, the favorites after
 it each one slot earlier), which replace Move to Top and Move to Bottom and use their arrows. These rows
@@ -267,9 +270,10 @@ radial while its trigger is held, which lasts as long as the trigger.
 - **Spells radial** (the Cast menu, from any binding or the command bar, while the controller is the
   active input; after touch, the mouse or a key it shows as the usual list; the table format stays a
   list): two sets of pages, shown as two tabs above the ring, with **X** switching between them.
-  - **Hotbar**: three pages of eight slots at fixed compass directions, filled by the player; slot 1 is
-    Hotbar 1 North, slot 9 Hotbar 2 North. It opens on the Hotbar page used last. An empty slot shows `+`
-    Empty, and A or Y on it chooses a spell for it.
+  - **Favorites** (the Hotbar): three pages of eight slots at fixed compass directions, filled by the
+    player; slot 1 is Favorites 1A (North), slot 9 Favorites 2A, the letters A to H running clockwise from
+    North. It opens on the Favorites page used last.
+    An empty slot shows `+` Empty, and A or Y on it chooses a spell for it.
   - **Known Spells**: every spell known, in pages of eight ordered by school, level and name. With more
     than 16 spells the first page is a ring of the twelve schools with counts, and A opens a school's
     pages; B goes back to the ring. The last page holds the Cast menu's own commands: View Spells, Mix
@@ -281,13 +285,13 @@ radial while its trigger is held, which lasts as long as the trigger.
   - **A** selects the spell's row, so it casts; it refuses only what the Cast menu cannot select, a
     forgotten spell or one cooling down.
   - **Y** is the list's long tap: the spell's command menu shows as **Actions**, with View Information,
-    Mix Reagents, Move to Top, Move to Bottom, Set as Quick Spell and Forget, then Add to Hotbar (Move on
-    Hotbar once it is there) and Remove from Hotbar. A spell on the Hotbar has no Move to Top and Move to
-    Bottom. The hub shows the spell's tile and name. After View Information, Move to Top, Move to Bottom
-    (for a spell not on the Hotbar), Forget and the Hotbar items, the game shows the Cast menu again, so
-    the radial returns on the same spell. B goes back to it.
-  - **Add to / Move on Hotbar** carries the spell over the Hotbar: A places it (swapping with or replacing
-    a filled slot, as the hub says), Y removes it, B cancels.
+    Mix Reagents, Move to Top, Move to Bottom, Set as Quick Spell and Forget, then Add to Favorites (Move
+    in Favorites once it is there) and Remove from Favorites. A spell on the Hotbar has no Move to Top and
+    Move to Bottom. The hub shows the spell's tile and name. After View Information, Move to Top, Move to
+    Bottom (for a spell not on the Hotbar), Forget and the Favorites items, the game shows the Cast menu
+    again, so the radial returns on the same spell. B goes back to it.
+  - **Add to / Move in Favorites** carries the spell over the Favorites pages: A places it (swapping with
+    or replacing a filled slot, as the hub says), Y removes it, B cancels.
   - L1/R1 page within the current set or school only. **Menu** shows the same menu as the list, still
     waiting for an answer, instead of opening the game menu; Menu in that list brings the radial back. Touch,
     the mouse or a key while the radial shows also closes it and shows the list. Once on the list, the Cast

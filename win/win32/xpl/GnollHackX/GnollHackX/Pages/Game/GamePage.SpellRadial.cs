@@ -113,7 +113,7 @@ namespace GnollHackX.Pages.Game
             return entry == null || entry.UpperSide;
         }
 
-        /* Sends Add New Spells to Hotbar to the running game, which reads it from GHApp */
+        /* Sends Add New Spells to Favorites to the running game, which reads it from GHApp */
         public void SetSpellHotbarAutoAdd()
         {
             if (PlayingReplay)
@@ -319,7 +319,7 @@ namespace GnollHackX.Pages.Game
             }
         }
 
-        /* Hotbar 1/3 to 3/3, then Known Spells and Spell Commands */
+        /* Favorites 1/3 to 3/3, then Known Spells and Spell Commands */
         private GHRadialMenuDefinition BuildGamepadSpellBrowseDefinition(SpellRadialSession s)
         {
             GHRadialMenuDefinition def = CreateGamepadSpellRadialDefinition(SpellBrowseRadialId, s);
@@ -354,7 +354,7 @@ namespace GnollHackX.Pages.Game
             def.OwningStick = 0;
             def.Accent = GHRadialAccent.Gold;
             def.PageWithinGroup = true;
-            def.SetTabs = new string[] { "Hotbar", "Known Spells" };
+            def.SetTabs = new string[] { "Favorites", "Known Spells" };
             def.SetTabIcons = new string[] { GetGamepadUIIconPath("status-quick-spell.png"), GetGamepadUIIconPath("spells.png") };
             def.SwitchSetEnabled = false;
             def.FooterMaxLines = 3;
@@ -377,7 +377,7 @@ namespace GnollHackX.Pages.Game
             int p, d;
             for (p = 0; p < GHSpellHotbar.PageCount; p++)
             {
-                GHRadialPage page = CreateGamepadSpellPage("Hotbar", p, GHSpellHotbar.PageCount, GHRadialTuning.SpellPageSlotCount, 0);
+                GHRadialPage page = CreateGamepadSpellPage("Favorites", p, GHSpellHotbar.PageCount, GHRadialTuning.SpellPageSlotCount, 0);
                 for (d = 0; d < GHSpellHotbar.SlotsPerPage && d < page.SlotCount; d++)
                 {
                     int slot = GHSpellHotbar.PageDirectionToSlot(p, d);
@@ -948,7 +948,7 @@ namespace GnollHackX.Pages.Game
 
             foreach (GHMenuItem mi in menuinfo.MenuItems)
             {
-                /* The list's Favorites commands are list-only; Add to / Move on Hotbar and Remove from Hotbar stand in for them */
+                /* The list's Favorites commands are list-only; Add to / Move in Favorites and Remove from Favorites stand in for them */
                 if (mi == null || mi.Identifier == 0 || mi.IsListOnly)
                     continue;
                 if (mi.Identifier == SpellCommandCancel)
@@ -980,8 +980,8 @@ namespace GnollHackX.Pages.Game
             return header;
         }
 
-        /* The core's commands clockwise from North, then Add to or Move on Hotbar and Remove from Hotbar in the last two
-           slots; the hub shows the spell */
+        /* The core's commands clockwise from North, then Add to or Move in Favorites and Remove from Favorites in the last
+           two slots; the hub shows the spell */
         private GHRadialMenuDefinition BuildGamepadSpellActionsDefinition(SpellRadialSession s, GHPublishedWindow ghwindow)
         {
             GHSpellInfo spell = s.ActionSpell;
@@ -997,7 +997,7 @@ namespace GnollHackX.Pages.Game
             addEntry.UpperSide = s.SetSlotRow == null || s.SetSlotRow.UseUpperSide;
             GHRadialItem add = new GHRadialItem();
             add.Id = "act:hotbar";
-            add.Label = onHotbar ? "Move on Hotbar" : "Add to Hotbar";
+            add.Label = onHotbar ? "Move in Favorites" : "Add to Favorites";
             add.Glyph = 0;
             add.IconPath = GetGamepadUIIconPath(onHotbar ? "arrow_left.png" : "puton.png");
             add.Kind = GHRadialItemKind.Command;
@@ -1010,7 +1010,7 @@ namespace GnollHackX.Pages.Game
             removeEntry.Action = SpellRadialAction.RemoveFromHotbar;
             GHRadialItem remove = new GHRadialItem();
             remove.Id = "act:unhotbar";
-            remove.Label = "Remove from Hotbar";
+            remove.Label = "Remove from Favorites";
             remove.IconPath = GetGamepadUIIconPath("remove.png");
             remove.Kind = GHRadialItemKind.Command;
             remove.IsEnabled = s.RemoveRow != null && onHotbar;
@@ -1117,7 +1117,7 @@ namespace GnollHackX.Pages.Game
             return item;
         }
 
-        /* B in Place mode goes back to Actions on Add to or Move on Hotbar, without answering */
+        /* B in Place mode goes back to Actions on Add to or Move in Favorites, without answering */
         private bool OnGamepadSpellPlaceCancel(SpellRadialSession s)
         {
             GHRadialMenuDefinition actions = s.ActionsDefinition;

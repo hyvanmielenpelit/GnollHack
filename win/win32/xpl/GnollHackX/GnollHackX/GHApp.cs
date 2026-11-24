@@ -4473,14 +4473,14 @@ namespace GnollHackX
         }
         /* The Aim and Confirm setting: the left stick aims and A moves */
         public static bool GamepadAimAndConfirm { get { return Interlocked.CompareExchange(ref _gamepadAimAndConfirm, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadAimAndConfirm, value ? 1 : 0); } }
-        /* The Add New Spells to Hotbar setting: a newly learned spell goes to the first empty Hotbar slot while Use Controller is on */
+        /* The Add New Spells to Favorites setting: a newly learned spell goes to the first empty Hotbar slot while Use Controller is on */
         public static bool GamepadSpellHotbarAutoAdd { get { return Interlocked.CompareExchange(ref _gamepadSpellHotbarAutoAdd, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadSpellHotbarAutoAdd, value ? 1 : 0); } }
         /* A controller can be used: see GHGamepadService.IsAvailable; independent of the setting */
         public static bool IsGamepadAvailable { get { return GHGamepadService.IsAvailable; } }
 
         public static readonly GHGamepadButton[] GamepadGrips = { GHGamepadButton.L4, GHGamepadButton.L5, GHGamepadButton.R4, GHGamepadButton.R5 };
 
-        /* Use Controller, Hide Command Bar, Hint Size, Aim and Confirm, Add New Spells to Hotbar, the grips, the trigger
+        /* Use Controller, Hide Command Bar, Hint Size, Aim and Confirm, Add New Spells to Favorites, the grips, the trigger
            commands, the Quick radial slots and the quick commands from the preferences, each missing one at its default */
         public static void LoadGamepadSettings()
         {

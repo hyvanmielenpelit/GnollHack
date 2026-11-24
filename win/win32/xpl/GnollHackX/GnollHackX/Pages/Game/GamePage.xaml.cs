@@ -5210,6 +5210,8 @@ namespace GnollHackX.Pages.Game
             if (allowRadial && TryShowMenuAsGamepadSpellRadial(menuinfo, ghwindow))
                 return;
 
+            MenuShowsHotbarSlots = GHGamepadService.IsEnabled && GHGamepadService.IsActive;
+
             /* Cancel delayed menu hide */
 #if GNH_MAUI
             StopMenuHideTimers();
@@ -5219,6 +5221,10 @@ namespace GnollHackX.Pages.Game
                 if(MenuHideOn)
                 {
                     MenuHideCancelled = true;
+#if GNH_MAUI
+                    /* The stopped timer never runs DoTimedMenuHide, which clears MenuHideOn */
+                    MenuHideOn = false;
+#endif
                 }
             }
 
@@ -20057,6 +20063,7 @@ namespace GnollHackX.Pages.Game
                                 break;
                         }
 
+                        bool showHotbarSlots = MenuShowsHotbarSlots;
                         //lock (_refreshMenuRowCountLock)
                         {
                             int idx = -1;
@@ -20084,7 +20091,7 @@ namespace GnollHackX.Pages.Game
                                     textPaint.TextSize = mi.MinimumTouchableTextSize * scale * customScale;
                                 float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
                                 /* A hotbar slot circle sits at the row's right end; the text wraps short of it */
-                                float rowrightpadding = rightmenupadding + (mi.HotbarSlot > 0 ? minrowheight * 1.1f : 0f);
+                                float rowrightpadding = rightmenupadding + (showHotbarSlots && mi.HotbarSlot > 0 ? minrowheight * 1.1f : 0f);
                                 float paddingAdjustment = 0;
                                 if (firstMinRowHeight == -1)
                                     firstMinRowHeight = minrowheight;
@@ -20485,7 +20492,7 @@ namespace GnollHackX.Pages.Game
                                         textPaint.DrawTextOnCanvas(canvas, str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
                                     }
                                     /* Hotbar slot circle */
-                                    else if (mi.HotbarSlot > 0 && !(drawbbottom <= 0 || drawbtop >= canvasheight))
+                                    else if (showHotbarSlots && mi.HotbarSlot > 0 && !(drawbbottom <= 0 || drawbtop >= canvasheight))
                                     {
                                         float circleradius = Math.Max(0.01f, minrowheight * 0.90f / 2);
                                         float circlex = drawbright - circleradius - minrowheight / 10;
@@ -20493,10 +20500,10 @@ namespace GnollHackX.Pages.Game
                                         textPaint.Color = _hotbarSlotBackgroundColor;
                                         textPaint.Style = SKPaintStyle.Fill;
                                         canvas.DrawCircle(circlex, circley, circleradius, textPaint.Paint);
-                                        textPaint.Color = SKColors.Black;
-                                        str = mi.HotbarSlot.ToString();
+                                        textPaint.Color = revertBW ? SKColors.Black : SKColors.White;
+                                        str = GHSpellHotbar.GetSlotCode(mi.HotbarSlot);
                                         float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
-                                        textPaint.TextSize = (float)mi.FontSize * scale * customScale;
+                                        textPaint.TextSize = 0.7f * (float)mi.FontSize * scale * customScale;
                                         textPaint.MeasureText(str, ref textBounds);
                                         float scalex = textBounds.Width / maxsize;
                                         float scaley = textBounds.Height / maxsize;
@@ -20578,7 +20585,11 @@ namespace GnollHackX.Pages.Game
         }
         private readonly SKColor _numItemsBackgroundColor = new SKColor(228, 203, 158);
         private readonly SKColor _numItemsBackgroundColorDarkMode = new SKColor(2, 2, 2);
-        private readonly SKColor _hotbarSlotBackgroundColor = new SKColor(0xD4, 0xA0, 0x17); /* the Spells radial's gold */
+        private readonly SKColor _hotbarSlotBackgroundColor = new SKColor(0xD4, 0xA0, 0x17, 0x80); /* the Spells radial's gold, half transparent */
+        /* Hotbar slot circles show only when the menu is opened from the controller, decided as each menu is shown so
+           that the rows' cached text wrap matches */
+        private int _menuShowsHotbarSlots = 0;
+        private bool MenuShowsHotbarSlots { get { return Interlocked.CompareExchange(ref _menuShowsHotbarSlots, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuShowsHotbarSlots, value ? 1 : 0); } }
 
         private int CountTextSplitRows(string[] textsplit, float x_start, float canvaswidth, float rightmenupadding, float paddingAdjustment, GHSkiaFontPaint textPaint, bool usespecialsymbols, out List<float> rowWidths)
         {

@@ -240,6 +240,7 @@ namespace GnollHackX.UnitTests
             Assert.Equal(-1, GHSpellHotbar.SlotToPage(slot));
             Assert.Equal(-1, GHSpellHotbar.SlotToDirection(slot));
             Assert.Equal("", GHSpellHotbar.GetSlotLabel(slot));
+            Assert.Equal("", GHSpellHotbar.GetSlotCode(slot));
         }
 
         [Theory]
@@ -268,13 +269,26 @@ namespace GnollHackX.UnitTests
             Assert.Equal(expected, GHSpellHotbar.GetDirectionName(dir));
         }
 
+        [Theory]
+        [InlineData(1, "1A")]
+        [InlineData(3, "1C")]
+        [InlineData(8, "1H")]
+        [InlineData(9, "2A")]
+        [InlineData(15, "2G")]
+        [InlineData(17, "3A")]
+        [InlineData(24, "3H")]
+        public void SlotCodeIsPageAndDirectionLetter(int slot, string expected)
+        {
+            Assert.Equal(expected, GHSpellHotbar.GetSlotCode(slot));
+        }
+
         [Fact]
         public void SlotLabelNamesPageAndDirection()
         {
-            Assert.Equal("Hotbar 1 " + Dot + " North", GHSpellHotbar.GetSlotLabel(1));
-            Assert.Equal("Hotbar 1 " + Dot + " East", GHSpellHotbar.GetSlotLabel(3));
-            Assert.Equal("Hotbar 2 " + Dot + " West", GHSpellHotbar.GetSlotLabel(15));
-            Assert.Equal("Hotbar 3 " + Dot + " Northwest", GHSpellHotbar.GetSlotLabel(24));
+            Assert.Equal("Favorites 1A " + Dot + " North", GHSpellHotbar.GetSlotLabel(1));
+            Assert.Equal("Favorites 1C " + Dot + " East", GHSpellHotbar.GetSlotLabel(3));
+            Assert.Equal("Favorites 2G " + Dot + " West", GHSpellHotbar.GetSlotLabel(15));
+            Assert.Equal("Favorites 3H " + Dot + " Northwest", GHSpellHotbar.GetSlotLabel(24));
         }
 
         /* School ring */

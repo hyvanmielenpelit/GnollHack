@@ -370,12 +370,21 @@ namespace GnollHackX
             return DirectionNames[dir];
         }
 
-        /* "Hotbar 1 · East"; "" for a slot outside 1..MaxSlots */
+        /* The page number and the direction's letter, A for North clockwise to H for Northwest: "1A" to "3H";
+           "" for a slot outside 1..MaxSlots */
+        public static string GetSlotCode(int slot)
+        {
+            if (NormalizeSlot(slot) == 0)
+                return "";
+            return (SlotToPage(slot) + 1).ToString() + (char)('A' + SlotToDirection(slot));
+        }
+
+        /* "Favorites 1C · East"; "" for a slot outside 1..MaxSlots */
         public static string GetSlotLabel(int slot)
         {
             if (NormalizeSlot(slot) == 0)
                 return "";
-            return "Hotbar " + (SlotToPage(slot) + 1).ToString() + " " + MiddleDot + " " + GetDirectionName(SlotToDirection(slot));
+            return "Favorites " + GetSlotCode(slot) + " " + MiddleDot + " " + GetDirectionName(SlotToDirection(slot));
         }
 
         public static bool UsesSchoolRing(int knownCount)

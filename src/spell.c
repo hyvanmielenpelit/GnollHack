@@ -646,7 +646,7 @@ learn(void)
                 (void)upstart(hotbarname);
                 if (hotbar_result == SPELL_HOTBAR_ADDED)
                     pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors,
-                        "\'%s\' has been added to your Hotbar.", hotbarname);
+                        "\'%s\' has been added to your Favorites.", hotbarname);
                 else
                     pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors,
                         "\'%s\' is in Known Spells.", hotbarname);
