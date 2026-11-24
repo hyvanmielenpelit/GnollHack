@@ -165,6 +165,7 @@ namespace GnollHackX
         MENU_FLAGS_HOTBAR_SLOT =                0x00001000, /* the row's spell is on the hotbar, in slot ItemStyle */
         MENU_FLAGS_RADIAL_ONLY =                0x00002000, /* only the gamepad radial shows this row */
         MENU_FLAGS_LONG_TAP_ONLY =              0x00004000, /* only a long tap acts on the row; a tap is refused */
+        MENU_FLAGS_LIST_ONLY =                  0x00008000, /* no gamepad radial shows this row */
     }
 
     /* mflags of start_menu_ex (GHMENU_START_FLAGS_*) */

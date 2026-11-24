@@ -172,7 +172,14 @@ Hotbar is saved with the character, in the spells' hotkey field: slots 1-10 are 
 hotkeys `1`..`0` when `spell_table_format` is on. The game sends it to the GUI inside the Cast menu: each
 spell row on the Hotbar carries `MENU_FLAGS_HOTBAR_SLOT` with its slot in the row's `style`, and the
 spell's long-tap menu has two rows only the radial uses, Set Hotbar Slot (the slot is the item's count)
-and Remove from Hotbar, which the touch list never shows.
+and Remove from Hotbar, which the touch list never shows. The list shows the Hotbar's spells as Favorites
+instead: the Cast, Mix Spells, View Spells and Set Quick Spell lists put them first, under a Favorites
+heading in slot order, each with its slot number in a gold circle at the right end of its row (drawn from
+`MENU_FLAGS_HOTBAR_SLOT`, which these rows all carry), and the rest under Spells. The Cast list's long tap
+has Mark as Favorite (the first empty slot) or Unmark as Favorite, and for a favorite Move First (to slot
+1, the favorites before it each one slot later) and Move Last (to the last used slot, the favorites after
+it each one slot earlier), which replace Move to Top and Move to Bottom and use their arrows. These rows
+carry `MENU_FLAGS_LIST_ONLY`, which no radial shows.
 
 **Direction radial.** When a command asks for a direction with the controller active, the violet
 **Direction** radial opens over the prompt (see [Radials](#radials)). If a trigger's command raised it
@@ -275,14 +282,17 @@ radial while its trigger is held, which lasts as long as the trigger.
     forgotten spell or one cooling down.
   - **Y** is the list's long tap: the spell's command menu shows as **Actions**, with View Information,
     Mix Reagents, Move to Top, Move to Bottom, Set as Quick Spell and Forget, then Add to Hotbar (Move on
-    Hotbar once it is there) and Remove from Hotbar. The hub shows the spell's tile and name. After View
-    Information, Move to Top, Move to Bottom, Forget and the Hotbar items, the game shows the Cast menu
-    again, so the radial returns on the same spell. B goes back to it.
+    Hotbar once it is there) and Remove from Hotbar. A spell on the Hotbar has no Move to Top and Move to
+    Bottom. The hub shows the spell's tile and name. After View Information, Move to Top, Move to Bottom
+    (for a spell not on the Hotbar), Forget and the Hotbar items, the game shows the Cast menu again, so
+    the radial returns on the same spell. B goes back to it.
   - **Add to / Move on Hotbar** carries the spell over the Hotbar: A places it (swapping with or replacing
     a filled slot, as the hub says), Y removes it, B cancels.
   - L1/R1 page within the current set or school only. **Menu** shows the same menu as the list, still
     waiting for an answer, instead of opening the game menu; Menu in that list brings the radial back. Touch,
-    the mouse or a key while the radial shows also closes it and shows the list.
+    the mouse or a key while the radial shows also closes it and shows the list. Once on the list, the Cast
+    menu stays there when it comes back after a command, such as Mark as Favorite, until Menu brings the
+    radial back or the menu is left and the game waits for a command again.
   - A spell that cannot be cast has a grayed icon and a slice tinted with its reason's color, as in the
     Cast menu's text. With an empty Hotbar the radial opens on Known Spells.
 - **Direction radial** (any direction prompt): violet and see-through,

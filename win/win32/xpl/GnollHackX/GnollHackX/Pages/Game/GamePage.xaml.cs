@@ -20083,6 +20083,8 @@ namespace GnollHackX.Pages.Game
                                 else
                                     textPaint.TextSize = mi.MinimumTouchableTextSize * scale * customScale;
                                 float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
+                                /* A hotbar slot circle sits at the row's right end; the text wraps short of it */
+                                float rowrightpadding = rightmenupadding + (mi.HotbarSlot > 0 ? minrowheight * 1.1f : 0f);
                                 float paddingAdjustment = 0;
                                 if (firstMinRowHeight == -1)
                                     firstMinRowHeight = minrowheight;
@@ -20143,16 +20145,16 @@ namespace GnollHackX.Pages.Game
 
                                 if (RefreshMenuRowCounts || !mi.TextRowCountsSet)
                                 {
-                                    maintextrows = CountTextSplitRows(maintextsplit, maintext_x_start, canvaswidth, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out mainrowwidths);
+                                    maintextrows = CountTextSplitRows(maintextsplit, maintext_x_start, canvaswidth, rowrightpadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out mainrowwidths);
                                     mi.MainTextRows = maintextrows;
                                     mi.MainTextRowWidths = mainrowwidths;
 
                                     textPaint.TextSize = suffixfontsize;
-                                    suffixtextrows = CountTextSplitRows(suffixtextsplit, maintext_x_start, canvaswidth, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out suffixrowwidths);
+                                    suffixtextrows = CountTextSplitRows(suffixtextsplit, maintext_x_start, canvaswidth, rowrightpadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out suffixrowwidths);
                                     mi.SuffixTextRows = suffixtextrows;
                                     mi.SuffixTextRowWidths = suffixrowwidths;
 
-                                    suffix2textrows = CountTextSplitRows(suffix2textsplit, maintext_x_start, canvaswidth, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out suffix2rowwidths);
+                                    suffix2textrows = CountTextSplitRows(suffix2textsplit, maintext_x_start, canvaswidth, rowrightpadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, out suffix2rowwidths);
                                     mi.Suffix2TextRows = suffix2textrows;
                                     mi.Suffix2TextRowWidths = suffix2rowwidths;
 
@@ -20380,7 +20382,7 @@ namespace GnollHackX.Pages.Game
                                     string altFontFamily;
                                     if (UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
                                         textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
-                                    DrawTextSplit(canvas, maintextsplit, mainattrssplit, maincolorssplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                    DrawTextSplit(canvas, maintextsplit, mainattrssplit, maincolorssplit, mainrowwidths, ref x, ref y, ref firstprintonrow, indent_start_x, canvaswidth, canvasheight, rowrightpadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                                     textPaint.Typeface = mainFont;
                                     /* Rewind and next line */
                                     x = start_x;
@@ -20397,7 +20399,7 @@ namespace GnollHackX.Pages.Game
                                         y -= textPaint.FontMetrics.Ascent;
                                         if (UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
                                             textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
-                                        DrawTextSplit(canvas, suffixtextsplit, suffixattrssplit, suffixcolorssplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                        DrawTextSplit(canvas, suffixtextsplit, suffixattrssplit, suffixcolorssplit, suffixrowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rowrightpadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                                         textPaint.Typeface = mainFont;
                                         /* Rewind and next line */
                                         x = start_x;
@@ -20416,7 +20418,7 @@ namespace GnollHackX.Pages.Game
                                         y -= textPaint.FontMetrics.Ascent;
                                         if (UIUtils.MaybeSmallFontFamily(mainFontFamily, textPaint.TextSize, out altFontFamily))
                                             textPaint.Typeface = GHApp.GetTypefaceByName(altFontFamily);
-                                        DrawTextSplit(canvas, suffix2textsplit, suffix2attrssplit, suffix2colorssplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rightmenupadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
+                                        DrawTextSplit(canvas, suffix2textsplit, suffix2attrssplit, suffix2colorssplit, suffix2rowwidths, ref x, ref y, ref firstprintonrow, start_x, canvaswidth, canvasheight, rowrightpadding, paddingAdjustment, textPaint, mi.UseSpecialSymbols, MenuCanvas.UseTextOutline || IsMiButton, revertBW && !IsMiButton, IsMiButton, totalRowWidth, curmenuoffset, glyphystart, glyphyend, glyphpadding);
                                         textPaint.Typeface = mainFont;
                                         /* Rewind and next line */
                                         x = start_x;
@@ -20473,6 +20475,26 @@ namespace GnollHackX.Pages.Game
                                         //textPaint.TextAlign = SKTextAlign.Center;
                                         textPaint.Color = revertBW ? SKColors.Black : SKColors.White;
                                         str = mi.NumItems.ToString();
+                                        float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
+                                        textPaint.TextSize = (float)mi.FontSize * scale * customScale;
+                                        textPaint.MeasureText(str, ref textBounds);
+                                        float scalex = textBounds.Width / maxsize;
+                                        float scaley = textBounds.Height / maxsize;
+                                        float totscale = Math.Max(scalex, scaley);
+                                        textPaint.TextSize = textPaint.TextSize / Math.Max(1.0f, totscale);
+                                        textPaint.DrawTextOnCanvas(canvas, str, circlex, circley - (textPaint.FontMetrics.Descent - textPaint.FontMetrics.Ascent) / 2 - textPaint.FontMetrics.Ascent, SKTextAlign.Center);
+                                    }
+                                    /* Hotbar slot circle */
+                                    else if (mi.HotbarSlot > 0 && !(drawbbottom <= 0 || drawbtop >= canvasheight))
+                                    {
+                                        float circleradius = Math.Max(0.01f, minrowheight * 0.90f / 2);
+                                        float circlex = drawbright - circleradius - minrowheight / 10;
+                                        float circley = (drawbtop + drawbbottom) / 2;
+                                        textPaint.Color = _hotbarSlotBackgroundColor;
+                                        textPaint.Style = SKPaintStyle.Fill;
+                                        canvas.DrawCircle(circlex, circley, circleradius, textPaint.Paint);
+                                        textPaint.Color = SKColors.Black;
+                                        str = mi.HotbarSlot.ToString();
                                         float maxsize = 1.0f * 2.0f * circleradius / (float)Math.Sqrt(2);
                                         textPaint.TextSize = (float)mi.FontSize * scale * customScale;
                                         textPaint.MeasureText(str, ref textBounds);
@@ -20556,6 +20578,7 @@ namespace GnollHackX.Pages.Game
         }
         private readonly SKColor _numItemsBackgroundColor = new SKColor(228, 203, 158);
         private readonly SKColor _numItemsBackgroundColorDarkMode = new SKColor(2, 2, 2);
+        private readonly SKColor _hotbarSlotBackgroundColor = new SKColor(0xD4, 0xA0, 0x17); /* the Spells radial's gold */
 
         private int CountTextSplitRows(string[] textsplit, float x_start, float canvaswidth, float rightmenupadding, float paddingAdjustment, GHSkiaFontPaint textPaint, bool usespecialsymbols, out List<float> rowWidths)
         {

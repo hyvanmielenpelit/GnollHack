@@ -63,6 +63,15 @@ static void add_spell_prepare_menu_item(winid, int, int, int, int, boolean);
 static void add_spell_prepare_menu_heading(winid, int, int, boolean);
 static void add_alt_spell_cast_menu_item(winid, int, int);
 static void add_alt_spell_prepare_menu_item(winid, int, int);
+static void add_alt_spell_view_menu_item(winid, int, int);
+static void add_alt_spell_menu_row(winid, int, int);
+static void add_alt_spell_menu_section_heading(winid, const char*);
+static void set_spell_hotbar_slot_menu_info(struct extended_menu_info*, int);
+static int get_spell_favorites(int*);
+static boolean is_spell_favorite(int);
+static int last_spell_hotbar_slot(void);
+static void move_spell_hotbar_slot_to_end(int, boolean);
+static int add_spell_to_hotbar(int);
 static boolean is_acceptable_component_object_type(const struct materialcomponent*, int);
 static boolean is_acceptable_component_monster_type(const struct materialcomponent*, int);
 static uchar is_obj_acceptable_component(const struct materialcomponent*, struct obj* otmp, boolean);
@@ -1248,95 +1257,61 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
 {
     winid tmpwin;
     int i, n, how, splnum;
-    char buf[BUFSZ * 10], descbuf[BUFSZ * 8];
     menu_item* selected;
     anything any;
-    const char* nodesc = "(No short description)";
 
     do
     {
+        int favs[MAX_SPELL_HOTBAR_SLOTS];
+        boolean infavs[MAXSPELL + 1];
+        int nfav = 0, k;
+        boolean spellsheading = FALSE;
+
         tmpwin = create_nhwindow(NHW_MENU);
         start_menu_ex(tmpwin, splaction <= SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL_ALTERNATE : GHMENU_STYLE_SPELLS_ALTERNATE,
             0, splaction == SPELLMENU_CAST ? GHMENU_START_FLAGS_SPELL_CAST : GHMENU_START_FLAGS_NONE);
         any = zeroany; /* zero out all bits */
 
-        if (splaction <= SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
+        /* The hotbar's spells come first under Favorites, the others under Spells; Reorder keeps one plain list */
+        (void)memset((genericptr_t)infavs, 0, sizeof infavs);
+        if (splaction <= SPELLMENU_DETAILS || splaction == SPELLMENU_PREPARE || splaction == SPELLMENU_CAST)
+            nfav = get_spell_favorites(favs);
+
+        if (nfav > 0)
         {
-            for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+            add_alt_spell_menu_section_heading(tmpwin, "Favorites");
+            for (k = 0; k < nfav; k++)
             {
-                splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
-                int glyph = spell_to_glyph(splnum);
-                char fullname[BUFSZ] = "";
-                Sprintf(fullname, "%s", spellname(splnum));
-                *fullname = highc(*fullname);
-
-                if (OBJ_ITEM_DESC(spellid(splnum)))
-                {
-                    Strcpy(descbuf, OBJ_ITEM_DESC(spellid(splnum)));
-                    convert_dice_to_ranges(descbuf);
-                    char* p;
-                    for (p = descbuf; *p; p++)
-                    {
-                        if (*p == '\n')
-                            *p = ' ';
-                    }
-                }
-                else
-                    Strcpy(descbuf, nodesc);
-
-                boolean is_inactive = FALSE;
-                boolean is_selected = splaction == SPELLMENU_QUICK ? (context.quick_cast_spell_set && splnum == context.quick_cast_spell_no) : (splnum == splaction);
-                struct extended_menu_info info = zeroextendedmenuinfo;
-                int mcolor = NO_COLOR;
-                info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
-                if (spellknow(splnum) <= 0)
-                {
-                    Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
-                    mcolor = CLR_BLACK;
-                    info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
-                    is_inactive = TRUE;
-                }
-                else
-                {
-                    Sprintf(buf, "%s (%s)", fullname, descbuf);
-                    mcolor = NO_COLOR;
-                    info.menu_flags |= MENU_FLAGS_ACTIVE;
-                }
-                if (!is_inactive)
-                {
-                    info.menu_flags |= MENU_FLAGS_ACTIVE;
-                }
-
-                any.a_int = is_inactive ? 0 : splnum + 1; /* must be non-zero */
-                add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, mcolor, buf,
-                    is_selected ? MENU_SELECTED : MENU_UNSELECTED, info);
-            }
-            if (splaction == SPELLMENU_QUICK)
-            {
-                any.a_int = 0;
-                add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
-                    "", MENU_UNSELECTED);
-                any.a_int = -6;
-                add_menu(tmpwin, NO_GLYPH, &any, '!', 0, ATR_NONE, NO_COLOR,
-                    "Clear Quick Spell", MENU_UNSELECTED);
+                infavs[favs[k]] = TRUE;
+                add_alt_spell_menu_row(tmpwin, favs[k], splaction);
             }
         }
-        else if (splaction == SPELLMENU_PREPARE)
+
+        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
         {
-            for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+            splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
+            if (infavs[splnum])
+                continue;
+            if (nfav > 0 && !spellsheading)
             {
-                add_alt_spell_prepare_menu_item(tmpwin, i, splaction);
+                add_alt_spell_menu_section_heading(tmpwin, "Spells");
+                spellsheading = TRUE;
             }
+            add_alt_spell_menu_row(tmpwin, splnum, splaction);
         }
-        else
+
+        if (splaction == SPELLMENU_QUICK)
         {
-            int splcnt = 0;
-            for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
-            {
-                add_alt_spell_cast_menu_item(tmpwin, i, splaction);
-                splcnt++;
-            }
-            if (splcnt > 0)
+            any.a_int = 0;
+            add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
+                "", MENU_UNSELECTED);
+            any.a_int = -6;
+            add_menu(tmpwin, NO_GLYPH, &any, '!', 0, ATR_NONE, NO_COLOR,
+                "Clear Quick Spell", MENU_UNSELECTED);
+        }
+        else if (splaction == SPELLMENU_CAST)
+        {
+            if (spellid(0) != NO_SPELL)
             {
                 any.a_int = 0;
                 add_menu(tmpwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
@@ -1472,18 +1447,49 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
                 glyph = MIX_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                 add_active_menu(actionwin, glyph, &any, '!', 0, ATR_NONE, NO_COLOR,
                     "Mix Reagents", MENU_UNSELECTED);
-                any.a_int = 4;
-                glyph = MOVE_SPELL_TO_TOP_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
-                add_active_menu(actionwin, glyph, &any, '<', 0, ATR_NONE, NO_COLOR,
-                    "Move to Top", MENU_UNSELECTED);
-                any.a_int = 5;
-                glyph = MOVE_SPELL_TO_BOTTOM_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
-                add_active_menu(actionwin, glyph, &any, '>', 0, ATR_NONE, NO_COLOR,
-                    "Move to Bottom", MENU_UNSELECTED);
+                boolean favorite = is_spell_favorite(splidx);
+                struct extended_menu_info listinfo = active_menu_info();
+                listinfo.menu_flags |= MENU_FLAGS_LIST_ONLY;
+                if (favorite)
+                {
+                    /* A favorite moves within Favorites, which list the hotbar in slot order */
+                    if (spellhotkey(splidx) != 1)
+                    {
+                        any.a_int = SPELLCMD_MOVE_FAVORITE_FIRST;
+                        glyph = MOVE_SPELL_TO_TOP_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                        add_extended_menu(actionwin, glyph, &any, '<', 0, ATR_NONE, NO_COLOR,
+                            "Move First", MENU_UNSELECTED, listinfo);
+                    }
+                    if (spellhotkey(splidx) != last_spell_hotbar_slot())
+                    {
+                        any.a_int = SPELLCMD_MOVE_FAVORITE_LAST;
+                        glyph = MOVE_SPELL_TO_BOTTOM_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                        add_extended_menu(actionwin, glyph, &any, '>', 0, ATR_NONE, NO_COLOR,
+                            "Move Last", MENU_UNSELECTED, listinfo);
+                    }
+                }
+                else
+                {
+                    any.a_int = 4;
+                    glyph = MOVE_SPELL_TO_TOP_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                    add_active_menu(actionwin, glyph, &any, '<', 0, ATR_NONE, NO_COLOR,
+                        "Move to Top", MENU_UNSELECTED);
+                    any.a_int = 5;
+                    glyph = MOVE_SPELL_TO_BOTTOM_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                    add_active_menu(actionwin, glyph, &any, '>', 0, ATR_NONE, NO_COLOR,
+                        "Move to Bottom", MENU_UNSELECTED);
+                }
                 any.a_int = 6;
                 glyph = SET_QUICK_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                 add_active_menu(actionwin, glyph, &any, '=', 0, ATR_NONE, NO_COLOR,
                     "Set as Quick Spell", MENU_UNSELECTED);
+                if ((windowprocs.wincap2 & WC2_SPELL_HOTBAR) != 0)
+                {
+                    any.a_int = favorite ? SPELLCMD_UNMARK_FAVORITE : SPELLCMD_MARK_FAVORITE;
+                    glyph = CONDUCT_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                    add_extended_menu(actionwin, glyph, &any, favorite ? '-' : '+', 0, ATR_NONE, NO_COLOR,
+                        favorite ? "Unmark as Favorite" : "Mark as Favorite", MENU_UNSELECTED, listinfo);
+                }
                 any.a_int = 7;
                 glyph = FORGET_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                 add_active_menu(actionwin, glyph, &any, 'F', 0, ATR_NONE, NO_COLOR,
@@ -1548,6 +1554,47 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
                         break;
                     case SPELLCMD_REMOVE_FROM_HOTBAR:
                         set_spell_hotbar_slot(splidx, 0);
+                        docont = TRUE;
+                        break;
+                    case SPELLCMD_MARK_FAVORITE:
+                    {
+                        char favname[BUFSZ];
+                        int multicolors[1] = { CLR_MSG_SPELL };
+                        int favresult;
+
+                        Strcpy(favname, spellname(splidx));
+                        (void)upstart(favname);
+                        favresult = add_spell_to_hotbar(splidx);
+                        if (favresult == SPELL_HOTBAR_ADDED)
+                        {
+                            pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors,
+                                "\'%s\' is now marked as a favorite.", favname);
+                        }
+                        else if (favresult == SPELL_HOTBAR_FULL)
+                        {
+                            play_sfx_sound(SFX_GENERAL_CANNOT);
+                            You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot have more than %d favorite spells.",
+                                MAX_SPELL_HOTBAR_SLOTS);
+                        }
+                        docont = TRUE;
+                        break;
+                    }
+                    case SPELLCMD_UNMARK_FAVORITE:
+                    {
+                        char favname[BUFSZ];
+                        int multicolors[1] = { CLR_MSG_SPELL };
+
+                        Strcpy(favname, spellname(splidx));
+                        (void)upstart(favname);
+                        set_spell_hotbar_slot(splidx, 0);
+                        pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors,
+                            "\'%s\' was unmarked as a favorite.", favname);
+                        docont = TRUE;
+                        break;
+                    }
+                    case SPELLCMD_MOVE_FAVORITE_FIRST:
+                    case SPELLCMD_MOVE_FAVORITE_LAST:
+                        move_spell_hotbar_slot_to_end(splidx, selidx == SPELLCMD_MOVE_FAVORITE_FIRST);
                         docont = TRUE;
                         break;
                     default:
@@ -4664,9 +4711,8 @@ add_spell_cast_menu_heading(winid tmpwin, int namelength, boolean addemptyline)
 
 static
 void
-add_alt_spell_cast_menu_item(winid tmpwin, int i, int splaction)
+add_alt_spell_cast_menu_item(winid tmpwin, int splnum, int splaction)
 {
-    int splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
     char buf[BUFSZ * 2], availablebuf[BUFSZ], descbuf[BUFSZ], levelbuf[BUFSZ] = "";
     char fullname[BUFSZ] = "";
     anything any = zeroany;
@@ -4674,8 +4720,8 @@ add_alt_spell_cast_menu_item(winid tmpwin, int i, int splaction)
     *fullname = highc(*fullname);
 
     int glyph = spell_to_glyph(splnum);
-    debugprint("alt_cast_menu: i=%d, splnum=%d, sp_id=%d, spellorder=%d",
-        i, splnum, (int)spellid(splnum), (int)flags.spellorder);
+    debugprint("alt_cast_menu: splnum=%d, sp_id=%d, spellorder=%d",
+        splnum, (int)spellid(splnum), (int)flags.spellorder);
     print_spell_level_symbol(levelbuf, spellid(splnum));
     if (OBJ_ITEM_DESC(spellid(splnum)))
     {
@@ -4759,12 +4805,7 @@ add_alt_spell_cast_menu_item(winid tmpwin, int i, int splaction)
         }
     }
 
-    if ((windowprocs.wincap2 & WC2_SPELL_HOTBAR) != 0 && spellhotkey(splnum) >= 1
-        && spellhotkey(splnum) <= MAX_SPELL_HOTBAR_SLOTS)
-    {
-        info.menu_flags |= MENU_FLAGS_HOTBAR_SLOT;
-        info.style = spellhotkey(splnum);
-    }
+    set_spell_hotbar_slot_menu_info(&info, splnum);
 
     /* With WC2_SPELL_HOTBAR, an inactive spell's row takes a long tap, which opens its commands */
     if (inactive && (windowprocs.wincap2 & WC2_SPELL_HOTBAR) != 0)
@@ -4781,9 +4822,8 @@ add_alt_spell_cast_menu_item(winid tmpwin, int i, int splaction)
 
 static
 void
-add_alt_spell_prepare_menu_item(winid tmpwin, int i, int splaction)
+add_alt_spell_prepare_menu_item(winid tmpwin, int splnum, int splaction)
 {
-    int splnum = !flags.spellorder ? i : (int)spl_orderindx[i];
     char buf[BUFSZ * 2], availablebuf[BUFSZ], matcompbuf[BUFSZ];
     anything any = zeroany;
     char fullname[BUFSZ];
@@ -4833,10 +4873,92 @@ add_alt_spell_prepare_menu_item(winid tmpwin, int i, int splaction)
     }
     if (!inactive)
         info.menu_flags |= MENU_FLAGS_ACTIVE;
+    set_spell_hotbar_slot_menu_info(&info, splnum);
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
     add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_NONE, mcolor, buf,
         (splnum == splaction) ? MENU_SELECTED : MENU_UNSELECTED, info);
+}
+
+/* One spell's row of View Spells, Forget, Set Quick Spell and Reorder Spells */
+static
+void
+add_alt_spell_view_menu_item(winid tmpwin, int splnum, int splaction)
+{
+    char buf[BUFSZ * 10], descbuf[BUFSZ * 8];
+    const char* nodesc = "(No short description)";
+    anything any = zeroany;
+    int glyph = spell_to_glyph(splnum);
+    char fullname[BUFSZ] = "";
+    Sprintf(fullname, "%s", spellname(splnum));
+    *fullname = highc(*fullname);
+
+    if (OBJ_ITEM_DESC(spellid(splnum)))
+    {
+        Strcpy(descbuf, OBJ_ITEM_DESC(spellid(splnum)));
+        convert_dice_to_ranges(descbuf);
+        char* p;
+        for (p = descbuf; *p; p++)
+        {
+            if (*p == '\n')
+                *p = ' ';
+        }
+    }
+    else
+        Strcpy(descbuf, nodesc);
+
+    boolean is_inactive = FALSE;
+    boolean is_selected = splaction == SPELLMENU_QUICK ? (context.quick_cast_spell_set && splnum == context.quick_cast_spell_no) : (splnum == splaction);
+    struct extended_menu_info info = zeroextendedmenuinfo;
+    int mcolor = NO_COLOR;
+    info.menu_flags |= MENU_FLAGS_USE_SPECIAL_SYMBOLS;
+    if (spellknow(splnum) <= 0)
+    {
+        Sprintf(buf, "%s %s", fullname, "(You cannot recall this spell)");
+        mcolor = CLR_BLACK;
+        info.menu_flags |= MENU_FLAGS_USE_COLOR_FOR_SUFFIXES;
+        is_inactive = TRUE;
+    }
+    else
+    {
+        Sprintf(buf, "%s (%s)", fullname, descbuf);
+        mcolor = NO_COLOR;
+        info.menu_flags |= MENU_FLAGS_ACTIVE;
+    }
+    if (!is_inactive)
+    {
+        info.menu_flags |= MENU_FLAGS_ACTIVE;
+    }
+    /* Reorder Spells keeps its plain list */
+    if (splaction <= SPELLMENU_DETAILS)
+        set_spell_hotbar_slot_menu_info(&info, splnum);
+
+    any.a_int = is_inactive ? 0 : splnum + 1; /* must be non-zero */
+    add_extended_menu(tmpwin, glyph, &any, 0, 0, ATR_INDENT_AT_DOUBLE_SPACE, mcolor, buf,
+        is_selected ? MENU_SELECTED : MENU_UNSELECTED, info);
+}
+
+/* One spell's row of the alternative spell menu for splaction */
+static
+void
+add_alt_spell_menu_row(winid tmpwin, int splnum, int splaction)
+{
+    if (splaction == SPELLMENU_PREPARE)
+        add_alt_spell_prepare_menu_item(tmpwin, splnum, splaction);
+    else if (splaction == SPELLMENU_CAST)
+        add_alt_spell_cast_menu_item(tmpwin, splnum, splaction);
+    else
+        add_alt_spell_view_menu_item(tmpwin, splnum, splaction);
+}
+
+static
+void
+add_alt_spell_menu_section_heading(winid tmpwin, const char* title)
+{
+    anything any = zeroany;
+
+    add_extended_menu(tmpwin, NO_GLYPH, &any, 0, 0, iflags.menu_headings | ATR_HEADING, NO_COLOR, title,
+        MENU_UNSELECTED, menu_group_heading_info('\0'));
 }
 
 static
@@ -5242,10 +5364,19 @@ set_spell_hotbar_slot(int idx, int slot)
 int
 auto_add_spell_to_hotbar(int idx)
 {
+    if (!iflags.spell_hotbar_autoadd)
+        return SPELL_HOTBAR_NOT_ADDED;
+    return add_spell_to_hotbar(idx);
+}
+
+/* Puts spl_book[idx] in the first empty hotbar slot; prints nothing */
+static int
+add_spell_to_hotbar(int idx)
+{
     int i, slot;
     boolean used;
 
-    if (!iflags.spell_hotbar_autoadd || idx < 0 || idx >= MAXSPELL || spellid(idx) == NO_SPELL)
+    if (idx < 0 || idx >= MAXSPELL || spellid(idx) == NO_SPELL)
         return SPELL_HOTBAR_NOT_ADDED;
 
     if (spellhotkey(idx) >= 1 && spellhotkey(idx) <= MAX_SPELL_HOTBAR_SLOTS)
@@ -5271,6 +5402,91 @@ auto_add_spell_to_hotbar(int idx)
     }
 
     return SPELL_HOTBAR_FULL;
+}
+
+/* Fills favs, which holds MAX_SPELL_HOTBAR_SLOTS, with the spl_book[] indices of the hotbar's spells in
+   slot order; returns their count, 0 when the window port has no spell hotbar */
+static int
+get_spell_favorites(int* favs)
+{
+    int slot, i, n = 0;
+
+    if ((windowprocs.wincap2 & WC2_SPELL_HOTBAR) == 0)
+        return 0;
+
+    for (slot = 1; slot <= MAX_SPELL_HOTBAR_SLOTS; slot++)
+    {
+        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+        {
+            if (spellhotkey(i) == slot)
+            {
+                favs[n++] = i;
+                break;
+            }
+        }
+    }
+    return n;
+}
+
+static boolean
+is_spell_favorite(int idx)
+{
+    return (windowprocs.wincap2 & WC2_SPELL_HOTBAR) != 0 && idx >= 0 && idx < MAXSPELL
+        && spellid(idx) != NO_SPELL && spellhotkey(idx) >= 1 && spellhotkey(idx) <= MAX_SPELL_HOTBAR_SLOTS;
+}
+
+/* Marks a row of a spell on the hotbar with MENU_FLAGS_HOTBAR_SLOT and its slot in style */
+static void
+set_spell_hotbar_slot_menu_info(struct extended_menu_info* info, int idx)
+{
+    if (!is_spell_favorite(idx))
+        return;
+
+    info->menu_flags |= MENU_FLAGS_HOTBAR_SLOT;
+    info->style = spellhotkey(idx);
+}
+
+/* The highest hotbar slot any spell holds; 0 when the hotbar is empty */
+static int
+last_spell_hotbar_slot(void)
+{
+    int i, slot, last = 0;
+
+    for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+    {
+        slot = spellhotkey(i);
+        if (slot >= 1 && slot <= MAX_SPELL_HOTBAR_SLOTS && slot > last)
+            last = slot;
+    }
+    return last;
+}
+
+/* Moves spl_book[idx] to hotbar slot 1 (tofirst) or to the last used slot; the hotbar spells between
+   its old and new slots move one slot toward its old slot */
+static void
+move_spell_hotbar_slot_to_end(int idx, boolean tofirst)
+{
+    int i, slot, own, target;
+
+    if (!is_spell_favorite(idx))
+        return;
+
+    own = spellhotkey(idx);
+    target = tofirst ? 1 : last_spell_hotbar_slot();
+    if (target < 1 || target == own)
+        return;
+
+    for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+    {
+        slot = spellhotkey(i);
+        if (i == idx || slot < 1 || slot > MAX_SPELL_HOTBAR_SLOTS)
+            continue;
+        if (tofirst && slot < own)
+            spellhotkey(i) = slot + 1;
+        else if (!tofirst && slot > own && slot <= target)
+            spellhotkey(i) = slot - 1;
+    }
+    spellhotkey(idx) = target;
 }
 
 int

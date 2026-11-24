@@ -169,6 +169,9 @@ namespace GnollHackX
         public sbyte ObjArmorType { get { return ObjData?.ArmorType ?? -1; } }
         public sbyte ObjClassType { get { return ObjData?.ClassType ?? -1; } }
         public bool IsLongTapOnly { get { return (Flags & (ulong)MenuFlags.MENU_FLAGS_LONG_TAP_ONLY) != 0; } }
+        public bool IsListOnly { get { return (Flags & (ulong)MenuFlags.MENU_FLAGS_LIST_ONLY) != 0; } }
+        /* The spell's hotbar slot 1..24 from MENU_FLAGS_HOTBAR_SLOT and ItemStyle; 0 when the row has none */
+        public int HotbarSlot { get { return (Flags & (ulong)MenuFlags.MENU_FLAGS_HOTBAR_SLOT) != 0 ? GHSpellHotbar.NormalizeSlot(ItemStyle) : 0; } }
         /* A tap, click, keyboard letter or the controller's A can select the row; a long tap needs only Identifier != 0 */
         public bool IsTapSelectable { get { return Identifier != 0 && !IsLongTapOnly; } }
 

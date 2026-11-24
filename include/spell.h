@@ -36,6 +36,12 @@ struct spell {
 #define SPELLCMD_SET_HOTBAR_SLOT    9
 #define SPELLCMD_REMOVE_FROM_HOTBAR 10
 
+/* list-only rows of the spell command menu */
+#define SPELLCMD_MARK_FAVORITE       11
+#define SPELLCMD_UNMARK_FAVORITE     12
+#define SPELLCMD_MOVE_FAVORITE_FIRST 13
+#define SPELLCMD_MOVE_FAVORITE_LAST  14
+
 /* levels of memory destruction with a scroll of amnesia */
 #define ALL_MAP 0x1
 #define ALL_SPELLS 0x2

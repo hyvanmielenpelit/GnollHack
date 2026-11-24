@@ -1387,6 +1387,7 @@ namespace GnollHackX.Pages.Game
             GHMenuInfo menuinfo = window.MenuInfo;
             MarkGamepadDialogAnswered(token);
             CompleteMenuHide(false);
+            _spellCastListMode = false;
             if (!TryShowMenuAsGamepadSpellRadial(menuinfo, window))
                 ShowGamepadSpellMenuAsList(menuinfo, window);
             return true;

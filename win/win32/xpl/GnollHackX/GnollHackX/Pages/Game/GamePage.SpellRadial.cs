@@ -96,6 +96,7 @@ namespace GnollHackX.Pages.Game
         private string _spellReturnItemId = null;                       /* the Cast menu that comes back highlights this item */
         private bool _spellReturnToHotbar = false;                      /* ... looking in the Hotbar pages first */
         private bool _spellReturnFlash = false;                         /* ... and flashes it */
+        private bool _spellCastListMode = false;                        /* the Cast menu shows as the list until the game waits for a command or Menu brings the radial back */
 
         private static bool IsGamepadSpellRadial(GHRadialMenuDefinition def)
         {
@@ -134,7 +135,7 @@ namespace GnollHackX.Pages.Game
 
             if ((menuinfo.StartFlags & (ulong)GHMenuStartFlags.SpellCast) != 0)
             {
-                if (!GHGamepadService.IsActive)
+                if (!GHGamepadService.IsActive || _spellCastListMode)
                 {
                     ClearSpellRadialReturn();
                     return false;
@@ -154,7 +155,7 @@ namespace GnollHackX.Pages.Game
         /* Called on every frame tick: once the game waits for a command again, no menu is coming back to the radial */
         private void ExpireGamepadSpellRadialMemory()
         {
-            if (_spellReturnItemId == null && !_spellExpectActions && _spellPendingPickSlot == 0)
+            if (_spellReturnItemId == null && !_spellExpectActions && _spellPendingPickSlot == 0 && !_spellCastListMode)
                 return;
             if (IsRadialMenuOpen)
                 return;
@@ -163,6 +164,7 @@ namespace GnollHackX.Pages.Game
             {
                 _spellExpectActions = false;
                 _spellPendingPickSlot = 0;
+                _spellCastListMode = false;
                 ClearSpellRadialReturn();
             }
         }
@@ -196,6 +198,7 @@ namespace GnollHackX.Pages.Game
             _spellRadialLastSpells = null;
             _spellExpectActions = false;
             _spellPendingPickSlot = 0;
+            _spellCastListMode = false;
             ClearSpellRadialReturn();
         }
 
@@ -286,14 +289,14 @@ namespace GnollHackX.Pages.Game
         }
 
         /* The spell rows, by their glyphs in the spell tiles, and the command rows, by their negative identifiers; the
-           separator and any other row are left out */
+           separator, the headings, list-only rows and any other row are left out */
         private void ReadGamepadSpellCastMenu(SpellRadialSession s, GHMenuInfo menuinfo)
         {
             int spellOff = GHApp.SpellTileOff;
             int spellEnd = GHApp.SkillTileOff > spellOff ? GHApp.SkillTileOff : int.MaxValue;
             foreach (GHMenuItem mi in menuinfo.MenuItems)
             {
-                if (mi == null)
+                if (mi == null || mi.IsListOnly)
                     continue;
                 if (mi.Identifier < 0)
                 {
@@ -306,7 +309,7 @@ namespace GnollHackX.Pages.Game
                 GHSpellInfo spell = GHSpellMenuParser.CreateSpellInfo(mi.Glyph, spellOff, mi.Identifier, mi.NHColor,
                     mi.MainText, mi.SuffixText, mi.Suffix2Text, mi, out readable);
                 spell.Selectable = mi.IsTapSelectable;
-                spell.HotbarSlot = (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_HOTBAR_SLOT) != 0 ? GHSpellHotbar.NormalizeSlot(mi.ItemStyle) : 0;
+                spell.HotbarSlot = mi.HotbarSlot;
                 if (!readable && !_spellRadialUnreadableLogged)
                 {
                     _spellRadialUnreadableLogged = true;
@@ -782,8 +785,10 @@ namespace GnollHackX.Pages.Game
                 ShowGamepadSpellMenuAsList(s.MenuInfo, s.Window);
         }
 
+        /* The Cast menu that comes back after a command stays on the list */
         private async void ShowGamepadSpellMenuAsList(GHMenuInfo menuinfo, GHPublishedWindow ghwindow)
         {
+            _spellCastListMode = true;
             try
             {
                 await ShowMenuCanvas(menuinfo, ghwindow, false);
@@ -943,7 +948,8 @@ namespace GnollHackX.Pages.Game
 
             foreach (GHMenuItem mi in menuinfo.MenuItems)
             {
-                if (mi == null || mi.Identifier == 0)
+                /* The list's Favorites commands are list-only; Add to / Move on Hotbar and Remove from Hotbar stand in for them */
+                if (mi == null || mi.Identifier == 0 || mi.IsListOnly)
                     continue;
                 if (mi.Identifier == SpellCommandCancel)
                 {
