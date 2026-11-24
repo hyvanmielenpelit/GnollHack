@@ -17,8 +17,8 @@ namespace GnollHackX.Pages.Game
        shows as a radial of the Hotbar and the Known Spells instead of the list, and the spell command menu that Y opens
        shows as the Actions radial. Both menus are answered with the response the list sends, through
        EnqueueMenuResponse: A selects a row with Count -1 and Y with Count -2, the list's long tap. The Hotbar is the rows'
-       MENU_FLAGS_HOTBAR_SLOT marks; it is edited by answering the command menu with its radial-only Set Hotbar Slot row,
-       whose Count is the slot, or with its Remove from Hotbar row. A menu answered by the radial closes it, and the menu
+       MENU_FLAGS_HOTBAR_SLOT marks; it is edited by answering the command menu with its radial-only Set Favorites Slot
+       row, whose Count is the slot, or with its Remove from Favorites row. A menu answered by the radial closes it, and the menu
        the core shows next opens it again where the player was. Everything runs on the UI thread. */
     public partial class GamePage
     {
@@ -898,7 +898,7 @@ namespace GnollHackX.Pages.Game
             return true;
         }
 
-        /* A Pick's command menu: answered at once with Set Hotbar Slot; false when the menu has no such row */
+        /* A Pick's command menu: answered at once with Set Favorites Slot; false when the menu has no such row */
         private bool TryAnswerGamepadSpellPick(GHMenuInfo menuinfo, GHPublishedWindow ghwindow, int slot)
         {
             GHMenuItem setRow = FindGamepadSpellRadialOnlyRow(menuinfo, SpellCommandSetHotbarSlot);
@@ -1130,7 +1130,7 @@ namespace GnollHackX.Pages.Game
             return true;
         }
 
-        /* Answers the command menu with Remove from Hotbar; the Cast menu that comes back flashes the emptied slot */
+        /* Answers the command menu with Remove from Favorites; the Cast menu that comes back flashes the emptied slot */
         private void RemoveGamepadSpellFromHotbar(SpellRadialSession s)
         {
             GHSpellInfo spell = s.ActionSpell;

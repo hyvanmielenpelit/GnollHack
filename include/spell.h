@@ -32,7 +32,7 @@ struct spell {
 #define SPELL_HOTBAR_ADDED     1
 #define SPELL_HOTBAR_FULL      2
 
-/* radial-only rows of the spell command menu; Set Hotbar Slot takes the slot as its count */
+/* radial-only rows of the spell command menu; Set Favorites Slot takes the slot as its count */
 #define SPELLCMD_SET_HOTBAR_SLOT    9
 #define SPELLCMD_REMOVE_FROM_HOTBAR 10
 

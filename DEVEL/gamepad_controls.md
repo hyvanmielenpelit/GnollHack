@@ -171,8 +171,8 @@ or that it is in Known Spells when the Hotbar is full. The setting reaches the g
 Hotbar is saved with the character, in the spells' hotkey field: slots 1-10 are also the spell table's
 hotkeys `1`..`0` when `spell_table_format` is on. The game sends it to the GUI inside the Cast menu: each
 spell row on the Hotbar carries `MENU_FLAGS_HOTBAR_SLOT` with its slot in the row's `style`, and the
-spell's long-tap menu has two rows only the radial uses, Set Hotbar Slot (the slot is the item's count)
-and Remove from Hotbar, which the touch list never shows. The list shows the Hotbar's spells as Favorites
+spell's long-tap menu has two rows only the radial uses, Set Favorites Slot (the slot is the item's count)
+and Remove from Favorites, which the touch list never shows. The list shows the Hotbar's spells as Favorites
 instead: the Cast, Mix Spells, View Spells and Set Quick Spell lists put them first, under a Favorites
 heading in slot order, and the rest under Spells. When the menu opens from the controller (Use Controller on
 and the last input the controller's), each favorite's row ends in a half-transparent gold circle with its

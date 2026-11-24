@@ -1485,10 +1485,14 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
                     "Set as Quick Spell", MENU_UNSELECTED);
                 if ((windowprocs.wincap2 & WC2_SPELL_HOTBAR) != 0)
                 {
+                    /* Unmark shows the tile's lower, inactive half */
+                    struct extended_menu_info favinfo = listinfo;
+                    if (favorite)
+                        favinfo.menu_flags &= ~MENU_FLAGS_ACTIVE;
                     any.a_int = favorite ? SPELLCMD_UNMARK_FAVORITE : SPELLCMD_MARK_FAVORITE;
                     glyph = CONDUCT_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                     add_extended_menu(actionwin, glyph, &any, favorite ? '-' : '+', 0, ATR_NONE, NO_COLOR,
-                        favorite ? "Unmark as Favorite" : "Mark as Favorite", MENU_UNSELECTED, listinfo);
+                        favorite ? "Unmark as Favorite" : "Mark as Favorite", MENU_UNSELECTED, favinfo);
                 }
                 any.a_int = 7;
                 glyph = FORGET_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
@@ -1501,10 +1505,10 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
                     any.a_int = SPELLCMD_SET_HOTBAR_SLOT;
                     glyph = SET_QUICK_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                     add_extended_menu(actionwin, glyph, &any, 0, 0, ATR_NONE, NO_COLOR,
-                        "Set Hotbar Slot", MENU_UNSELECTED, hotbarinfo);
+                        "Set Favorites Slot", MENU_UNSELECTED, hotbarinfo);
                     any.a_int = SPELLCMD_REMOVE_FROM_HOTBAR;
                     add_extended_menu(actionwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
-                        "Remove from Hotbar", MENU_UNSELECTED, hotbarinfo);
+                        "Remove from Favorites", MENU_UNSELECTED, hotbarinfo);
                 }
                 any.a_int = 8;
                 glyph = CANCEL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
