@@ -450,6 +450,7 @@ enum popup_text_types {
     POPUP_TEXT_ADVICE,
     POPUP_TEXT_MESSAGE,
     POPUP_TEXT_REVIVAL,
+    POPUP_TEXT_DANGER,
 };
 
 enum gui_effect_types {

@@ -1612,7 +1612,8 @@ namespace GnollHackX
         POPUP_TEXT_DIALOGUE,
         POPUP_TEXT_ADVICE,
         POPUP_TEXT_MESSAGE,
-        POPUP_TEXT_REVIVAL
+        POPUP_TEXT_REVIVAL,
+        POPUP_TEXT_DANGER
     }
 
     [Flags]

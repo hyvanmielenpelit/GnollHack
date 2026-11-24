@@ -138,6 +138,7 @@ namespace GnollHackX
         private bool _guiTipsFinished = false;
         private bool _panicFinished = false;
         private bool _messageFinished = false;
+        private bool _dangerPopupDismissed = false; /* game thread */
         private bool _ynConfirmationFinished = false;
         private bool _ynConfirmationResult = false;
         private bool _characternameSet = false;
@@ -253,6 +254,16 @@ namespace GnollHackX
         {
             if(_gameHasEnded && GHApp.OperatingSystemKillsAppsOnBackground)
                 FastForwardGameOver = true;
+        }
+
+        /* Game thread: discards buffered keys and touches */
+        private void ClearInputBuffer()
+        {
+            int i;
+            for (i = 0; i < GHConstants.InputBufferLength; i++)
+                _inputBuffer[i] = 0;
+            _inputBufferLocation = -1;
+            _touchLocSet = false;
         }
 
         private void PollResponseQueue()
@@ -374,6 +385,10 @@ namespace GnollHackX
                         break;
                     case GHRequestType.Panic:
                         _panicFinished = true;
+                        break;
+                    case GHRequestType.DisplayPopupText:
+                        ClearInputBuffer();
+                        _dangerPopupDismissed = true;
                         break;
                     case GHRequestType.Message:
                         _messageFinished = true;
@@ -3382,6 +3397,14 @@ namespace GnollHackX
             if (_isWarmingUpCallbacks)
                 return;
 
+            bool isDanger = style == (int)popup_text_types.POPUP_TEXT_DANGER;
+            if (isDanger && !PlayingReplay && !GHApp.DangerAlert)
+            {
+                PollResponseQueue();
+                ClearInputBuffer(); /* Queued input does not act after a danger, even without the popup */
+                return;
+            }
+
             if (IsRecording)
             {
                 RecordFunctionCall(RecordedFunctionID.DisplayPopupText, text, title, style, attr, color, glyph, tflags);
@@ -3396,6 +3419,32 @@ namespace GnollHackX
             data.color = color;
             data.glyph = glyph;
             data.tflags = tflags;
+
+            if (isDanger && !PlayingReplay)
+            {
+                /* Only the popup's own OK ends the wait; input queued before it is discarded */
+                WriteFunctionCallsAndCheckEnd();
+                _dangerPopupDismissed = false;
+                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DisplayPopupText, data));
+                int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
+                try
+                {
+                    while (!_dangerPopupDismissed && !FastForwardGameOver)
+                    {
+                        Thread.Sleep(GHConstants.PollingInterval);
+                        PollResponseQueue();
+                    }
+                }
+                finally
+                {
+                    EndKeyWait(savedKeyWait);
+                }
+                if (IsRecording)
+                    RecordFunctionCall(RecordedFunctionID.GetChar, GHConstants.CancelChar);
+                RequestQueue.Enqueue(new GHRequest(this, GHRequestType.HidePopupText));
+                return;
+            }
+
             RequestQueue.Enqueue(new GHRequest(this, GHRequestType.DisplayPopupText, data));
 
             int val = GetCharCore(GHKeyWaitKind.UiWait); /* Until the popup is dismissed */

@@ -27,6 +27,25 @@ static void create_monster_or_encounter(void);
 static int select_rwraith(void);
 static boolean maybe_create_rwraith(void);
 
+enum danger_alert_types
+{
+    DANGER_ALERT_STONING = 0,
+    DANGER_ALERT_SLIMING,
+    DANGER_ALERT_STRANGULATION,
+    DANGER_ALERT_SUFFOCATION,
+    DANGER_ALERT_TERMINAL_ILLNESS,
+    DANGER_ALERT_FOOD_POISONING,
+    NUM_DANGER_ALERT_TYPES
+};
+
+/* Delayed-death conditions already announced; a cleared bit announces the next onset */
+static uint64_t danger_alert_shown_mask = 0;
+
+static uint64_t current_danger_mask(void);
+static boolean danger_cure_in_progress(uint64_t);
+static const char* danger_time_phrase(int64_t);
+static void show_danger_alert(int);
+
 #ifdef EXTRAINFO_FN
 static int64_t prev_dgl_extrainfo = 0;
 #endif
@@ -115,6 +134,9 @@ moveloop(uchar resuming)
     u.uz0.dlevel = u.uz.dlevel;
     youmonst.movement = NORMAL_SPEED; /* give the hero some movement points */
     context.move = 0;
+
+    /* A restored game does not announce the conditions it was saved with */
+    danger_alert_shown_mask = current_danger_mask();
 
     /* Main move loop */
     program_state.in_moveloop = 1;
@@ -459,11 +481,13 @@ moveloop(uchar resuming)
             bot();
             curs_on_u();
         }
-        else if (iflags.time_botl) 
+        else if (iflags.time_botl)
         {
             timebot();
             curs_on_u();
         }
+
+        check_danger_alerts();
 
         context.move = 1;
 
@@ -2030,6 +2054,144 @@ reset_allmain(void)
 #ifdef EXTRAINFO_FN
     prev_dgl_extrainfo = 0;
 #endif
+    danger_alert_shown_mask = 0;
+}
+
+static uint64_t
+current_danger_mask(void)
+{
+    uint64_t mask = 0;
+
+    if (Stoned)
+        mask |= (uint64_t)1 << DANGER_ALERT_STONING;
+    if (Slimed)
+        mask |= (uint64_t)1 << DANGER_ALERT_SLIMING;
+    /* Only the strangling causes that nh_timeout() kills in */
+    if ((u.uprops[STRANGLED].intrinsic || u.uprops[STRANGLED].extrinsic) && !Breathless
+        && ((uamul && uamul->otyp == AMULET_OF_STRANGULATION)
+            || (u.ustuck && (is_constrictor(u.ustuck->data) || hug_throttles(u.ustuck->data)))))
+        mask |= (uint64_t)1 << DANGER_ALERT_STRANGULATION;
+    if (Airless_environment && !Survives_without_air)
+        mask |= (uint64_t)1 << DANGER_ALERT_SUFFOCATION;
+    if (Sick)
+        mask |= (uint64_t)1 << DANGER_ALERT_TERMINAL_ILLNESS;
+    if (FoodPoisoned)
+        mask |= (uint64_t)1 << DANGER_ALERT_FOOD_POISONING;
+    return mask;
+}
+
+/* The current occupation can still cure one of the active conditions */
+static boolean
+danger_cure_in_progress(uint64_t active)
+{
+    if ((active & ((uint64_t)1 << DANGER_ALERT_STONING)) && (Popeye(STONED) || studying_danger_cure(STONED)))
+        return TRUE;
+    if ((active & ((uint64_t)1 << DANGER_ALERT_SLIMING)) && (Popeye(SLIMED) || studying_danger_cure(SLIMED)))
+        return TRUE;
+    if ((active & ((uint64_t)1 << DANGER_ALERT_TERMINAL_ILLNESS)) && (Popeye(SICK) || studying_danger_cure(SICK)))
+        return TRUE;
+    if ((active & ((uint64_t)1 << DANGER_ALERT_FOOD_POISONING))
+        && (Popeye(FOOD_POISONED) || studying_danger_cure(FOOD_POISONED)))
+        return TRUE;
+    if ((active & ((uint64_t)1 << DANGER_ALERT_STRANGULATION))
+        && (taking_off_strangulation_amulet() || studying_danger_cure(STRANGLED)))
+        return TRUE;
+    if ((active & ((uint64_t)1 << DANGER_ALERT_SUFFOCATION)) && studying_danger_cure(AIRLESS_ENVIRONMENT))
+        return TRUE;
+    return FALSE;
+}
+
+static const char*
+danger_time_phrase(int64_t turns)
+{
+    if (turns <= 7)
+        return "in a matter of a few turns";
+    else if (turns <= 14)
+        return "in a matter of ten or so turns";
+    else
+        return "in a matter of some tens of turns";
+}
+
+static void
+show_danger_alert(int type)
+{
+    char title[BUFSZ], body[BUFSZ];
+    int64_t turns;
+    boolean held_in_water = (u.ustuck && is_pool(u.ustuck->mx, u.ustuck->my) && !Swimming && !Amphibious);
+
+    switch (type)
+    {
+    case DANGER_ALERT_STONING:
+        Strcpy(title, "Stoning");
+        Sprintf(body, "You are turning to stone. It will be lethal %s.", danger_time_phrase(Stoned & TIMEOUT));
+        break;
+    case DANGER_ALERT_SLIMING:
+        Strcpy(title, "Sliming");
+        Sprintf(body, "You are turning into green slime. It will be lethal %s.", danger_time_phrase(Slimed & TIMEOUT));
+        break;
+    case DANGER_ALERT_STRANGULATION:
+        /* A hold sets only the extrinsic; nh_timeout() adds the recurring timeout on the next turn */
+        turns = u.uprops[STRANGLED].intrinsic & TIMEOUT;
+        if (!turns)
+            turns = property_definitions[STRANGLED].recurring_constant;
+        Strcpy(title, "Strangulation");
+        if (uamul && uamul->otyp == AMULET_OF_STRANGULATION)
+            Sprintf(body, "Your amulet is strangling you. It will be lethal %s.", danger_time_phrase(turns));
+        else
+            Sprintf(body, "%s is strangling you. It will be lethal %s.", u.ustuck ? Monnam(u.ustuck) : "Something",
+                    danger_time_phrase(turns));
+        break;
+    case DANGER_ALERT_SUFFOCATION:
+        turns = u.uprops[AIRLESS_ENVIRONMENT].intrinsic & TIMEOUT;
+        if (!turns)
+            turns = property_definitions[AIRLESS_ENVIRONMENT].recurring_constant;
+        Strcpy(title, (Underwater || held_in_water) ? "Drowning" : "Suffocation");
+        if (held_in_water)
+            Sprintf(body, "%s is holding you under water. It will be lethal %s.", Monnam(u.ustuck),
+                    danger_time_phrase(turns));
+        else if (Underwater)
+            Sprintf(body, "You are under water and cannot breathe. It will be lethal %s.", danger_time_phrase(turns));
+        else
+            Sprintf(body, "You cannot breathe. It will be lethal %s.", danger_time_phrase(turns));
+        break;
+    case DANGER_ALERT_TERMINAL_ILLNESS:
+        Strcpy(title, "Terminal Illness");
+        Sprintf(body, "You have contracted terminal illness. It will be lethal %s.", danger_time_phrase(Sick & TIMEOUT));
+        break;
+    case DANGER_ALERT_FOOD_POISONING:
+        Strcpy(title, "Food Poisoning");
+        Sprintf(body, "You have contracted deadly food poisoning. It will be lethal %s.",
+                danger_time_phrase(FoodPoisoned & TIMEOUT));
+        break;
+    default:
+        return;
+    }
+
+    play_sfx_sound(SFX_WARNING);
+    display_popup_text(body, title, POPUP_TEXT_DANGER, ATR_NONE, CLR_RED, NO_GLYPH, POPUP_FLAGS_NONE);
+}
+
+/* Announces each delayed-death condition as it begins, and stops what the hero is doing unless that can still
+   cure one of them */
+void
+check_danger_alerts(void)
+{
+    uint64_t current = current_danger_mask();
+    uint64_t newly = current & ~danger_alert_shown_mask;
+    int i;
+
+    danger_alert_shown_mask = current;
+    if (!newly || iflags.debug_fuzzer || program_state.gameover)
+        return;
+
+    if (!danger_cure_in_progress(current))
+        stop_occupation();
+    pushch(0); /* No pushed-back key acts after the alert */
+    for (i = 0; i < NUM_DANGER_ALERT_TYPES; i++)
+    {
+        if (newly & ((uint64_t)1 << i))
+            show_danger_alert(i);
+    }
 }
 
 

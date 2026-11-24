@@ -121,6 +121,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Traditional Get Position", ("Select locations using a cursor instead of tapping.", "When asked to select a location, the location is selected by moving around a tile-based game cursor using arrow icons or keyboard, rather than clicking a location on the map.") },
             { "Auto-Dig", ("Automatically dig solid rock if wielding a digging tool.", "Automatically attempts to dig through solid rock or walls when moving into, clicking, or tapping them if wielding a suitable digging tool (like a pick-axe or mattock). Mirrors the `autodig` option.") },
             { "Ignore Stopping", ("Prevent pathfinding from stopping on items or doors.", "Prevents automated pathfinding travel from stopping when your character passes over items, closed doors, or engravings. Mirrors the `ignore_stopping` option.") },
+            { "Danger Alert", ("Show a popup when a deadly condition begins.", "Pauses the game with a popup when your character contracts a condition that becomes fatal after a delay, such as stoning, sliming, strangulation, suffocation, terminal illness, or food poisoning. The popup names the condition and roughly how many turns remain.\n**Off:** No popup is shown. A warning sound still plays and the status bar shows the condition.") },
             { "Right Mouse Button", ("Configure the command for right mouse click.", "Configures the game command bound to a right mouse button click. The default \"by role\" setting triggers role-specific default actions. Mirrors the `right_click_command` option.") },
             { "Middle Mouse Button", ("Configure the command for middle mouse click.", "Configures the game command bound to a middle mouse button click. The default \"by role\" setting triggers role-specific default actions. Mirrors the `middle_click_command` option.") },
             { "Quick Engrave Text", ("Default text used for the quick engrave command.", "The default text written when using the quick engrave command. Mirrors the `engrave_quicktext` option.") },
@@ -942,6 +943,9 @@ namespace GnollHackX.Pages.MainScreen
             GHApp.EmptyWishIsNothing = EmptyWishIsNothingSwitch.IsToggled;
             Preferences.Set("EmptyWishIsNothing", EmptyWishIsNothingSwitch.IsToggled);
 
+            GHApp.DangerAlert = DangerAlertSwitch.IsToggled;
+            Preferences.Set("DangerAlert", DangerAlertSwitch.IsToggled);
+
             /* There's an iflag but not a corresponding option; iflag just need to be set always to the same value as here */
             GHApp.GetPositionArrows = GetPositionArrowsSwitch.IsToggled;
             Preferences.Set("GetPositionArrows", GetPositionArrowsSwitch.IsToggled);
@@ -1637,7 +1641,7 @@ namespace GnollHackX.Pages.MainScreen
         {
             int cursor = 0, graphics = 0, gridopacity = 0, savestyle = 0, maprefresh = -1, msgnum = 0, petrows = 0;
             bool mem = false, fps = false, zoom = false, battery = false, lowdiskspace = true, showrecording = true, autoupload = false, gpu = GHApp.IsGPUDefault, disableauxgpu = false, platformloop = false, mipmap = false, simplecmdlayout = GHConstants.DefaultSimpleCmdLayout, showaltzoom = !GHConstants.DefaultSimpleCmdLayout, showtravelmode = !GHConstants.DefaultSimpleCmdLayout, showautodig = false, showignore = false, darkmode = false, windowedmode = false, edge2edge = false, bank = true, navbar = GHConstants.DefaultHideNavigation, statusbar = GHConstants.DefaultHideStatusBar;
-            bool allowbones = true, allowpet = true, emptywishisnothing = true, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = true, xrayvision = true, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
+            bool allowbones = true, allowpet = true, emptywishisnothing = true, dangeralert = GHConstants.DefaultDangerAlert, doubleclick = GHApp.IsDesktop, getpositionarrows = false, recordgame = false, gzip = GHConstants.GZipIsDefaultReplayCompression, lighterdarkening = true, xrayvision = true, accuratedrawing = GHConstants.DefaultAlternativeLayerDrawing, html = GHConstants.DefaultHTMLDumpLogs, singledumplog = GHConstants.DefaultUseSingleDumpLog, streamingbanktomemory = false, streamingbanktodisk = false, wallends = GHConstants.DefaultDrawWallEnds;
             int itemtwinkles = GHConstants.DefaultItemTwinkles;
             bool breatheanimations = GHConstants.DefaultBreatheAnimations; //, put2bag = GHConstants.DefaultShowPickNStashContextCommand, prevwep = GHConstants.DefaultShowPrevWepContextCommand;
             bool devmode = GHConstants.DefaultDeveloperMode, logmessages = GHConstants.DefaultLogMessages, lowlevellogging = false, screenlogging = false, frameprofiler = false, framemarker = false, debugpostchannel = GHConstants.DefaultDebugPostChannel, tournament = false, hpbars = false, nhstatusbarclassic = GHConstants.IsDefaultStatusBarClassic, desktopstatusbar = false, rightaligned2ndrow = false, showscore = false, showxp = false, desktopbuttons = false, menufadeeffects = false, menuhighfilterquality = true, menuhighlightedkeys = false, pets = true, orbs = true, orbmaxhp = false, orbmaxmana = false, mapgrid = false, playermark = false, monstertargeting = false, walkarrows = true;
@@ -1731,6 +1735,7 @@ namespace GnollHackX.Pages.MainScreen
             forcepostbones = Preferences.Get("ForcePostBones", false);
             allowbones = Preferences.Get("AllowBones", true);
             emptywishisnothing = Preferences.Get("EmptyWishIsNothing", true);
+            dangeralert = Preferences.Get("DangerAlert", GHConstants.DefaultDangerAlert);
             doubleclick = Preferences.Get("OkOnDoubleClick", GHApp.IsDesktop);
             recordgame = Preferences.Get("RecordGame", false);
             gzip = Preferences.Get("UseGZipForReplays", GHConstants.GZipIsDefaultReplayCompression);
@@ -2200,6 +2205,7 @@ namespace GnollHackX.Pages.MainScreen
                 GZipLabel.TextColor = GHColors.Gray;
             }
             EmptyWishIsNothingSwitch.IsToggled = emptywishisnothing;
+            DangerAlertSwitch.IsToggled = dangeralert;
             CharacterClickActionSwitch.IsToggled = characterclickaction;
             MetricSystemSwitch.IsToggled = metricsystem;
             DiceAsRangesSwitch.IsToggled = diceasranges;

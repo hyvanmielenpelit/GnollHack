@@ -488,6 +488,8 @@ namespace GnollHackX
         public const bool DefaultAutoDig = true;
         public const bool DefaultIgnoreStopping = false; /* Since travel is also used for normal movement in the modern version */
         public const bool DefaultMetricSystem = false;
+        public const bool DefaultDangerAlert = true;
+        public const int DangerAlertArmMilliseconds = 600; /* A danger popup ignores dismissal this long after it appears */
         public const long MapDataLockTimeOutTicks = 100L;
         public const long EffectLockTimeOutTicks = 50L;
         public const long MessageLockTimeOutTicks = 50L;

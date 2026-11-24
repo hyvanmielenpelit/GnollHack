@@ -3514,8 +3514,14 @@ namespace GnollHackX.Pages.Game
         private Color _popupDarkerTransparentBlackColor = new Color(0, 0, 0, (double)0xAA / 255);
 #endif
         private GlyphImageSource _popupImageSource = new GlyphImageSource();
+        private bool _popupIsDanger;
+        private bool _dangerPopupAnswered;
+        private long _popupShownTimestamp;
         public void DisplayPopupText(DisplayScreenTextData data)
         {
+            _popupIsDanger = data.style == (int)popup_text_types.POPUP_TEXT_DANGER;
+            _dangerPopupAnswered = false;
+            _popupShownTimestamp = Stopwatch.GetTimestamp();
             PopupTitleLabel.Text = data.subtext;
             if ((data.tflags & (ulong)popup_text_flags.POPUP_FLAGS_ADD_QUOTES) != 0)
                 PopupLabel.Text = "\"" + data.text + "\"";
@@ -3534,6 +3540,7 @@ namespace GnollHackX.Pages.Game
                     PopupLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, false);
                 PopupGrid.BackgroundColor = GHColors.Transparent;
                 PopupFrame.BackgroundColor = _popupDarkerTransparentBlackColor;
+                SetPopupFrameBorderColor(false);
                 if (data.glyph != 0 && data.glyph != GHApp.NoGlyph)
                     PopupTitleLayout.HorizontalOptions = LayoutOptions.Start;
                 else
@@ -3548,6 +3555,16 @@ namespace GnollHackX.Pages.Game
                     PopupLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, false);
                 PopupGrid.BackgroundColor = _popupTransparentBlackColor;
                 PopupFrame.BackgroundColor = _popupTransparentBlackColor;
+                SetPopupFrameBorderColor(false);
+                PopupTitleLayout.HorizontalOptions = LayoutOptions.Center;
+            }
+            else if (_popupIsDanger)
+            {
+                PopupTitleLabel.TextColor = UIUtils.NHColor2XColor(data.color, data.attr, false, true);
+                PopupLabel.TextColor = UIUtils.NHColor2XColor((int)NhColor.NO_COLOR, 0, false, false);
+                PopupGrid.BackgroundColor = _popupDarkerTransparentBlackColor;
+                PopupFrame.BackgroundColor = _popupDarkerTransparentBlackColor;
+                SetPopupFrameBorderColor(true);
                 PopupTitleLayout.HorizontalOptions = LayoutOptions.Center;
             }
             else
@@ -3564,6 +3581,7 @@ namespace GnollHackX.Pages.Game
                 }
                 PopupGrid.BackgroundColor = _popupTransparentBlackColor;
                 PopupFrame.BackgroundColor = _popupTransparentBlackColor;
+                SetPopupFrameBorderColor(false);
                 PopupTitleLayout.HorizontalOptions = LayoutOptions.Center;
             }
 
@@ -19005,6 +19023,23 @@ namespace GnollHackX.Pages.Game
                 if (GetLineCancelButton.IsEnabled && GetLineCancelButton.Text != "Random")
                     GetLineCancelButton_Clicked(null, null);
             }
+            else if (PopupGrid.IsVisible)
+            {
+                /* The popup is answered first, so the save key queued after it is kept */
+                GHGame curGame = GHApp.CurrentGHGame;
+                if (_popupIsDanger)
+                {
+                    if (!_dangerPopupAnswered)
+                    {
+                        _dangerPopupAnswered = true;
+                        curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.DisplayPopupText));
+                    }
+                }
+                else if (!PlayingReplay)
+                    GenericButton_Clicked(this, EventArgs.Empty, GHConstants.CancelChar);
+                if (!GameEnded && GameEnteredMoveloop)
+                    GenericButton_Clicked(this, EventArgs.Empty, GHUtils.Meta('s'));
+            }
             else if (YnGrid.IsVisible)
             {
                 if (!string.IsNullOrWhiteSpace(YnQuestionLabel.Text))
@@ -19328,16 +19363,47 @@ namespace GnollHackX.Pages.Game
             }
         }
 
+#if GNH_MAUI
+        private readonly SolidColorBrush _dangerPopupBorderBrush = new SolidColorBrush(GHColors.BrighterRed);
+#endif
+        private void SetPopupFrameBorderColor(bool isDanger)
+        {
+#if GNH_MAUI
+            PopupFrame.Stroke = isDanger ? _dangerPopupBorderBrush : SolidColorBrush.Black;
+#else
+            PopupFrame.BorderColor = isDanger ? GHColors.BrighterRed : GHColors.Black;
+#endif
+        }
+
+        /* A danger popup takes no dismissal until DangerAlertArmMilliseconds after it appears */
+        private bool IsPopupDismissalArmed()
+        {
+            if (!_popupIsDanger)
+                return true;
+            long elapsed = Stopwatch.GetTimestamp() - _popupShownTimestamp;
+            return elapsed * 1000L >= (long)GHConstants.DangerAlertArmMilliseconds * Stopwatch.Frequency;
+        }
+
         private void PopupOkButton_Clicked(object sender, EventArgs e)
         {
             if (PlayingReplay)
                 return;
+            if (_popupIsDanger)
+            {
+                if (_dangerPopupAnswered || !IsPopupDismissalArmed())
+                    return;
+                _dangerPopupAnswered = true;
+                GHGame curGame = GHApp.CurrentGHGame;
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.DisplayPopupText));
+                return;
+            }
             GenericButton_Clicked(sender, e, GHConstants.CancelChar);
         }
 
         private void HidePopupGrid()
         {
             PopupGrid.IsVisible = false;
+            _popupIsDanger = false;
         }
 
         private void GHButton_Clicked(object sender, EventArgs e)

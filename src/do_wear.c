@@ -1387,6 +1387,15 @@ take_off_occupation_interrupted(void)
                                       : context.takeoff.disrobing);
 }
 
+/* Taking off several items, with a strangling amulet still to come off */
+boolean
+taking_off_strangulation_amulet(void)
+{
+    return (boolean) (occupation == take_off
+                      && ((context.takeoff.mask | context.takeoff.what) & W_AMUL) != 0L
+                      && uamul && uamul->otyp == AMULET_OF_STRANGULATION);
+}
+
 /* both 'clothes' and 'accessories' now include both armor and accessories;
    TOOL_CLASS is for eyewear, FOOD_CLASS is for MEAT_RING */
 static NEARDATA const char clothes[] = {

@@ -320,6 +320,7 @@ namespace GnollHackX
                store in MigrateAndLoadSecureCredentials. */
 #endif
             EmptyWishIsNothing = Preferences.Get("EmptyWishIsNothing", true);
+            DangerAlert = Preferences.Get("DangerAlert", GHConstants.DefaultDangerAlert);
             RecommendedSettingsChecked = Preferences.Get("RecommendedSettingsChecked", false);
             RecordGame = Preferences.Get("RecordGame", false);
             AutoUploadReplays = Preferences.Get("AutoUploadReplays", false);
@@ -8075,6 +8076,7 @@ namespace GnollHackX
         public static bool MirroredPetsNotGifted { get { return Interlocked.CompareExchange(ref _allowPet, 0, 0) == 0; } set { Interlocked.Exchange(ref _allowPet, value ? 0 : 1); } }
 
         private static int _emptyWishIsNothing = 0;
+        private static int _dangerAlert = 1;
         private static int _okOnDoubleClick = 0;
         private static int _getPositionArrows = 0;
         private static int _characterClickAction = 0;
@@ -8091,6 +8093,7 @@ namespace GnollHackX
         private static int _engraveQuickStyle;
 
         public static bool EmptyWishIsNothing { get { return Interlocked.CompareExchange(ref _emptyWishIsNothing, 0, 0) != 0; } set { Interlocked.Exchange(ref _emptyWishIsNothing, value ? 1 : 0); } }
+        public static bool DangerAlert { get { return Interlocked.CompareExchange(ref _dangerAlert, 0, 0) != 0; } set { Interlocked.Exchange(ref _dangerAlert, value ? 1 : 0); } }
         public static bool OkOnDoubleClick { get { return Interlocked.CompareExchange(ref _okOnDoubleClick, 0, 0) != 0; } set { Interlocked.Exchange(ref _okOnDoubleClick, value ? 1 : 0); } }
         public static bool GetPositionArrows { get { return Interlocked.CompareExchange(ref _getPositionArrows, 0, 0) != 0; } set { Interlocked.Exchange(ref _getPositionArrows, value ? 1 : 0); } }
         public static bool MirroredCharacterClickAction { get { return Interlocked.CompareExchange(ref _characterClickAction, 0, 0) != 0; } set { Interlocked.Exchange(ref _characterClickAction, value ? 1 : 0); } }

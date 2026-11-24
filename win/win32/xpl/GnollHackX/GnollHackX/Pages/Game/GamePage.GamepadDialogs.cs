@@ -229,6 +229,8 @@ namespace GnollHackX.Pages.Game
                 case GHGamepadDialogContext.Popup:
                     if ((e.Button == GHGamepadButton.A && isTap) || (e.Button == GHGamepadButton.B && isPress))
                     {
+                        if (!IsPopupDismissalArmed())
+                            break; /* Not marked answered, so a later press still dismisses it */
                         MarkGamepadDialogAnswered(token);
                         PopupOkButton_Clicked(null, null);
                     }

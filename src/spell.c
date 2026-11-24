@@ -700,6 +700,35 @@ check_added_to_your_bill_here:
 
 }
 
+/* Studying a book whose spell cures threat (STONED, SLIMED, SICK, FOOD_POISONED, STRANGLED or AIRLESS_ENVIRONMENT) */
+boolean
+studying_danger_cure(int threat)
+{
+    int otyp;
+
+    if (occupation != learn || !context.spbook.book)
+        return FALSE;
+
+    otyp = context.spbook.book->otyp;
+    switch (threat)
+    {
+    case STONED:
+        return (boolean) (otyp == SPE_CURE_PETRIFICATION || otyp == SPE_STONE_TO_FLESH);
+    case SLIMED:
+        return (boolean) (otyp == SPE_CURE_SICKNESS || otyp == SPE_BURNING_HANDS || otyp == SPE_INCINERATE
+                          || otyp == SPE_FLAME_BURST || otyp == SPE_FIRE_BOLT || otyp == SPE_FIREBALL
+                          || otyp == SPE_FIRE_STORM);
+    case SICK:
+    case FOOD_POISONED:
+        return (boolean) (otyp == SPE_CURE_SICKNESS || otyp == SPE_FULL_HEALING);
+    case STRANGLED:
+    case AIRLESS_ENVIRONMENT:
+        return (boolean) (otyp == SPE_WATER_BREATHING);
+    default:
+        return FALSE;
+    }
+}
+
 void
 print_spell_level_text(char *buf, int booktype, boolean includeschool, uchar capitalize_style, boolean include_level)
 {

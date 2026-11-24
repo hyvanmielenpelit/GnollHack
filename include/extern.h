@@ -55,6 +55,7 @@ E void reset_all_object_origin_coordinates(void);
 E void lock_thread_lock(void);
 E void unlock_thread_lock(void);
 E void reset_allmain(void);
+E void check_danger_alerts(void);
 E double calculate_hp_regeneration(boolean*);
 E double calculate_mana_regeneration(boolean*);
 
@@ -852,6 +853,7 @@ E void cancel_doff(struct obj *, int64_t);
 E void cancel_don(void);
 E int stop_donning(struct obj *);
 E void take_off_occupation_interrupted(void);
+E boolean taking_off_strangulation_amulet(void);
 E int Armor_off(void);
 E int Armor_gone(void);
 E int Helmet_off(void);
@@ -3758,6 +3760,7 @@ E void book_cursed(struct obj *);
 #ifdef USE_TRAMPOLI
 E int learn(void);
 #endif
+E boolean studying_danger_cure(int);
 E int study_book(struct obj *);
 E void book_disappears(struct obj *);
 E void book_substitution(struct obj *, struct obj *);
