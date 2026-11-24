@@ -13,6 +13,10 @@ namespace GnollHackX
     {
         public ghmenu_styles Style { get; set; }
         public List<GHMenuItem> MenuItems = new List<GHMenuItem>();
+        /* Rows with MENU_FLAGS_RADIAL_ONLY: no list shows them, but a gamepad radial may answer with one */
+        public List<GHMenuItem> RadialOnlyItems = new List<GHMenuItem>();
+        /* start_menu_ex's mflags (GHMenuStartFlags) */
+        public ulong StartFlags { get; set; }
         public string Header { get; set; }
         public string Subtitle { get; set; }
         public SelectionMode SelectionHow { get; set; }
@@ -49,6 +53,8 @@ namespace GnollHackX
         {
             GHMenuInfo clone = new GHMenuInfo(Style);
             clone.MenuItems.AddRange(MenuItems);
+            clone.RadialOnlyItems.AddRange(RadialOnlyItems);
+            clone.StartFlags = StartFlags;
             clone.Header = Header;
             clone.Subtitle = Subtitle;
             clone.SelectionHow = SelectionHow;

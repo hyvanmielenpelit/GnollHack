@@ -42,6 +42,8 @@ namespace GnollHackX
          until the closing animation ends.
        - OnActivate runs before OnClosed, after the menu has logically closed.
        - Tick advances the animation and sets NeedsFrame; at rest NeedsFrame is false.
+       - ReplaceDefinition swaps the definition while open, with a page crossfade and no opening
+         animation; it may be called from inside OnActivate, OnItemAction and OnCancel.
        Knows nothing of controller buttons: the host translates them into GHRadialInput. Free of
        UI types, so that the unit tests compile it. Single-threaded: call it from the UI thread. */
     public sealed class GHRadialMenuState
@@ -62,7 +64,10 @@ namespace GnollHackX
 
         private long _pageChangeStart;
         private int _previousPage = -1;
+        private GHRadialPage _previousPageObject;
+        private int _previousPageHighlight = -1;
         private int _pageDirection;
+        private float _geometryOffsetY;
 
         private long _flashStart;
         private int _flashSlot = -1;
@@ -103,6 +108,14 @@ namespace GnollHackX
 
         /* Layout for pointer hit tests; the renderer updates it on every paint */
         public GHRadialGeometry Geometry { get { return _geometry; } }
+
+        /* The canvas y at which Geometry's coordinates start, when the renderer reserves a header row above it;
+           pointer hit tests subtract it. The renderer sets it on every paint. */
+        public float GeometryOffsetY
+        {
+            get { return _geometryOffsetY; }
+            set { _geometryOffsetY = float.IsNaN(value) || float.IsInfinity(value) ? 0f : value; }
+        }
 
         public GHRadialMenuDefinition Definition { get { return _def; } }
         public string MenuId { get { return _def == null ? null : _def.MenuId; } }
@@ -146,8 +159,10 @@ namespace GnollHackX
         public float RingScale { get { return _ringScale; } }
         public float BackdropOpacity { get { return _backdrop; } }
         public float PageTransition { get { return _pageTransition; } }       /* 1 when no page change is in progress */
-        public int PreviousPageIndex { get { return _pageTransition < 1 ? _previousPage : -1; } }
-        public int PageDirection { get { return _pageDirection; } }           /* +1 forward, -1 back */
+        public int PreviousPageIndex { get { return _pageTransition < 1 ? _previousPage : -1; } }   /* after ReplaceDefinition, an index into the replaced definition */
+        public GHRadialPage PreviousPage { get { return _pageTransition < 1 ? _previousPageObject : null; } }  /* the page the crossfade starts from */
+        public int PreviousPageHighlight { get { return _pageTransition < 1 ? _previousPageHighlight : -1; } } /* its highlighted slot when it was left */
+        public int PageDirection { get { return _pageDirection; } }           /* +1 forward, -1 back, 0 after ReplaceDefinition */
         public float FlashIntensity { get { return _flash; } }
         public int FlashSlot { get { return _flash > 0 && _flashPage == _pageIndex ? _flashSlot : -1; } }
         public float WedgeAngle { get { return _wedgeAngle; } }
@@ -217,6 +232,8 @@ namespace GnollHackX
 
             _selector.Reset(!def.StickArmedAtOpen);
             _previousPage = -1;
+            _previousPageObject = null;
+            _previousPageHighlight = -1;
             _pageDirection = 0;
             _pageTransition = 1;
             _flashSlot = -1;
@@ -287,6 +304,9 @@ namespace GnollHackX
             case GHRadialInput.Confirm:
                 return Confirm(nowTicks);
             case GHRadialInput.Cancel:
+                return Cancel(nowTicks);
+            case GHRadialInput.ItemAction:
+                return ItemAction(nowTicks);
             case GHRadialInput.OpenerPressed:
                 Close(GHRadialCloseReason.Cancelled, nowTicks);
                 res.Effects = GHRadialEffects.Closed;
@@ -313,15 +333,18 @@ namespace GnollHackX
                 return res;
             }
             case GHRadialInput.PrevPage:
-                return GoToPage(_pageIndex - 1, nowTicks);
+                return GoToPageInPagingRange(_pageIndex - 1, nowTicks);
             case GHRadialInput.NextPage:
-                return GoToPage(_pageIndex + 1, nowTicks);
+                return GoToPageInPagingRange(_pageIndex + 1, nowTicks);
             case GHRadialInput.SwitchSet:
             {
                 int target = _def.SwitchSetPageIndex;
-                if (target <= 0 || target >= PageCount)
+                if (!_def.SwitchSetEnabled || target <= 0 || target >= PageCount)
                     return res;
-                return GoToPage(_pageIndex < target ? target : 0, nowTicks);
+                if (_pageIndex < target)
+                    return GoToPage(target, nowTicks);
+                int back = _def.SwitchSetReturnPageIndex;
+                return GoToPage(back >= 0 && back < PageCount ? back : 0, nowTicks);
             }
             case GHRadialInput.PrevGroup:
                 return GoToPage(FindPrevGroupStart(), nowTicks);
@@ -375,6 +398,7 @@ namespace GnollHackX
             if (!IsOpen || !_geometry.IsValid)
                 return new GHRadialApplyResult();
             SetPointerMode();
+            y -= _geometryOffsetY;
             float r;
             double a;
             GHRadialHitZone zone = _geometry.HitTest(x, y, out r, out a);
@@ -395,17 +419,20 @@ namespace GnollHackX
             if (!IsOpen || !_geometry.IsValid)
                 return res;
             SetPointerMode();
+            y -= _geometryOffsetY;
 
             int chip = _geometry.HitTestChip(x, y);
             if (chip != 0)
             {
+                int pagingFirst, pagingCount;
+                _def.GetPagingRange(_pageIndex, out pagingFirst, out pagingCount);
                 int target = _pageIndex + chip;
-                if (target >= 0 && target < PageCount)
+                if (target >= pagingFirst && target < pagingFirst + pagingCount)
                     return GoToPage(target, nowTicks);
             }
-            /* The dots show the current page's set only */
+            /* The dots show the current page's set only, or its group's run with PageWithinGroup */
             int setFirst, setCount;
-            _def.GetSetRange(_pageIndex, out setFirst, out setCount);
+            _def.GetDotRange(_pageIndex, out setFirst, out setCount);
             int dot = _geometry.HitTestDot(x, y, setCount);
             if (dot >= 0)
                 return GoToPage(setFirst + dot, nowTicks);
@@ -442,6 +469,77 @@ namespace GnollHackX
             if (steps == 0 || !IsOpen)
                 return new GHRadialApplyResult();
             return Apply(steps > 0 ? GHRadialInput.NextPage : GHRadialInput.PrevPage, nowTicks);
+        }
+
+        /* A page change by the host, with the page transition, to any page; the highlight goes to slot, or to none
+           for -1. On the current page only the highlight changes. */
+        public GHRadialApplyResult GoToPageAndSlot(int page, int slot, long nowTicks)
+        {
+            GHRadialApplyResult res = new GHRadialApplyResult();
+            if (!IsOpen || page < 0 || page >= PageCount)
+                return res;
+            if (page != _pageIndex)
+                return GoToPage(page, nowTicks, true, slot);
+            if (_selector.SetHighlight(ClampSlot(slot, CurrentPage)))
+            {
+                _dirty = true;
+                res.Effects = GHRadialEffects.HighlightChanged;
+            }
+            return res;
+        }
+
+        /* Swaps the definition while staying open: no opening animation and no OnClosed. The page crossfades from
+           the page shown before, the highlight goes to slot on page (none for -1), and the page highlights start
+           over. flashSlot flashes that slot; otherwise a pending flash is cleared. May be called from inside
+           OnActivate, OnItemAction and OnCancel; a Confirm that leads to it still reports Activated. Does nothing
+           when the menu is not open or def has no pages. */
+        public void ReplaceDefinition(GHRadialMenuDefinition def, int page, int slot, long nowTicks, bool flashSlot)
+        {
+            if (!IsOpen || def == null || def.PageCount == 0)
+                return;
+            int maxSlots = 0;
+            int i;
+            for (i = 0; i < def.PageCount; i++)
+            {
+                if (def.Pages[i] == null)
+                    return;
+                maxSlots = Math.Max(maxSlots, def.Pages[i].SlotCount);
+            }
+
+            Evaluate(nowTicks);
+            _previousPage = _pageIndex;
+            _previousPageObject = CurrentPage;
+            _previousPageHighlight = _selector.HighlightedSlot;
+            _pageDirection = 0;
+            _pageChangeStart = nowTicks;
+
+            _def = def;
+            _pageIndex = Math.Max(0, Math.Min(def.PageCount - 1, page));
+            if (_pageHighlights.Length != def.PageCount)
+                _pageHighlights = new int[def.PageCount];
+            for (i = 0; i < _pageHighlights.Length; i++)
+                _pageHighlights[i] = -1;
+            if (_weights.Length < maxSlots)
+                _weights = new float[maxSlots];
+
+            int hl = ClampSlot(slot, CurrentPage);
+            _selector.SetHighlight(hl);
+            SnapHighlightToSelector();
+
+            if (flashSlot && hl >= 0)
+            {
+                _flashSlot = hl;
+                _flashPage = _pageIndex;
+                _flashStart = nowTicks;
+            }
+            else
+            {
+                _flashSlot = -1;
+                _flashPage = -1;
+            }
+            _toggleMask = ComputeToggleMask();
+            _dirty = true;
+            Evaluate(nowTicks);
         }
 
         /* Advances the animation to nowTicks and decides NeedsFrame */
@@ -603,7 +701,74 @@ namespace GnollHackX
             return res;
         }
 
+        /* Cancel: OnCancel returning true keeps the menu open; else a page with a parent goes back to it, with the
+           slot that led there highlighted; else the menu closes */
+        private GHRadialApplyResult Cancel(long nowTicks)
+        {
+            GHRadialApplyResult res = new GHRadialApplyResult();
+            GHRadialMenuDefinition def = _def;
+            Func<bool> onCancel = def == null ? null : def.OnCancel;
+            if (onCancel != null)
+            {
+                int pageBefore = _pageIndex;
+                bool consumed = onCancel();
+                if (!IsOpen)
+                    return res;
+                if (consumed)
+                {
+                    if (!ReferenceEquals(_def, def) || _pageIndex != pageBefore)
+                        res.Effects = GHRadialEffects.PageChanged;
+                    return res;
+                }
+            }
+
+            GHRadialPage page = CurrentPage;
+            int parent = page == null ? -1 : page.ParentPageIndex;
+            if (parent >= 0 && parent < PageCount && parent != _pageIndex)
+                return GoToPage(parent, nowTicks, true, _pageHighlights[parent]);
+
+            Close(GHRadialCloseReason.Cancelled, nowTicks);
+            res.Effects = GHRadialEffects.Closed;
+            res.CloseReason = GHRadialCloseReason.Cancelled;
+            return res;
+        }
+
+        /* OnItemAction on the highlighted slot, which may be empty or hold a disabled item; the menu stays open.
+           Reports Activated with the item when there is a callback. */
+        private GHRadialApplyResult ItemAction(long nowTicks)
+        {
+            GHRadialApplyResult res = new GHRadialApplyResult();
+            GHRadialMenuDefinition def = _def;
+            Action<GHRadialItem, int, int> cb = def == null ? null : def.OnItemAction;
+            if (cb == null)
+                return res;
+            GHRadialPage page = CurrentPage;
+            int slot = _selector.HighlightedSlot;
+            GHRadialItem item = page == null ? null : page.GetItem(slot);
+            res.Item = item;
+            res.Effects = GHRadialEffects.Activated;
+            Evaluate(nowTicks);
+            cb(item, _pageIndex, slot);
+            return res;
+        }
+
+        /* PrevPage and NextPage: within the definition's paging range */
+        private GHRadialApplyResult GoToPageInPagingRange(int index, long nowTicks)
+        {
+            int first, count;
+            _def.GetPagingRange(_pageIndex, out first, out count);
+            if (index < first || index >= first + count)
+                return new GHRadialApplyResult();
+            return GoToPage(index, nowTicks);
+        }
+
         private GHRadialApplyResult GoToPage(int index, long nowTicks)
+        {
+            return GoToPage(index, nowTicks, false, -1);
+        }
+
+        /* setSlot puts the highlight on slot instead of the stick's or the page's remembered one */
+        private GHRadialApplyResult GoToPage(int index, long nowTicks, bool setSlot, int slot)
         {
             GHRadialApplyResult res = new GHRadialApplyResult();
             if (_def == null || index < 0 || index >= PageCount || index == _pageIndex)
@@ -611,12 +776,27 @@ namespace GnollHackX
 
             _pageHighlights[_pageIndex] = _selector.HighlightedSlot;
             _previousPage = _pageIndex;
+            _previousPageObject = CurrentPage;
+            _previousPageHighlight = _selector.HighlightedSlot;
             _pageDirection = index > _pageIndex ? 1 : -1;
             _pageChangeStart = nowTicks;
             _pageIndex = index;
             _selector.OnPageChanged(CurrentPage.Slots, _pageHighlights[index]);
+            if (setSlot)
+                _selector.SetHighlight(ClampSlot(slot, CurrentPage));
+            SnapHighlightToSelector();
 
-            /* The new page shows its highlight at once; the crossfade carries the change */
+            _flashSlot = -1;
+            _toggleMask = ComputeToggleMask();
+            _dirty = true;
+            Evaluate(nowTicks);
+            res.Effects = GHRadialEffects.PageChanged;
+            return res;
+        }
+
+        /* The new page shows its highlight at once; the crossfade carries the change */
+        private void SnapHighlightToSelector()
+        {
             int hl = _selector.HighlightedSlot;
             int k;
             for (k = 0; k < _weights.Length; k++)
@@ -626,13 +806,12 @@ namespace GnollHackX
             _wedgeOpacity = hl >= 0 ? 1f : 0f;
             if (hl >= 0)
                 _wedgeAngle = (float)GHRadialGeometry.SlotCenterDegrees(hl, CurrentPage.SlotCount);
+        }
 
-            _flashSlot = -1;
-            _toggleMask = ComputeToggleMask();
-            _dirty = true;
-            Evaluate(nowTicks);
-            res.Effects = GHRadialEffects.PageChanged;
-            return res;
+        /* slot when it is on the page, else -1 */
+        private static int ClampSlot(int slot, GHRadialPage page)
+        {
+            return page != null && slot >= 0 && slot < page.SlotCount ? slot : -1;
         }
 
         /* The first page of the run of pages after the current page's group, or -1 */

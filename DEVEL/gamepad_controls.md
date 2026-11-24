@@ -111,7 +111,7 @@ Y for Rest, cancels that.
 | B | **Search**; first closes an overlay, and interrupts running and other occupations instead | Search 20 times | -- | -- |
 | X | Pick up | Pick and Stash | -- | -- |
 | Y | **Repeat** | Wait | -- | Rest |
-| R2 | R2's **command** (default By Role: Cast Quick, Polearm or Fire) | **L1 + R2 Action** (default **Cast**, the spell list) | -- | R2's command |
+| R2 | R2's **command** (default By Role: Cast Quick, Polearm or Fire) | **L1 + R2 Action** (default **Cast**, the spell list, shown as the Spells radial) | -- | R2's command |
 | L2 | L2's **command** (default Kick) | -- | **R1 + L2 Action** (default **Throw**) | L2's command |
 | R1 | Modifier | **Right Quick** radial, on release | | |
 | L1 | Modifier | | **Left Quick** radial, on release | |
@@ -162,6 +162,17 @@ moves. A moves there, and holding A keeps walking at the stick's repeat rate; a 
 repeat delay. R1 + A, or L3 and then A, runs once. Releasing the stick ends the aim and a held A, and
 with the stick centered A is the context button as usual. The D-pad and position and direction prompts
 are unchanged.
+
+**Add New Spells to Hotbar.** With **Settings, Controller, Add New Spells to Hotbar** on (the default)
+and Use Controller on, a newly learned spell goes to the first empty slot of the Spells radial's Hotbar,
+and a new caster's starting spells are placed there at character creation. After the learn message,
+the game says the spell has been added to your Hotbar, or that it is in Known Spells when the Hotbar is
+full. The setting reaches the game when it starts and again whenever it or Use Controller changes. The
+Hotbar is saved with the character, in the spells' hotkey field: slots 1-10 are also the spell table's
+hotkeys `1`..`0` when `spell_table_format` is on. The game sends it to the GUI inside the Cast menu: each
+spell row on the Hotbar carries `MENU_FLAGS_HOTBAR_SLOT` with its slot in the row's `style`, and the
+spell's long-tap menu has two rows only the radial uses, Set Hotbar Slot (the slot is the item's count)
+and Remove from Hotbar, which the touch list never shows.
 
 **Direction radial.** When a command asks for a direction with the controller active, the violet
 **Direction** radial opens over the prompt (see [Radials](#radials)). If a trigger's command raised it
@@ -246,6 +257,34 @@ radial while its trigger is held, which lasts as long as the trigger.
   it does; Cast Quick's description names the quick spell. The Quick radials, the Quick Commands and the
   command picker in Settings describe their commands the same way.
   **X** switches between the context page and the first commands page; L1/R1 page.
+- **Spells radial** (the Cast menu, from any binding or the command bar, while the controller is the
+  active input; after touch, the mouse or a key it shows as the usual list; the table format stays a
+  list): two sets of pages, shown as two tabs above the ring, with **X** switching between them.
+  - **Hotbar**: three pages of eight slots at fixed compass directions, filled by the player; slot 1 is
+    Hotbar 1 North, slot 9 Hotbar 2 North. It opens on the Hotbar page used last. An empty slot shows `+`
+    Empty, and A or Y on it chooses a spell for it.
+  - **Known Spells**: every spell known, in pages of eight ordered by school, level and name. With more
+    than 16 spells the first page is a ring of the twelve schools with counts, and A opens a school's
+    pages; B goes back to the ring. The last page holds the Cast menu's own commands: View Spells, Mix
+    Spells, Sort Spells, Reorder Spells and Set Quick Spell.
+  - A spell's tile and name use the Cast menu's state colors. The hub shows its cooldown (only when it
+    has one), name, level, and success, mana and casts with the Cast menu's symbols, and the description
+    shows between the ring and the hints. A gold star marks a spell on the Hotbar, and NEW one learned
+    since the radial was last opened.
+  - **A** selects the spell's row, so it casts; it refuses only what the Cast menu cannot select, a
+    forgotten spell or one cooling down.
+  - **Y** is the list's long tap: the spell's command menu shows as **Actions**, with View Information,
+    Mix Reagents, Move to Top, Move to Bottom, Set as Quick Spell and Forget, then Add to Hotbar (Move on
+    Hotbar once it is there) and Remove from Hotbar. The hub shows the spell's tile and name. After View
+    Information, Move to Top, Move to Bottom, Forget and the Hotbar items, the game shows the Cast menu
+    again, so the radial returns on the same spell. B goes back to it.
+  - **Add to / Move on Hotbar** carries the spell over the Hotbar: A places it (swapping with or replacing
+    a filled slot, as the hub says), Y removes it, B cancels.
+  - L1/R1 page within the current set or school only. **Menu** shows the same menu as the list, still
+    waiting for an answer, instead of opening the game menu; Menu in that list brings the radial back. Touch,
+    the mouse or a key while the radial shows also closes it and shows the list.
+  - A spell that cannot be cast has a grayed icon and a slice tinted with its reason's color, as in the
+    Cast menu's text. With an empty Hotbar the radial opens on Known Spells.
 - **Direction radial** (any direction prompt): violet and see-through,
   with no dimming of the map and slices only 8 % opaque, 16 % when selected, because it is used for
   aiming. The eight directions sit at their compass positions, in place of the map's direction arrows. The hub names the command and what it uses, such as Fire and the quivered stack, with the highlighted direction above them, or Tilt to aim. A prompt that names no command shows Direction instead. Either stick selects.

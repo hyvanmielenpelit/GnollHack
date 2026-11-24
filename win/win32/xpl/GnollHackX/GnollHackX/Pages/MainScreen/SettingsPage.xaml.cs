@@ -197,6 +197,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Hide Command Bar", ("Hide the command bar while playing with the controller.", "**On:** The command bar and the menus' OK and Cancel buttons are hidden while you play with the controller. Touch, the mouse or a key brings them back.\n**Off:** They stay, the controller hints show above the bar and can cover the lowest messages, and Settings also shows Bar Commands.") },
             { "Hint Size", ("Size of the controller hints.", "The size of the controller button hints: the strip at the bottom of the game screen, the hints in the Wiki, Overseer and file dialogs, and the hints below radial menus. The rest of the game's text follows Screen Scale.") },
             { "Aim and Confirm", ("Aim with the left stick, then move with A.", "**On:** Tilting the left stick outlines the square next to you in that direction without moving, in red over a hostile monster. A moves there, and holding A keeps moving. R1 + A, or L3 and then A, runs. With the stick centered, A works as usual, and the D-pad still moves at once.\n**Off:** The left stick moves as soon as you tilt it.") },
+            { "Add New Spells to Hotbar", ("New spells go to the first empty Hotbar slot.", "**On:** A spell you learn goes to the first empty slot of the Hotbar in the controller's Cast radial, and a message tells you so. A new character's starting spells are placed too. Applies only while Use Controller is on.\n**Off:** New spells appear only in Known Spells, and you place them on the Hotbar yourself.") },
             { "Back Grip L4", GamepadGripDescription("L4", "F2") },
             { "Back Grip L5", GamepadGripDescription("L5", "F3") },
             { "Back Grip R4", GamepadGripDescription("R4", "F4") },
@@ -2450,6 +2451,7 @@ namespace GnollHackX.Pages.MainScreen
             GamepadEnabledSwitch.IsToggled = GHApp.GamepadEnabled;
             GamepadHideCommandBarSwitch.IsToggled = GHApp.GamepadHideCommandBar;
             GamepadAimAndConfirmSwitch.IsToggled = GHApp.GamepadAimAndConfirm;
+            GamepadSpellHotbarAutoAddSwitch.IsToggled = GHApp.GamepadSpellHotbarAutoAdd;
             UpdateCommandSectionVisibility();
 
             int i;
@@ -2518,6 +2520,7 @@ namespace GnollHackX.Pages.MainScreen
         /* Applied at once: the switch through GHApp.GamepadEnabled, which also sets GHGamepadService */
         private void SaveGamepadSettings()
         {
+            bool spellHotbarAutoAddWasOn = GHApp.GamepadSpellHotbarAutoAdd && GHApp.GamepadEnabled;
             GHApp.GamepadEnabled = GamepadEnabledSwitch.IsToggled;
             Preferences.Set("GamepadEnabled", GamepadEnabledSwitch.IsToggled);
             GHApp.GamepadHideCommandBar = GamepadHideCommandBarSwitch.IsToggled;
@@ -2530,6 +2533,11 @@ namespace GnollHackX.Pages.MainScreen
             }
             GHApp.GamepadAimAndConfirm = GamepadAimAndConfirmSwitch.IsToggled;
             Preferences.Set("GamepadAimAndConfirm", GamepadAimAndConfirmSwitch.IsToggled);
+            GHApp.GamepadSpellHotbarAutoAdd = GamepadSpellHotbarAutoAddSwitch.IsToggled;
+            Preferences.Set("GamepadSpellHotbarAutoAdd", GamepadSpellHotbarAutoAddSwitch.IsToggled);
+            /* A running game gets the change at once; the core places new spells only while Use Controller is on too */
+            if (_gamePage != null && spellHotbarAutoAddWasOn != (GHApp.GamepadSpellHotbarAutoAdd && GHApp.GamepadEnabled))
+                _gamePage.SetSpellHotbarAutoAdd();
 
             Picker[] pickers = GamepadGripPickers;
             int i;

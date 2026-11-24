@@ -26,6 +26,7 @@ static void knows_class(char);
 #endif
 static boolean restricted_spell_discipline(int);
 static void add_school_specific_spellbooks(void);
+static void add_initial_spell_to_hotbar(int);
 static struct obj* mk_obj_in_container_known(struct obj*, int);
 static struct obj* mk_obj_with_material_in_container_known(struct obj*, int, int);
 
@@ -968,7 +969,10 @@ u_init(void)
 
     init_uhunger();
     for (i = 0; i <= MAXSPELL; i++)
+    {
         spl_book[i].sp_id = NO_SPELL;
+        spl_book[i].sp_hotkey = 0;
+    }
     u.uprayer_timeout = Role_if(PM_PRIEST) ? 150 : 300; /* no prayers just yet */
     u.ualignbase[A_CURRENT] = u.ualignbase[A_ORIGINAL] = u.ualign.type =
         aligns[flags.initalign].value;
@@ -1494,9 +1498,26 @@ add_school_specific_spellbooks(void)
                 if (OBJ_DESCR(objects[otyp]))
                     knows_object(otyp);
                 initialspell(obj);
+                add_initial_spell_to_hotbar(obj->otyp);
                 debugprint("add_school_specific_spellbooks: %d", obj->otyp);
                 useup(obj);
             }
+        }
+    }
+}
+
+/* Puts the known spell otyp in the first empty hotbar slot, silently, if the auto-add setting is on */
+static void
+add_initial_spell_to_hotbar(int otyp)
+{
+    int i;
+
+    for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+    {
+        if (spellid(i) == otyp)
+        {
+            (void)auto_add_spell_to_hotbar(i);
+            break;
         }
     }
 }
@@ -2103,6 +2124,7 @@ ini_inv(const struct trobj *trop)
             if (obj->oclass == SPBOOK_CLASS && obj->otyp != SPE_BLANK_PAPER)
             {
                 initialspell(obj);
+                add_initial_spell_to_hotbar(obj->otyp);
                 debugprint("ini_inv: %d", obj->otyp);
                 useup(obj);
             }

@@ -56,6 +56,8 @@ namespace GnollHackX.Pages.Game
         private readonly SKPaint _radialOrbPaint = new SKPaint();
         private readonly SKPaint _radialOrbLayerPaint = new SKPaint();
         private readonly GHSkiaFontPaint _radialOrbTextPaint = new GHSkiaFontPaint();
+        /* The glyph tiles of radial items; separate from the map's glyph image source for the same reason */
+        private readonly GlyphImageSource _radialGlyphImageSource = new GlyphImageSource();
 
         /* False from the moment of confirm or cancel, while the closing fade may still show */
         public bool IsRadialMenuOpen { get { return _radialState.IsOpen; } }
@@ -103,8 +105,10 @@ namespace GnollHackX.Pages.Game
 
         /* Acts on Pressed, and on Repeat for D-pad Left and Right; every other event is swallowed, except the release
            of the opener of a radial that confirms on it, where a cancelled release leaves the prompt under the radial
-           unanswered. The direction radial answers D-pad Up, D-pad Down and Y directly. Menu closes the radial and returns
-           false, so that the caller opens the game menu. */
+           unanswered. The direction radial answers D-pad Up, D-pad Down and Y directly; elsewhere Y is the definition's
+           item action, and X switches sets in the Actions radial and in a radial with set tabs. Menu closes the radial
+           and returns false, so that the caller opens the game menu; in a Spells radial it shows the same menu as the
+           list instead. */
         public bool HandleRadialGamepadButton(GHGamepadButtonEvent e)
         {
             if (!_radialState.IsOpen)
@@ -127,6 +131,8 @@ namespace GnollHackX.Pages.Game
                 return true;
 
             bool isActionsMenu = opener == GHGamepadButton.L3;
+            bool hasSetTabs = def != null && def.HasSetTabs;
+            bool hasItemAction = def != null && def.OnItemAction != null;
             bool hasInput = false;
             GHRadialInput input = GHRadialInput.Confirm;
             switch (e.Button)
@@ -140,8 +146,12 @@ namespace GnollHackX.Pages.Game
                 input = GHRadialInput.Cancel;
                 break;
             case GHGamepadButton.X:
-                hasInput = pressed && isActionsMenu;
+                hasInput = pressed && (isActionsMenu || hasSetTabs);
                 input = GHRadialInput.SwitchSet;
+                break;
+            case GHGamepadButton.Y:
+                hasInput = pressed && hasItemAction && def.ItemActionButton == GHGamepadButton.Y;
+                input = GHRadialInput.ItemAction;
                 break;
             case GHGamepadButton.LB:
                 /* The shoulder that opened a Quick radial closes it; elsewhere the shoulders page */
@@ -179,12 +189,14 @@ namespace GnollHackX.Pages.Game
             case GHGamepadButton.Menu:
                 if (pressed)
                 {
+                    /* A Spells radial's menu, still waiting for an answer, shows as the list */
+                    bool spellRadial = IsGamepadSpellRadial(def);
                     DismissRadialMenu(GHRadialCloseReason.Superseded);
-                    return false;
+                    return spellRadial;
                 }
                 break;
             default:
-                /* Y is reserved; View and the back grips are swallowed */
+                /* View and the back grips are swallowed */
                 break;
             }
             if (hasInput)
@@ -210,6 +222,7 @@ namespace GnollHackX.Pages.Game
         /* Runs inside the Avalonia frame callback, so every radial repaint happens here */
         public void TickRadialMenu()
         {
+            ExpireGamepadSpellRadialMemory();
             if (!_radialState.IsVisible)
             {
                 if (_radialCanvasShown)
@@ -227,6 +240,10 @@ namespace GnollHackX.Pages.Game
                     DismissRadialMenu(GHRadialCloseReason.Deactivated);
                 else if (IsGamepadDirectionRadial(_radialState.Definition) && !_radialState.Definition.ReleaseConfirms && !GHGamepadService.IsActive)
                     DismissRadialMenu(GHRadialCloseReason.Superseded); /* Touch, the mouse or a key: the prompt's arrows return */
+                else if (IsGamepadSpellRadial(_radialState.Definition) && !GHGamepadService.IsActive)
+                    DismissRadialMenu(GHRadialCloseReason.Superseded); /* Touch, the mouse or a key: the same menu shows as the list */
+                else
+                    NoteGamepadSpellRadialPage();
             }
 
             _radialState.Tick(Stopwatch.GetTimestamp());
@@ -302,6 +319,8 @@ namespace GnollHackX.Pages.Game
         {
             if (def == null)
                 return GHGamepadButton.L3;
+            if (def.OpenerButton != GHGamepadButton.Count)
+                return def.OpenerButton;
             if (def.ReleaseConfirms)
                 return def.ConfirmButton;
             if (IsGamepadDirectionRadial(def))
@@ -332,12 +351,15 @@ namespace GnollHackX.Pages.Game
                 renderer.DescriptionTypeface = GHApp.UnderwoodTypeface;
                 renderer.UseTextBlobCaching = GHApp.UseTextBlobCaching;
                 renderer.ShowKeyboardShortcuts = GHApp.ShowKeyboardShortcuts;
+                renderer.SymbolLookup = GHApp.GetSpecialSymbol;
+                renderer.NhColorLookup = c => UIUtils.NHColor2SKColor(c, 0);
                 _radialRenderer = renderer;
             }
             return _radialRenderer;
         }
 
-        /* The Max Hit Points and Max Mana toggles show their orb as the map draws it, with the maximum always shown */
+        /* The Max Hit Points and Max Mana toggles show their orb as the map draws it, with the maximum always shown;
+           an item with a Glyph shows its tile, grayed when disabled */
         private bool DrawRadialOrbIcon(SKCanvas canvas, GHRadialItem item, SKRect dest, bool enabled, bool highlighted)
         {
             bool mana;
@@ -346,7 +368,7 @@ namespace GnollHackX.Pages.Game
             else if (item.Id == GamepadMaxManaToggleId)
                 mana = true;
             else
-                return false;
+                return item.Glyph > 0 && DrawRadialGlyphIcon(canvas, item, dest, enabled, highlighted);
 
             string val = "", maxval = "";
             float fill = 0.0f;
@@ -368,6 +390,41 @@ namespace GnollHackX.Pages.Game
             DrawOrb(canvas, _radialOrbPaint, _radialOrbTextPaint, dest, mana ? SKColors.Blue : SKColors.Red, val, maxval, fill, true, highlighted && enabled);
             if (saveCount >= 0)
                 canvas.RestoreToCount(saveCount);
+            return true;
+        }
+
+        /* The item's glyph tile, scaled to fit dest and centered in it; false when the glyph cannot be drawn */
+        private bool DrawRadialGlyphIcon(SKCanvas canvas, GHRadialItem item, SKRect dest, bool enabled, bool highlighted)
+        {
+            int glyph = item.Glyph;
+            if (glyph <= 0 || glyph == GHApp.NoGlyph || glyph >= GHApp.NumberOfGlyphs || GHApp.Glyph2Tile == null || GHApp.GlyphTileFlags == null)
+                return false;
+
+            GlyphImageSource gis = _radialGlyphImageSource;
+            gis.ReferenceGamePage = this;
+            gis.UseUpperSide = GetRadialGlyphUpperSide(item);
+            gis.AutoSize = true;
+            gis.ObjData = null;
+            gis.Grayed = !enabled;
+            gis.Glyph = glyph;
+            gis.DoAutoSize();
+            if (gis.Width <= 0 || gis.Height <= 0)
+                return false;
+
+            float scale = Math.Min(dest.Width / gis.Width, dest.Height / gis.Height);
+            float width = scale * gis.Width;
+            float height = scale * gis.Height;
+            canvas.Save();
+            try
+            {
+                canvas.Translate(dest.MidX - width / 2, dest.MidY - height / 2);
+                canvas.Scale(scale);
+                gis.DrawOnCanvas(canvas, false, highlighted && enabled, true, GHApp.FixRects, false);
+            }
+            finally
+            {
+                canvas.Restore();
+            }
             return true;
         }
 

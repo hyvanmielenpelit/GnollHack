@@ -126,6 +126,7 @@ namespace GnollHackX
         public readonly ObjectDataItem ObjData = null;
         public readonly char HeadingGroupAccelerator;
         public readonly ulong Flags;
+        public int ItemStyle { get; set; }      /* add_extended_menu's info.style; the Hotbar slot with MENU_FLAGS_HOTBAR_SLOT */
         public readonly UInt64 Oid;
         public readonly UInt64 Mid;
         public readonly GlyphImageSource GlyphImageSource = new GlyphImageSource();
@@ -167,6 +168,9 @@ namespace GnollHackX
         public bool HasMultiColors { get { return NHAttributes != null && NHColors != null && Text != null; } }
         public sbyte ObjArmorType { get { return ObjData?.ArmorType ?? -1; } }
         public sbyte ObjClassType { get { return ObjData?.ClassType ?? -1; } }
+        public bool IsLongTapOnly { get { return (Flags & (ulong)MenuFlags.MENU_FLAGS_LONG_TAP_ONLY) != 0; } }
+        /* A tap, click, keyboard letter or the controller's A can select the row; a long tap needs only Identifier != 0 */
+        public bool IsTapSelectable { get { return Identifier != 0 && !IsLongTapOnly; } }
 
 
         /* Readonly text splits */
@@ -779,8 +783,8 @@ namespace GnollHackX
                 return (IsButtonStyle
                     || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_START_GAME_MENU 
                     || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_ACCEPT_PLAYER 
-                    || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY) 
-                    && Identifier != 0;
+                    || _menuInfo.Style == ghmenu_styles.GHMENU_STYLE_CHOOSE_DIFFICULTY)
+                    && IsTapSelectable;
             }
         }
 

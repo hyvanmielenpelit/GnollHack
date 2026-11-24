@@ -10,7 +10,9 @@ namespace GnollHackX.UnitTests
        rest, toggle state changes, pointer input, page dots counted within the current set, the
        highlight sound throttle, R74's Center on
        Hero in the L3 page, R1's push-up-is-north, and durations that do not depend on the frame
-       rate (60 Hz against 90 Hz ticks). */
+       rate (60 Hz against 90 Hz ticks). Also the item action, Cancel back to a parent page,
+       paging confined to a group, OnCancel, ReplaceDefinition, GoToPageAndSlot, the set switch's
+       enable and return page, and the pointer geometry offset. */
     public class GHRadialMenuStateTests
     {
         /* 180,000 ticks per second: a 60 Hz frame is 3000 ticks, a 90 Hz frame 2000 */
@@ -824,6 +826,469 @@ namespace GnollHackX.UnitTests
             Assert.False(r.Has(GHRadialEffects.Closed));
             Assert.True(r.Item.PlaysOwnSound);
             Assert.True(s.IsOpen);
+        }
+
+        private sealed class ItemActionCall
+        {
+            public GHRadialItem Item;
+            public int Page;
+            public int Slot;
+        }
+
+        [Fact]
+        public void ItemAction_RunsOnTheHighlightedSlotWithoutClosing()
+        {
+            List<ItemActionCall> calls = new List<ItemActionCall>();
+            int activations = 0;
+            GHRadialPage page = FullPage("Spells", 8, 0);
+            page.Slots[2].IsEnabled = false;
+            page.Slots[5] = null;
+            GHRadialMenuDefinition def = Def(page);
+            def.OnActivate = item => activations++;
+            def.OnItemAction = (item, p, slot) => calls.Add(new ItemActionCall { Item = item, Page = p, Slot = slot });
+            GHRadialMenuState s = Opened(def, 0);
+
+            /* A disabled item: Confirm refuses it, ItemAction still runs */
+            Push(s, 90, 0.9);
+            Assert.Equal(2, s.HighlightedSlot);
+            Assert.Equal(GHRadialEffects.Refused, s.Apply(GHRadialInput.Confirm, Ms(1)).Effects);
+            GHRadialApplyResult r = s.Apply(GHRadialInput.ItemAction, Ms(2));
+            Assert.True(r.Has(GHRadialEffects.Activated));
+            Assert.False(r.Has(GHRadialEffects.Closed));
+            Assert.Same(page.Slots[2], r.Item);
+            Assert.True(s.IsOpen);
+            Assert.Single(calls);
+            Assert.Same(page.Slots[2], calls[0].Item);
+            Assert.Equal(0, calls[0].Page);
+            Assert.Equal(2, calls[0].Slot);
+            Assert.Equal(0, activations);
+
+            /* An empty slot passes a null item */
+            s.UpdateStick(0, 0, 1.0);
+            s.GoToPageAndSlot(0, 5, Ms(3));
+            Assert.Equal(5, s.HighlightedSlot);
+            r = s.Apply(GHRadialInput.ItemAction, Ms(4));
+            Assert.Null(r.Item);
+            Assert.Equal(2, calls.Count);
+            Assert.Null(calls[1].Item);
+            Assert.Equal(5, calls[1].Slot);
+
+            /* No highlight passes slot -1 */
+            s.GoToPageAndSlot(0, -1, Ms(5));
+            s.Apply(GHRadialInput.ItemAction, Ms(6));
+            Assert.Equal(3, calls.Count);
+            Assert.Null(calls[2].Item);
+            Assert.Equal(-1, calls[2].Slot);
+            Assert.True(s.IsOpen);
+        }
+
+        [Fact]
+        public void ItemAction_WithoutCallback_DoesNothing()
+        {
+            GHRadialMenuState s = Opened(Def(FullPage("Ctx", 8, 0)), 0);
+            s.Apply(GHRadialInput.StepClockwise, Ms(1));
+            Assert.Equal(GHRadialEffects.None, s.Apply(GHRadialInput.ItemAction, Ms(2)).Effects);
+            Assert.True(s.IsOpen);
+        }
+
+        /* A school ring on page 0 whose slot 3 opens the school's two pages 1 and 2 */
+        private static GHRadialMenuDefinition SchoolDef(Func<GHRadialMenuState> state)
+        {
+            GHRadialPage ring = FullPage("Known Spells", 12, 0);
+            GHRadialPage school1 = FullPage("Healing 1/2", 8, 1);
+            GHRadialPage school2 = FullPage("Healing 2/2", 8, 1);
+            school1.ParentPageIndex = 0;
+            school2.ParentPageIndex = 0;
+            ring.Slots[3].ClosesOnActivate = false;
+            GHRadialMenuDefinition def = Def(ring, school1, school2);
+            def.PageWithinGroup = true;
+            def.OnActivate = item =>
+            {
+                if (item == ring.Slots[3])
+                    state().GoToPageAndSlot(1, -1, Ms(2));
+            };
+            return def;
+        }
+
+        [Fact]
+        public void Cancel_OnAPageWithAParent_GoesBackToTheSlotThatLedThere()
+        {
+            List<GHRadialCloseReason> reasons = new List<GHRadialCloseReason>();
+            GHRadialMenuState s = null;
+            GHRadialMenuDefinition def = SchoolDef(() => s);
+            def.OnClosed = reason => reasons.Add(reason);
+            s = Opened(def, 0);
+            s.GoToPageAndSlot(0, 3, Ms(1));
+            GHRadialApplyResult r = s.Apply(GHRadialInput.Confirm, Ms(2));
+            Assert.True(r.Has(GHRadialEffects.Activated));
+            Assert.Equal(1, s.PageIndex);
+            Assert.Equal(-1, s.HighlightedSlot);
+
+            /* Paging inside the school, then back to the ring with the school's slot highlighted */
+            s.Apply(GHRadialInput.NextPage, Ms(3));
+            Assert.Equal(2, s.PageIndex);
+            s.Apply(GHRadialInput.StepClockwise, Ms(4));
+            r = s.Apply(GHRadialInput.Cancel, Ms(5));
+            Assert.True(r.Has(GHRadialEffects.PageChanged));
+            Assert.False(r.Has(GHRadialEffects.Closed));
+            Assert.Equal(0, s.PageIndex);
+            Assert.Equal(3, s.HighlightedSlot);
+            Assert.True(s.IsOpen);
+            Assert.Empty(reasons);
+
+            /* The ring has no parent: Cancel closes */
+            r = s.Apply(GHRadialInput.Cancel, Ms(6));
+            Assert.True(r.Has(GHRadialEffects.Closed));
+            Assert.Equal(new List<GHRadialCloseReason> { GHRadialCloseReason.Cancelled }, reasons);
+        }
+
+        [Fact]
+        public void Cancel_ParentPageHighlightWinsOverADeflectedStick()
+        {
+            GHRadialMenuState s = null;
+            GHRadialMenuDefinition def = SchoolDef(() => s);
+            s = Opened(def, 0);
+            s.GoToPageAndSlot(0, 3, Ms(1));
+            s.Apply(GHRadialInput.Confirm, Ms(2));
+            Push(s, 180, 0.9);
+            Assert.Equal(4, s.HighlightedSlot);
+            s.Apply(GHRadialInput.Cancel, Ms(3));
+            Assert.Equal(0, s.PageIndex);
+            Assert.Equal(3, s.HighlightedSlot);
+        }
+
+        [Fact]
+        public void OpenerPressed_ClosesEvenOnAPageWithAParent()
+        {
+            int cancels = 0;
+            GHRadialMenuState s = null;
+            GHRadialMenuDefinition def = SchoolDef(() => s);
+            def.OnCancel = () => { cancels++; return true; };
+            s = Opened(def, 0);
+            s.GoToPageAndSlot(1, -1, Ms(1));
+            GHRadialApplyResult r = s.Apply(GHRadialInput.OpenerPressed, Ms(2));
+            Assert.True(r.Has(GHRadialEffects.Closed));
+            Assert.False(s.IsOpen);
+            Assert.Equal(0, cancels);
+        }
+
+        [Fact]
+        public void PageWithinGroup_KeysStayInTheGroup()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("Hotbar 1/3", 8, 0), FullPage("Hotbar 2/3", 8, 0), FullPage("Hotbar 3/3", 8, 0),
+                FullPage("Known 1/2", 8, 1), FullPage("Known 2/2", 8, 1));
+            def.PageWithinGroup = true;
+            GHRadialMenuState s = Opened(def, 0);
+            Assert.Equal(GHRadialEffects.None, s.Apply(GHRadialInput.PrevPage, Ms(1)).Effects);
+            s.Apply(GHRadialInput.NextPage, Ms(2));
+            s.Apply(GHRadialInput.NextPage, Ms(3));
+            Assert.Equal(2, s.PageIndex);
+            Assert.Equal(GHRadialEffects.None, s.Apply(GHRadialInput.NextPage, Ms(4)).Effects);
+            Assert.Equal(GHRadialEffects.None, s.PointerWheel(1, Ms(5)).Effects);
+            Assert.Equal(2, s.PageIndex);
+
+            s.GoToPageAndSlot(3, -1, Ms(6));
+            Assert.Equal(3, s.PageIndex);
+            Assert.Equal(GHRadialEffects.None, s.Apply(GHRadialInput.PrevPage, Ms(7)).Effects);
+            s.Apply(GHRadialInput.NextPage, Ms(8));
+            Assert.Equal(4, s.PageIndex);
+
+            /* Without PageWithinGroup the keys cross groups */
+            def.PageWithinGroup = false;
+            s.Apply(GHRadialInput.PrevPage, Ms(9));
+            s.Apply(GHRadialInput.PrevPage, Ms(10));
+            Assert.Equal(2, s.PageIndex);
+        }
+
+        [Fact]
+        public void PageWithinGroup_PointerChipsAndDotsStayInTheGroup()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("Hotbar 1/3", 8, 0), FullPage("Hotbar 2/3", 8, 0), FullPage("Hotbar 3/3", 8, 0),
+                FullPage("Known 1/2", 8, 1), FullPage("Known 2/2", 8, 1));
+            def.PageWithinGroup = true;
+            def.InitialPageIndex = 3;
+            GHRadialMenuState s = Opened(def, 0);
+            GHRadialGeometry g = s.Geometry;
+            g.Update(1280, 800, 1);
+
+            /* Two dots for the group's two pages */
+            float x, y;
+            g.GetDotCenter(1, 2, out x, out y);
+            Assert.True(s.PointerPress(x, y, Ms(1)).Has(GHRadialEffects.PageChanged));
+            Assert.Equal(4, s.PageIndex);
+            g.GetDotCenter(0, 2, out x, out y);
+            s.PointerPress(x, y, Ms(2));
+            Assert.Equal(3, s.PageIndex);
+
+            /* The previous chip on the group's first page does not leave the group */
+            GHRadialApplyResult r = s.PointerPress(g.CenterX - g.ChipOffsetX, g.CenterY, Ms(3));
+            Assert.False(r.Has(GHRadialEffects.PageChanged));
+            Assert.NotEqual(2, s.PageIndex);
+
+            /* The next chip stays inside */
+            s = Opened(def, Ms(10));
+            s.Geometry.Update(1280, 800, 1);
+            Assert.True(s.PointerPress(s.Geometry.CenterX + s.Geometry.ChipOffsetX, s.Geometry.CenterY, Ms(11)).Has(GHRadialEffects.PageChanged));
+            Assert.Equal(4, s.PageIndex);
+        }
+
+        [Fact]
+        public void GroupRange_IsTheRunOfTheSameGroup()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("A", 8, 0), FullPage("B", 8, 1), FullPage("C", 8, 1), FullPage("D", 8, 2));
+            int first, count;
+            def.GetGroupRange(2, out first, out count);
+            Assert.Equal(1, first);
+            Assert.Equal(2, count);
+            def.GetGroupRange(3, out first, out count);
+            Assert.Equal(3, first);
+            Assert.Equal(1, count);
+            def.GetPagingRange(2, out first, out count);
+            Assert.Equal(0, first);
+            Assert.Equal(4, count);
+            def.PageWithinGroup = true;
+            def.GetPagingRange(2, out first, out count);
+            Assert.Equal(1, first);
+            Assert.Equal(2, count);
+            def.GetDotRange(0, out first, out count);
+            Assert.Equal(0, first);
+            Assert.Equal(1, count);
+        }
+
+        [Fact]
+        public void OnCancel_TrueKeepsTheMenuOpen()
+        {
+            bool consume = true;
+            int cancels = 0;
+            List<GHRadialCloseReason> reasons = new List<GHRadialCloseReason>();
+            GHRadialMenuDefinition def = Def(FullPage("Hotbar", 8, 0));
+            def.OnCancel = () => { cancels++; return consume; };
+            def.OnClosed = reason => reasons.Add(reason);
+            GHRadialMenuState s = Opened(def, 0);
+            GHRadialApplyResult r = s.Apply(GHRadialInput.Cancel, Ms(1));
+            Assert.Equal(GHRadialEffects.None, r.Effects);
+            Assert.True(s.IsOpen);
+            Assert.Equal(1, cancels);
+            Assert.Empty(reasons);
+
+            consume = false;
+            r = s.Apply(GHRadialInput.Cancel, Ms(2));
+            Assert.True(r.Has(GHRadialEffects.Closed));
+            Assert.False(s.IsOpen);
+            Assert.Equal(2, cancels);
+            Assert.Equal(new List<GHRadialCloseReason> { GHRadialCloseReason.Cancelled }, reasons);
+        }
+
+        [Fact]
+        public void OnCancel_ThatReplacesTheDefinition_ReportsAPageChange()
+        {
+            GHRadialMenuState s = null;
+            GHRadialMenuDefinition actions = Def(FullPage("Actions", 8, 0));
+            GHRadialMenuDefinition hotbar = Def(FullPage("Hotbar 1/3", 8, 0), FullPage("Hotbar 2/3", 8, 0));
+            actions.OnCancel = () =>
+            {
+                s.ReplaceDefinition(hotbar, 1, 4, Ms(220), false);
+                return true;
+            };
+            s = Opened(actions, 0);
+            TickUntil(s, 0, Ms(200), Frame60);
+            GHRadialApplyResult r = s.Apply(GHRadialInput.Cancel, Ms(220));
+            Assert.True(r.Has(GHRadialEffects.PageChanged));
+            Assert.False(r.Has(GHRadialEffects.Closed));
+            Assert.Same(hotbar, s.Definition);
+            Assert.Equal(1, s.PageIndex);
+            Assert.Equal(4, s.HighlightedSlot);
+        }
+
+        [Fact]
+        public void ReplaceDefinition_SwapsPagesWithoutReopening()
+        {
+            int closes = 0;
+            GHRadialMenuDefinition first = Def(FullPage("Hotbar 1/3", 8, 0), FullPage("Hotbar 2/3", 8, 0), FullPage("Hotbar 3/3", 8, 0));
+            first.OnClosed = reason => closes++;
+            GHRadialMenuDefinition second = Def(FullPage("Actions", 8, 0));
+            GHRadialMenuState s = Opened(first, 0);
+            TickUntil(s, 0, Ms(300), Frame60);
+            s.Apply(GHRadialInput.NextPage, Ms(300));
+            s.Apply(GHRadialInput.NextPage, Ms(301));
+            s.Apply(GHRadialInput.StepClockwise, Ms(302));
+            TickUntil(s, Ms(310), Ms(600), Frame60);
+            GHRadialPage shown = s.CurrentPage;
+            Assert.Equal(2, s.PageIndex);
+
+            /* Three pages become one: the page is clamped and the highlight set */
+            s.ReplaceDefinition(second, 2, 6, Ms(600), false);
+            Assert.Same(second, s.Definition);
+            Assert.Equal(1, s.PageCount);
+            Assert.Equal(0, s.PageIndex);
+            Assert.Equal(6, s.HighlightedSlot);
+            Assert.Equal(1f, s.GetHighlightWeight(6));
+            Assert.Equal(GHRadialPhase.Open, s.Phase);
+            Assert.Equal(1f, s.Opacity);
+            Assert.True(s.IsOpen);
+            Assert.Equal(0, closes);
+            Assert.Equal(-1, s.FlashSlot);
+
+            /* The crossfade starts from the page shown before */
+            Assert.True(s.PageTransition < 1f);
+            Assert.Same(shown, s.PreviousPage);
+            Assert.Equal(0, s.PreviousPageHighlight);
+            Assert.Equal(0, s.PageDirection);
+            s.Tick(Ms(620));
+            Assert.True(s.NeedsFrame);
+            TickUntil(s, Ms(640), Ms(900), Frame60);
+            Assert.Null(s.PreviousPage);
+            Assert.False(s.NeedsFrame);
+
+            /* One page becomes three, the page highlights start over */
+            s.ReplaceDefinition(first, 1, -1, Ms(900), false);
+            Assert.Equal(3, s.PageCount);
+            Assert.Equal(1, s.PageIndex);
+            Assert.Equal(-1, s.HighlightedSlot);
+            Assert.Equal(-1, s.GetPageHighlight(0));
+            Assert.Equal(-1, s.GetPageHighlight(2));
+            s.Apply(GHRadialInput.NextPage, Ms(901));
+            Assert.Equal(2, s.PageIndex);
+            Assert.Equal(-1, s.HighlightedSlot);
+        }
+
+        [Fact]
+        public void ReplaceDefinition_FlashesTheSlotOnlyWhenAsked()
+        {
+            GHRadialMenuDefinition first = Def(FullPage("Hotbar", 8, 0));
+            GHRadialMenuDefinition second = Def(FullPage("Hotbar", 8, 0), FullPage("Hotbar 2", 8, 0));
+            GHRadialMenuState s = Opened(first, 0);
+            TickUntil(s, 0, Ms(300), Frame60);
+            s.ReplaceDefinition(second, 1, 3, Ms(300), true);
+            Assert.Equal(3, s.FlashSlot);
+            Assert.True(s.FlashIntensity > 0f);
+            TickUntil(s, Ms(310), Ms(500), Frame60);
+            Assert.Equal(-1, s.FlashSlot);
+
+            s.ReplaceDefinition(first, 0, 2, Ms(500), false);
+            Assert.Equal(-1, s.FlashSlot);
+
+            /* Nothing happens while closed */
+            s.Close(GHRadialCloseReason.Cancelled, Ms(510), true);
+            s.ReplaceDefinition(second, 1, 1, Ms(520), true);
+            Assert.Same(first, s.Definition);
+            Assert.False(s.IsVisible);
+        }
+
+        [Fact]
+        public void ReplaceDefinition_FromOnActivate_StillReportsActivated()
+        {
+            int closes = 0;
+            int activations = 0;
+            GHRadialMenuState s = null;
+            GHRadialPage hotbar = FullPage("Hotbar", 8, 0);
+            hotbar.Slots[2].ClosesOnActivate = false;
+            GHRadialMenuDefinition first = Def(hotbar);
+            GHRadialMenuDefinition actions = Def(FullPage("Actions", 8, 0));
+            first.OnClosed = reason => closes++;
+            first.OnActivate = item =>
+            {
+                activations++;
+                s.ReplaceDefinition(actions, 0, 7, Ms(400), false);
+            };
+            s = Opened(first, 0);
+            TickUntil(s, 0, Ms(300), Frame60);
+            Push(s, 90, 0.9);
+            GHRadialApplyResult r = s.Apply(GHRadialInput.Confirm, Ms(400));
+            Assert.Equal(GHRadialEffects.Activated, r.Effects);
+            Assert.Same(hotbar.Slots[2], r.Item);
+            Assert.Equal(1, activations);
+            Assert.Equal(0, closes);
+            Assert.True(s.IsOpen);
+            Assert.Same(actions, s.Definition);
+            Assert.Equal(7, s.HighlightedSlot);
+            /* The confirm's flash on the replaced page is cleared */
+            Assert.Equal(-1, s.FlashSlot);
+
+            /* From OnItemAction, with the flash kept */
+            GHRadialMenuDefinition back = Def(FullPage("Hotbar", 8, 0));
+            actions.OnItemAction = (item, page, slot) => s.ReplaceDefinition(back, 0, slot, Ms(500), true);
+            r = s.Apply(GHRadialInput.ItemAction, Ms(500));
+            Assert.True(r.Has(GHRadialEffects.Activated));
+            Assert.Same(back, s.Definition);
+            Assert.Equal(7, s.HighlightedSlot);
+            Assert.Equal(7, s.FlashSlot);
+        }
+
+        [Fact]
+        public void SwitchSetEnabled_False_BlocksSwitching()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("Hotbar", 8, 0), FullPage("Known", 8, 1));
+            def.SwitchSetPageIndex = 1;
+            def.SwitchSetEnabled = false;
+            GHRadialMenuState s = Opened(def, 0);
+            Assert.Equal(GHRadialEffects.None, s.Apply(GHRadialInput.SwitchSet, Ms(1)).Effects);
+            Assert.Equal(0, s.PageIndex);
+            def.SwitchSetEnabled = true;
+            Assert.True(s.Apply(GHRadialInput.SwitchSet, Ms(2)).Has(GHRadialEffects.PageChanged));
+            Assert.Equal(1, s.PageIndex);
+        }
+
+        [Fact]
+        public void SwitchSetReturnPageIndex_IsWhereTheSwitchedSetGoesBack()
+        {
+            GHRadialMenuDefinition def = Def(FullPage("Hotbar 1/3", 8, 0), FullPage("Hotbar 2/3", 8, 0), FullPage("Hotbar 3/3", 8, 0),
+                FullPage("Known 1/2", 8, 1), FullPage("Known 2/2", 8, 1));
+            def.SwitchSetPageIndex = 3;
+            def.SwitchSetReturnPageIndex = 2;
+            def.InitialPageIndex = 1;
+            GHRadialMenuState s = Opened(def, 0);
+            s.Apply(GHRadialInput.SwitchSet, Ms(1));
+            Assert.Equal(3, s.PageIndex);
+            s.Apply(GHRadialInput.NextPage, Ms(2));
+            s.Apply(GHRadialInput.SwitchSet, Ms(3));
+            Assert.Equal(2, s.PageIndex);
+
+            /* Unset, it goes back to page 0 as before */
+            def.SwitchSetReturnPageIndex = -1;
+            s.Apply(GHRadialInput.SwitchSet, Ms(4));
+            s.Apply(GHRadialInput.SwitchSet, Ms(5));
+            Assert.Equal(0, s.PageIndex);
+        }
+
+        [Fact]
+        public void GoToPageAndSlot_SetsThePageAndTheHighlight()
+        {
+            GHRadialMenuState s = Opened(Def(FullPage("A", 8, 0), FullPage("B", 8, 1)), 0);
+            GHRadialApplyResult r = s.GoToPageAndSlot(1, 6, Ms(1));
+            Assert.True(r.Has(GHRadialEffects.PageChanged));
+            Assert.Equal(1, s.PageIndex);
+            Assert.Equal(6, s.HighlightedSlot);
+            Assert.True(s.PageTransition < 1f);
+            Assert.Equal(1f, s.GetHighlightWeight(6));
+
+            r = s.GoToPageAndSlot(1, 2, Ms(2));
+            Assert.Equal(GHRadialEffects.HighlightChanged, r.Effects);
+            Assert.Equal(2, s.HighlightedSlot);
+            s.GoToPageAndSlot(0, -1, Ms(3));
+            Assert.Equal(-1, s.HighlightedSlot);
+            Assert.Equal(GHRadialEffects.None, s.GoToPageAndSlot(5, 0, Ms(4)).Effects);
+            Assert.Equal(0, s.PageIndex);
+        }
+
+        [Fact]
+        public void GeometryOffset_ShiftsPointerHitTests()
+        {
+            GHRadialPage page = new GHRadialPage("Ctx", 8);
+            page.Slots[2] = new GHRadialItem { Id = "east" };
+            page.Slots[4] = new GHRadialItem { Id = "south" };
+            GHRadialMenuState s = Opened(Def(page), 0);
+            GHRadialGeometry g = s.Geometry;
+            g.Update(1280, 700, 1);
+            const float offset = 150f;
+            s.GeometryOffsetY = offset;
+            /* Unshifted, this point would be in the empty southeast slot */
+            s.PointerMove(g.CenterX + g.MidRadius, g.CenterY + offset);
+            Assert.Equal(2, s.HighlightedSlot);
+            s.PointerMove(g.CenterX, g.CenterY + g.MidRadius + offset);
+            Assert.Equal(4, s.HighlightedSlot);
+            s.PointerMove(g.CenterX, g.CenterY + offset);
+            Assert.Equal(-1, s.HighlightedSlot);
         }
     }
 }

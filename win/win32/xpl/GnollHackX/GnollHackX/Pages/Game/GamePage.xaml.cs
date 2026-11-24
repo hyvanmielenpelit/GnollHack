@@ -67,7 +67,7 @@ namespace GnollHackX.Pages.Game
         {
             public bool OkClicked;
             public int MenuItemClickIndex;
-            public long ItemIdentifier;
+            public long ItemIdentifier; /* 0 when the click cannot select the row */
             public MenuClickResult(bool okClicked, int menuItemClickIndex, long itemIdentifier)
             {
                 OkClicked = okClicked;
@@ -5203,8 +5203,13 @@ namespace GnollHackX.Pages.Game
         public bool DelayedMenuShow { get { return Interlocked.CompareExchange(ref _delayedMenuShow, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedMenuShow, value ? 1 : 0); } }
         public bool DelayedMenuShowDoTextHide { get { return Interlocked.CompareExchange(ref _delayedMenuShowDoTextHide, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedMenuShowDoTextHide, value ? 1 : 0); } }
 
-        private async Task ShowMenuCanvas(GHMenuInfo menuinfo, GHPublishedWindow ghwindow)
+        /* allowRadial false shows the list even where a gamepad radial would answer the menu */
+        private async Task ShowMenuCanvas(GHMenuInfo menuinfo, GHPublishedWindow ghwindow, bool allowRadial = true)
         {
+            /* The Cast menu and its spell command menu go to the gamepad Spells radial, which answers them without the canvas */
+            if (allowRadial && TryShowMenuAsGamepadSpellRadial(menuinfo, ghwindow))
+                return;
+
             /* Cancel delayed menu hide */
 #if GNH_MAUI
             StopMenuHideTimers();
@@ -20042,7 +20047,7 @@ namespace GnollHackX.Pages.Game
                         localMenuDrawBounds.ScrollOffset = curmenuoffset;
                         foreach (GHMenuItem mi in menuItems)
                         {
-                            if (mi.Identifier != 0 || mi.SpecialMark != '\0')
+                            if (mi.IsTapSelectable || mi.SpecialMark != '\0')
                                 has_identifiers = true;
 
                             if (mi.IsGlyphVisible)
@@ -20196,7 +20201,7 @@ namespace GnollHackX.Pages.Game
                                     }
 
                                     /* Selection rectangle */
-                                    bool isSelectable = selectionHow != SelectionMode.None && mi.Identifier != 0;
+                                    bool isSelectable = selectionHow != SelectionMode.None && mi.IsTapSelectable;
                                     bool iconsFitRight = x + totalRowWidth + minrowheight < canvaswidth - scaledmenumarginx;
                                     SKRect selectionrect = new SKRect(x, y, x + totalRowWidth + (isInventory && iconsFitRight ? minrowheight : 0), y + totalRowHeight);
                                     bool isFocused = gamepadFocusVisible && idx == gamepadFocusIndex && !isEquipmentSideShown;
@@ -20285,7 +20290,7 @@ namespace GnollHackX.Pages.Game
 
                                     if (has_identifiers && !MenuCanvas.HideMenuLetters)
                                     {
-                                        if (mi.Identifier == 0 && mi.SpecialMark != '\0')
+                                        if (!mi.IsTapSelectable && mi.SpecialMark != '\0')
                                             str = mi.FormattedSpecialMark;
                                         else
                                             str = mi.FormattedAccelerator;
@@ -21875,7 +21880,8 @@ namespace GnollHackX.Pages.Game
                 return false;
 
             menuItemMaxCount = menuItems[selectedidx].MaxCount;
-            if (menuItemMaxCount <= 1)
+            /* A long-tap-only row takes no count, since a count is a plain selection */
+            if (menuItemMaxCount <= 1 || menuItems[selectedidx].IsLongTapOnly)
             {
                 if (!MenuCanvas.SpecialClickOnLongTap)
                     return false;
@@ -21974,6 +21980,13 @@ namespace GnollHackX.Pages.Game
            menu is single-select; returns true if OK was pressed */
         private bool ActivateMenuItem(int idx, bool isLongTap)
         {
+            /* A key or a tap of A does nothing on a long-tap-only row */
+            var menuItems = MenuCanvas.MenuItems;
+            if (!isLongTap && menuItems != null && idx >= 0 && idx < menuItems.Count && menuItems[idx].IsLongTapOnly)
+            {
+                _menuCountNumber = -1;
+                return false;
+            }
             bool doclickok = ClickMenuItem(idx, isLongTap);
             _menuCountNumber = -1;
             if (MenuOKButton.IsEnabled)
@@ -22037,7 +22050,7 @@ namespace GnollHackX.Pages.Game
                     if (localDrawBounds.DrawBoundList[idx].DrawBounds.Contains(p))
                     {
                         GHMenuItem mi = menuItems[idx];
-                        if (mi.Identifier != 0 && (mi.IsAutoClickOk || clickOKOnSelection))
+                        if (mi.IsTapSelectable && (mi.IsAutoClickOk || clickOKOnSelection))
                         {
                             if (selectionHow == SelectionMode.Multiple)
                             {
@@ -22085,7 +22098,7 @@ namespace GnollHackX.Pages.Game
                     if (localDrawBounds.DrawBoundList[idx].DrawBounds.Contains(e.Location))
                     {
                         clickIdx = idx;
-                        identifier = menuItems[idx].Identifier;
+                        identifier = isLongTap || menuItems[idx].IsTapSelectable ? menuItems[idx].Identifier : 0;
                         doclickok = ClickMenuItem(idx, isLongTap);
                         break;
                     }
@@ -22142,7 +22155,7 @@ namespace GnollHackX.Pages.Game
                     if (localDrawBounds.DrawBoundList[idx].DrawBounds.Contains(e.Location))
                     {
                         clickIdx = idx;
-                        identifier = menuItems[idx].Identifier;
+                        identifier = isLongTap || menuItems[idx].IsTapSelectable ? menuItems[idx].Identifier : 0;
                         doclickok = ClickMenuItem(idx, isLongTap);
                         foundItem = true;
                         break;
@@ -22155,7 +22168,7 @@ namespace GnollHackX.Pages.Game
                         if (localDrawBounds.DrawBoundList[idx].EquipmentDrawBounds.Contains(e.Location))
                         {
                             clickIdx = idx;
-                            identifier = menuItems[idx].Identifier;
+                            identifier = isLongTap || menuItems[idx].IsTapSelectable ? menuItems[idx].Identifier : 0;
                             doclickok = ClickMenuItem(idx, isLongTap);
                             break;
                         }
@@ -22189,13 +22202,13 @@ namespace GnollHackX.Pages.Game
                     return false;
 
                 GHMenuItem mi = menuItems[menuItemIdx];
-                if (mi.Identifier == 0)
+                if (isLongTap ? mi.Identifier == 0 : !mi.IsTapSelectable)
                 {
                     if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
                     {
                         foreach (GHMenuItem o in menuItems)
                         {
-                            if (o.GroupAccelerator == mi.HeadingGroupAccelerator)
+                            if (o.GroupAccelerator == mi.HeadingGroupAccelerator && !o.IsLongTapOnly)
                             {
                                 if (!mi.HeadingUnselectGroup)
                                 {
@@ -22482,14 +22495,7 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            GHGame curGame = GHApp.CurrentGHGame;
-            GHWindow origWindow;
-            if (MenuCanvas.PublishedWindow.PublishedFrom == null)
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, resultlist, false));
-            else if (MenuCanvas.PublishedWindow.PublishedFrom.TryGetTarget(out origWindow))
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, resultlist, false));
-            else
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, resultlist, false));
+            EnqueueMenuResponse(MenuCanvas.PublishedWindow, resultlist, false, 0);
 
             if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
                 await DelayedMenuHide();
@@ -22569,17 +22575,24 @@ namespace GnollHackX.Pages.Game
                 InterlockedEquipmentMenuScrollOffset = _menuEquipmentScrollOffset;
             }
 
-            GHGame curGame = GHApp.CurrentGHGame;
-            GHWindow origWindow;
-            if (MenuCanvas.PublishedWindow.PublishedFrom == null)
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, new List<GHMenuItem>(1), true, responseIntValue));
-            else if (MenuCanvas.PublishedWindow.PublishedFrom.TryGetTarget(out origWindow))
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(1), true, responseIntValue));
-            else
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(1), true, responseIntValue));
+            EnqueueMenuResponse(MenuCanvas.PublishedWindow, new List<GHMenuItem>(1), true, responseIntValue);
 
             if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
                 await DelayedMenuHide();
+        }
+
+        /* Answers the menu shown from ghwindow: the selected items, or a cancel; responseIntValue 1 requests a weapon swap.
+           The list's OK and Cancel and the gamepad Spells radial all answer through here. */
+        private void EnqueueMenuResponse(GHPublishedWindow ghwindow, List<GHMenuItem> resultlist, bool cancelled, int responseIntValue)
+        {
+            GHGame curGame = GHApp.CurrentGHGame;
+            GHWindow origWindow;
+            if (ghwindow == null || ghwindow.PublishedFrom == null)
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, resultlist, cancelled, responseIntValue));
+            else if (ghwindow.PublishedFrom.TryGetTarget(out origWindow))
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, resultlist, cancelled, responseIntValue));
+            else
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, resultlist, cancelled, responseIntValue));
         }
 
         private void RequestSwapWeaponAndCloseMenu()
@@ -22677,12 +22690,19 @@ namespace GnollHackX.Pages.Game
             }
 
             /* Only caller is a dispatcher timer tick, which runs on the UI thread */
+            CompleteMenuHide(true);
+        }
+
+        /* Hides the menu and returns to the map; UI thread */
+        private void CompleteMenuHide(bool collectGarbage)
+        {
             MenuGrid.IsVisible = false;
             //MainGrid.IsVisible = true;
             IsMainCanvasOn = true;
             StopMenuCanvasAnimation();
             MenuWindowGlyphImage.StopAnimation();
-            GHApp.CollectGarbagePlatformDependent();
+            if (collectGarbage)
+                GHApp.CollectGarbagePlatformDependent();
             GHDiagnosticsScheduler.RaiseLightSpot(GHDiagnosticsSpotNames.MenuClose);
             RefreshScreen = true;
             StartMainCanvasAnimation();
@@ -22741,6 +22761,12 @@ namespace GnollHackX.Pages.Game
             }
 
             /* Only caller is a dispatcher timer tick, which runs on the UI thread */
+            CompleteTextHide(true);
+        }
+
+        /* Hides the text window and returns to the map; UI thread */
+        private void CompleteTextHide(bool collectGarbage)
+        {
             TextGrid.IsVisible = false;
             //MainGrid.IsVisible = true;
             IsMainCanvasOn = true;
@@ -22753,7 +22779,8 @@ namespace GnollHackX.Pages.Game
                 InterlockedTextScrollOffset = _textScrollOffset;
             }
             StopTextCanvasAnimation();
-            GHApp.CollectGarbagePlatformDependent();
+            if (collectGarbage)
+                GHApp.CollectGarbagePlatformDependent();
             GHDiagnosticsScheduler.RaiseLightSpot(GHDiagnosticsSpotNames.TextClose);
             RefreshScreen = true;
             StartMainCanvasAnimation();
@@ -22857,7 +22884,7 @@ namespace GnollHackX.Pages.Game
                 {
                     foreach (GHMenuItem o in menuItems)
                     {
-                        if (o.Identifier != 0)
+                        if (o.IsTapSelectable)
                         {
                             if (!_unselectOnTap)
                             {

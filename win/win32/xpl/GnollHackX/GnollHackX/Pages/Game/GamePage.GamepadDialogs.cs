@@ -1203,7 +1203,10 @@ namespace GnollHackX.Pages.Game
                     }
                     break;
                 case GHGamepadButton.Menu:
-                    /* Menu turns to the equipment side, as the flip button does */
+                    /* Menu shows the Cast menu as the Spells radial again, and turns to the equipment side, as the
+                       flip button does */
+                    if (isPress && TryShowGamepadSpellCastListAsRadial(token))
+                        break;
                     if (isPress && IsMenuGamepadFlipAvailable())
                         FlipMenuCanvas();
                     break;
@@ -1327,12 +1330,15 @@ namespace GnollHackX.Pages.Game
             }
 
             GHMenuItem focused = items != null && focus >= 0 && focus < items.Count ? items[focus] : null;
+            /* A long-tap-only row takes hold A only */
+            bool canTap = focused == null || !focused.IsLongTapOnly;
             bool canHold = focused != null && focused.Identifier != 0 && MenuCanvas.AllowLongTap;
-            bool canCount = canHold && focused.MaxCount > 1;
+            bool canCount = canHold && focused.MaxCount > 1 && !focused.IsLongTapOnly;
             bool canSpecial = canHold && !canCount && MenuCanvas.SpecialClickOnLongTap;
             if (how == SelectionMode.Multiple)
             {
-                hints.Add(new GHGamepadHint(GHGamepadButton.A, "Toggle", false));
+                if (canTap)
+                    hints.Add(new GHGamepadHint(GHGamepadButton.A, "Toggle", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.X, "OK", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.Y, _unselectOnTap ? "None" : "All", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.B, "Cancel", false));
@@ -1343,7 +1349,8 @@ namespace GnollHackX.Pages.Game
             }
             else
             {
-                hints.Add(new GHGamepadHint(GHGamepadButton.A, "Select", false));
+                if (canTap)
+                    hints.Add(new GHGamepadHint(GHGamepadButton.A, "Select", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.B, "Cancel", false));
                 if (canCount)
                     hints.Add(new GHGamepadHint(GHGamepadButton.A, "Count", true));
@@ -1356,6 +1363,33 @@ namespace GnollHackX.Pages.Game
             }
             if (canFlip)
                 hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Equipment", false));
+            if (IsGamepadSpellCastMenuList())
+                hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Radial", false));
+        }
+
+        /* The Cast menu shown as the list, which Menu turns back into the Spells radial */
+        private bool IsGamepadSpellCastMenuList()
+        {
+            if (PlayingReplay || !MenuGrid.IsVisible || MenuHideOn)
+                return false;
+            GHPublishedWindow window = MenuCanvas.PublishedWindow;
+            GHMenuInfo menuinfo = window == null ? null : window.MenuInfo;
+            return menuinfo != null && (menuinfo.StartFlags & (ulong)GHMenuStartFlags.SpellCast) != 0;
+        }
+
+        /* Hides the Cast menu's list without answering it and shows the same menu as the Spells radial; the list
+           comes back when the radial cannot open */
+        private bool TryShowGamepadSpellCastListAsRadial(int token)
+        {
+            if (!IsGamepadSpellCastMenuList())
+                return false;
+            GHPublishedWindow window = MenuCanvas.PublishedWindow;
+            GHMenuInfo menuinfo = window.MenuInfo;
+            MarkGamepadDialogAnswered(token);
+            CompleteMenuHide(false);
+            if (!TryShowMenuAsGamepadSpellRadial(menuinfo, window))
+                ShowGamepadSpellMenuAsList(menuinfo, window);
+            return true;
         }
     }
 }

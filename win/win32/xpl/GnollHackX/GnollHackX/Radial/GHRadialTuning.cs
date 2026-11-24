@@ -45,6 +45,9 @@ namespace GnollHackX
         public static readonly int MoreRows = 6;
         public static readonly int MoreRowsPerRadialPage = 3;
         public static readonly int SlotMemoryCapacity = 512;
+        public static readonly int SchoolRingSlotCount = 12;        /* the Spells radial's school ring: one slot per spell school */
+        public static readonly int SpellPageSlotCount = 8;          /* Hotbar and Known Spells pages */
+        public static readonly int SpellActionsSlotCount = 8;       /* the spell Actions sub-radial */
 
         /* Fixed compass directions in degrees, clockwise from north */
         public static readonly double North = 0.0;
@@ -89,6 +92,7 @@ namespace GnollHackX
         public static readonly double LabelFont = 0.047;
         public static readonly double LabelFontMinDip = 14.0;
         public static readonly double LabelMaxWidthOfArc = 0.92;
+        public static readonly double LabelMaxWidthOfSlice = 0.92;      /* of the widest label block inside the slice */
         public static readonly double LabelLineHeight = 1.25;           /* of the label font size */
         public static readonly double HubTitleFont = 0.085;
         public static readonly double HubTitleMinOfFont = 0.6;
@@ -123,5 +127,23 @@ namespace GnollHackX
         public static readonly double ArcSegmentOfCorner = 3.0;         /* slice arcs are polylines of segments this many corner radii long */
         public static readonly double RingBoundsOfOuter = 1.2;          /* layer bounds around the ring, glow and highlight offset included */
         public static readonly double ScreenMarginDip = 16.0;
+
+        /* Set tabs, badges, the hub's extra lines, the description band and the carried ghost */
+        public static readonly double SetTabHeightOfTitleFont = 1.5;       /* of the page title font size */
+        public static readonly double SetTabGapOfHeight = 0.25;            /* between the tab row and the page title */
+        public static readonly double SetTabInactiveOpacity = 0.45;
+        public static readonly double CarriedGhostOpacity = 0.6;
+        public static readonly double SwapOccupantOpacity = 0.4;
+        public static readonly double BadgeSizeOfLabelFont = 1.15;         /* badge height, of the slice label font size */
+        public static readonly double FooterFontOfDescriptionFont = 0.9;   /* of the hub description font size */
+        public static readonly double FooterStepDownOfFont = 0.85;         /* the one smaller size for a description that does not fit */
+        public static readonly double FooterWidthOfOuterRadius = 2.4;
+        public static readonly double FooterGapOfLine = 0.5;               /* extra band height, of a line */
+        public static readonly double HubSymbolSizeOfLabelFont = 0.95;     /* a hub line's symbol height, of the line's font size */
+
+        /* A slice's SliceTintNhColor */
+        public static readonly double SliceTintOfFill = 0.2;               /* the fill's move toward the tint */
+        public static readonly double SliceTintOfBorder = 0.45;            /* the border's move toward the tint */
+        public static readonly double SliceTintHighlightKeep = 0.5;        /* of both, kept on a fully highlighted slice */
     }
 }

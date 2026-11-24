@@ -35,6 +35,7 @@ DLLEXPORT int GnollHackStart(char*);
 #define GHRUNFLAGS_WORN_SHOWS_EQUIPMENT     0x00100000UL
 #define GHRUNFLAGS_METRIC_SYSTEM            0x00200000UL
 #define GHRUNFLAGS_DAMAGE_FORMULA           0x00400000UL
+#define GHRUNFLAGS_SPELL_HOTBAR_AUTOADD     0x00800000UL
 
 /* RunGnollHack return value: the engine never started, because chdir to gnhdir failed */
 #define RUNGNOLLHACK_ERROR_DATA_DIRECTORY (-1)
@@ -153,5 +154,8 @@ DLLEXPORT int RunGnollHack(
     SendMonsterDataCallback callback_send_monster_data,
     SendEngravingDataCallback callback_send_engraving_data
 );
+
+/* Spell hotbar */
+DLLEXPORT void LibSetSpellHotbarAutoAdd(int on);
 
 #endif

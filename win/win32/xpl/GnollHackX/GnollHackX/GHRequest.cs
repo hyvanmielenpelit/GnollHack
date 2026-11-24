@@ -120,6 +120,7 @@ namespace GnollHackX
         PlayMusic,
         UpdateGameMusic,
         PlayRadialTickSound,
+        SetSpellHotbarAutoAdd,
     }
 
     public struct AddContextMenuData
