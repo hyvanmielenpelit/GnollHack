@@ -132,6 +132,76 @@ namespace GnollHackX
             return (float)(GHRadialTuning.LabelMaxWidthOfArc * GetArcLength(MidRadius, slotCount));
         }
 
+        /* The label width for a horizontal block of blockHeight centered at centerRadius along the slot's
+           center direction; see GetLabelMaxWidthAt */
+        public float GetLabelMaxWidth(int slotCount, int slot, float centerRadius, float blockHeight)
+        {
+            double a = SlotCenterDegrees(slot, slotCount) * Math.PI / 180.0;
+            return GetLabelMaxWidthAt(slotCount, slot, (float)(Math.Sin(a) * centerRadius), -(float)(Math.Cos(a) * centerRadius), blockHeight);
+        }
+
+        /* LabelMaxWidthOfSlice of the widest horizontal block of blockHeight, centered at (offsetX, offsetY) from
+           the ring's center, that lies inside the slot's slice: between its two straight edges, SliceGap / 2
+           inside the slot's boundary radii, outside the inner arc and inside the outer arc. Wider blocks contain
+           narrower ones, so the width is found by bisection. A block that does not fit even at zero width is
+           measured on its center line; one whose center is outside the slice gets the arc-based width. */
+        public float GetLabelMaxWidthAt(int slotCount, int slot, float offsetX, float offsetY, float blockHeight)
+        {
+            if (!IsValid || slotCount < 3)
+                return GetLabelMaxWidth(slotCount);
+            double half = 180.0 / slotCount;
+            double c = SlotCenterDegrees(Mod(slot, slotCount), slotCount);
+            double a0 = (c - half) * Math.PI / 180.0;
+            double a1 = (c + half) * Math.PI / 180.0;
+            /* The edges' inward normals: toward the slot's center angle */
+            double n0x = Math.Cos(a0);
+            double n0y = Math.Sin(a0);
+            double n1x = -Math.Cos(a1);
+            double n1y = -Math.Sin(a1);
+            double halfHeight = Math.Max(0.0, blockHeight / 2.0);
+            if (!LabelBlockFits(offsetX, offsetY, 0.0, halfHeight, n0x, n0y, n1x, n1y))
+            {
+                if (halfHeight > 0.0 && LabelBlockFits(offsetX, offsetY, 0.0, 0.0, n0x, n0y, n1x, n1y))
+                    halfHeight = 0.0;
+                else
+                    return GetLabelMaxWidth(slotCount);
+            }
+            double lo = 0.0;
+            double hi = 2.0 * OuterRadius;
+            int i;
+            for (i = 0; i < 32; i++)
+            {
+                double mid = (lo + hi) / 2.0;
+                if (LabelBlockFits(offsetX, offsetY, mid / 2.0, halfHeight, n0x, n0y, n1x, n1y))
+                    lo = mid;
+                else
+                    hi = mid;
+            }
+            return (float)(GHRadialTuning.LabelMaxWidthOfSlice * lo);
+        }
+
+        /* The block's rectangle against the two edge half-planes, the outer circle and the inner circle */
+        private bool LabelBlockFits(double cx, double cy, double halfWidth, double halfHeight, double n0x, double n0y, double n1x, double n1y)
+        {
+            double x0 = cx - halfWidth;
+            double x1 = cx + halfWidth;
+            double y0 = cy - halfHeight;
+            double y1 = cy + halfHeight;
+            double edge = SliceGap / 2.0;
+            /* A linear function's minimum over the rectangle is at a corner */
+            if (n0x * (n0x >= 0 ? x0 : x1) + n0y * (n0y >= 0 ? y0 : y1) < edge)
+                return false;
+            if (n1x * (n1x >= 0 ? x0 : x1) + n1y * (n1y >= 0 ? y0 : y1) < edge)
+                return false;
+            double fx = Math.Max(Math.Abs(x0), Math.Abs(x1));
+            double fy = Math.Max(Math.Abs(y0), Math.Abs(y1));
+            if (fx * fx + fy * fy > (double)OuterRadius * OuterRadius)
+                return false;
+            double nx = ClampDouble(0.0, x0, x1);
+            double ny = ClampDouble(0.0, y0, y1);
+            return nx * nx + ny * ny >= (double)InnerRadius * InnerRadius;
+        }
+
         /* The canvas point at a compass angle and a radius from the center */
         public void GetPoint(double compassDegrees, float radius, out float x, out float y)
         {

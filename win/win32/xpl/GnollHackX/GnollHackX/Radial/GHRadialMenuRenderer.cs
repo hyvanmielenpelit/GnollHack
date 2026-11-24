@@ -87,7 +87,10 @@ namespace GnollHackX
         private const float BadgeTextOfHeight = 0.62f;     /* badge pill text, of the badge height */
         private const float BadgeAngleOfHalfSlot = 0.55f;  /* badges sit clockwise of the slot's center line */
         private const float HubFixedIconOfHub = 0.7f;      /* the fixed hub item's icon, of the hub radius */
-        private const float HubLineMinOfFont = 0.7f;       /* a hub line shrinks to fit down to this */
+        private const float HubFixedTitleRaiseOfIcon = 0.06f; /* how far the fixed hub item's label moves up into the icon's margin */
+        private const float HubFixedTitleWidthOfHubDiameter = 0.68f; /* the label sits low in the hub, where the circle is narrower */
+        private const float FooterTitleMinOfFont = 0.7f;   /* the band's title row shrinks to fit down to this */
+        private const int MaxWrappedLines = 3;             /* the most lines a slice label or a hub title wraps into */
         private const float HubRunGapOfFont = 0.5f;        /* before a run with a symbol */
         private const float HubSymbolGapOfFont = 0.2f;     /* between a symbol and its text */
         private const float TabFontOfHeight = 0.5f;
@@ -103,10 +106,17 @@ namespace GnollHackX
         private sealed class ItemLayout
         {
             public int SlotCount;
-            public string Label;
-            public float LabelSize;
-            public string HubTitle;
             public float HubTitleSize;
+            public readonly string[] HubTitleLines = new string[MaxWrappedLines];
+            public int HubTitleLineCount;
+
+            /* The slice label, fitted to the slot it was last drawn in */
+            public bool LabelReady;
+            public int LabelSlot = -1;
+            public float LabelSize;
+            public float LabelMaxWidth;             /* one line's width limit */
+            public readonly string[] LabelLines = new string[MaxWrappedLines];
+            public int LabelLineCount;
             public readonly string[] DescriptionLines = new string[GHRadialTuning.HubDescriptionMaxLines];
             public int DescriptionLineCount;
             public float BadgeTextWidth;            /* a Count badge's text */
@@ -115,7 +125,9 @@ namespace GnollHackX
             public bool HubLinesReady;
             public HubLineLayout TopLine;
             public HubLineLayout[] HubLines;
+            public float HubLinesGap;               /* above the first of HubLines */
             public bool FooterReady;
+            public HubLineLayout FooterTitle;
             public string[] FooterLines;
             public int FooterLineCount;
             public float FooterSize;
@@ -175,6 +187,7 @@ namespace GnollHackX
         private int _resourceVersion = -1;
 
         private readonly Dictionary<GHRadialItem, ItemLayout> _itemLayouts = new Dictionary<GHRadialItem, ItemLayout>();
+        private readonly float[] _lineWidths = new float[MaxWrappedLines];     /* FitLines' width per line count */
         private GHRadialMenuDefinition _layoutDefinition;
         private int _layoutVersion = -1;
         private SKTypeface _layoutTitleTypeface;
@@ -388,8 +401,9 @@ namespace GnollHackX
             {
                 _reserveDefinition = def;
                 _reserveTabs = def.HasSetTabs;
-                _reserveFooter = def.HasFooters;
-                _reserveFooterLines = def.FooterMaxLines;
+                _reserveFooter = def.HasFooters || (def.FooterMaxLines > 0 && HasFooterTitles(def));
+                /* One row more for the band's title row when any item has one */
+                _reserveFooterLines = Math.Max(0, def.FooterMaxLines) + (HasFooterTitles(def) ? 1 : 0);
             }
             _reserveTop = 0f;
             _reserveBottom = 0f;
@@ -419,6 +433,28 @@ namespace GnollHackX
             double ro = Math.Max(0.0, Math.Min(fixedRadius, heightRadius));
             _reserveTop = (float)Math.Round(kTop * ro);
             _reserveBottom = (float)(kBottom * ro);
+        }
+
+        /* True when the fixed hub item or any slot item has a FooterTitle */
+        private static bool HasFooterTitles(GHRadialMenuDefinition def)
+        {
+            if (def.FixedHubItem != null && def.FixedHubItem.FooterTitle != null)
+                return true;
+            int i;
+            for (i = 0; i < def.PageCount; i++)
+            {
+                GHRadialPage page = def.Pages[i];
+                if (page == null)
+                    continue;
+                int k;
+                for (k = 0; k < page.SlotCount; k++)
+                {
+                    GHRadialItem item = page.Slots[k];
+                    if (item != null && item.FooterTitle != null)
+                        return true;
+                }
+            }
+            return false;
         }
 
         private void DrawRing(SKCanvas canvas, GHRadialMenuState state, GHRadialGeometry g, GHRadialPage page, bool isCurrent,
@@ -489,7 +525,11 @@ namespace GnollHackX
             float px = g.CenterX + dirX * radius;
             float py = g.CenterY + dirY * radius;
             float iconSize = g.GetIconSize(n) * (1f + ((float)GHRadialTuning.HighlightIconScale - 1f) * e);
+            /* Over the occupant's icon, which its label's lines push up */
+            GHRadialItem occupant = page.GetItem(slot);
             float labelHeight = g.LabelFontSize * (float)GHRadialTuning.LabelLineHeight;
+            if (occupant != null)
+                labelHeight = LabelBlockHeight(GetItemLayout(occupant, n, slot, g));
             float top = py - (iconSize + labelHeight) / 2;
             SKRect dest = new SKRect(px - iconSize / 2, top, px + iconSize / 2, top + iconSize);
 
@@ -498,7 +538,6 @@ namespace GnollHackX
             DrawIcon(canvas, carried, dest, true, false, false);
             canvas.RestoreToCount(layer);
 
-            GHRadialItem occupant = page.GetItem(slot);
             if (occupant != null && occupant.ShowsSwapMark)
                 DrawSwapMark(canvas, g, dest);
         }
@@ -548,11 +587,20 @@ namespace GnollHackX
             float flash = isCurrent && state.FlashSlot == slot ? state.FlashIntensity : 0f;
             if (flash > 0f)
                 fill = LerpColor(fill, _accentFlashFill, flash);
+            SKColor border = LerpColor(SliceBorder, enabled ? _accent : DisabledBorder, e);
+            /* A tinted slice leans toward its color, less while highlighted so that the highlight shows through */
+            if (item.SliceTintNhColor >= 0 && NhColorLookup != null)
+            {
+                SKColor tint = GetNhColor(item.SliceTintNhColor, fill);
+                float keep = 1f - (1f - (float)GHRadialTuning.SliceTintHighlightKeep) * e;
+                fill = TintColor(fill, tint, (float)GHRadialTuning.SliceTintOfFill * keep);
+                border = TintColor(border, tint, (float)GHRadialTuning.SliceTintOfBorder * keep);
+            }
             _sliceFill.Color = fill;
             canvas.DrawPath(path, _sliceFill);
             /* A placeholder's outline is dashed */
             SKPaint stroke = item.IsPlaceholder ? _placeholderStroke : _sliceStroke;
-            stroke.Color = LerpColor(SliceBorder, enabled ? _accent : DisabledBorder, e);
+            stroke.Color = border;
             stroke.StrokeWidth = g.DipScale * (1f + ((float)GHRadialTuning.HighlightBorderDip - 1f) * e);
             canvas.DrawPath(path, stroke);
             canvas.Restore();
@@ -565,7 +613,7 @@ namespace GnollHackX
         {
             bool isToggle = item.IsToggle;
             bool isOn = isToggle && item.IsOn;
-            ItemLayout layout = GetItemLayout(item, n, g);
+            ItemLayout layout = GetItemLayout(item, n, slot, g);
 
             float radius = g.MidRadius + offset - (isToggle ? (float)(GHRadialTuning.ToggleContentInset * g.OuterRadius) : 0f);
             float px = g.CenterX + dirX * radius;
@@ -575,7 +623,8 @@ namespace GnollHackX
             _textPaint.Typeface = LabelTypeface;
             _textPaint.TextSize = layout.LabelSize;
             float labelAscent = -_textPaint.FontMetrics.Ascent;
-            float labelHeight = layout.LabelSize * (float)GHRadialTuning.LabelLineHeight;
+            float labelLineHeight = layout.LabelSize * (float)GHRadialTuning.LabelLineHeight;
+            float labelHeight = LabelBlockHeight(layout);
 
             float top = py - (iconSize + labelHeight) / 2;
             SKRect dest = new SKRect(px - iconSize / 2, top, px + iconSize / 2, top + iconSize);
@@ -584,7 +633,7 @@ namespace GnollHackX
             int layer = -1;
             if (contentAlpha < 0.997f)
             {
-                float halfW = Math.Max(iconSize, g.GetLabelMaxWidth(n)) * 0.6f;
+                float halfW = Math.Max(iconSize, Math.Max(g.GetLabelMaxWidth(n), layout.LabelMaxWidth)) * 0.6f;
                 float halfH = (iconSize + labelHeight) * 0.6f;
                 _contentLayerPaint.Color = SKColors.White.WithAlpha(ToByte(contentAlpha));
                 layer = canvas.SaveLayer(new SKRect(px - halfW, py - halfH, px + halfW, py + halfH), _contentLayerPaint);
@@ -598,26 +647,31 @@ namespace GnollHackX
             }
             else
             {
-                drawn = DrawIcon(canvas, item, dest, enabled, e > 0.5f, isOn);
+                /* IconGrayed draws the icon as a disabled item's */
+                drawn = DrawIcon(canvas, item, dest, enabled && !item.IconGrayed, e > 0.5f, isOn);
             }
             if (drawn)
                 top += iconSize;
             else
                 top = py - labelHeight / 2;
 
-            if (!string.IsNullOrEmpty(layout.Label))
+            int i;
+            for (i = 0; i < layout.LabelLineCount; i++)
             {
+                string line = layout.LabelLines[i];
+                if (string.IsNullOrEmpty(line))
+                    continue;
                 _textPaint.Typeface = LabelTypeface;
                 _textPaint.TextSize = layout.LabelSize;
                 _textPaint.Color = item.IsPlaceholder ? DisabledLabel : GetItemColor(item, enabled ? SKColors.White : DisabledLabel);
                 float tx = px;
-                float ty = top + labelAscent;
+                float ty = top + labelAscent + i * labelLineHeight;
                 if (snap)
                 {
                     tx = Snap(tx);
                     ty = Snap(ty);
                 }
-                _textPaint.DrawTextOnCanvas(canvas, layout.Label, tx, ty, SKTextAlign.Center);
+                _textPaint.DrawTextOnCanvas(canvas, line, tx, ty, SKTextAlign.Center);
             }
 
             if (layer >= 0)
@@ -730,6 +784,12 @@ namespace GnollHackX
             return (float)(GHRadialTuning.BadgeSizeOfLabelFont * g.LabelFontSize);
         }
 
+        /* The label's lines; at least one line, as the icon's placement leaves room for a label */
+        private static float LabelBlockHeight(ItemLayout layout)
+        {
+            return layout.LabelSize * (float)GHRadialTuning.LabelLineHeight * Math.Max(1, layout.LabelLineCount);
+        }
+
         /* The item's NhColor through NhColorLookup, or the default */
         private SKColor GetItemColor(GHRadialItem item, SKColor defaultColor)
         {
@@ -812,9 +872,9 @@ namespace GnollHackX
             if (_hasPrompt)
                 DrawHubPrompt(canvas, state, def, g, snap);
             else if (def.FixedHubItem != null)
-                DrawHubFixedItem(canvas, g, def.FixedHubItem, GetItemLayout(def.FixedHubItem, page.SlotCount, g), snap);
+                DrawHubFixedItem(canvas, g, def.FixedHubItem, GetItemLayout(def.FixedHubItem, page.SlotCount, -1, g), snap);
             else if (item != null)
-                DrawHubItem(canvas, def, g, item, GetItemLayout(item, page.SlotCount, g), snap);
+                DrawHubItem(canvas, def, g, item, GetItemLayout(item, page.SlotCount, -1, g), snap);
             else
                 DrawHubIdle(canvas, state, def, g, page, snap);
         }
@@ -876,8 +936,10 @@ namespace GnollHackX
         {
             float iconSize = HubFixedIconOfHub * g.HubRadius;
             float titleAscent;
-            float titleH = LineHeight(TitleTypeface, layout.HubTitleSize, out titleAscent);
-            float gap = iconSize * 0.08f;
+            float titleLineH = LineHeight(TitleTypeface, layout.HubTitleSize, out titleAscent);
+            float titleH = titleLineH * Math.Max(1, layout.HubTitleLineCount);
+            /* The title line's leading already separates it from the icon, so the label sits slightly up into it */
+            float gap = -iconSize * HubFixedTitleRaiseOfIcon;
             float top = g.CenterY - (iconSize + gap + titleH) / 2;
             SKRect dest = new SKRect(g.CenterX - iconSize / 2, top, g.CenterX + iconSize / 2, top + iconSize);
             bool drawn = DrawIcon(canvas, item, dest, true, false, false);
@@ -885,7 +947,15 @@ namespace GnollHackX
             _textPaint.Typeface = TitleTypeface;
             _textPaint.TextSize = layout.HubTitleSize;
             _textPaint.Color = GetItemColor(item, SKColors.White);
-            DrawCentered(canvas, layout.HubTitle, g.CenterX, y + titleAscent, snap);
+            DrawHubTitleLines(canvas, layout, g.CenterX, y + titleAscent, titleLineH, snap);
+        }
+
+        /* The title's lines from the first baseline down, in the paint's current typeface, size and color */
+        private void DrawHubTitleLines(SKCanvas canvas, ItemLayout layout, float cx, float firstBaseline, float lineH, bool snap)
+        {
+            int i;
+            for (i = 0; i < layout.HubTitleLineCount; i++)
+                DrawCentered(canvas, layout.HubTitleLines[i], cx, firstBaseline + i * lineH, snap);
         }
 
         /* The title, then the HubLines or the description lines, then the status and the shortcut, centered as a block;
@@ -896,7 +966,7 @@ namespace GnollHackX
             bool showShortcut = ShowKeyboardShortcuts && !string.IsNullOrEmpty(item.ShortcutText);
             float descSize = g.HubDescriptionFontSize;
             if (item.HubTopLine != null || item.HubLines != null)
-                EnsureHubLines(item, layout, g);
+                EnsureHubLines(item, layout, g, (float)def.HubLineMinScale, (float)def.HubLinesGapOfFont);
             bool useHubLines = item.HubLines != null && layout.HubLines != null;
 
             float titleAscent;
@@ -904,7 +974,8 @@ namespace GnollHackX
             float statusAscent = 0f;
             float descH = 0f;
             float statusH = 0f;
-            float titleH = LineHeight(TitleTypeface, layout.HubTitleSize, out titleAscent);
+            float titleLineH = LineHeight(TitleTypeface, layout.HubTitleSize, out titleAscent);
+            float titleH = titleLineH * Math.Max(1, layout.HubTitleLineCount);
             if (!useHubLines && layout.DescriptionLineCount > 0)
                 descH = LineHeight(DescriptionTypeface, descSize, out descAscent);
             if (showStatus || showShortcut)
@@ -921,12 +992,13 @@ namespace GnollHackX
             _textPaint.Typeface = TitleTypeface;
             _textPaint.TextSize = layout.HubTitleSize;
             _textPaint.Color = GetItemColor(item, SKColors.White);
-            DrawCentered(canvas, layout.HubTitle, cx, y + titleAscent, snap);
+            DrawHubTitleLines(canvas, layout, cx, y + titleAscent, titleLineH, snap);
             y += titleH;
 
             int i;
             if (useHubLines)
             {
+                y += layout.HubLinesGap;
                 for (i = 0; i < layout.HubLines.Length; i++)
                 {
                     HubLineLayout line = layout.HubLines[i];
@@ -988,9 +1060,10 @@ namespace GnollHackX
             }
         }
 
+        /* The HubLines and the gap above them */
         private float HubLinesHeight(ItemLayout layout)
         {
-            float h = 0f;
+            float h = layout.HubLinesGap;
             int i;
             for (i = 0; i < layout.HubLines.Length; i++)
             {
@@ -1020,7 +1093,7 @@ namespace GnollHackX
         {
             bool showStatus = item.IsEnabled ? item.IsToggle : item.ShowsUnavailableText;
             bool showShortcut = ShowKeyboardShortcuts && !string.IsNullOrEmpty(item.ShortcutText);
-            float titleH = LineHeight(TitleTypeface, layout.HubTitleSize, out titleAscent);
+            float titleH = LineHeight(TitleTypeface, layout.HubTitleSize, out titleAscent) * Math.Max(1, layout.HubTitleLineCount);
             float linesH;
             if (item.HubLines != null && layout.HubLines != null)
                 linesH = HubLinesHeight(layout);
@@ -1031,25 +1104,29 @@ namespace GnollHackX
         }
 
         /* Measures the item's HubLines across the description width and its HubTopLine across the hub's chord at
-           its height, each shrinking to fit down to HubLineMinOfFont */
-        private void EnsureHubLines(GHRadialItem item, ItemLayout layout, GHRadialGeometry g)
+           its height, each shrinking to fit down to minScale of the size; the HubLines get gapOfFont of the hub line
+           font above them */
+        private void EnsureHubLines(GHRadialItem item, ItemLayout layout, GHRadialGeometry g, float minScale, float gapOfFont)
         {
             if (layout.HubLinesReady)
                 return;
             layout.HubLinesReady = true;
             float descWidth = (float)(GHRadialTuning.HubDescriptionWidthOfHubDiameter * 2 * g.HubRadius);
             List<GHRadialHubRun[]> lines = item.HubLines;
+            layout.HubLinesGap = 0f;
             if (lines != null)
             {
                 layout.HubLines = new HubLineLayout[lines.Count];
                 int i;
                 for (i = 0; i < lines.Count; i++)
-                    layout.HubLines[i] = MeasureHubLine(lines[i], DescriptionTypeface, g.HubDescriptionFontSize, descWidth);
+                    layout.HubLines[i] = MeasureHubLine(lines[i], DescriptionTypeface, g.HubDescriptionFontSize, descWidth, minScale);
+                if (lines.Count > 0 && gapOfFont > 0f)
+                    layout.HubLinesGap = gapOfFont * g.HubDescriptionFontSize;
             }
             if (item.HubTopLine != null)
             {
                 /* Measured at the base size first, for its baseline */
-                layout.TopLine = MeasureHubLine(item.HubTopLine, LabelTypeface, g.HubDescriptionFontSize, float.MaxValue);
+                layout.TopLine = MeasureHubLine(item.HubTopLine, LabelTypeface, g.HubDescriptionFontSize, float.MaxValue, minScale);
                 float titleAscent;
                 float total = MeasureHubItemBlock(g, item, layout, out titleAscent);
                 float baseline = HubTopLineBaseline(g, layout, g.CenterY - total / 2 + titleAscent);
@@ -1057,12 +1134,15 @@ namespace GnollHackX
                 float chord = 2 * (float)Math.Sqrt(Math.Max(0.0, (double)g.HubRadius * g.HubRadius - (double)rise * rise));
                 float hubWidth = (float)(GHRadialTuning.HubTitleWidthOfHubDiameter * 2 * g.HubRadius);
                 float topWidth = Math.Max(1f, Math.Min(hubWidth, (float)(GHRadialTuning.HubTitleWidthOfHubDiameter * chord)));
-                layout.TopLine = MeasureHubLine(item.HubTopLine, LabelTypeface, g.HubDescriptionFontSize, topWidth);
+                layout.TopLine = MeasureHubLine(item.HubTopLine, LabelTypeface, g.HubDescriptionFontSize, topWidth, minScale);
             }
         }
 
-        private HubLineLayout MeasureHubLine(GHRadialHubRun[] runs, SKTypeface typeface, float size, float maxWidth)
+        /* A line of runs at size, or smaller to fit maxWidth, down to minScale of size */
+        private HubLineLayout MeasureHubLine(GHRadialHubRun[] runs, SKTypeface typeface, float size, float maxWidth, float minScale)
         {
+            if (!(minScale > 0f) || minScale > 1f)
+                minScale = 1f;
             HubLineLayout line = new HubLineLayout();
             int n = runs == null ? 0 : runs.Length;
             line.Runs = runs;
@@ -1073,7 +1153,7 @@ namespace GnollHackX
             MeasureHubRuns(line);
             if (line.TotalWidth > maxWidth && line.TotalWidth > 0f)
             {
-                line.Size = Math.Max(size * HubLineMinOfFont, size * maxWidth / line.TotalWidth);
+                line.Size = Math.Max(size * minScale, size * maxWidth / line.TotalWidth);
                 MeasureHubRuns(line);
             }
             return line;
@@ -1130,6 +1210,14 @@ namespace GnollHackX
         /* A line of runs centered on cx; a run's symbol is centered on the line's cap height */
         private void DrawHubLine(SKCanvas canvas, HubLineLayout line, float cx, float baseline, SKColor defaultColor, bool snap)
         {
+            DrawHubLine(canvas, line, cx, baseline, defaultColor, 1f, snap);
+        }
+
+        /* The same at an opacity, for a line drawn outside the ring's layer */
+        private void DrawHubLine(SKCanvas canvas, HubLineLayout line, float cx, float baseline, SKColor defaultColor, float opacity, bool snap)
+        {
+            bool faded = opacity < 1f;
+            byte alpha = ToByte(opacity);
             int n = line.SymbolWidths.Length;
             float size = line.Size;
             _textPaint.Typeface = line.Typeface;
@@ -1162,7 +1250,7 @@ namespace GnollHackX
                             src = new SKRect(0, 0, image.Width, image.Height);
                         SKRect dest = new SKRect(x, symbolMid - symbolH / 2, x + sw, symbolMid + symbolH / 2);
                         _iconPaint.ColorFilter = null;
-                        _iconPaint.Color = SKColors.White;
+                        _iconPaint.Color = faded ? SKColors.White.WithAlpha(alpha) : SKColors.White;
                         canvas.DrawImage(image, src, dest
 #if GNH_MAUI
                             , IconSampling
@@ -1175,29 +1263,41 @@ namespace GnollHackX
                 {
                     _textPaint.Typeface = line.Typeface;
                     _textPaint.TextSize = size;
-                    _textPaint.Color = GetNhColor(run.NhColor, defaultColor);
+                    SKColor color = GetNhColor(run.NhColor, defaultColor);
+                    _textPaint.Color = faded ? color.WithAlpha((byte)(color.Alpha * alpha / 255)) : color;
                     _textPaint.DrawTextOnCanvas(canvas, run.Text, snap ? Snap(x) : x, baseline, SKTextAlign.Left);
                     x += tw;
                 }
             }
         }
 
-        /* The highlighted item's FooterText, else the fixed hub item's, wrapped and centered in the band */
+        /* The highlighted item's FooterTitle and FooterText, else the fixed hub item's: the title row, then the text
+           wrapped, centered as a block in the band */
         private void DrawFooter(SKCanvas canvas, GHRadialMenuState state, GHRadialMenuDefinition def, GHRadialGeometry g,
             float bandTop, float bandBottom, float opacity, bool snap)
         {
             GHRadialItem item = state.HighlightedItem;
-            if (item == null || item.FooterText == null)
+            if (item == null || (item.FooterText == null && item.FooterTitle == null))
                 item = def.FixedHubItem;
-            if (item == null || string.IsNullOrEmpty(item.FooterText))
+            if (item == null || (string.IsNullOrEmpty(item.FooterText) && item.FooterTitle == null))
                 return;
-            ItemLayout layout = GetItemLayout(item, state.CurrentPage.SlotCount, g);
+            ItemLayout layout = GetItemLayout(item, state.CurrentPage.SlotCount, -1, g);
             EnsureFooter(item, layout, g, def.FooterMaxLines);
-            if (layout.FooterLineCount == 0)
+            HubLineLayout title = layout.FooterTitle;
+            if (layout.FooterLineCount == 0 && title == null)
                 return;
-            float ascent;
-            float lineH = LineHeight(DescriptionTypeface, layout.FooterSize, out ascent);
-            float y = (bandTop + bandBottom) / 2 - lineH * layout.FooterLineCount / 2;
+            float titleAscent = 0f;
+            float titleH = title != null ? LineHeight(title.Typeface, title.Size, out titleAscent) : 0f;
+            float ascent = 0f;
+            float lineH = layout.FooterLineCount > 0 ? LineHeight(DescriptionTypeface, layout.FooterSize, out ascent) : 0f;
+            float y = (bandTop + bandBottom) / 2 - (titleH + lineH * layout.FooterLineCount) / 2;
+            if (title != null)
+            {
+                DrawHubLine(canvas, title, g.CenterX, y + titleAscent, SKColors.White, opacity, snap);
+                y += titleH;
+            }
+            _textPaint.Typeface = DescriptionTypeface;
+            _textPaint.TextSize = layout.FooterSize;
             _textPaint.Color = LighterGray.WithAlpha(ToByte(opacity));
             int i;
             for (i = 0; i < layout.FooterLineCount; i++)
@@ -1207,8 +1307,9 @@ namespace GnollHackX
             }
         }
 
-        /* Wraps FooterText into maxLines lines; text that does not fit takes the one smaller size, and then an
-           ellipsis on its last line */
+        /* Measures FooterTitle at the band's size, shrinking to fit down to FooterTitleMinOfFont, and wraps
+           FooterText into maxLines lines; text that does not fit takes the one smaller size, and then an ellipsis on
+           its last line */
         private void EnsureFooter(GHRadialItem item, ItemLayout layout, GHRadialGeometry g, int maxLines)
         {
             if (maxLines < 0)
@@ -1219,12 +1320,16 @@ namespace GnollHackX
             if (layout.FooterLines == null || layout.FooterLines.Length != maxLines)
                 layout.FooterLines = new string[maxLines];
             layout.FooterLineCount = 0;
-            if (maxLines == 0 || string.IsNullOrWhiteSpace(item.FooterText))
-                return;
+            layout.FooterTitle = null;
 
             float margin = (float)(GHRadialTuning.ScreenMarginDip * g.DipScale);
             float width = Math.Max(1f, Math.Min(g.Width - 2 * margin, (float)(GHRadialTuning.FooterWidthOfOuterRadius * g.OuterRadius)));
             float size = (float)(GHRadialTuning.FooterFontOfDescriptionFont * g.HubDescriptionFontSize);
+            if (item.FooterTitle != null && item.FooterTitle.Length > 0)
+                layout.FooterTitle = MeasureHubLine(item.FooterTitle, DescriptionTypeface, size, width, FooterTitleMinOfFont);
+            if (maxLines == 0 || string.IsNullOrWhiteSpace(item.FooterText))
+                return;
+
             bool truncated;
             int count = WrapText(item.FooterText, DescriptionTypeface, size, width, layout.FooterLines, maxLines, out truncated);
             if (truncated)
@@ -1556,25 +1661,104 @@ namespace GnollHackX
             return _textPaint.FontSpacing;
         }
 
-        private ItemLayout GetItemLayout(GHRadialItem item, int slotCount, GHRadialGeometry g)
+        /* The item's layout for pages of slotCount; slot is where its label is drawn, or -1 for a caller that does not
+           draw the label. The label is fitted again only when the slot differs. */
+        private ItemLayout GetItemLayout(GHRadialItem item, int slotCount, int slot, GHRadialGeometry g)
         {
             ItemLayout layout;
-            if (_itemLayouts.TryGetValue(item, out layout) && layout.SlotCount == slotCount)
-                return layout;
+            if (!_itemLayouts.TryGetValue(item, out layout) || layout.SlotCount != slotCount)
+            {
+                layout = CreateItemLayout(item, slotCount, g);
+                _itemLayouts[item] = layout;
+            }
+            if (slot >= 0 && (!layout.LabelReady || layout.LabelSlot != slot))
+                FitItemLabel(item, layout, slotCount, slot, g);
+            return layout;
+        }
 
-            layout = new ItemLayout();
+        /* A placeholder without a label reads "Empty" */
+        private static string GetSliceLabel(GHRadialItem item)
+        {
+            return item.IsPlaceholder && string.IsNullOrEmpty(item.Label) ? PlaceholderText : item.Label;
+        }
+
+        /* The label in at most the definition's LabelMaxLines lines, each within the slice's width at the label's
+           place for the whole block's height: it wraps first, then shrinks to the label's minimum size, then ends
+           with an ellipsis */
+        private void FitItemLabel(GHRadialItem item, ItemLayout layout, int slotCount, int slot, GHRadialGeometry g)
+        {
+            layout.LabelReady = true;
+            layout.LabelSlot = slot;
+            string label = GetSliceLabel(item);
+            float baseSize = g.LabelFontSize;
+            float minSize = Math.Min(g.LabelMinFontSize, g.LabelFontSize);
+            int maxLines = ClampLines(_layoutDefinition == null ? 1 : _layoutDefinition.LabelMaxLines);
+            float lineH = baseSize * (float)GHRadialTuning.LabelLineHeight;
+            int n;
+            for (n = 1; n <= maxLines; n++)
+                _lineWidths[n - 1] = GetSliceLabelMaxWidth(item, slotCount, slot, g, n * lineH);
+            float labelMax = _lineWidths[0];
+            layout.LabelMaxWidth = labelMax;
+            if (maxLines == 1)
+            {
+                layout.LabelSize = FitSize(label, LabelTypeface, baseSize, minSize, labelMax);
+                layout.LabelLines[0] = Ellipsize(label, LabelTypeface, layout.LabelSize, labelMax);
+                layout.LabelLineCount = string.IsNullOrEmpty(layout.LabelLines[0]) ? 0 : 1;
+                return;
+            }
+            float size;
+            layout.LabelLineCount = FitLines(label, LabelTypeface, baseSize, minSize, _lineWidths, maxLines, true, layout.LabelLines, out size);
+            layout.LabelSize = size;
+        }
+
+        /* The slice's width for a label block of blockHeight under the slot's icon, as DrawSlotContents places it
+           while the slot is not highlighted */
+        private static float GetSliceLabelMaxWidth(GHRadialItem item, int slotCount, int slot, GHRadialGeometry g, float blockHeight)
+        {
+            if (slot < 0 || slotCount <= 0)
+                return g.GetLabelMaxWidth(slotCount);
+            double rad = GHRadialGeometry.SlotCenterDegrees(slot, slotCount) * Math.PI / 180.0;
+            float radius = g.MidRadius - (item.IsToggle ? (float)(GHRadialTuning.ToggleContentInset * g.OuterRadius) : 0f);
+            float x = (float)Math.Sin(rad) * radius;
+            float y = -(float)Math.Cos(rad) * radius + g.GetIconSize(slotCount) / 2;
+            return g.GetLabelMaxWidthAt(slotCount, slot, x, y, blockHeight);
+        }
+
+        private static int ClampLines(int lines)
+        {
+            return Math.Max(1, Math.Min(MaxWrappedLines, lines));
+        }
+
+        private ItemLayout CreateItemLayout(GHRadialItem item, int slotCount, GHRadialGeometry g)
+        {
+            ItemLayout layout = new ItemLayout();
             layout.SlotCount = slotCount;
-            /* A placeholder without a label reads "Empty" */
-            string label = item.IsPlaceholder && string.IsNullOrEmpty(item.Label) ? PlaceholderText : item.Label;
-            float labelMax = g.GetLabelMaxWidth(slotCount);
-            layout.LabelSize = FitSize(label, LabelTypeface, g.LabelFontSize, Math.Min(g.LabelMinFontSize, g.LabelFontSize), labelMax);
-            layout.Label = Ellipsize(label, LabelTypeface, layout.LabelSize, labelMax);
+            string label = GetSliceLabel(item);
 
-            float hubWidth = (float)(GHRadialTuning.HubTitleWidthOfHubDiameter * 2 * g.HubRadius);
+            /* The hub title shrinks to its minimum on one line before it takes more lines; the fixed hub item's title, under
+               its icon, gets a narrower width */
+            bool isFixedHubItem = _layoutDefinition != null && ReferenceEquals(item, _layoutDefinition.FixedHubItem);
+            float hubWidth = (float)((isFixedHubItem ? HubFixedTitleWidthOfHubDiameter : GHRadialTuning.HubTitleWidthOfHubDiameter)
+                * 2 * g.HubRadius);
             float titleMin = (float)(GHRadialTuning.HubTitleMinOfFont * g.HubTitleFontSize);
             string hubTitle = item.HubTitle ?? label;
-            layout.HubTitleSize = FitSize(hubTitle, TitleTypeface, g.HubTitleFontSize, titleMin, hubWidth);
-            layout.HubTitle = Ellipsize(hubTitle, TitleTypeface, layout.HubTitleSize, hubWidth);
+            int titleLines = ClampLines(_layoutDefinition == null ? 1 : _layoutDefinition.HubTitleMaxLines);
+            if (titleLines == 1)
+            {
+                layout.HubTitleSize = FitSize(hubTitle, TitleTypeface, g.HubTitleFontSize, titleMin, hubWidth);
+                layout.HubTitleLines[0] = Ellipsize(hubTitle, TitleTypeface, layout.HubTitleSize, hubWidth);
+                layout.HubTitleLineCount = 1;
+            }
+            else
+            {
+                int n;
+                for (n = 0; n < titleLines; n++)
+                    _lineWidths[n] = hubWidth;
+                float titleSize;
+                layout.HubTitleLineCount = Math.Max(1, FitLines(hubTitle, TitleTypeface, g.HubTitleFontSize, titleMin, _lineWidths, titleLines, false,
+                    layout.HubTitleLines, out titleSize));
+                layout.HubTitleSize = titleSize;
+            }
 
             if (item.Badge == GHRadialBadge.Count && !string.IsNullOrEmpty(item.BadgeText))
             {
@@ -1587,7 +1771,6 @@ namespace GnollHackX
             float descWidth = (float)(GHRadialTuning.HubDescriptionWidthOfHubDiameter * 2 * g.HubRadius);
             layout.DescriptionLineCount = IsDescriptionRedundant(item.Description, item.Label) ? 0
                 : WrapText(item.Description, DescriptionTypeface, g.HubDescriptionFontSize, descWidth, layout.DescriptionLines);
-            _itemLayouts[item] = layout;
             return layout;
         }
 
@@ -1869,6 +2052,132 @@ namespace GnollHackX
             return Ellipsis;
         }
 
+        /* Fits text into at most maxLines lines, widths[n - 1] wide when it takes n lines. wrapFirst takes more lines
+           at baseSize before it shrinks, choosing the line count that shrinks least; otherwise each line count in turn
+           shrinks down to minSize before the next is tried. Text that fits no line count at minSize is wrapped into
+           maxLines at minSize with an ellipsis on its last line. Returns the line count; size is the size used. */
+        private int FitLines(string text, SKTypeface typeface, float baseSize, float minSize, float[] widths, int maxLines, bool wrapFirst,
+            string[] lines, out float size)
+        {
+            size = baseSize;
+            maxLines = Math.Max(1, Math.Min(maxLines, Math.Min(widths.Length, lines.Length)));
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                lines[0] = text;
+                return 0;
+            }
+            if (minSize > baseSize)
+                minSize = baseSize;
+            int n, count;
+            if (wrapFirst)
+            {
+                for (n = 1; n <= maxLines; n++)
+                {
+                    count = TryWrapExact(text, typeface, baseSize, widths[n - 1], lines, n);
+                    if (count > 0)
+                        return count;
+                }
+                float best = 0f;
+                int bestLines = 0;
+                for (n = 1; n <= maxLines; n++)
+                {
+                    float s = LargestFittingSize(text, typeface, baseSize, minSize, widths[n - 1], lines, n);
+                    if (s > best)
+                    {
+                        best = s;
+                        bestLines = n;
+                    }
+                }
+                if (bestLines > 0)
+                {
+                    count = TryWrapExact(text, typeface, best, widths[bestLines - 1], lines, bestLines);
+                    if (count > 0)
+                    {
+                        size = best;
+                        return count;
+                    }
+                }
+            }
+            else
+            {
+                for (n = 1; n <= maxLines; n++)
+                {
+                    float s = LargestFittingSize(text, typeface, baseSize, minSize, widths[n - 1], lines, n);
+                    if (s > 0f)
+                    {
+                        count = TryWrapExact(text, typeface, s, widths[n - 1], lines, n);
+                        if (count > 0)
+                        {
+                            size = s;
+                            return count;
+                        }
+                    }
+                }
+            }
+
+            size = minSize;
+            bool truncated;
+            count = WrapText(text, typeface, minSize, widths[maxLines - 1], lines, maxLines, out truncated);
+            if (count > 0 && count < maxLines)
+                count = WrapText(text, typeface, minSize, widths[count - 1], lines, count, out truncated);
+            return count;
+        }
+
+        /* The largest size from minSize to baseSize at which text wraps into maxLines lines of maxWidth, or 0 when it
+           does not even at minSize */
+        private float LargestFittingSize(string text, SKTypeface typeface, float baseSize, float minSize, float maxWidth, string[] lines, int maxLines)
+        {
+            if (TryWrapExact(text, typeface, baseSize, maxWidth, lines, maxLines) > 0)
+                return baseSize;
+            if (TryWrapExact(text, typeface, minSize, maxWidth, lines, maxLines) <= 0)
+                return 0f;
+            float lo = minSize;
+            float hi = baseSize;
+            int i;
+            for (i = 0; i < 10; i++)
+            {
+                float mid = (lo + hi) / 2;
+                if (TryWrapExact(text, typeface, mid, maxWidth, lines, maxLines) > 0)
+                    lo = mid;
+                else
+                    hi = mid;
+            }
+            return lo;
+        }
+
+        /* Greedy word wrap into at most maxLines lines with no word shortened; 0 when the text does not fit */
+        private int TryWrapExact(string text, SKTypeface typeface, float size, float maxWidth, string[] lines, int maxLines)
+        {
+            maxLines = Math.Min(maxLines, lines.Length);
+            if (string.IsNullOrEmpty(text) || maxLines <= 0)
+                return 0;
+            string[] words = text.Split(WordSeparators, StringSplitOptions.RemoveEmptyEntries);
+            if (words.Length == 0)
+                return 0;
+            _textPaint.Typeface = typeface;
+            _textPaint.TextSize = size;
+            int count = 0;
+            int w = 0;
+            while (w < words.Length)
+            {
+                if (count >= maxLines)
+                    return 0;
+                string line = words[w++];
+                if (_textPaint.MeasureText(line) > maxWidth)
+                    return 0;
+                while (w < words.Length)
+                {
+                    string candidate = line + " " + words[w];
+                    if (_textPaint.MeasureText(candidate) > maxWidth)
+                        break;
+                    line = candidate;
+                    w++;
+                }
+                lines[count++] = line;
+            }
+            return count;
+        }
+
         /* Greedy word wrap into lines; the last line takes an ellipsis when text remains */
         private int WrapText(string text, SKTypeface typeface, float size, float maxWidth, string[] lines)
         {
@@ -2074,6 +2383,20 @@ namespace GnollHackX
                 (byte)(a.Green + (b.Green - a.Green) * t + 0.5f),
                 (byte)(a.Blue + (b.Blue - a.Blue) * t + 0.5f),
                 (byte)(a.Alpha + (b.Alpha - a.Alpha) * t + 0.5f));
+        }
+
+        /* a's color moved toward tint's by t, keeping a's alpha */
+        private static SKColor TintColor(SKColor a, SKColor tint, float t)
+        {
+            if (t <= 0f)
+                return a;
+            if (t > 1f)
+                t = 1f;
+            return new SKColor(
+                (byte)(a.Red + (tint.Red - a.Red) * t + 0.5f),
+                (byte)(a.Green + (tint.Green - a.Green) * t + 0.5f),
+                (byte)(a.Blue + (tint.Blue - a.Blue) * t + 0.5f),
+                a.Alpha);
         }
 
         private static byte ToByte(float unit)

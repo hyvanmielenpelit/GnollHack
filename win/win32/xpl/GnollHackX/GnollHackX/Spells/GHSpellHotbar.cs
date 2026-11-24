@@ -14,7 +14,7 @@ namespace GnollHackX
         public string Name, Description, LevelText, SuccessText, ManaText, CooldownText, CastsText;
         public bool CooldownActive;      /* CooldownText is "n/m" */
         public int NhColor;
-        public bool Selectable;          /* Identifier != 0 */
+        public bool Selectable;          /* a tap can select the row: Identifier != 0 and no MENU_FLAGS_LONG_TAP_ONLY */
         public int HotbarSlot;           /* 0 when not on the hotbar */
         public object MenuItem;          /* the GHMenuItem; opaque to the model */
     }
@@ -75,7 +75,7 @@ namespace GnollHackX
             return SchoolNames[skill];
         }
 
-        /* "Level 1 Arcane", "Minor Arcane Cantrip", "Major Arcane Cantrip"; null for an unknown
+        /* "Level 1 Arcane Spell", "Minor Arcane Cantrip", "Major Arcane Cantrip"; null for an unknown
            school or level */
         public static string GetLevelText(int skill, int level)
         {
@@ -87,7 +87,7 @@ namespace GnollHackX
             if (level == 0)
                 return "Major " + school + " Cantrip";
             if (level > 0)
-                return "Level " + level.ToString(CultureInfo.InvariantCulture) + " " + school;
+                return "Level " + level.ToString(CultureInfo.InvariantCulture) + " " + school + " Spell";
             return null;
         }
 

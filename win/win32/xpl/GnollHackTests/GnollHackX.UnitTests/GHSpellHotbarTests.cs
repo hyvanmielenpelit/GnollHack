@@ -552,7 +552,7 @@ namespace GnollHackX.UnitTests
             Assert.True(ok);
             Assert.Equal(0, info.Skill);
             Assert.Equal(1, info.Level);
-            Assert.Equal("Level 1 Arcane", info.LevelText);
+            Assert.Equal("Level 1 Arcane Spell", info.LevelText);
             Assert.Equal("100%", info.SuccessText);
             Assert.Equal("5.0", info.ManaText);
             Assert.Equal("0", info.CooldownText);
@@ -571,7 +571,7 @@ namespace GnollHackX.UnitTests
             Assert.True(ok);
             Assert.Equal(2, info.Skill);
             Assert.Equal(3, info.Level);
-            Assert.Equal("Level 3 Healing", info.LevelText);
+            Assert.Equal("Level 3 Healing Spell", info.LevelText);
             Assert.Equal("87%", info.SuccessText);
             Assert.Equal("17.5", info.ManaText);
             Assert.Equal("8", info.CooldownText);
@@ -604,7 +604,7 @@ namespace GnollHackX.UnitTests
 
             Assert.True(GHSpellMenuParser.TryParseStats(suffix2, info));
             Assert.Equal(1, info.Skill);
-            Assert.Equal("Level 2 Clerical", info.LevelText);
+            Assert.Equal("Level 2 Clerical Spell", info.LevelText);
             Assert.Equal("Inf.", info.CastsText);
         }
 
@@ -613,7 +613,7 @@ namespace GnollHackX.UnitTests
         [InlineData("&sparc; C &success; 100% &mana; 1.0 &cool; 0 &casts; Inf.", 0, "Major Arcane Cantrip")]
         [InlineData("Arc c Success 100% Mana 0.5 Cool 0 Casts Inf.", -1, "Minor Arcane Cantrip")]
         [InlineData("Arc C Success 100% Mana 1.0 Cool 0 Casts Inf.", 0, "Major Arcane Cantrip")]
-        [InlineData("&spdiv; 12 &success; 5% &mana; 120.0 &cool; 0 &casts; 1", 12, "Level 12 Divination")]
+        [InlineData("&spdiv; 12 &success; 5% &mana; 120.0 &cool; 0 &casts; 1", 12, "Level 12 Divination Spell")]
         public void Parser_ReadsLevels(string suffix2, int level, string levelText)
         {
             GHSpellInfo info = new GHSpellInfo();
@@ -646,7 +646,7 @@ namespace GnollHackX.UnitTests
 
             Assert.Equal(skill, withSymbols.Skill);
             Assert.Equal(skill, withWords.Skill);
-            Assert.Equal("Level 1 " + school, withSymbols.LevelText);
+            Assert.Equal("Level 1 " + school + " Spell", withSymbols.LevelText);
             Assert.Equal(symbol, GHSpellMenuParser.SchoolSymbols[skill]);
             Assert.Equal(school, GHSpellMenuParser.SchoolNames[skill]);
             Assert.Equal(skill, GHSpellMenuParser.GetSchoolIndex(symbol));
@@ -732,7 +732,7 @@ namespace GnollHackX.UnitTests
             Assert.True(ok);
             Assert.Equal("Force bolt", info.Name);
             Assert.Equal("Deals 2-12 damage to a target", info.Description);
-            Assert.Equal("Level 1 Arcane", info.LevelText);
+            Assert.Equal("Level 1 Arcane Spell", info.LevelText);
         }
 
         [Fact]
@@ -815,7 +815,7 @@ namespace GnollHackX.UnitTests
             Assert.Null(GHSpellMenuParser.GetLevelText(12, 1));
             Assert.Null(GHSpellMenuParser.GetLevelText(0, -2));
             Assert.Null(GHSpellMenuParser.GetLevelText(0, int.MinValue));
-            Assert.Equal("Level 5 Nature", GHSpellMenuParser.GetLevelText(10, 5));
+            Assert.Equal("Level 5 Nature Spell", GHSpellMenuParser.GetLevelText(10, 5));
         }
     }
 }

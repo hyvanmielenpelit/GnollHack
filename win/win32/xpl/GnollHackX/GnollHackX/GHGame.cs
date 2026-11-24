@@ -2240,10 +2240,11 @@ namespace GnollHackX
                 if (winid >= 0 && winid < GHConstants.MaxGHWindows && _ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
                     bool useNumItems = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_NUM_ITEMS) != 0;
-                    /* A radial-only row takes no automatic accelerator, so that the list's letters stay as they are */
+                    /* A radial-only or long-tap-only row takes no automatic accelerator, so that the list's letters stay as they are */
                     bool radialOnly = (menuflags & (ulong)MenuFlags.MENU_FLAGS_RADIAL_ONLY) != 0;
+                    bool longTapOnly = (menuflags & (ulong)MenuFlags.MENU_FLAGS_LONG_TAP_ONLY) != 0;
                     GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, ActiveGamePage, identifier,
-                        accel == 0 && identifier != 0 && !radialOnly ? _ghWindows[winid].MenuInfo.AutoAccelerator : accel, groupaccel, special_mark,
+                        accel == 0 && identifier != 0 && !radialOnly && !longTapOnly ? _ghWindows[winid].MenuInfo.AutoAccelerator : accel, groupaccel, special_mark,
                         attr, color, attrs, colors, glyph,
                         (menuflags & (ulong)MenuFlags.MENU_FLAGS_ACTIVE) != 0,
                         (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_COLOR_FOR_SUFFIXES) != 0,

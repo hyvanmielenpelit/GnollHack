@@ -36,6 +36,7 @@ static void modronbook(struct obj*);
 static int learn(void);
 static boolean rejectcasting(void);
 static boolean reject_specific_spell_casting(int);
+static boolean reject_inactive_spell_casting(int);
 static boolean getspell(int *, int, int *);
 static int CFDECLSPEC spell_cmp(const genericptr, const genericptr);
 static boolean spellsortmenu(void);
@@ -1118,6 +1119,29 @@ reject_specific_spell_casting(int spell)
     return FALSE;
 }
 
+/* return True, with a message, if the Cast menu would show the spell as inactive (forgotten or cooling down);
+   its row takes only a long tap, so a selection to cast it is refused here */
+static boolean
+reject_inactive_spell_casting(int spell)
+{
+    if (spell < 0 || spell >= MAXSPELL || spellid(spell) == NO_SPELL)
+        return FALSE;
+
+    if (spellknow(spell) <= 0)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        You_ex(ATR_NONE, CLR_MSG_FAIL, "cannot recall that spell.");
+        return TRUE;
+    }
+    else if (spellcooldownleft(spell) > 0)
+    {
+        play_sfx_sound(SFX_GENERAL_CANNOT);
+        pline_ex(ATR_NONE, CLR_MSG_FAIL, "That spell is still cooling down.");
+        return TRUE;
+    }
+    return FALSE;
+}
+
 #define MAX_SPELL_LIST_TYPES 7
 /*
  * Return TRUE if a spell was picked, with the spell index in the return
@@ -1431,10 +1455,6 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
             int splidx = selected[0].item.a_int - 1;
             if (val == -2 && splaction == SPELLMENU_CAST && splidx >= 0 && splidx < MAXSPELL) /* Long tap */
             {
-                int secondselidx = 0;
-                if (n > 1 && splidx == splaction)
-                    secondselidx = selected[1].item.a_int - 1;
-
                 free((genericptr_t)selected);
                 selected = (menu_item*)0;
 
@@ -1444,10 +1464,6 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
                 winid actionwin = create_nhwindow_ex(NHW_MENU, GHWINDOW_STYLE_SPELL_COMMAND_MENU, glyph, extended_create_window_info_for_spell(TRUE));
                 start_menu_style(actionwin, GHMENU_STYLE_SPELL_COMMAND);
                 any = zeroany; /* zero out all bits */
-                any.a_int = 1;
-                glyph = CAST_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
-                add_active_menu(actionwin, glyph, &any, 'Z', 0, ATR_NONE, NO_COLOR,
-                    "Cast Spell", MENU_UNSELECTED);
                 any.a_int = 2;
                 glyph = VIEW_SPELLS_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                 add_active_menu(actionwin, glyph, &any, '?', 0, ATR_NONE, NO_COLOR,
@@ -1499,17 +1515,6 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
                     free((genericptr_t)selected);
                     switch (selidx)
                     {
-                    case 1:
-                        *spell_no = splidx;
-                        /* menu selection for `PICK_ONE' does not
-                           de-select any preselected entry */
-                        if (n > 1 && *spell_no == splaction)
-                            *spell_no = secondselidx;
-                        /* default selection of preselected spell means that
-                           user chose not to swap it with anything */
-                        if (*spell_no == splaction)
-                            return FALSE;
-                        return TRUE;
                     case 2:
                         (void)spelldescription(splidx);
                         docont = TRUE;
@@ -1567,6 +1572,8 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
                 /* default selection of preselected spell means that
                    user chose not to swap it with anything */
                 if (*spell_no == splaction)
+                    return FALSE;
+                if (splaction == SPELLMENU_CAST && reject_inactive_spell_casting(*spell_no))
                     return FALSE;
                 return TRUE;
             }
@@ -4759,6 +4766,12 @@ add_alt_spell_cast_menu_item(winid tmpwin, int i, int splaction)
         info.style = spellhotkey(splnum);
     }
 
+    /* With WC2_SPELL_HOTBAR, an inactive spell's row takes a long tap, which opens its commands */
+    if (inactive && (windowprocs.wincap2 & WC2_SPELL_HOTBAR) != 0)
+    {
+        info.menu_flags |= MENU_FLAGS_LONG_TAP_ONLY;
+        inactive = FALSE;
+    }
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
 
     add_extended_menu(tmpwin, glyph, &any, 0, 0, mattr, mcolor, buf,

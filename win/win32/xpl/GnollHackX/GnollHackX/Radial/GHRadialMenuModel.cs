@@ -98,7 +98,10 @@ namespace GnollHackX
         public GHRadialHubRun[] HubTopLine;         /* above the title; null for none */
         public List<GHRadialHubRun[]> HubLines;     /* replace Description in the hub when not null */
         public string FooterText;                   /* the description band; null for none */
+        public GHRadialHubRun[] FooterTitle;        /* the band's first row, above FooterText; null for none */
         public string HubTitle;                     /* the hub's title; null for Label */
+        public int SliceTintNhColor = -1;           /* tints the slice's fill and border; -1 = none */
+        public bool IconGrayed;                     /* the icon is drawn grayed, also when the item is enabled */
 
         public bool HasPreferredAngle { get { return PreferredAngle >= 0; } }
 
@@ -251,6 +254,10 @@ namespace GnollHackX
         public GHRadialItem CarriedItem;                /* drawn as a ghost over the highlighted slot */
         public GHRadialItem FixedHubItem;               /* hub shows its Glyph and Label, whatever is highlighted */
         public int FooterMaxLines = 3;                  /* 0 = no description band */
+        public int LabelMaxLines = 1;                   /* slice label lines; the Spells radials set 2 */
+        public int HubTitleMaxLines = 1;                /* hub title lines; the Spells radials set 2 */
+        public double HubLineMinScale = 0.7;            /* a hub line shrinks to fit down to this; the Spells radials set lower */
+        public double HubLinesGapOfFont;                /* extra space before the first hub line, of the hub line font; 0 = none */
 
         public int PageCount { get { return Pages == null ? 0 : Pages.Count; } }
 

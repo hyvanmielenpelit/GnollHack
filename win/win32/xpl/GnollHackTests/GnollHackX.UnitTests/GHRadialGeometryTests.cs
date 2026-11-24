@@ -252,6 +252,118 @@ namespace GnollHackX.UnitTests
             Assert.Equal(-1, g.HitTestDot(x0, y0, 1));
         }
 
+        /* The label block's center as the renderer places it: under the icon around the point at the mid radius */
+        private static void LabelCenter(GHRadialGeometry g, int n, int slot, out float x, out float y)
+        {
+            double a = GHRadialGeometry.SlotCenterDegrees(slot, n) * Math.PI / 180.0;
+            x = (float)Math.Sin(a) * g.MidRadius;
+            y = -(float)Math.Cos(a) * g.MidRadius + g.GetIconSize(n) / 2;
+        }
+
+        private static float LabelWidth(GHRadialGeometry g, int n, int slot, int lines)
+        {
+            float x, y;
+            LabelCenter(g, n, slot, out x, out y);
+            float lineHeight = g.LabelFontSize * (float)GHRadialTuning.LabelLineHeight;
+            return g.GetLabelMaxWidthAt(n, slot, x, y, lines * lineHeight);
+        }
+
+        [Theory]
+        [InlineData(8)]
+        [InlineData(12)]
+        public void LabelWidth_NorthUnderTheIconStaysWithinTheArcWidth(int n)
+        {
+            GHRadialGeometry g = Make(1280, 800, 1);
+            float lineHeight = g.LabelFontSize * (float)GHRadialTuning.LabelLineHeight;
+            float w = g.GetLabelMaxWidth(n, 0, g.MidRadius - g.GetIconSize(n) / 2, lineHeight);
+            Assert.InRange(w, 1f, g.GetLabelMaxWidth(n) + 0.5f);
+            Assert.InRange(LabelWidth(g, n, 0, 1), w - 0.05f, w + 0.05f);
+        }
+
+        [Fact]
+        public void LabelWidth_EightSlotsNorthIsNarrowerThanEastAndSouth()
+        {
+            /* North's label sits under its icon toward the hub, where the slice is narrowest */
+            GHRadialGeometry g = Make(1280, 800, 1);
+            float north = LabelWidth(g, 8, 0, 1);
+            Assert.True(north < LabelWidth(g, 8, 2, 1));
+            Assert.True(north < LabelWidth(g, 8, 4, 1));
+            Assert.True(north < LabelWidth(g, 8, 2, 2));
+        }
+
+        [Fact]
+        public void LabelWidth_TwelveSlotsTwoLinesAreNarrowestEastAndWest()
+        {
+            /* A tall block in a narrow East or West slice meets the slice's straight edges */
+            GHRadialGeometry g = Make(1280, 800, 1);
+            float east = LabelWidth(g, 12, 3, 2);
+            float west = LabelWidth(g, 12, 9, 2);
+            Assert.True(east < LabelWidth(g, 12, 0, 2));
+            Assert.True(east < g.GetLabelMaxWidth(12));
+            Assert.True(east > 0f);
+            Assert.InRange(west, east - 0.05f, east + 0.05f);
+            Assert.True(LabelWidth(g, 12, 3, 1) > east);
+        }
+
+        [Fact]
+        public void LabelWidth_SixSlotsSideSlotsAreNarrowerThanTheArcWidth()
+        {
+            /* The arc at the mid radius is wider than the slice's room above the inner arc */
+            GHRadialGeometry g = Make(1280, 800, 1);
+            Assert.True(LabelWidth(g, 6, 1, 1) < g.GetLabelMaxWidth(6));
+            Assert.True(LabelWidth(g, 6, 2, 1) < g.GetLabelMaxWidth(6));
+        }
+
+        [Theory]
+        [InlineData(8, 2, 6)]
+        [InlineData(8, 1, 7)]
+        [InlineData(12, 2, 10)]
+        [InlineData(6, 1, 5)]
+        public void LabelWidth_MirroredSlotsMatch(int n, int slot, int mirrored)
+        {
+            GHRadialGeometry g = Make(1280, 800, 1);
+            float w = LabelWidth(g, n, slot, 2);
+            Assert.InRange(LabelWidth(g, n, mirrored, 2), w - 0.05f, w + 0.05f);
+        }
+
+        [Theory]
+        [InlineData(6)]
+        [InlineData(8)]
+        [InlineData(12)]
+        public void LabelWidth_TallerBlockIsNeverWider(int n)
+        {
+            GHRadialGeometry g = Make(1280, 800, 1);
+            int slot;
+            for (slot = 0; slot < n; slot++)
+            {
+                float x, y;
+                LabelCenter(g, n, slot, out x, out y);
+                float previous = float.MaxValue;
+                float previousOnRay = float.MaxValue;
+                int h;
+                /* Up to three label lines under the icon, and taller on the mid radius */
+                for (h = 0; h <= 50; h += 5)
+                {
+                    float w = g.GetLabelMaxWidthAt(n, slot, x, y, h);
+                    float onRay = g.GetLabelMaxWidth(n, slot, g.MidRadius, 2 * h);
+                    Assert.True(w > 0f);
+                    Assert.True(onRay > 0f);
+                    Assert.True(w <= previous + 0.01f);
+                    Assert.True(onRay <= previousOnRay + 0.01f);
+                    previous = w;
+                    previousOnRay = onRay;
+                }
+            }
+        }
+
+        [Fact]
+        public void LabelWidth_IsPositiveForABlockTallerThanTheRing()
+        {
+            GHRadialGeometry g = Make(1280, 800, 1);
+            Assert.True(g.GetLabelMaxWidth(8, 2, g.MidRadius, 4 * g.OuterRadius) > 0f);
+            Assert.True(g.GetLabelMaxWidth(12, 0, g.MidRadius, 4 * g.OuterRadius) > 0f);
+        }
+
         [Fact]
         public void Chips_SitBesideTheRing()
         {

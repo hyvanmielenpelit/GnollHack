@@ -107,7 +107,8 @@ namespace GnollHackX.Pages.Game
            of the opener of a radial that confirms on it, where a cancelled release leaves the prompt under the radial
            unanswered. The direction radial answers D-pad Up, D-pad Down and Y directly; elsewhere Y is the definition's
            item action, and X switches sets in the Actions radial and in a radial with set tabs. Menu closes the radial
-           and returns false, so that the caller opens the game menu. */
+           and returns false, so that the caller opens the game menu; in a Spells radial it shows the same menu as the
+           list instead. */
         public bool HandleRadialGamepadButton(GHGamepadButtonEvent e)
         {
             if (!_radialState.IsOpen)
@@ -188,8 +189,10 @@ namespace GnollHackX.Pages.Game
             case GHGamepadButton.Menu:
                 if (pressed)
                 {
+                    /* A Spells radial's menu, still waiting for an answer, shows as the list */
+                    bool spellRadial = IsGamepadSpellRadial(def);
                     DismissRadialMenu(GHRadialCloseReason.Superseded);
-                    return false;
+                    return spellRadial;
                 }
                 break;
             default:

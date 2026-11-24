@@ -28,7 +28,6 @@ namespace GnollHackX.Pages.Game
         private const string SpellPlaceRadialId = "SPELLPLACE";
 
         /* The spell command menu's identifiers, as doaltspellmenu adds them */
-        private const long SpellCommandCast = 1;
         private const long SpellCommandCancel = 8;
         private const long SpellCommandSetHotbarSlot = 9;       /* SPELLCMD_SET_HOTBAR_SLOT, radial-only; its Count is the slot */
         private const long SpellCommandRemoveFromHotbar = 10;   /* SPELLCMD_REMOVE_FROM_HOTBAR, radial-only */
@@ -306,6 +305,7 @@ namespace GnollHackX.Pages.Game
                 bool readable;
                 GHSpellInfo spell = GHSpellMenuParser.CreateSpellInfo(mi.Glyph, spellOff, mi.Identifier, mi.NHColor,
                     mi.MainText, mi.SuffixText, mi.Suffix2Text, mi, out readable);
+                spell.Selectable = mi.IsTapSelectable;
                 spell.HotbarSlot = (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_HOTBAR_SLOT) != 0 ? GHSpellHotbar.NormalizeSlot(mi.ItemStyle) : 0;
                 if (!readable && !_spellRadialUnreadableLogged)
                 {
@@ -355,6 +355,13 @@ namespace GnollHackX.Pages.Game
             def.SetTabIcons = new string[] { GetGamepadUIIconPath("status-quick-spell.png"), GetGamepadUIIconPath("spells.png") };
             def.SwitchSetEnabled = false;
             def.FooterMaxLines = 3;
+            /* Two-line spell names, and a hub stats row of four pairs that may shrink further than other hub lines */
+            def.LabelMaxLines = 2;
+            def.HubTitleMaxLines = 2;
+            def.HubLineMinScale = 0.5;
+            def.HubLinesGapOfFont = 0.5;
+            /* Menu shows the same menu as the list */
+            def.ExtraHints = new GHGamepadHint[] { new GHGamepadHint(GHGamepadButton.Menu, "List", false) };
             def.OnActivate = item => OnGamepadSpellRadialActivate(s, item);
             def.OnClosed = reason => OnGamepadSpellRadialClosed(s, reason);
             ApplyGamepadRadialGlyphs(def);
@@ -493,41 +500,37 @@ namespace GnollHackX.Pages.Game
             item.Glyph = spell.Glyph;
             item.NhColor = ToGamepadSpellNhColor(spell.NhColor);
             item.Kind = GHRadialItemKind.Command;
-            item.IsEnabled = spell.Selectable && mi != null;
+            /* Pick answers with the long tap, which a forgotten or cooling spell's long-tap-only row takes too */
+            bool canLongTap = mi != null && mi.Identifier != 0;
+            item.IsEnabled = mode == SpellRadialMode.Pick ? canLongTap : spell.Selectable && mi != null;
             item.ClosesOnActivate = true;
             item.FooterText = string.IsNullOrEmpty(spell.Description) ? "" : spell.Description;
+            item.FooterTitle = GetGamepadSpellLevelLine(spell);
             item.Tag = entry;
+            ApplyGamepadSpellUncastableLook(item, spell);
 
-            GHRadialHubRun[] levelLine = GetGamepadSpellLevelLine(spell);
             if (mode == SpellRadialMode.Pick)
             {
-                /* The core leaves the rows of forgotten and cooling spells without an identifier, so they cannot be answered */
+                /* A row without an identifier cannot be answered */
                 item.ShowsUnavailableText = true;
                 item.HubTopLine = new GHRadialHubRun[] { CreateHubRun(null, "For " + GHSpellHotbar.GetSlotLabel(s.PickSlot), -1) };
-                List<GHRadialHubRun[]> lines = new List<GHRadialHubRun[]>(2);
-                if (levelLine != null)
-                    lines.Add(levelLine);
                 if (GHSpellHotbar.IsOnHotbar(spell))
-                    lines.Add(new GHRadialHubRun[] { CreateHubRun(null, "moves from " + GHSpellHotbar.GetSlotLabel(spell.HotbarSlot), -1) });
-                item.HubLines = lines;
-                if (GHSpellHotbar.IsOnHotbar(spell))
+                {
+                    item.HubLines = new List<GHRadialHubRun[]>
+                    {
+                        new GHRadialHubRun[] { CreateHubRun(null, "moves from " + GHSpellHotbar.GetSlotLabel(spell.HotbarSlot), -1) }
+                    };
                     item.Badge = GHRadialBadge.Star;
+                }
                 return item;
             }
 
             item.ShowsUnavailableText = false;
-            item.ItemActionHint = item.IsEnabled ? "Actions" : null;
-            item.HubTopLine = GetGamepadSpellCooldownLine(spell);
+            item.ItemActionHint = canLongTap ? "Actions" : null;
+            item.HubTopLine = GetGamepadSpellReasonLine(spell);
             GHRadialHubRun[] statsLine = GetGamepadSpellStatsLine(spell);
-            if (levelLine != null || statsLine != null)
-            {
-                List<GHRadialHubRun[]> lines = new List<GHRadialHubRun[]>(2);
-                if (levelLine != null)
-                    lines.Add(levelLine);
-                if (statsLine != null)
-                    lines.Add(statsLine);
-                item.HubLines = lines;
-            }
+            if (statsLine != null)
+                item.HubLines = new List<GHRadialHubRun[]> { statsLine };
             if (s.NewSpellIds.Contains(spell.SpellId))
                 item.Badge = GHRadialBadge.New;
             else if (hotbarSlot == 0 && GHSpellHotbar.IsOnHotbar(spell))
@@ -596,12 +599,47 @@ namespace GnollHackX.Pages.Game
             return item;
         }
 
-        /* The cooldown row, magenta while the spell cools down; null for a spell without a cooldown */
-        private static GHRadialHubRun[] GetGamepadSpellCooldownLine(GHSpellInfo spell)
+        /* Why the spell cannot be cast, in the row's color, as the core colors the Cast menu's row; null for a castable
+           spell */
+        private static GHRadialHubRun[] GetGamepadSpellReasonLine(GHSpellInfo spell)
         {
-            if (!GHSpellMenuParser.HasCooldown(spell))
+            if (IsGamepadSpellForgotten(spell))
+                return new GHRadialHubRun[] { CreateHubRun(null, "Forgotten", (int)NhColor.CLR_GRAY) };
+            string reason;
+            switch (spell.NhColor)
+            {
+            case (int)NhColor.CLR_MAGENTA:
+                reason = "Cooling down";
+                break;
+            case (int)NhColor.CLR_RED:
+                reason = "No chance of success";
+                break;
+            case (int)NhColor.CLR_BROWN:
+                reason = "No castings prepared";
+                break;
+            case (int)NhColor.CLR_BLUE:
+                reason = "Not enough mana";
+                break;
+            default:
                 return null;
-            return new GHRadialHubRun[] { CreateHubRun("&cool;", spell.CooldownText, spell.CooldownActive ? (int)NhColor.CLR_MAGENTA : -1) };
+            }
+            return new GHRadialHubRun[] { CreateHubRun(null, reason, spell.NhColor) };
+        }
+
+        /* A spell that cannot be cast gets its slice tinted with the reason row's color and a grayed icon */
+        private static void ApplyGamepadSpellUncastableLook(GHRadialItem item, GHSpellInfo spell)
+        {
+            GHRadialHubRun[] reason = spell == null ? null : GetGamepadSpellReasonLine(spell);
+            if (reason == null || reason.Length == 0 || reason[0] == null)
+                return;
+            item.SliceTintNhColor = ToGamepadSpellNhColor(reason[0].NhColor);
+            item.IconGrayed = true;
+        }
+
+        /* The core grays a forgotten spell's row and gives it "You cannot recall this spell" for a description */
+        private static bool IsGamepadSpellForgotten(GHSpellInfo spell)
+        {
+            return spell.NhColor == (int)NhColor.CLR_GRAY || GHSpellMenuParser.IsForgotten(spell.Description);
         }
 
         /* The school symbol and "Level 1 Arcane"; null when the row could not be read */
@@ -613,15 +651,18 @@ namespace GnollHackX.Pages.Game
             return new GHRadialHubRun[] { CreateHubRun(symbol, spell.LevelText, -1) };
         }
 
-        /* Success, mana and casts; null when the row could not be read */
+        /* Success, mana, cooldown (magenta while it counts down) and casts; null for a forgotten spell or a row that
+           could not be read */
         private static GHRadialHubRun[] GetGamepadSpellStatsLine(GHSpellInfo spell)
         {
-            if (spell.SuccessText == null || spell.ManaText == null || spell.CastsText == null)
+            if (spell.SuccessText == null || spell.ManaText == null || spell.CooldownText == null || spell.CastsText == null
+                || IsGamepadSpellForgotten(spell))
                 return null;
             return new GHRadialHubRun[]
             {
                 CreateHubRun("&success;", spell.SuccessText, -1),
                 CreateHubRun("&mana;", spell.ManaText, -1),
+                CreateHubRun("&cool;", spell.CooldownText, spell.CooldownActive ? (int)NhColor.CLR_MAGENTA : -1),
                 CreateHubRun("&casts;", spell.CastsText, -1),
             };
         }
@@ -641,8 +682,8 @@ namespace GnollHackX.Pages.Game
             return nhColor < 0 || nhColor == (int)NhColor.NO_COLOR || nhColor >= (int)NhColor.CLR_MAX ? -1 : nhColor;
         }
 
-        /* The page and slot of the item that the last answer remembered, searched first in its set; else the Hotbar page
-           last shown, with no highlight */
+        /* The page and slot of the item that the last answer remembered, searched first in its set; else, with no
+           highlight, the Hotbar page last shown, or Known Spells' first page while no spell is on the Hotbar */
         private void ResolveGamepadSpellRadialReturn(SpellRadialSession s, GHRadialMenuDefinition def, out int page, out int slot, out bool flash)
         {
             string id = _spellReturnItemId;
@@ -650,6 +691,8 @@ namespace GnollHackX.Pages.Game
             bool wantFlash = _spellReturnFlash;
             ClearSpellRadialReturn();
             page = Math.Max(0, Math.Min(GHSpellHotbar.PageCount - 1, _spellRadialHotbarPage));
+            if (s.KnownFirstPage > 0 && s.KnownFirstPage < def.PageCount && !HasGamepadSpellHotbarSpells(s))
+                page = s.KnownFirstPage;
             slot = -1;
             flash = false;
             if (id == null)
@@ -674,6 +717,16 @@ namespace GnollHackX.Pages.Game
                     }
                 }
             }
+        }
+
+        private static bool HasGamepadSpellHotbarSpells(SpellRadialSession s)
+        {
+            foreach (GHSpellInfo spell in s.Spells)
+            {
+                if (GHSpellHotbar.IsOnHotbar(spell))
+                    return true;
+            }
+            return false;
         }
 
         /* Answers */
@@ -806,7 +859,8 @@ namespace GnollHackX.Pages.Game
                 EnterGamepadSpellPick(s, entry.HotbarSlot);
                 return;
             }
-            if (entry.Action != SpellRadialAction.Spell || !item.IsEnabled)
+            /* The long tap also takes a forgotten or cooling spell, which A refuses */
+            if (entry.Action != SpellRadialAction.Spell || entry.MenuItem == null || entry.MenuItem.Identifier == 0)
                 return;
             _spellExpectActions = true;
             SetSpellRadialReturn(item.Id, page < s.KnownFirstPage, false);
@@ -889,7 +943,7 @@ namespace GnollHackX.Pages.Game
 
             foreach (GHMenuItem mi in menuinfo.MenuItems)
             {
-                if (mi == null || mi.Identifier == 0 || mi.Identifier == SpellCommandCast)
+                if (mi == null || mi.Identifier == 0)
                     continue;
                 if (mi.Identifier == SpellCommandCancel)
                 {
@@ -938,8 +992,8 @@ namespace GnollHackX.Pages.Game
             GHRadialItem add = new GHRadialItem();
             add.Id = "act:hotbar";
             add.Label = onHotbar ? "Move on Hotbar" : "Add to Hotbar";
-            add.Glyph = s.SetSlotRow != null && s.SetSlotRow.IsGlyphVisible ? s.SetSlotRow.Glyph : 0;
-            add.IconPath = GetGamepadUIIconPath("status-quick-spell.png");
+            add.Glyph = 0;
+            add.IconPath = GetGamepadUIIconPath(onHotbar ? "arrow_left.png" : "puton.png");
             add.Kind = GHRadialItemKind.Command;
             add.IsEnabled = s.SetSlotRow != null;
             add.ClosesOnActivate = false;
@@ -968,6 +1022,7 @@ namespace GnollHackX.Pages.Game
             hub.Glyph = ghwindow.Glyph;
             hub.NhColor = ToGamepadSpellNhColor(spell.NhColor);
             hub.FooterText = string.IsNullOrEmpty(spell.Description) ? "" : spell.Description;
+            hub.FooterTitle = GetGamepadSpellLevelLine(spell);
             hub.Tag = hubEntry;
 
             GHRadialMenuDefinition def = CreateGamepadSpellRadialDefinition(SpellActionsRadialId, s);
@@ -1049,7 +1104,10 @@ namespace GnollHackX.Pages.Game
             item.HubLines = lines;
             item.ItemActionHint = carriedOnHotbar ? "Remove" : null;
             item.FooterText = string.IsNullOrEmpty(carried.Description) ? "" : carried.Description;
+            item.FooterTitle = GetGamepadSpellLevelLine(carried);
             item.Tag = entry;
+            /* The slice shows the occupant */
+            ApplyGamepadSpellUncastableLook(item, occupant);
             return item;
         }
 

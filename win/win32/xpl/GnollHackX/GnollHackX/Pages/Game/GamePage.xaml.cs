@@ -67,7 +67,7 @@ namespace GnollHackX.Pages.Game
         {
             public bool OkClicked;
             public int MenuItemClickIndex;
-            public long ItemIdentifier;
+            public long ItemIdentifier; /* 0 when the click cannot select the row */
             public MenuClickResult(bool okClicked, int menuItemClickIndex, long itemIdentifier)
             {
                 OkClicked = okClicked;
@@ -20047,7 +20047,7 @@ namespace GnollHackX.Pages.Game
                         localMenuDrawBounds.ScrollOffset = curmenuoffset;
                         foreach (GHMenuItem mi in menuItems)
                         {
-                            if (mi.Identifier != 0 || mi.SpecialMark != '\0')
+                            if (mi.IsTapSelectable || mi.SpecialMark != '\0')
                                 has_identifiers = true;
 
                             if (mi.IsGlyphVisible)
@@ -20201,7 +20201,7 @@ namespace GnollHackX.Pages.Game
                                     }
 
                                     /* Selection rectangle */
-                                    bool isSelectable = selectionHow != SelectionMode.None && mi.Identifier != 0;
+                                    bool isSelectable = selectionHow != SelectionMode.None && mi.IsTapSelectable;
                                     bool iconsFitRight = x + totalRowWidth + minrowheight < canvaswidth - scaledmenumarginx;
                                     SKRect selectionrect = new SKRect(x, y, x + totalRowWidth + (isInventory && iconsFitRight ? minrowheight : 0), y + totalRowHeight);
                                     bool isFocused = gamepadFocusVisible && idx == gamepadFocusIndex && !isEquipmentSideShown;
@@ -20290,7 +20290,7 @@ namespace GnollHackX.Pages.Game
 
                                     if (has_identifiers && !MenuCanvas.HideMenuLetters)
                                     {
-                                        if (mi.Identifier == 0 && mi.SpecialMark != '\0')
+                                        if (!mi.IsTapSelectable && mi.SpecialMark != '\0')
                                             str = mi.FormattedSpecialMark;
                                         else
                                             str = mi.FormattedAccelerator;
@@ -21880,7 +21880,8 @@ namespace GnollHackX.Pages.Game
                 return false;
 
             menuItemMaxCount = menuItems[selectedidx].MaxCount;
-            if (menuItemMaxCount <= 1)
+            /* A long-tap-only row takes no count, since a count is a plain selection */
+            if (menuItemMaxCount <= 1 || menuItems[selectedidx].IsLongTapOnly)
             {
                 if (!MenuCanvas.SpecialClickOnLongTap)
                     return false;
@@ -21979,6 +21980,13 @@ namespace GnollHackX.Pages.Game
            menu is single-select; returns true if OK was pressed */
         private bool ActivateMenuItem(int idx, bool isLongTap)
         {
+            /* A key or a tap of A does nothing on a long-tap-only row */
+            var menuItems = MenuCanvas.MenuItems;
+            if (!isLongTap && menuItems != null && idx >= 0 && idx < menuItems.Count && menuItems[idx].IsLongTapOnly)
+            {
+                _menuCountNumber = -1;
+                return false;
+            }
             bool doclickok = ClickMenuItem(idx, isLongTap);
             _menuCountNumber = -1;
             if (MenuOKButton.IsEnabled)
@@ -22042,7 +22050,7 @@ namespace GnollHackX.Pages.Game
                     if (localDrawBounds.DrawBoundList[idx].DrawBounds.Contains(p))
                     {
                         GHMenuItem mi = menuItems[idx];
-                        if (mi.Identifier != 0 && (mi.IsAutoClickOk || clickOKOnSelection))
+                        if (mi.IsTapSelectable && (mi.IsAutoClickOk || clickOKOnSelection))
                         {
                             if (selectionHow == SelectionMode.Multiple)
                             {
@@ -22090,7 +22098,7 @@ namespace GnollHackX.Pages.Game
                     if (localDrawBounds.DrawBoundList[idx].DrawBounds.Contains(e.Location))
                     {
                         clickIdx = idx;
-                        identifier = menuItems[idx].Identifier;
+                        identifier = isLongTap || menuItems[idx].IsTapSelectable ? menuItems[idx].Identifier : 0;
                         doclickok = ClickMenuItem(idx, isLongTap);
                         break;
                     }
@@ -22147,7 +22155,7 @@ namespace GnollHackX.Pages.Game
                     if (localDrawBounds.DrawBoundList[idx].DrawBounds.Contains(e.Location))
                     {
                         clickIdx = idx;
-                        identifier = menuItems[idx].Identifier;
+                        identifier = isLongTap || menuItems[idx].IsTapSelectable ? menuItems[idx].Identifier : 0;
                         doclickok = ClickMenuItem(idx, isLongTap);
                         foundItem = true;
                         break;
@@ -22160,7 +22168,7 @@ namespace GnollHackX.Pages.Game
                         if (localDrawBounds.DrawBoundList[idx].EquipmentDrawBounds.Contains(e.Location))
                         {
                             clickIdx = idx;
-                            identifier = menuItems[idx].Identifier;
+                            identifier = isLongTap || menuItems[idx].IsTapSelectable ? menuItems[idx].Identifier : 0;
                             doclickok = ClickMenuItem(idx, isLongTap);
                             break;
                         }
@@ -22194,13 +22202,13 @@ namespace GnollHackX.Pages.Game
                     return false;
 
                 GHMenuItem mi = menuItems[menuItemIdx];
-                if (mi.Identifier == 0)
+                if (isLongTap ? mi.Identifier == 0 : !mi.IsTapSelectable)
                 {
                     if (MenuCanvas.SelectionHow == SelectionMode.Multiple && (mi.Flags & (ulong)MenuFlags.MENU_FLAGS_IS_GROUP_HEADING) != 0)
                     {
                         foreach (GHMenuItem o in menuItems)
                         {
-                            if (o.GroupAccelerator == mi.HeadingGroupAccelerator)
+                            if (o.GroupAccelerator == mi.HeadingGroupAccelerator && !o.IsLongTapOnly)
                             {
                                 if (!mi.HeadingUnselectGroup)
                                 {
@@ -22876,7 +22884,7 @@ namespace GnollHackX.Pages.Game
                 {
                     foreach (GHMenuItem o in menuItems)
                     {
-                        if (o.Identifier != 0)
+                        if (o.IsTapSelectable)
                         {
                             if (!_unselectOnTap)
                             {

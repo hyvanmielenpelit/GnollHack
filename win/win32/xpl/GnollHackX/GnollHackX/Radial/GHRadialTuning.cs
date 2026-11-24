@@ -92,6 +92,7 @@ namespace GnollHackX
         public static readonly double LabelFont = 0.047;
         public static readonly double LabelFontMinDip = 14.0;
         public static readonly double LabelMaxWidthOfArc = 0.92;
+        public static readonly double LabelMaxWidthOfSlice = 0.92;      /* of the widest label block inside the slice */
         public static readonly double LabelLineHeight = 1.25;           /* of the label font size */
         public static readonly double HubTitleFont = 0.085;
         public static readonly double HubTitleMinOfFont = 0.6;
@@ -139,5 +140,10 @@ namespace GnollHackX
         public static readonly double FooterWidthOfOuterRadius = 2.4;
         public static readonly double FooterGapOfLine = 0.5;               /* extra band height, of a line */
         public static readonly double HubSymbolSizeOfLabelFont = 0.95;     /* a hub line's symbol height, of the line's font size */
+
+        /* A slice's SliceTintNhColor */
+        public static readonly double SliceTintOfFill = 0.2;               /* the fill's move toward the tint */
+        public static readonly double SliceTintOfBorder = 0.45;            /* the border's move toward the tint */
+        public static readonly double SliceTintHighlightKeep = 0.5;        /* of both, kept on a fully highlighted slice */
     }
 }

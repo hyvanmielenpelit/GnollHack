@@ -148,10 +148,11 @@ enum worm_tile_types
 #define MENU_FLAGS_AUTO_CLICK_OK                0x00000800
 #define MENU_FLAGS_HOTBAR_SLOT                  0x00001000 /* the row's spell is on the hotbar, in slot info.style */
 #define MENU_FLAGS_RADIAL_ONLY                  0x00002000 /* only the gamepad radial shows this row */
+#define MENU_FLAGS_LONG_TAP_ONLY                0x00004000 /* only a long tap acts on the row; a tap is refused */
 
 /* mflags of start_menu_ex */
-#define GHMENU_START_FLAGS_NONE                 0x0000000000000000ULL
-#define GHMENU_START_FLAGS_SPELL_CAST           0x0000000000000001ULL /* doaltspellmenu, SPELLMENU_CAST */
+#define GHMENU_START_FLAGS_NONE                 0x00000000UL
+#define GHMENU_START_FLAGS_SPELL_CAST           0x00000001UL /* doaltspellmenu, SPELLMENU_CAST */
 
 #define MENU_DATAFLAGS_HAS_OBJECT_DATA          0x01
 #define MENU_DATAFLAGS_HAS_MONSTER_DATA         0x02

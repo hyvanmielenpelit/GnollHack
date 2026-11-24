@@ -280,8 +280,11 @@ radial while its trigger is held, which lasts as long as the trigger.
     again, so the radial returns on the same spell. B goes back to it.
   - **Add to / Move on Hotbar** carries the spell over the Hotbar: A places it (swapping with or replacing
     a filled slot, as the hub says), Y removes it, B cancels.
-  - L1/R1 page within the current set or school only. Touch, the mouse or a key while the radial shows
-    closes it and shows the same menu as the list, still waiting for an answer.
+  - L1/R1 page within the current set or school only. **Menu** shows the same menu as the list, still
+    waiting for an answer, instead of opening the game menu; Menu in that list brings the radial back. Touch,
+    the mouse or a key while the radial shows also closes it and shows the list.
+  - A spell that cannot be cast has a grayed icon and a slice tinted with its reason's color, as in the
+    Cast menu's text. With an empty Hotbar the radial opens on Known Spells.
 - **Direction radial** (any direction prompt): violet and see-through,
   with no dimming of the map and slices only 8 % opaque, 16 % when selected, because it is used for
   aiming. The eight directions sit at their compass positions, in place of the map's direction arrows. The hub names the command and what it uses, such as Fire and the quivered stack, with the highlighted direction above them, or Tilt to aim. A prompt that names no command shows Direction instead. Either stick selects.
