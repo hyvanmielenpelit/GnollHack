@@ -6,7 +6,17 @@ namespace GnollHackX
     public enum GHRadialItemKind
     {
         Command,
-        Toggle
+        Toggle,
+        Placeholder         /* an empty slot that can still be chosen: a dashed outline, a plus and "Empty" */
+    }
+
+    /* A small mark at the slice's outer edge */
+    public enum GHRadialBadge
+    {
+        None,
+        Star,               /* a gold star */
+        New,                /* a green "NEW" pill */
+        Count               /* a dark pill with BadgeText */
     }
 
     public enum GHRadialCloseReason
@@ -34,7 +44,16 @@ namespace GnollHackX
         StepCounterClockwise,
         JumpNorth,
         JumpSouth,
-        OpenerReleased
+        OpenerReleased,
+        ItemAction          /* the definition's ItemActionButton: OnItemAction on the highlighted slot */
+    }
+
+    /* One piece of a hub line: an optional special symbol image, then its text */
+    public sealed class GHRadialHubRun
+    {
+        public string Symbol;                   /* a special symbol name, "&mana;"; null for none */
+        public string Text;
+        public int NhColor = -1;                /* -1 = the line's default color */
     }
 
     /* A More Commands cell or another command source, as plain data for the slot assigner.
@@ -69,10 +88,23 @@ namespace GnollHackX
         public bool PlaysOwnSound;      /* the host plays no confirm sound after OnActivate */
         public double PreferredAngle = NoPreferredAngle;  /* fixed compass direction, or negative for none */
         public object Tag;              /* the host's payload */
+        public int Glyph;                           /* 0 = none; drawn by the host's CustomIconDrawer */
+        public int NhColor = -1;                    /* label, tile tint and hub title color; -1 = default */
+        public GHRadialBadge Badge;
+        public string BadgeText;                    /* for Count */
+        public string ItemActionHint;               /* the Y label; null hides it */
+        public bool ShowsSwapMark;                  /* dimmed with a swap mark while CarriedItem is over it */
+        public bool ShowsUnavailableText = true;    /* false: a disabled item's hub omits UnavailableText */
+        public GHRadialHubRun[] HubTopLine;         /* above the title; null for none */
+        public List<GHRadialHubRun[]> HubLines;     /* replace Description in the hub when not null */
+        public string FooterText;                   /* the description band; null for none */
+        public string HubTitle;                     /* the hub's title; null for Label */
 
         public bool HasPreferredAngle { get { return PreferredAngle >= 0; } }
 
         public bool IsToggle { get { return Kind == GHRadialItemKind.Toggle; } }
+
+        public bool IsPlaceholder { get { return Kind == GHRadialItemKind.Placeholder; } }
 
         public bool IsOn
         {
@@ -100,6 +132,7 @@ namespace GnollHackX
         public string Group;
         public int GroupIndex;
         public string EmptyText;        /* the hub text when no slot is filled */
+        public int ParentPageIndex = -1;    /* Cancel goes back to this page; -1 for none */
         public readonly GHRadialItem[] Slots;
 
         public GHRadialPage(string title, int slotCount)
@@ -160,8 +193,8 @@ namespace GnollHackX
         Violet,
     }
 
-    /* A whole radial menu as the host builds it for one opening. OnActivate and OnClosed run on
-       the thread that calls GHRadialMenuState, which is the UI thread. */
+    /* A whole radial menu as the host builds it for one opening. OnActivate, OnItemAction, OnCancel
+       and OnClosed run on the thread that calls GHRadialMenuState, which is the UI thread. */
     public sealed class GHRadialMenuDefinition
     {
         public string MenuId;                           /* "L3" / "R3" */
@@ -203,6 +236,21 @@ namespace GnollHackX
         public bool StickArmedAtOpen;                   /* a stick already pushed selects at once */
         public bool SeeThrough;                         /* lighter backdrop, slices and hub, to keep the map readable */
         public GHGamepadHint[] ExtraHints;              /* more hint bar entries after the cancel hint */
+
+        public GHGamepadButton OpenerButton = GHGamepadButton.Count;   /* Count = derive as today */
+        public bool PageWithinGroup;                    /* PrevPage, NextPage, the chips and the dots stay within the current group's run */
+        public string[] SetTabs;                        /* 2 labels; null for none */
+        public string[] SetTabIcons;
+        public bool SwitchSetEnabled = true;
+        public int SwitchSetReturnPageIndex = -1;       /* SwitchSet from the switched set goes here; -1 = page 0 */
+        public GHGamepadButton ItemActionButton = GHGamepadButton.Y;
+        public Action<GHRadialItem, int, int> OnItemAction;   /* item (null on an empty slot), page, slot */
+        public Func<bool> OnCancel;                     /* true: the host consumed B */
+        public bool CancelConsumed;                     /* the host sets it with each ReplaceDefinition; the hint reads BackHint */
+        public string BackHint = "Back";
+        public GHRadialItem CarriedItem;                /* drawn as a ghost over the highlighted slot */
+        public GHRadialItem FixedHubItem;               /* hub shows its Glyph and Label, whatever is highlighted */
+        public int FooterMaxLines = 3;                  /* 0 = no description band */
 
         public int PageCount { get { return Pages == null ? 0 : Pages.Count; } }
 
@@ -254,5 +302,77 @@ namespace GnollHackX
             first = 0;
             count = total;
         }
+
+        /* The run of pages in a row that share pageIndex's GroupIndex */
+        public void GetGroupRange(int pageIndex, out int first, out int count)
+        {
+            GHRadialPage page = GetPage(pageIndex);
+            if (page == null)
+            {
+                first = 0;
+                count = PageCount;
+                return;
+            }
+            int start = pageIndex;
+            while (start > 0 && Pages[start - 1] != null && Pages[start - 1].GroupIndex == page.GroupIndex)
+                start--;
+            int end = pageIndex;
+            while (end < PageCount - 1 && Pages[end + 1] != null && Pages[end + 1].GroupIndex == page.GroupIndex)
+                end++;
+            first = start;
+            count = end - start + 1;
+        }
+
+        /* The pages that PrevPage, NextPage and the chips move among: the group's run with
+           PageWithinGroup, else every page */
+        public void GetPagingRange(int pageIndex, out int first, out int count)
+        {
+            if (PageWithinGroup)
+            {
+                GetGroupRange(pageIndex, out first, out count);
+                return;
+            }
+            first = 0;
+            count = PageCount;
+        }
+
+        /* The pages the page dots count: the group's run with PageWithinGroup, else the set */
+        public void GetDotRange(int pageIndex, out int first, out int count)
+        {
+            if (PageWithinGroup)
+                GetGroupRange(pageIndex, out first, out count);
+            else
+                GetSetRange(pageIndex, out first, out count);
+        }
+
+        /* True when some item has a FooterText, so that the description band is reserved */
+        public bool HasFooters
+        {
+            get
+            {
+                if (FooterMaxLines <= 0)
+                    return false;
+                if (FixedHubItem != null && FixedHubItem.FooterText != null)
+                    return true;
+                int i;
+                for (i = 0; i < PageCount; i++)
+                {
+                    GHRadialPage page = Pages[i];
+                    if (page == null)
+                        continue;
+                    int k;
+                    for (k = 0; k < page.SlotCount; k++)
+                    {
+                        GHRadialItem item = page.Slots[k];
+                        if (item != null && item.FooterText != null)
+                            return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        /* True when the header shows the two set tabs */
+        public bool HasSetTabs { get { return SetTabs != null && SetTabs.Length >= 2; } }
     }
 }

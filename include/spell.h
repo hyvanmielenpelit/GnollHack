@@ -24,8 +24,17 @@ struct spell {
     int sp_cooldownlength; /* cooldown length */
     int sp_cooldownleft; /* cooldown turns left */
     int sp_skillchance; /* % chance to get skill points upon casting */
-    int sp_hotkey; /* value from 1 to 10 */
+    int sp_hotkey; /* hotbar slot 1..24; 1..10 are also the spell table's hotkeys */
 };
+
+#define MAX_SPELL_HOTBAR_SLOTS 24
+#define SPELL_HOTBAR_NOT_ADDED 0
+#define SPELL_HOTBAR_ADDED     1
+#define SPELL_HOTBAR_FULL      2
+
+/* radial-only rows of the spell command menu; Set Hotbar Slot takes the slot as its count */
+#define SPELLCMD_SET_HOTBAR_SLOT    9
+#define SPELLCMD_REMOVE_FROM_HOTBAR 10
 
 /* levels of memory destruction with a scroll of amnesia */
 #define ALL_MAP 0x1

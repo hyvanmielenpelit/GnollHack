@@ -5203,8 +5203,13 @@ namespace GnollHackX.Pages.Game
         public bool DelayedMenuShow { get { return Interlocked.CompareExchange(ref _delayedMenuShow, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedMenuShow, value ? 1 : 0); } }
         public bool DelayedMenuShowDoTextHide { get { return Interlocked.CompareExchange(ref _delayedMenuShowDoTextHide, 0, 0) != 0; } set { Interlocked.Exchange(ref _delayedMenuShowDoTextHide, value ? 1 : 0); } }
 
-        private async Task ShowMenuCanvas(GHMenuInfo menuinfo, GHPublishedWindow ghwindow)
+        /* allowRadial false shows the list even where a gamepad radial would answer the menu */
+        private async Task ShowMenuCanvas(GHMenuInfo menuinfo, GHPublishedWindow ghwindow, bool allowRadial = true)
         {
+            /* The Cast menu and its spell command menu go to the gamepad Spells radial, which answers them without the canvas */
+            if (allowRadial && TryShowMenuAsGamepadSpellRadial(menuinfo, ghwindow))
+                return;
+
             /* Cancel delayed menu hide */
 #if GNH_MAUI
             StopMenuHideTimers();
@@ -22482,14 +22487,7 @@ namespace GnollHackX.Pages.Game
                 }
             }
 
-            GHGame curGame = GHApp.CurrentGHGame;
-            GHWindow origWindow;
-            if (MenuCanvas.PublishedWindow.PublishedFrom == null)
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, resultlist, false));
-            else if (MenuCanvas.PublishedWindow.PublishedFrom.TryGetTarget(out origWindow))
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, resultlist, false));
-            else
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, resultlist, false));
+            EnqueueMenuResponse(MenuCanvas.PublishedWindow, resultlist, false, 0);
 
             if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
                 await DelayedMenuHide();
@@ -22569,17 +22567,24 @@ namespace GnollHackX.Pages.Game
                 InterlockedEquipmentMenuScrollOffset = _menuEquipmentScrollOffset;
             }
 
-            GHGame curGame = GHApp.CurrentGHGame;
-            GHWindow origWindow;
-            if (MenuCanvas.PublishedWindow.PublishedFrom == null)
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, new List<GHMenuItem>(1), true, responseIntValue));
-            else if (MenuCanvas.PublishedWindow.PublishedFrom.TryGetTarget(out origWindow))
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, new List<GHMenuItem>(1), true, responseIntValue));
-            else
-                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, new List<GHMenuItem>(1), true, responseIntValue));
+            EnqueueMenuResponse(MenuCanvas.PublishedWindow, new List<GHMenuItem>(1), true, responseIntValue);
 
             if (!UIUtils.StyleClosesMenuUponDestroy(MenuCanvas.MenuStyle))
                 await DelayedMenuHide();
+        }
+
+        /* Answers the menu shown from ghwindow: the selected items, or a cancel; responseIntValue 1 requests a weapon swap.
+           The list's OK and Cancel and the gamepad Spells radial all answer through here. */
+        private void EnqueueMenuResponse(GHPublishedWindow ghwindow, List<GHMenuItem> resultlist, bool cancelled, int responseIntValue)
+        {
+            GHGame curGame = GHApp.CurrentGHGame;
+            GHWindow origWindow;
+            if (ghwindow == null || ghwindow.PublishedFrom == null)
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, (GHWindow)null, resultlist, cancelled, responseIntValue));
+            else if (ghwindow.PublishedFrom.TryGetTarget(out origWindow))
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, origWindow, resultlist, cancelled, responseIntValue));
+            else
+                curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.ShowMenuPage, null, resultlist, cancelled, responseIntValue));
         }
 
         private void RequestSwapWeaponAndCloseMenu()
@@ -22677,12 +22682,19 @@ namespace GnollHackX.Pages.Game
             }
 
             /* Only caller is a dispatcher timer tick, which runs on the UI thread */
+            CompleteMenuHide(true);
+        }
+
+        /* Hides the menu and returns to the map; UI thread */
+        private void CompleteMenuHide(bool collectGarbage)
+        {
             MenuGrid.IsVisible = false;
             //MainGrid.IsVisible = true;
             IsMainCanvasOn = true;
             StopMenuCanvasAnimation();
             MenuWindowGlyphImage.StopAnimation();
-            GHApp.CollectGarbagePlatformDependent();
+            if (collectGarbage)
+                GHApp.CollectGarbagePlatformDependent();
             GHDiagnosticsScheduler.RaiseLightSpot(GHDiagnosticsSpotNames.MenuClose);
             RefreshScreen = true;
             StartMainCanvasAnimation();
@@ -22741,6 +22753,12 @@ namespace GnollHackX.Pages.Game
             }
 
             /* Only caller is a dispatcher timer tick, which runs on the UI thread */
+            CompleteTextHide(true);
+        }
+
+        /* Hides the text window and returns to the map; UI thread */
+        private void CompleteTextHide(bool collectGarbage)
+        {
             TextGrid.IsVisible = false;
             //MainGrid.IsVisible = true;
             IsMainCanvasOn = true;
@@ -22753,7 +22771,8 @@ namespace GnollHackX.Pages.Game
                 InterlockedTextScrollOffset = _textScrollOffset;
             }
             StopTextCanvasAnimation();
-            GHApp.CollectGarbagePlatformDependent();
+            if (collectGarbage)
+                GHApp.CollectGarbagePlatformDependent();
             GHDiagnosticsScheduler.RaiseLightSpot(GHDiagnosticsSpotNames.TextClose);
             RefreshScreen = true;
             StartMainCanvasAnimation();

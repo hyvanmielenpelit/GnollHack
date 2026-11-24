@@ -629,6 +629,7 @@ struct instance_flags {
     boolean save_file_tracking_supported; /* Does this version of GnollHack support save file tracking (= modern GUI) */
     boolean save_file_tracking_needed; /* Does GUI need save file tracking (= is desktop) */
     boolean save_file_tracking_on; /* Is save file tracking turned on in GUI settings */
+    boolean spell_hotbar_autoadd; /* learn() puts a newly learned spell in the first empty hotbar slot */
 };
 
 /*
@@ -844,6 +845,8 @@ struct startup_flags {
     boolean no_pets_preference_value;
     boolean autodig_set;
     boolean autodig_value;
+    boolean spell_hotbar_autoadd_set;
+    boolean spell_hotbar_autoadd_value;
     boolean ignore_stopping_set;
     boolean ignore_stopping_value;
     boolean vi_keys_set;

@@ -355,6 +355,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetIgnoreStopping(int new_value);
         [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetSpellHotbarAutoAdd(int on);
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetMouseCommand(int is_middle);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetMouseCommand(int new_value, int is_middle);
@@ -1294,6 +1296,11 @@ namespace GnollHackX.Unknown
             LibSetIgnoreStopping(newValue ? 1 : 0);
         }
 
+        public void SetSpellHotbarAutoAdd(bool on)
+        {
+            LibSetSpellHotbarAutoAdd(on ? 1 : 0);
+        }
+
         public int GetMouseCommand(bool isMiddle)
         {
             return LibGetMouseCommand(isMiddle ? 1 : 0);
@@ -1399,6 +1406,7 @@ namespace GnollHackX.Unknown
                 (ulong)(damageformula ? RunGnollHackFlags.DamageFormula : 0) |
                 (ulong)(wornshowsequipment ? RunGnollHackFlags.WornShowsEquipment : 0) |
                 (ulong)(autodig ? RunGnollHackFlags.AutoDig : 0) | /* Use the default; GHApp.AutoDig may contain the option value from the last game */
+                (ulong)(GHApp.GamepadSpellHotbarAutoAdd && GHApp.GamepadEnabled ? RunGnollHackFlags.SpellHotbarAutoAdd : 0) |
                 (ulong)(ignorestopping ? RunGnollHackFlags.IgnoreStopping : 0) | /* Use the default; GHApp.IgnoreStopping may contain the option value from the last game */
                 (ulong)(defaultvikeys ? RunGnollHackFlags.DefaultVIKeys : 0) | /* Use the default */
                 (ulong)ghGame.StartFlags;

@@ -622,11 +622,25 @@ learn(void)
                 spl_book[i].sp_amount += addedamount;
             }
 
+            int hotbar_result = auto_add_spell_to_hotbar(i);
+
             sortspells();
 
             play_sfx_sound(SFX_SPELL_LEARN_SUCCESS);
             int multicolors[1] = { CLR_MSG_SPELL };
             You_multi_ex(ATR_NONE, CLR_MSG_SUCCESS, no_multiattrs, multicolors, i > 0 ? "add \'%s\' to your repertoire." : "learn \'%s\'.", splname);
+            if (hotbar_result == SPELL_HOTBAR_ADDED || hotbar_result == SPELL_HOTBAR_FULL)
+            {
+                char hotbarname[BUFSZ];
+                Strcpy(hotbarname, splname);
+                (void)upstart(hotbarname);
+                if (hotbar_result == SPELL_HOTBAR_ADDED)
+                    pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors,
+                        "\'%s\' has been added to your Hotbar.", hotbarname);
+                else
+                    pline_multi_ex(ATR_NONE, CLR_MSG_HINT, no_multiattrs, multicolors,
+                        "\'%s\' is in Known Spells.", hotbarname);
+            }
             learnsuccess = TRUE;
         }
         makeknown((int) booktype);
@@ -1218,7 +1232,8 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
     do
     {
         tmpwin = create_nhwindow(NHW_MENU);
-        start_menu_style(tmpwin, splaction <= SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL_ALTERNATE :  GHMENU_STYLE_SPELLS_ALTERNATE);
+        start_menu_ex(tmpwin, splaction <= SPELLMENU_DETAILS ? GHMENU_STYLE_VIEW_SPELL_ALTERNATE : GHMENU_STYLE_SPELLS_ALTERNATE,
+            0, splaction == SPELLMENU_CAST ? GHMENU_START_FLAGS_SPELL_CAST : GHMENU_START_FLAGS_NONE);
         any = zeroany; /* zero out all bits */
 
         if (splaction <= SPELLMENU_DETAILS || splaction == SPELLMENU_REORDER || splaction == SPELLMENU_SORT || splaction >= 0)
@@ -1457,6 +1472,18 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
                 glyph = FORGET_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                 add_active_menu(actionwin, glyph, &any, 'F', 0, ATR_NONE, NO_COLOR,
                     "Forget", MENU_UNSELECTED);
+                if ((windowprocs.wincap2 & WC2_SPELL_HOTBAR) != 0)
+                {
+                    struct extended_menu_info hotbarinfo = active_menu_info();
+                    hotbarinfo.menu_flags |= MENU_FLAGS_RADIAL_ONLY;
+                    any.a_int = SPELLCMD_SET_HOTBAR_SLOT;
+                    glyph = SET_QUICK_SPELL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
+                    add_extended_menu(actionwin, glyph, &any, 0, 0, ATR_NONE, NO_COLOR,
+                        "Set Hotbar Slot", MENU_UNSELECTED, hotbarinfo);
+                    any.a_int = SPELLCMD_REMOVE_FROM_HOTBAR;
+                    add_extended_menu(actionwin, NO_GLYPH, &any, 0, 0, ATR_NONE, NO_COLOR,
+                        "Remove from Hotbar", MENU_UNSELECTED, hotbarinfo);
+                }
                 any.a_int = 8;
                 glyph = CANCEL_COMMAND_TILE + GLYPH_COMMAND_TILE_OFF;
                 add_active_menu(actionwin, glyph, &any, 'q', 0, ATR_NONE, NO_COLOR,
@@ -1468,6 +1495,7 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
                 if (act_n > 0)
                 {
                     int selidx = selected[0].item.a_int;
+                    int64_t selcount = selected[0].count;
                     free((genericptr_t)selected);
                     switch (selidx)
                     {
@@ -1506,6 +1534,15 @@ doaltspellmenu(const char *prompt, int splaction, int *spell_no, int *action_res
                         break;
                     case 7:
                         (void)forgetspell(splidx);
+                        docont = TRUE;
+                        break;
+                    case SPELLCMD_SET_HOTBAR_SLOT:
+                        if (selcount >= 1 && selcount <= MAX_SPELL_HOTBAR_SLOTS)
+                            set_spell_hotbar_slot(splidx, (int)selcount);
+                        docont = TRUE;
+                        break;
+                    case SPELLCMD_REMOVE_FROM_HOTBAR:
+                        set_spell_hotbar_slot(splidx, 0);
                         docont = TRUE;
                         break;
                     default:
@@ -4279,10 +4316,10 @@ dotradspellmenu(const char *prompt, int splaction, int *spell_no)
                 Strcpy(descbuf, nodesc);
 
             char hotkeychar = ' ';
-            if (spellhotkey(i) == 10)
+            if (spellhotkey(splnum) == 10)
                 hotkeychar = '0';
-            else if(spellhotkey(i) > 0)
-                hotkeychar = spellhotkey(i) + '0';
+            else if (spellhotkey(splnum) > 0 && spellhotkey(splnum) < 10)
+                hotkeychar = (char)(spellhotkey(splnum) + '0');
 
             //Finally print
             if (spellknow(splnum) <= 0)
@@ -4713,6 +4750,13 @@ add_alt_spell_cast_menu_item(winid tmpwin, int i, int splaction)
         {
             mcolor = CLR_YELLOW;
         }
+    }
+
+    if ((windowprocs.wincap2 & WC2_SPELL_HOTBAR) != 0 && spellhotkey(splnum) >= 1
+        && spellhotkey(splnum) <= MAX_SPELL_HOTBAR_SLOTS)
+    {
+        info.menu_flags |= MENU_FLAGS_HOTBAR_SLOT;
+        info.style = spellhotkey(splnum);
     }
 
     any.a_int = inactive ? 0 : splnum + 1; /* must be non-zero */
@@ -5150,6 +5194,70 @@ setspellhotkey(int spell)
         pline("Illegal hotkey.");
 
     return 0;
+}
+
+/* Puts spl_book[idx] in hotbar slot 1..MAX_SPELL_HOTBAR_SLOTS, or removes it from the hotbar with slot 0;
+   a spell already in that slot gets the moved spell's old slot, or none */
+void
+set_spell_hotbar_slot(int idx, int slot)
+{
+    int i, oldslot;
+
+    if (idx < 0 || idx >= MAXSPELL || spellid(idx) == NO_SPELL || slot < 0 || slot > MAX_SPELL_HOTBAR_SLOTS)
+        return;
+
+    if (slot == 0)
+    {
+        spellhotkey(idx) = 0;
+        return;
+    }
+
+    oldslot = spellhotkey(idx);
+    if (oldslot < 1 || oldslot > MAX_SPELL_HOTBAR_SLOTS)
+        oldslot = 0;
+
+    for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+    {
+        if (i != idx && spellhotkey(i) == slot)
+            spellhotkey(i) = oldslot;
+    }
+
+    spellhotkey(idx) = slot;
+}
+
+/* Puts spl_book[idx] in the first empty hotbar slot if iflags.spell_hotbar_autoadd is on; prints nothing */
+int
+auto_add_spell_to_hotbar(int idx)
+{
+    int i, slot;
+    boolean used;
+
+    if (!iflags.spell_hotbar_autoadd || idx < 0 || idx >= MAXSPELL || spellid(idx) == NO_SPELL)
+        return SPELL_HOTBAR_NOT_ADDED;
+
+    if (spellhotkey(idx) >= 1 && spellhotkey(idx) <= MAX_SPELL_HOTBAR_SLOTS)
+        return SPELL_HOTBAR_ADDED;
+
+    for (slot = 1; slot <= MAX_SPELL_HOTBAR_SLOTS; slot++)
+    {
+        used = FALSE;
+        for (i = 0; i < MAXSPELL && spellid(i) != NO_SPELL; i++)
+        {
+            if (spellhotkey(i) == slot)
+            {
+                used = TRUE;
+                break;
+            }
+        }
+
+        if (!used)
+        {
+            spellhotkey(idx) = slot;
+            return SPELL_HOTBAR_ADDED;
+        }
+    }
+
+    return SPELL_HOTBAR_FULL;
 }
 
 int

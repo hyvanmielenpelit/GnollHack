@@ -340,8 +340,9 @@ extern
 #define WC2_MENU_SHOWS_OK_CANCEL    0x04000000UL /* 27 menus always show OK and Cancel buttons (so you can then potentially omit e.g. a quit choice in the menu) */
 #define WC2_MENU_IS_FULL_SCREEN     0x08000000UL /* 28 menu page covers status bar and messages, so e.g. need to show available money otherwise in certain cases and messages cannot be seen for extra possible information */
 #define WC2_MENU_PROPER_SUBTITLE    0x10000000UL /* 29 menu page supports a proper subtitle that can show longer non-critical extra information */
+#define WC2_SPELL_HOTBAR            0x20000000UL /* 30 menus carry the spell hotbar for a gamepad radial */
 
-/* 5 free bits */
+/* 4 free bits */
 
 #define ALIGN_LEFT   1
 #define ALIGN_RIGHT  2

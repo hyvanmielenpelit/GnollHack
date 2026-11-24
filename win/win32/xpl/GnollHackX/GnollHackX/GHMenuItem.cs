@@ -126,6 +126,7 @@ namespace GnollHackX
         public readonly ObjectDataItem ObjData = null;
         public readonly char HeadingGroupAccelerator;
         public readonly ulong Flags;
+        public int ItemStyle { get; set; }      /* add_extended_menu's info.style; the Hotbar slot with MENU_FLAGS_HOTBAR_SLOT */
         public readonly UInt64 Oid;
         public readonly UInt64 Mid;
         public readonly GlyphImageSource GlyphImageSource = new GlyphImageSource();

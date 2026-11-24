@@ -162,6 +162,16 @@ namespace GnollHackX
         MENU_FLAGS_USE_NUM_ITEMS =              0x00000200,
         MENU_FLAGS_BUTTON_STYLE =               0x00000400,
         MENU_FLAGS_AUTO_CLICK_OK =              0x00000800,
+        MENU_FLAGS_HOTBAR_SLOT =                0x00001000, /* the row's spell is on the hotbar, in slot ItemStyle */
+        MENU_FLAGS_RADIAL_ONLY =                0x00002000, /* only the gamepad radial shows this row */
+    }
+
+    /* mflags of start_menu_ex (GHMENU_START_FLAGS_*) */
+    [Flags]
+    public enum GHMenuStartFlags : ulong
+    {
+        None =          0x0000000000000000UL,
+        SpellCast =     0x0000000000000001UL, /* the Cast menu (doaltspellmenu, SPELLMENU_CAST) */
     }
 
     [Flags]
@@ -258,6 +268,7 @@ namespace GnollHackX
         WornShowsEquipment =    0x00100000UL, /* Show the equipment screen of inventory instead of only worn items in normal menu */
         MetricSystem =          0x00200000UL, /* Set metric_system to true by default */
         DamageFormula =         0x00400000UL, /* Set show_damage_formula to true by default */
+        SpellHotbarAutoAdd =    0x00800000UL, /* Newly learned spells go to the first empty spell hotbar slot */
     }
 
     [Flags]

@@ -35,6 +35,7 @@ namespace GnollHackX
         public const int UTF8BUFSZ = 256 * 4;
         public const int MaxEngraveQuickTextLength = 95; /* PL_ESIZ */
         public const int MaxXlogUserNameLength = 31;
+        public const int MaxSpellHotbarSlots = 24; /* MAX_SPELL_HOTBAR_SLOTS in include/spell.h */
 
         /* Secure store keys. Credentials live in GHSecureStore -- the platform key store --
            and never in Preferences, which is plaintext on every platform. The secure_

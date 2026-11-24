@@ -3807,6 +3807,8 @@ E void ai_spellbook_tag_text(struct obj *, boolean, char *);
 E void reset_spells(void);
 E int64_t get_object_spell_casting_penalty(struct obj*);
 E const char* spelltypemnemonic(int);
+E void set_spell_hotbar_slot(int, int);
+E int auto_add_spell_to_hotbar(int);
 
 
 /* ### steal.c ### */

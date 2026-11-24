@@ -444,6 +444,10 @@ namespace GnollHackX
                     case GHRequestType.SetIgnoreStopping:
                         GHApp.GnollHackService?.SetIgnoreStopping(response.ResponseBoolValue);
                         break;
+                    case GHRequestType.SetSpellHotbarAutoAdd:
+                        /* Add New Spells to Hotbar applies only while Use Controller is on */
+                        GHApp.GnollHackService?.SetSpellHotbarAutoAdd(GHApp.GamepadSpellHotbarAutoAdd && GHApp.GamepadEnabled);
+                        break;
                     case GHRequestType.SetRightMouseCommand:
                     case GHRequestType.SetMiddleMouseCommand:
                         GHApp.GnollHackService?.SetMouseCommand(response.ResponseIntValue, response.RequestType == GHRequestType.SetMiddleMouseCommand);
@@ -2196,7 +2200,9 @@ namespace GnollHackX
                      * copy) and actively use their text blobs and
                      * GlyphImageSource. The old items will be GC'd once
                      * both threads release their references. */
-                    _ghWindows[winid].MenuInfo = new GHMenuInfo((ghmenu_styles)style);
+                    GHMenuInfo menuInfo = new GHMenuInfo((ghmenu_styles)style);
+                    menuInfo.StartFlags = mflags;
+                    _ghWindows[winid].MenuInfo = menuInfo;
                 }
             }
         }
@@ -2234,8 +2240,10 @@ namespace GnollHackX
                 if (winid >= 0 && winid < GHConstants.MaxGHWindows && _ghWindows[winid] != null && _ghWindows[winid].MenuInfo != null)
                 {
                     bool useNumItems = (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_NUM_ITEMS) != 0;
+                    /* A radial-only row takes no automatic accelerator, so that the list's letters stay as they are */
+                    bool radialOnly = (menuflags & (ulong)MenuFlags.MENU_FLAGS_RADIAL_ONLY) != 0;
                     GHMenuItem mi = new GHMenuItem(_ghWindows[winid].MenuInfo, GHApp.NoGlyph, ActiveGamePage, identifier,
-                        accel == 0 && identifier != 0 ? _ghWindows[winid].MenuInfo.AutoAccelerator : accel, groupaccel, special_mark,
+                        accel == 0 && identifier != 0 && !radialOnly ? _ghWindows[winid].MenuInfo.AutoAccelerator : accel, groupaccel, special_mark,
                         attr, color, attrs, colors, glyph,
                         (menuflags & (ulong)MenuFlags.MENU_FLAGS_ACTIVE) != 0,
                         (menuflags & (ulong)MenuFlags.MENU_FLAGS_USE_COLOR_FOR_SUFFIXES) != 0,
@@ -2276,7 +2284,11 @@ namespace GnollHackX
                     //mi.Mid = mid;
                     //mi.HeadingGroupAccelerator = headingaccel;
                     //mi.Flags = menuflags;
-                    _ghWindows[winid].MenuInfo.MenuItems.Add(mi);
+                    mi.ItemStyle = style;
+                    if (radialOnly)
+                        _ghWindows[winid].MenuInfo.RadialOnlyItems.Add(mi);
+                    else
+                        _ghWindows[winid].MenuInfo.MenuItems.Add(mi);
                 }
             }
         }

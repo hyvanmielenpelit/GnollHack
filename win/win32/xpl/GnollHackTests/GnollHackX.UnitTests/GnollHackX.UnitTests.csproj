@@ -85,6 +85,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialSlotAssigner.cs" Link="Shared\GHRadialSlotAssigner.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialMenuModel.cs" Link="Shared\GHRadialMenuModel.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\Radial\GHRadialMenuState.cs" Link="Shared\GHRadialMenuState.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\Spells\GHSpellHotbar.cs" Link="Shared\GHSpellHotbar.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Android\FrameworkObjectDisposedFilter.cs" Link="Shared\FrameworkObjectDisposedFilter.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Avalonia\GHRefreshRateEstimator.cs" Link="Shared\GHRefreshRateEstimator.cs" />
     <Compile Include="..\..\GnollHackM\Platforms\Linux\GHIBusDestroyReplyFilter.cs" Link="Shared\GHIBusDestroyReplyFilter.cs" />

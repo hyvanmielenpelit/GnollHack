@@ -321,6 +321,7 @@
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialMenuModel.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialMenuState.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Radial\GHRadialMenuRenderer.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Spells\GHSpellHotbar.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHStructs.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHDebugDashboard.cs" />
     <None Remove="..\GnollHackX\GnollHackX\GHDelegates.cs" />
@@ -445,6 +446,7 @@
     <None Remove="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\Game\GamePage.xaml.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\Game\GamePage.Radial.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\Pages\Game\GamePage.SpellRadial.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\Game\GamePage.GamepadDialogs.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\Game\GamePage.Gamepad.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Pages\Game\NamePage.xaml.cs" />
@@ -645,6 +647,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialMenuModel.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialMenuState.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Radial\GHRadialMenuRenderer.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Spells\GHSpellHotbar.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHStructs.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHDebugDashboard.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\GHDelegates.cs" />
@@ -769,6 +772,7 @@
     <Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GameMenuPage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GamePage.xaml.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GamePage.Radial.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GamePage.SpellRadial.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GamePage.GamepadDialogs.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\Game\GamePage.Gamepad.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Pages\Game\NamePage.xaml.cs" />
