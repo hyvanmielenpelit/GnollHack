@@ -87,9 +87,11 @@ namespace GnollHackX
         private const float BadgeTextOfHeight = 0.62f;     /* badge pill text, of the badge height */
         private const float BadgeAngleOfHalfSlot = 0.55f;  /* badges sit clockwise of the slot's center line */
         private const float HubFixedIconOfHub = 0.7f;      /* the fixed hub item's icon, of the hub radius */
+        private const float HubTopLineGapOfLine = 0.2f;    /* the space under the hub's top line, of its line height */
         private const float HubFixedTitleRaiseOfIcon = 0.06f; /* how far the fixed hub item's label moves up into the icon's margin */
         private const float HubFixedTitleWidthOfHubDiameter = 0.68f; /* the label sits low in the hub, where the circle is narrower */
         private const float FooterTitleMinOfFont = 0.7f;   /* the band's title row shrinks to fit down to this */
+        private const float FooterTitleGapOfLine = 0.35f;  /* the space between the band's title row and its text, of a line */
         private const int MaxWrappedLines = 3;             /* the most lines a slice label or a hub title wraps into */
         private const float HubRunGapOfFont = 0.5f;        /* before a run with a symbol */
         private const float HubSymbolGapOfFont = 0.2f;     /* between a symbol and its text */
@@ -241,6 +243,7 @@ namespace GnollHackX
         private bool _reserveTabs;
         private bool _reserveFooter;
         private int _reserveFooterLines;
+        private float _reserveFooterExtra;
         private SKTypeface _spacingTypeface;
         private float _descriptionSpacingRatio = 1.2f;  /* the description typeface's line spacing, of its size */
         private float _reserveTop;
@@ -402,8 +405,10 @@ namespace GnollHackX
                 _reserveDefinition = def;
                 _reserveTabs = def.HasSetTabs;
                 _reserveFooter = def.HasFooters || (def.FooterMaxLines > 0 && HasFooterTitles(def));
-                /* One row more for the band's title row when any item has one */
-                _reserveFooterLines = Math.Max(0, def.FooterMaxLines) + (HasFooterTitles(def) ? 1 : 0);
+                /* One row more for the band's title row when any item has one, and the space under it */
+                bool hasTitles = HasFooterTitles(def);
+                _reserveFooterLines = Math.Max(0, def.FooterMaxLines) + (hasTitles ? 1 : 0);
+                _reserveFooterExtra = hasTitles ? FooterTitleGapOfLine : 0f;
             }
             _reserveTop = 0f;
             _reserveBottom = 0f;
@@ -422,7 +427,7 @@ namespace GnollHackX
             double kTop = _reserveTabs
                 ? (1.0 + GHRadialTuning.SetTabGapOfHeight) * GHRadialTuning.SetTabHeightOfTitleFont * GHRadialTuning.PageTitleFont : 0.0;
             double kBottom = _reserveFooter
-                ? (_reserveFooterLines + GHRadialTuning.FooterGapOfLine) * _descriptionSpacingRatio
+                ? (_reserveFooterLines + _reserveFooterExtra + GHRadialTuning.FooterGapOfLine) * _descriptionSpacingRatio
                   * GHRadialTuning.FooterFontOfDescriptionFont * GHRadialTuning.HubDescriptionFont : 0.0;
             double k = kTop + kBottom;
             if (!(width > 0) || !(height > 0) || !(k > 0))
@@ -958,8 +963,8 @@ namespace GnollHackX
                 DrawCentered(canvas, layout.HubTitleLines[i], cx, firstBaseline + i * lineH, snap);
         }
 
-        /* The title, then the HubLines or the description lines, then the status and the shortcut, centered as a block;
-           a HubTopLine sits halfway between the top of the hub and the top of the title's capitals */
+        /* The HubTopLine, the title, then the HubLines or the description lines, then the status and the shortcut,
+           centered as a block */
         private void DrawHubItem(SKCanvas canvas, GHRadialMenuDefinition def, GHRadialGeometry g, GHRadialItem item, ItemLayout layout, bool snap)
         {
             bool showStatus = item.IsEnabled ? item.IsToggle : item.ShowsUnavailableText;
@@ -981,13 +986,19 @@ namespace GnollHackX
             if (showStatus || showShortcut)
                 statusH = LineHeight(LabelTypeface, _statusSize, out statusAscent);
 
+            bool hasTopLine = layout.TopLine != null && item.HubTopLine != null;
+            float topAscent = 0f;
+            float topH = hasTopLine ? HubTopLineHeight(layout, out topAscent) : 0f;
             float linesH = useHubLines ? HubLinesHeight(layout) : descH * layout.DescriptionLineCount;
-            float total = titleH + linesH + (showStatus ? statusH : 0f) + (showShortcut ? statusH : 0f);
+            float total = topH + titleH + linesH + (showStatus ? statusH : 0f) + (showShortcut ? statusH : 0f);
             float y = g.CenterY - total / 2;
             float cx = g.CenterX;
 
-            if (layout.TopLine != null && item.HubTopLine != null)
-                DrawHubLine(canvas, layout.TopLine, cx, HubTopLineBaseline(g, layout, y + titleAscent), LighterGray, snap);
+            if (hasTopLine)
+            {
+                DrawHubLine(canvas, layout.TopLine, cx, y + topAscent, LighterGray, snap);
+                y += topH;
+            }
 
             _textPaint.Typeface = TitleTypeface;
             _textPaint.TextSize = layout.HubTitleSize;
@@ -1073,27 +1084,22 @@ namespace GnollHackX
             return h;
         }
 
-        /* The top line's baseline: its center halfway between the top of the hub and the top of the title's capitals */
-        private float HubTopLineBaseline(GHRadialGeometry g, ItemLayout layout, float titleBaseline)
+        /* The top line's height in the hub's block, with the gap under it */
+        private float HubTopLineHeight(ItemLayout layout, out float ascent)
         {
-            _textPaint.Typeface = TitleTypeface;
-            _textPaint.TextSize = layout.HubTitleSize;
-            SKFontMetrics tm = _textPaint.FontMetrics;
-            float capHeight = tm.CapHeight > 0f ? tm.CapHeight : -tm.Ascent;
-            float centerY = (g.CenterY - g.HubRadius + titleBaseline - capHeight) / 2;
             HubLineLayout top = layout.TopLine;
-            _textPaint.Typeface = top.Typeface;
-            _textPaint.TextSize = top.Size;
-            SKFontMetrics m = _textPaint.FontMetrics;
-            return centerY - (m.Ascent + m.Descent) / 2;
+            float h = LineHeight(top.Typeface, top.Size, out ascent);
+            return h * (1f + HubTopLineGapOfLine);
         }
 
-        /* The hub's block height as DrawHubItem lays it out, for the top line's width */
+        /* The hub's block height as DrawHubItem lays it out, top line included, for the top line's width */
         private float MeasureHubItemBlock(GHRadialGeometry g, GHRadialItem item, ItemLayout layout, out float titleAscent)
         {
             bool showStatus = item.IsEnabled ? item.IsToggle : item.ShowsUnavailableText;
             bool showShortcut = ShowKeyboardShortcuts && !string.IsNullOrEmpty(item.ShortcutText);
-            float titleH = LineHeight(TitleTypeface, layout.HubTitleSize, out titleAscent) * Math.Max(1, layout.HubTitleLineCount);
+            float topAscent;
+            float topH = layout.TopLine != null && item.HubTopLine != null ? HubTopLineHeight(layout, out topAscent) : 0f;
+            float titleH = topH + LineHeight(TitleTypeface, layout.HubTitleSize, out titleAscent) * Math.Max(1, layout.HubTitleLineCount);
             float linesH;
             if (item.HubLines != null && layout.HubLines != null)
                 linesH = HubLinesHeight(layout);
@@ -1125,12 +1131,12 @@ namespace GnollHackX
             }
             if (item.HubTopLine != null)
             {
-                /* Measured at the base size first, for its baseline */
+                /* Measured at the base size first, for its place at the top of the block; its width is the hub's chord
+                   at the top of its letters, the line's narrowest point */
                 layout.TopLine = MeasureHubLine(item.HubTopLine, LabelTypeface, g.HubDescriptionFontSize, float.MaxValue, minScale);
                 float titleAscent;
                 float total = MeasureHubItemBlock(g, item, layout, out titleAscent);
-                float baseline = HubTopLineBaseline(g, layout, g.CenterY - total / 2 + titleAscent);
-                float rise = g.CenterY - baseline;
+                float rise = total / 2;
                 float chord = 2 * (float)Math.Sqrt(Math.Max(0.0, (double)g.HubRadius * g.HubRadius - (double)rise * rise));
                 float hubWidth = (float)(GHRadialTuning.HubTitleWidthOfHubDiameter * 2 * g.HubRadius);
                 float topWidth = Math.Max(1f, Math.Min(hubWidth, (float)(GHRadialTuning.HubTitleWidthOfHubDiameter * chord)));
@@ -1290,11 +1296,12 @@ namespace GnollHackX
             float titleH = title != null ? LineHeight(title.Typeface, title.Size, out titleAscent) : 0f;
             float ascent = 0f;
             float lineH = layout.FooterLineCount > 0 ? LineHeight(DescriptionTypeface, layout.FooterSize, out ascent) : 0f;
-            float y = (bandTop + bandBottom) / 2 - (titleH + lineH * layout.FooterLineCount) / 2;
+            float titleGap = title != null && layout.FooterLineCount > 0 ? titleH * FooterTitleGapOfLine : 0f;
+            float y = (bandTop + bandBottom) / 2 - (titleH + titleGap + lineH * layout.FooterLineCount) / 2;
             if (title != null)
             {
                 DrawHubLine(canvas, title, g.CenterX, y + titleAscent, SKColors.White, opacity, snap);
-                y += titleH;
+                y += titleH + titleGap;
             }
             _textPaint.Typeface = DescriptionTypeface;
             _textPaint.TextSize = layout.FooterSize;
