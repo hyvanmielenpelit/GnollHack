@@ -2500,6 +2500,7 @@ E int rnd_offensive_item(struct monst *);
 E boolean set_misc_potion(struct monst *, struct obj *);
 E boolean find_misc(struct monst*);
 E int use_misc(struct monst *);
+E boolean m_restore_ability(struct monst *, boolean, boolean);
 E int rnd_misc_item(struct monst *);
 E boolean searches_for_item(struct monst *, struct obj *);
 E boolean mon_reflects(struct monst *, const char *);

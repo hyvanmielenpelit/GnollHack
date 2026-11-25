@@ -1400,6 +1400,23 @@ cure_petrification_here:
         flush_screen(1);
         break;
     }
+    case SPE_RESTORE_ABILITY:
+    {
+        res = 1;
+        reveal_invis = TRUE;
+        wake = FALSE; /* wakeup() makes the target angry */
+        play_special_effect_at(SPECIAL_EFFECT_GENERIC_SPELL, 0, mtmp->mx, mtmp->my, FALSE);
+        play_sfx_sound_at_location(SFX_RESTORE_ABILITY, mtmp->mx, mtmp->my);
+        special_effect_wait_until_action(0);
+        if (m_restore_ability(mtmp, FALSE, FALSE))
+            pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "%s seems to feel good!", Monnam(mtmp));
+        else
+            pline("Nothing much seems to happen to %s.", mon_nam(mtmp));
+        special_effect_wait_until_end(0);
+        newsym(mtmp->mx, mtmp->my);
+        flush_screen(1);
+        break;
+    }
     case JAR_OF_EXTRA_HEALING_SALVE:
     case JAR_OF_GREATER_HEALING_SALVE:
     case JAR_OF_PRODIGIOUS_HEALING_SALVE:
@@ -4944,6 +4961,7 @@ bhito(struct obj *obj, struct obj *otmp, struct monst *origmonst)
         case SPE_CONTROL_UNDEAD:
         case SPE_CURE_BLINDNESS:
         case SPE_CURE_SICKNESS:
+        case SPE_RESTORE_ABILITY:
         case SPE_CURE_PETRIFICATION:
         case SPE_MINOR_HEALING:
         case JAR_OF_MEDICINAL_SALVE:
@@ -7646,6 +7664,10 @@ zapyourself(struct obj *obj, boolean ordinary)
             special_effect_wait_until_end(0);
         }
         break;
+    case SPE_RESTORE_ABILITY:
+        (void) peffects(obj);
+        damage = 0;
+        break;
     case SPE_REPLENISH_UNDEATH:
     case SPE_GREATER_UNDEATH_REPLENISHMENT:
         if (is_undead(youmonst.data))
@@ -8008,6 +8030,7 @@ zap_steed(struct obj *obj)
     case SPE_SILENCE:
     case SPE_CURE_BLINDNESS:
     case SPE_CURE_SICKNESS:
+    case SPE_RESTORE_ABILITY:
     case SPE_CURE_PETRIFICATION:
     case SPE_MINOR_HEALING:
     case JAR_OF_MEDICINAL_SALVE:

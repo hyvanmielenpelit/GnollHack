@@ -3115,6 +3115,7 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     case SPE_GREATER_UNDEATH_REPLENISHMENT:
     case SPE_CURE_BLINDNESS:
     case SPE_CURE_SICKNESS:
+    case SPE_RESTORE_ABILITY:
     case SPE_CURE_PETRIFICATION:
     case SPE_MINOR_HEALING:
     case SPE_HEALING:
@@ -3189,7 +3190,10 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
             update_u_action(ACTION_TILE_CAST_NODIR);
             play_sfx_sound_at_location(SFX_GENERIC_CAST_EFFECT, u.ux, u.uy);
             u_wait_until_action();
-            weffects(&pseudo);
+            if (otyp == SPE_RESTORE_ABILITY)
+                (void) peffects(&pseudo); /* spell data from a game saved when the spell had no direction */
+            else
+                weffects(&pseudo);
         }
 
         update_inventory(); /* spell may modify inventory */
@@ -3284,7 +3288,6 @@ spelleffects(int spell, boolean atme, struct monst *targetmonst, boolean *stop_r
     case SPE_DETECT_MONSTERS:
     case SPE_IMPROVED_MONSTER_DETECTION:
     case SPE_LEVITATION:
-    case SPE_RESTORE_ABILITY:
     case SPE_INVISIBILITY:
     case SPE_POLYMORPH_SELF:
     case SPE_SHAPE_CHANGE:

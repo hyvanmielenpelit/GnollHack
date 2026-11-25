@@ -2734,13 +2734,69 @@ muse_newcham_mon(struct monst *mon)
     return rndmonst_for_polymon(mon);
 }
 
+/* what a monster regains from a non-cursed potion of restore ability; returns TRUE if anything was restored */
+boolean
+m_restore_ability(struct monst *mtmp, boolean blessed, boolean diluted)
+{
+    int i, ii, lim;
+    boolean restored = FALSE;
+
+    if (!mtmp)
+        return FALSE;
+
+    i = rn2(A_MAX); /* start at a random point */
+    for (ii = 0; ii < A_MAX; ii++)
+    {
+        lim = M_AMAX(mtmp, i);
+        /* this used to adjust 'lim' for A_STR when u.uhs was
+           WEAK or worse, but that's handled via ATEMP(A_STR) now */
+        if (M_ABASE(mtmp, i) < lim)
+        {
+            M_ABASE(mtmp, i) = lim;
+            restored = TRUE;
+            /* only first found if not blessed */
+            if (!blessed || diluted)
+                break;
+        }
+        if (++i >= A_MAX)
+            i = 0;
+    }
+
+    if (mtmp->m_lev < mtmp->data->mlevel)
+    {
+        do
+        {
+            mtmp->m_lev++;
+        } while (mtmp->m_lev < mtmp->data->mlevel && blessed);
+        restored = TRUE;
+    }
+    if (mtmp->mbasehpdrain < 0)
+    {
+        if (blessed)
+            mtmp->mbasehpdrain = 0;
+        else
+            mtmp->mbasehpdrain += min(4, -mtmp->mbasehpdrain);
+        restored = TRUE;
+    }
+    if (mtmp->mbaseendrain < 0)
+    {
+        if (blessed)
+            mtmp->mbaseendrain = 0;
+        else
+            mtmp->mbaseendrain += min(4, -mtmp->mbaseendrain);
+        restored = TRUE;
+    }
+    update_all_mon_statistics(mtmp, TRUE);
+    return restored;
+}
+
 int
 use_misc(struct monst *mtmp)
 {
     if (!mtmp)
         return 0;
 
-    int i, ii, lim;
+    int i;
     struct obj *otmp = m.misc;
     boolean vis, vismon, oseen;
     char nambuf[BUFSZ];
@@ -3022,45 +3078,7 @@ use_misc(struct monst *mtmp)
                 special_effect_wait_until_action(0);
                 pline_ex(ATR_NONE, CLR_MSG_POSITIVE, "That seemed to make %s feel %s!", mon_nam(mtmp), is_obj_blessed(otmp) ? "great" : "good");
             }
-            i = rn2(A_MAX); /* start at a random point */
-            for (ii = 0; ii < A_MAX; ii++) 
-            {
-                lim = M_AMAX(mtmp, i);
-                /* this used to adjust 'lim' for A_STR when u.uhs was
-                   WEAK or worse, but that's handled via ATEMP(A_STR) now */
-                if (M_ABASE(mtmp, i) < lim) 
-                {
-                    M_ABASE(mtmp, i) = lim;
-                    /* only first found if not blessed */
-                    if (!is_obj_blessed(otmp) || isdiluted)
-                        break;
-                }
-                if (++i >= A_MAX)
-                    i = 0;
-            }
-
-            if (mtmp->m_lev < mtmp->data->mlevel) 
-            {
-                do
-                {
-                    mtmp->m_lev++;
-                } while (mtmp->m_lev < mtmp->data->mlevel && is_obj_blessed(otmp));
-            }
-            if (mtmp->mbasehpdrain < 0) 
-            {
-                if (is_obj_blessed(otmp))
-                    mtmp->mbasehpdrain = 0;
-                else
-                    mtmp->mbasehpdrain += min(4, -mtmp->mbasehpdrain);
-            }
-            if (mtmp->mbaseendrain < 0) 
-            {
-                if (is_obj_blessed(otmp))
-                    mtmp->mbaseendrain = 0;
-                else
-                    mtmp->mbaseendrain += min(4, -mtmp->mbaseendrain);
-            }
-            update_all_mon_statistics(mtmp, TRUE);
+            (void) m_restore_ability(mtmp, is_obj_blessed(otmp), isdiluted);
             if (oseen)
             {
                 special_effect_wait_until_end(0);

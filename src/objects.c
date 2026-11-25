@@ -4565,7 +4565,7 @@ SPELL("full healing",     "light gray", None, None, "Heals a target to full hit 
     O1_NONE, O2_NONE, O3_NONE, O4_VERY_RARE, O5_NONE, O6_NONE),
 SPELL("restore ability",  "light brown", None, None, "Restores lost ability points",
     P_HEALING_SPELL,4,  2, 0, 
-    4, 30, A_WIS, 0, 0, 100, 0, 1, NODIR, NODIR_NONE, 0, 0, 0, 0, 0, 0, 0,
+    4, 30, A_WIS, 5, 0, 100, 0, 1, IMMEDIATE, IMMEDIATE_NONE, 0, 0, 0, 0, 0, 0, 0,
     S1_NO_SOMATIC_COMPONENT, S2_NONE, ALL_TARGETS, AD_HEAL, CLR_BROWN, OBJECT_SOUNDSET_SPELLBOOK,
     O1_NONE, O2_NONE, O3_NONE, O4_NONE, O5_NONE, O6_NONE),
 
