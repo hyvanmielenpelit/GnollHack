@@ -5834,6 +5834,7 @@ monsterdescription_core(struct monst *mon, struct permonst *ptr, boolean probing
 
     }
 
+    print_monster_cooldowns(datawin, mon);
     print_monster_statistics(datawin, mon, ptr);
     print_monster_intrinsics(datawin, mon, ptr, probing);
     print_monster_wearables(datawin, mon, ptr);

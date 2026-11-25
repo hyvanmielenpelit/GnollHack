@@ -2413,6 +2413,135 @@ void print_monster_status(winid datawin, struct monst *mtmp)
     
 }
 
+static void
+print_monster_cooldown_row(winid datawin, int* rownum, int labelwidth, const char* label, const char* value)
+{
+    char buf[BUFSZ];
+    char labelbuf[BUFSZ];
+
+    (*rownum)++;
+    /* labelwidth is the longest label in the section, so all values start in one column */
+    Sprintf(labelbuf, "%s:", label);
+    Sprintf(buf, " %2d - %-*s %s", *rownum, labelwidth + 1, labelbuf, value);
+    putstr(datawin, ATR_INDENT_AT_DASH | ATR_ORDERED_LIST, buf);
+}
+
+static void
+print_monster_cooldown_line(winid datawin, int* rownum, int labelwidth, const char* label, unsigned short timer, int divisor)
+{
+    char valbuf[BUFSZ];
+    int turns_left = divisor > 1 ? ((int)timer + divisor - 1) / divisor : (int)timer;
+
+    if (turns_left <= 0)
+        Strcpy(valbuf, "Ready");
+    else
+        Sprintf(valbuf, "%d turn%s", turns_left, plur(turns_left));
+    print_monster_cooldown_row(datawin, rownum, labelwidth, label, valbuf);
+}
+
+/* Spell and special ability timers of a monster; turns left use the per-turn decrement
+   of monster_regeneration_and_timeout().  Each ability kind matches code that reads
+   mspec_used. */
+void
+print_monster_cooldowns(winid datawin, struct monst* mtmp)
+{
+    struct permonst* ptr;
+    boolean has_magc = FALSE, has_mage = FALSE, has_cleric = FALSE, has_caster_level = FALSE;
+    boolean has_brea = FALSE, has_gaze = FALSE, has_conf = FALSE, has_engl = FALSE;
+    boolean has_ssex = FALSE, has_services, casting_blocked;
+    const char* general_label = "Special abilities";
+    int i, kinds, divisor, labelwidth, rownum = 0;
+
+    if (!mtmp || mtmp == &youmonst || datawin == WIN_ERR || !mtmp->data)
+        return;
+
+    ptr = mtmp->data;
+    for (i = 0; i < NATTK; i++)
+    {
+        uchar aatyp = ptr->mattk[i].aatyp;
+        uchar adtyp = ptr->mattk[i].adtyp;
+
+        if (aatyp == AT_MAGC)
+        {
+            has_magc = TRUE;
+            if (adtyp == AD_SPEL)
+                has_mage = TRUE;
+            else if (adtyp == AD_CLRC)
+                has_cleric = TRUE;
+            /* caster level as castmu() computes it */
+            if (ptr->mattk[i].mlevel > 0 || mtmp->m_lev > 0)
+                has_caster_level = TRUE;
+        }
+        else if (aatyp == AT_BREA)
+            has_brea = TRUE;
+        else if (aatyp == AT_GAZE)
+        {
+            if (adtyp == AD_CONF || adtyp == AD_STUN || adtyp == AD_FIRE)
+                has_gaze = TRUE;
+        }
+        else if (aatyp == AT_ENGL)
+            has_engl = TRUE;
+
+        if (aatyp != AT_GAZE && adtyp == AD_CONF)
+            has_conf = TRUE;
+        if (adtyp == AD_SSEX)
+            has_ssex = TRUE;
+    }
+    has_services = (ptr->msound == MS_QUANTUM);
+
+    kinds = (int)has_brea + (int)has_gaze + (int)has_conf + (int)has_engl
+        + (int)has_ssex + (int)has_services;
+    if (!has_magc && !kinds)
+        return;
+
+    if (!has_magc && kinds == 1)
+    {
+        general_label = has_brea ? "Breath weapon"
+            : has_gaze ? "Gaze"
+            : has_conf ? "Confusion"
+            : has_engl ? "Engulfing"
+            : has_ssex ? "Seduction"
+            : "Services";
+    }
+
+    divisor = mon_spec_cooldown_divisor(mtmp);
+    casting_blocked = has_magc && (is_cancelled(mtmp) || is_silenced(mtmp) || !has_caster_level);
+
+    /* longest label shown; the "Intermediate" labels are the longest of each school */
+    labelwidth = (int)strlen(general_label);
+    if (casting_blocked)
+        labelwidth = max(labelwidth, (int)strlen("Spellcasting"));
+    if (has_mage)
+        labelwidth = max(labelwidth, (int)strlen("Intermediate mage"));
+    if (has_cleric)
+        labelwidth = max(labelwidth, (int)strlen("Intermediate cleric"));
+
+    putstr(datawin, ATR_HEADING, "Ability cooldowns:");
+
+    if (casting_blocked)
+    {
+        print_monster_cooldown_row(datawin, &rownum, labelwidth, "Spellcasting",
+                                   is_cancelled(mtmp) ? "Cancelled"
+                                   : is_silenced(mtmp) ? "Silenced"
+                                   : "Prevented");
+    }
+
+    print_monster_cooldown_line(datawin, &rownum, labelwidth, general_label, mtmp->mspec_used, divisor);
+
+    if (has_mage)
+    {
+        print_monster_cooldown_line(datawin, &rownum, labelwidth, "Mage spells", mtmp->mmagespell_used, divisor);
+        print_monster_cooldown_line(datawin, &rownum, labelwidth, "Intermediate mage", mtmp->mmageintermediate_used, divisor);
+        print_monster_cooldown_line(datawin, &rownum, labelwidth, "Ultimate mage", mtmp->mmageultimate_used, divisor);
+    }
+    if (has_cleric)
+    {
+        print_monster_cooldown_line(datawin, &rownum, labelwidth, "Cleric spells", mtmp->mclericspell_used, divisor);
+        print_monster_cooldown_line(datawin, &rownum, labelwidth, "Intermediate cleric", mtmp->mclericintermediate_used, divisor);
+        print_monster_cooldown_line(datawin, &rownum, labelwidth, "Ultimate cleric", mtmp->mclericultimate_used, divisor);
+    }
+}
+
 void print_monster_statistics(winid datawin, struct monst *mtmp, struct permonst *ptr)
 {
     if (!ptr)

@@ -4641,6 +4641,7 @@ E void display_monster_information(struct monst*);
 E void print_monster_intrinsics(winid win, struct monst*, struct permonst*, boolean);
 E void print_monster_wearables(winid win, struct monst*, struct permonst*);
 E void print_monster_status(winid win, struct monst*);
+E void print_monster_cooldowns(winid win, struct monst*);
 E void print_monster_statistics(winid win, struct monst*, struct permonst*);
 E void display_monster_inventory(struct monst*, boolean);
 E boolean get_obj_location(struct obj *, xchar *, xchar *, int);
