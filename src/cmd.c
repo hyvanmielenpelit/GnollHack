@@ -237,6 +237,9 @@ static void basics_enlightenment(int, int);
 static void game_enlightenment(int, int);
 static void characteristics_enlightenment(int, int);
 static void one_characteristic(int, int, int);
+static boolean innate_attribute_value_hidden(int, int);
+static void attribute_loss_line(int, int, int, int);
+static void losses_enlightenment(int, int);
 static void status_enlightenment(int, int);
 static void known_properties_enlightenment(void);
 static void attributes_enlightenment(int, int);
@@ -3560,6 +3563,9 @@ enlightenment(int mode, int final)
         /* strength, dexterity, &c */
         characteristics_enlightenment(mode, final);
     }
+    /* lost levels, drained maximums and lowered attributes, if any;
+       shown for both basic and magic enlightenment */
+    losses_enlightenment(mode, final);
     /* expanded status line information, including things which aren't
        included there due to space considerations--such as obvious
        alternative movement indicators (riding, levitation, &c), and
@@ -3984,32 +3990,12 @@ static void
 one_characteristic(int mode, int final, int attrindx)
 {
     extern const char *const attrname[]; /* attrib.c */
-    boolean hide_innate_value = FALSE, interesting_alimit;
+    boolean hide_innate_value = innate_attribute_value_hidden(mode, attrindx);
+    boolean interesting_alimit;
     int acurrent, abase, apeak, alimit;
     const char *paren_pfx;
     char subjbuf[BUFSZ], valubuf[BUFSZ], valstring[32];
     boolean parenthesis_open = FALSE;
-
-    /* being polymorphed or wearing certain cursed items prevents
-       hero from reliably tracking changes to characteristics so
-       we don't show base & peak values then; when the items aren't
-       cursed, hero could take them off to check underlying values
-       and we show those in such case so that player doesn't need
-       to actually resort to doing that */
-    if (Upolyd) {
-        hide_innate_value = TRUE;
-    } else if (Fixed_abil) {
-        if (stuck_ring(uleft, RIN_SUSTAIN_ABILITY)
-            || stuck_ring(uright, RIN_SUSTAIN_ABILITY))
-            hide_innate_value = TRUE;
-    }
-
-    if (AFIXMIN(attrindx) > 0 || AFIXMAX(attrindx) > 0)
-        hide_innate_value = TRUE;
-
-    /* note: final disclosure includes MAGICENLIGHTENTMENT */
-    if ((mode & MAGICENLIGHTENMENT) && !Upolyd)
-        hide_innate_value = FALSE;
 
     acurrent = ACURR(attrindx);
     (void) attrval(attrindx, acurrent, valubuf); /* Sprintf(valubuf,"%d",) */
@@ -4108,6 +4094,133 @@ one_characteristic(int mode, int final, int attrindx)
         Strcat(valubuf, ")");
 
     enl_msg(subjbuf, "is ", "was ", valubuf, "");
+}
+
+/* whether one_characteristic() hides the base and peak values of attrindx */
+static boolean
+innate_attribute_value_hidden(int mode, int attrindx)
+{
+    boolean hide_innate_value = FALSE;
+
+    /* being polymorphed or wearing certain cursed items prevents
+       hero from reliably tracking changes to characteristics so
+       we don't show base & peak values then; when the items aren't
+       cursed, hero could take them off to check underlying values
+       and we show those in such case so that player doesn't need
+       to actually resort to doing that */
+    if (Upolyd) {
+        hide_innate_value = TRUE;
+    } else if (Fixed_abil) {
+        if (stuck_ring(uleft, RIN_SUSTAIN_ABILITY)
+            || stuck_ring(uright, RIN_SUSTAIN_ABILITY))
+            hide_innate_value = TRUE;
+    }
+
+    if (AFIXMIN(attrindx) > 0 || AFIXMAX(attrindx) > 0)
+        hide_innate_value = TRUE;
+
+    /* note: final disclosure includes MAGICENLIGHTENTMENT */
+    if ((mode & MAGICENLIGHTENMENT) && !Upolyd)
+        hide_innate_value = FALSE;
+
+    return hide_innate_value;
+}
+
+/* one attribute below its peak, for losses_enlightenment() */
+static void
+attribute_loss_line(int final, int attrindx, int peak, int base)
+{
+    extern const char *const attrname[]; /* attrib.c */
+    char subjbuf[BUFSZ], buf[BUFSZ], peakbuf[32], basebuf[32];
+
+    Sprintf(subjbuf, "Your %s ", attrname[attrindx]);
+    Sprintf(buf, "from %s to %s", attrval(attrindx, peak, peakbuf), attrval(attrindx, base, basebuf));
+    enl_msg(subjbuf, "has been reduced ", "had been reduced ", buf, "");
+}
+
+/* losses that restore ability can undo: experience levels, maximum hit point
+   and mana drain, and attribute points below their peak; while polymorphed,
+   ABASE and AMAX belong to the current form and the normal form's attributes
+   are saved in u.macurr and u.mamax until rehumanize(), so its losses get a
+   section of their own */
+static void
+losses_enlightenment(int mode, int final)
+{
+    static const int attr_order[A_MAX] = { A_STR, A_DEX, A_CON, A_INT, A_WIS, A_CHA };
+    boolean show_attr[A_MAX], show_normal_attr[A_MAX];
+    boolean any_attr = FALSE, any_normal_attr = FALSE;
+    int lostlevels = u.ulevelmax - u.ulevel;
+    int hpdrain = Upolyd ? u.basemhdrain : u.ubasehpdrain;
+    int i, attrindx;
+    char buf[BUFSZ], psbuf[BUFSZ];
+
+    for (i = 0; i < A_MAX; i++)
+    {
+        attrindx = attr_order[i];
+        show_attr[i] = ABASE(attrindx) < AMAX(attrindx)
+            && ((mode & MAGICENLIGHTENMENT) || !innate_attribute_value_hidden(mode, attrindx));
+        show_normal_attr[i] = Upolyd && (mode & MAGICENLIGHTENMENT)
+            && MCURR(attrindx) < MMAX(attrindx);
+        if (show_attr[i])
+            any_attr = TRUE;
+        if (show_normal_attr[i])
+            any_normal_attr = TRUE;
+    }
+
+    if (lostlevels > 0 || hpdrain < 0 || u.ubaseendrain < 0 || any_attr)
+    {
+        enlght_out(" ", ATR_HALF_SIZE);
+        enlght_out("Restorable Losses:", ATR_SUBHEADING);
+
+        if (lostlevels > 0)
+        {
+            Sprintf(buf, "lost %d experience level%s", lostlevels, plur(lostlevels));
+            Sprintf(psbuf, " (maximum level %d)", u.ulevelmax);
+            you_have(buf, psbuf);
+        }
+
+        if (hpdrain < 0)
+        {
+            Sprintf(buf, "%d", -hpdrain);
+            enl_msg("Your maximum hit points ", "have been drained by ", "had been drained by ", buf, "");
+        }
+
+        if (u.ubaseendrain < 0)
+        {
+            Sprintf(buf, "%d", -u.ubaseendrain);
+            enl_msg("Your maximum mana ", "has been drained by ", "had been drained by ", buf, "");
+        }
+
+        for (i = 0; i < A_MAX; i++)
+        {
+            if (!show_attr[i])
+                continue;
+
+            attrindx = attr_order[i];
+            attribute_loss_line(final, attrindx, AMAX(attrindx), ABASE(attrindx));
+        }
+    }
+
+    if (Upolyd && (u.ubasehpdrain < 0 || any_normal_attr))
+    {
+        enlght_out(" ", ATR_HALF_SIZE);
+        enlght_out("Restorable Losses in Your Normal Form:", ATR_SUBHEADING);
+
+        if (u.ubasehpdrain < 0)
+        {
+            Sprintf(buf, "%d", -u.ubasehpdrain);
+            enl_msg("Your maximum hit points ", "have been drained by ", "had been drained by ", buf, "");
+        }
+
+        for (i = 0; i < A_MAX; i++)
+        {
+            if (!show_normal_attr[i])
+                continue;
+
+            attrindx = attr_order[i];
+            attribute_loss_line(final, attrindx, MMAX(attrindx), MCURR(attrindx));
+        }
+    }
 }
 
 /* status: selected obvious capabilities, assorted troubles */
