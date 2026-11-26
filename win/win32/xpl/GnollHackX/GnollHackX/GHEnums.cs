@@ -1835,6 +1835,7 @@ namespace GnollHackX
         SimpleTransformTopRight,
         SimpleAlternativeTransformTopRight,
         SimpleStashTopRight,
+        SimpleAlternativeStashTopRight,
         Custom
     }
 

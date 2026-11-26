@@ -5756,6 +5756,7 @@ namespace GnollHackX
         public static SKImage SimpleFrame2TopHorizontalBitmap;
         public static SKImage SimpleFrame2LeftVerticalBitmap;
         public static SKImage SimpleFrame2TransformBitmap;
+        public static SKImage SimpleFrame2StashAllBitmap;
 
         public static SKImage DarkModeSimpleFrameTopLeftCornerBitmap;
         public static SKImage DarkModeSimpleFrameSmallTopLeftCornerBitmap;
@@ -5769,6 +5770,7 @@ namespace GnollHackX
         public static SKImage DarkModeSimpleFrame2TopHorizontalBitmap;
         public static SKImage DarkModeSimpleFrame2LeftVerticalBitmap;
         public static SKImage DarkModeSimpleFrame2TransformBitmap;
+        public static SKImage DarkModeSimpleFrame2StashAllBitmap;
 
         public static SKImage ScrollBitmap;
         public static SKImage YouBitmap;
@@ -5900,6 +5902,7 @@ namespace GnollHackX
             SimpleFrame2TopHorizontalBitmap = LoadEmbeddedUIBitmap("frame2-horizontal.png");
             SimpleFrame2LeftVerticalBitmap = LoadEmbeddedUIBitmap("frame2-vertical.png");
             SimpleFrame2TransformBitmap = LoadEmbeddedUIBitmap("frame2-transform.png");
+            SimpleFrame2StashAllBitmap = LoadEmbeddedUIBitmap("frame2-stashall.png");
 
             DarkModeSimpleFrameTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-darkmode-topleft.png");
             DarkModeSimpleFrameSmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame-darkmode-topleft-small.png");
@@ -5913,6 +5916,7 @@ namespace GnollHackX
             DarkModeSimpleFrame2TopHorizontalBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-horizontal.png");
             DarkModeSimpleFrame2LeftVerticalBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-vertical.png");
             DarkModeSimpleFrame2TransformBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-transform.png");
+            DarkModeSimpleFrame2StashAllBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-stashall.png");
 
             ScrollBitmap = LoadEmbeddedUIBitmap("scroll.png");
             YouBitmap = LoadEmbeddedUIBitmap("you.png");

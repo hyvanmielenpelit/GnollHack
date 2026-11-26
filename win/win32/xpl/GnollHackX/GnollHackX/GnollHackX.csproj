@@ -135,6 +135,8 @@
     <None Remove="Assets\UI\frame-transform.png" />
     <None Remove="Assets\UI\frame-stashall.png" />
     <None Remove="Assets\UI\frame-darkmode-stashall.png" />
+    <None Remove="Assets\UI\frame2-stashall.png" />
+    <None Remove="Assets\UI\frame2-darkmode-stashall.png" />
     <None Remove="Assets\UI\frame-vertical.png" />
     <None Remove="Assets\UI\frame2-darkmode-horizontal.png" />
     <None Remove="Assets\UI\frame2-darkmode-topleft-small.png" />
@@ -391,6 +393,8 @@
     <EmbeddedResource Include="Assets\UI\frame-transform.png" />
     <EmbeddedResource Include="Assets\UI\frame-stashall.png" />
     <EmbeddedResource Include="Assets\UI\frame-darkmode-stashall.png" />
+    <EmbeddedResource Include="Assets\UI\frame2-stashall.png" />
+    <EmbeddedResource Include="Assets\UI\frame2-darkmode-stashall.png" />
     <EmbeddedResource Include="Assets\UI\frame2-darkmode-horizontal.png" />
     <EmbeddedResource Include="Assets\UI\frame2-darkmode-topleft-small.png" />
     <EmbeddedResource Include="Assets\UI\frame2-darkmode-topleft.png" />
