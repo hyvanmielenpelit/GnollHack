@@ -22,6 +22,7 @@ namespace GnollHackX
                                                    /*    once startup is done */
         public long StartupMilestoneAgeSeconds = -1;
         public int StartupMilestoneMask = -1;
+        public int StartupMilestoneMaxCode = -1;    /* a, fifth part: the writer's MaxMilestone; -1 from older builds */
         public int MemoryWarningLevel = -1;        /* w: last warning; 0 none, else (int)MemoryPressureLevel + 1 */
         public long MemoryWarningAgeSeconds = -1;
         public int HighestMemoryWarningLevel = -1; /* highest since launch, Background excluded; same coding */
@@ -54,7 +55,8 @@ namespace GnollHackX
             if (IsStartupDone)
                 AppendField(sb, ref full, "a", ProcessAgeSeconds);
             else
-                AppendField(sb, ref full, "a", ProcessAgeSeconds, StartupMilestone, StartupMilestoneAgeSeconds, StartupMilestoneMask);
+                AppendField(sb, ref full, "a", ProcessAgeSeconds, StartupMilestone, StartupMilestoneAgeSeconds, StartupMilestoneMask,
+                    StartupMilestoneMaxCode);
             AppendField(sb, ref full, "w", MemoryWarningLevel, MemoryWarningAgeSeconds, HighestMemoryWarningLevel);
             AppendField(sb, ref full, "r", RssMB);
             AppendField(sb, ref full, "s", SwapMB);
@@ -135,7 +137,8 @@ namespace GnollHackX
                         break;
                     case "a":
                         res.ProcessAgeSeconds = ParsePart(parts, 0);
-                        /* One part is written only once startup is done; older builds always write four */
+                        /* One part is written only once startup is done; otherwise four parts, or five with
+                           the writer's highest milestone code */
                         if (parts.Length == 1 && res.ProcessAgeSeconds != -1)
                         {
                             res.StartupMilestone = (int)GHStartupMilestone.MainMenu;
@@ -147,6 +150,7 @@ namespace GnollHackX
                             res.StartupMilestone = ParseIntPart(parts, 1);
                             res.StartupMilestoneAgeSeconds = ParsePart(parts, 2);
                             res.StartupMilestoneMask = ParseIntPart(parts, 3);
+                            res.StartupMilestoneMaxCode = ParseIntPart(parts, 4);
                         }
                         break;
                     case "w":
@@ -340,18 +344,30 @@ namespace GnollHackX
             get { return StartupMilestoneMask >= 0 && (StartupMilestoneMask & (1 << (int)GHStartupMilestone.MainMenu)) != 0; }
         }
 
-        /* From the mask alone, in code order: AppInit to MainMenu */
+        /* The milestones a snapshot can lack: codes 2-10 in code order, as older builds listed them, and the
+           newer codes beside their neighbors in time. Runtime, NativeLoaded and AppCreate are left out:
+           AndroidMemorySampler writes no snapshot before they are reached. */
+        private static readonly GHStartupMilestone[] _notReachedOrder =
+        {
+            GHStartupMilestone.MauiAppBuilt, GHStartupMilestone.AppInit, GHStartupMilestone.BaseAssets,
+            GHStartupMilestone.Credentials, GHStartupMilestone.CredentialsDone, GHStartupMilestone.AppReady,
+            GHStartupMilestone.Activity, GHStartupMilestone.FirstDraw, GHStartupMilestone.Focused,
+            GHStartupMilestone.MainPage, GHStartupMilestone.StartUpTasks, GHStartupMilestone.MainMenu
+        };
+
+        /* From the mask alone, in the usual order, limited to the codes the writing build knew */
         private string NotReachedMilestones()
         {
+            int maxCode = StartupMilestoneMaxCode >= 0 ? StartupMilestoneMaxCode : GHStartupTimeline.LegacyMaxMilestone;
             StringBuilder sb = new StringBuilder();
-            int code;
-            for (code = (int)GHStartupMilestone.AppInit; code <= GHStartupTimeline.MaxMilestone; code++)
+            foreach (GHStartupMilestone milestone in _notReachedOrder)
             {
-                if ((StartupMilestoneMask & (1 << code)) != 0)
+                int code = (int)milestone;
+                if (code > maxCode || (StartupMilestoneMask & (1 << code)) != 0)
                     continue;
                 if (sb.Length > 0)
                     sb.Append(", ");
-                sb.Append(GHStartupTimeline.Name((GHStartupMilestone)code));
+                sb.Append(GHStartupTimeline.Name(milestone));
             }
             return sb.ToString();
         }
@@ -394,6 +410,7 @@ namespace GnollHackX
                 && StartupMilestone == other.StartupMilestone
                 && StartupMilestoneAgeSeconds == other.StartupMilestoneAgeSeconds
                 && StartupMilestoneMask == other.StartupMilestoneMask
+                && StartupMilestoneMaxCode == other.StartupMilestoneMaxCode
                 && MemoryWarningLevel == other.MemoryWarningLevel
                 && MemoryWarningAgeSeconds == other.MemoryWarningAgeSeconds
                 && HighestMemoryWarningLevel == other.HighestMemoryWarningLevel

@@ -6,8 +6,8 @@ using System.Text;
 
 namespace GnollHackX
 {
-    /* Startup milestones. The codes are stored in Android exit snapshots and never change. A code
-       names a milestone, not its place in time: MAUI raises the main page's Appearing inside
+    /* Startup milestones. The codes are stored in Android exit snapshots and never change. New
+       milestones are appended. A code names a milestone, not its place in time: MAUI raises the main page's Appearing inside
        MainActivity.OnCreate, so MainPage can be reached before Activity. */
     public enum GHStartupMilestone
     {
@@ -22,6 +22,11 @@ namespace GnollHackX
         MainPage = 8,           /* The main page's first-time startup entered */
         StartUpTasks = 9,       /* MainPage.StartUpTasks finished */
         MainMenu = 10,          /* The main menu has faded in */
+        Runtime = 11,           /* The managed MainApplication constructor entered (Android) */
+        NativeLoaded = 12,      /* The engine library loaded, before FMOD's initialization (Android) */
+        MauiAppBuilt = 13,      /* MauiProgram.CreateMauiApp built the app */
+        BaseAssets = 14,        /* GHApp.Initialize loaded the base typefaces and bitmaps */
+        FirstDraw = 15,         /* The activity window's first draw pass began (Android) */
     }
 
     /* When each startup milestone was first reached, in milliseconds since process start. The default
@@ -29,15 +34,20 @@ namespace GnollHackX
        younger than it is; startup itself runs awake. */
     public sealed class GHStartupTimeline
     {
-        public const int MaxMilestone = (int)GHStartupMilestone.MainMenu;
+        public const int MaxMilestone = (int)GHStartupMilestone.FirstDraw;
+
+        /* The highest code of builds whose exit snapshots do not record the writer's highest code */
+        public const int LegacyMaxMilestone = (int)GHStartupMilestone.MainMenu;
 
         public static readonly GHStartupTimeline Current = new GHStartupTimeline(null);
 
-        /* Indexed by milestone code */
+        /* Indexed by milestone code. The names reach Sentry, whose server-side scrubbing discards any
+           value containing a word such as credentials, auth, token, password or secret. */
         private static readonly string[] _names =
         {
-            "none", "app-create", "app-init", "credentials", "credentials-done", "app-ready",
-            "activity", "focused", "main-page", "startup-tasks", "main-menu"
+            "none", "app-create", "app-init", "secure-store", "secure-store-done", "app-ready",
+            "activity", "focused", "main-page", "startup-tasks", "main-menu",
+            "runtime", "native-loaded", "maui-app", "base-assets", "first-draw"
         };
 
         private readonly object _lock = new object();

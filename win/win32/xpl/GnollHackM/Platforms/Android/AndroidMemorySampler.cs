@@ -195,6 +195,7 @@ public static class AndroidMemorySampler
             summary.StartupMilestone = (int)lastMilestone;
             summary.StartupMilestoneAgeSeconds = lastMilestoneMilliseconds < 0 ? -1 : Math.Max(0L, (processAgeMilliseconds - lastMilestoneMilliseconds) / 1000);
             summary.StartupMilestoneMask = reachedMask;
+            summary.StartupMilestoneMaxCode = GHStartupTimeline.MaxMilestone;
         }
 
         long rssKB, swapKB;

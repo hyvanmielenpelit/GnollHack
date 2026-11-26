@@ -28,9 +28,11 @@ public class MainApplication : MauiApplication
         {
             System.Diagnostics.Debug.WriteLine("MainApplication process age: " + ex.Message);
         }
+        GHStartupTimeline.Current.Mark(GHStartupMilestone.Runtime);
         Java.Lang.JavaSystem.LoadLibrary(PlatformConstants.library);
         int res = LibTest();
         System.Diagnostics.Debug.WriteLine(res);
+        GHStartupTimeline.Current.Mark(GHStartupMilestone.NativeLoaded);
         MainActivity.StaticAssets = Assets;
         StaticAssets = Assets;
         FmodService.AndroidInit(this);

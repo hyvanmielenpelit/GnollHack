@@ -447,6 +447,43 @@ namespace GnollHackX.UnitTests
         }
 
         [Fact]
+        public void StartupField_WithWriterMaxCode_RoundTripsAndListsNewMilestones()
+        {
+            GHExitStateSummary s = new GHExitStateSummary();
+            s.UnixSeconds = 100;
+            s.GameState = 0;
+            s.ProcessAgeSeconds = 12;
+            s.StartupMilestone = (int)GHStartupMilestone.AppReady;
+            s.StartupMilestoneAgeSeconds = 3;
+            s.StartupMilestoneMask = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4) | (1 << 5)
+                | (1 << 11) | (1 << 12) | (1 << 13) | (1 << 14);
+            s.StartupMilestoneMaxCode = GHStartupTimeline.MaxMilestone;
+
+            string text = s.Format();
+            GHExitStateSummary parsed;
+            Assert.True(GHExitStateSummary.TryParse(text, out parsed));
+
+            Assert.Equal("gs1 u=100 g=0 a=12/5/3/30782/15", text);
+            Assert.True(s.ContentEquals(parsed));
+            Assert.Equal("none; process 12 s; startup at app-ready 3 s before snapshot, "
+                + "not reached: activity, first-draw, focused, main-page, startup-tasks, main-menu", parsed.Describe(0));
+        }
+
+        [Fact]
+        public void StartupField_LegacySnapshot_ListsOnlyItsOwnMilestones()
+        {
+            GHExitStateSummary parsed;
+            Assert.True(GHExitStateSummary.TryParse("gs1 u=100 g=0 a=12/7/0/254", out parsed));
+
+            string description = parsed.Describe(0);
+            Assert.Equal(-1, parsed.StartupMilestoneMaxCode);
+            Assert.EndsWith("not reached: main-page, startup-tasks, main-menu", description);
+            Assert.DoesNotContain("first-draw", description);
+            Assert.DoesNotContain("maui-app", description);
+            Assert.DoesNotContain("base-assets", description);
+        }
+
+        [Fact]
         public void StartupTagValue_MainMenuReached_IsDone()
         {
             GHExitStateSummary s = new GHExitStateSummary();

@@ -741,6 +741,7 @@ public static class MauiProgram
         KeyboardDoneOverlay.Register();
 #endif
         MauiApp app = builder.Build();
+        GHStartupTimeline.Current.Mark(GHStartupMilestone.MauiAppBuilt);
 #if SENTRY && WINDOWS
         ProcessMemoryWindows.Start();
         if (WindowsSentryNative.NativeInitialized)

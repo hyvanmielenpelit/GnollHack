@@ -93,7 +93,7 @@ namespace GnollHackX.UnitTests
 
         [Theory]
         [InlineData(GHStartupMilestone.None)]
-        [InlineData((GHStartupMilestone)11)]
+        [InlineData((GHStartupMilestone)16)]
         [InlineData((GHStartupMilestone)(-3))]
         public void Mark_OutOfRange_IsIgnored(GHStartupMilestone milestone)
         {
@@ -129,14 +129,35 @@ namespace GnollHackX.UnitTests
         {
             string[] expected =
             {
-                "none", "app-create", "app-init", "credentials", "credentials-done", "app-ready",
-                "activity", "focused", "main-page", "startup-tasks", "main-menu"
+                "none", "app-create", "app-init", "secure-store", "secure-store-done", "app-ready",
+                "activity", "focused", "main-page", "startup-tasks", "main-menu",
+                "runtime", "native-loaded", "maui-app", "base-assets", "first-draw"
             };
             int code;
             for (code = 0; code <= GHStartupTimeline.MaxMilestone; code++)
                 Assert.Equal(expected[code], GHStartupTimeline.Name((GHStartupMilestone)code));
-            Assert.Equal("unknown", GHStartupTimeline.Name((GHStartupMilestone)11));
+            Assert.Equal("unknown", GHStartupTimeline.Name((GHStartupMilestone)16));
             Assert.Equal("unknown", GHStartupTimeline.Name((GHStartupMilestone)(-1)));
+        }
+
+        /* Sentry's default server-side scrubbing discards any value containing one of these words */
+        [Fact]
+        public void Names_AvoidSentryScrubbedWords()
+        {
+            string[] scrubbedWords =
+            {
+                "password", "secret", "passwd", "api_key", "apikey", "auth", "credentials", "mysql_pwd",
+                "privatekey", "private_key", "token", "bearer"
+            };
+            GHStartupTimeline timeline = NewTimeline();
+            int code;
+            for (code = 1; code <= GHStartupTimeline.MaxMilestone; code++)
+                timeline.Mark((GHStartupMilestone)code);
+
+            string timings = timeline.FormatTimings().ToLowerInvariant();
+            Assert.Contains("first-draw", timings);
+            foreach (string word in scrubbedWords)
+                Assert.DoesNotContain(word, timings);
         }
 
         [Fact]

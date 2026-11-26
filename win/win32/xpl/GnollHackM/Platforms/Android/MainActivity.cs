@@ -52,6 +52,16 @@ public class MainActivity : MauiAppCompatActivity
         AndroidExitInfoReporter.StartReporting(this);
         AndroidAnrCalibration.MaybeSchedule(Intent);
 #endif
+        try
+        {
+            Android.Views.View decorView = Window?.DecorView;
+            if (decorView != null)
+                decorView.ViewTreeObserver?.AddOnPreDrawListener(new FirstDrawListener(decorView));
+        }
+        catch (Exception ex)
+        {
+            System.Diagnostics.Debug.WriteLine("FirstDrawListener: " + ex.Message);
+        }
         GHStartupTimeline.Current.Mark(GHStartupMilestone.Activity);
     }
 
@@ -235,6 +245,33 @@ public class MainActivity : MauiAppCompatActivity
             
             // Return consumed insets so MAUI's internal handlers don't add padding back
             return AndroidX.Core.View.WindowInsetsCompat.Consumed ?? insets;
+        }
+    }
+
+    /* Marks the activity window's first draw pass, then removes itself */
+    private sealed class FirstDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
+    {
+        private readonly Android.Views.View _view;
+
+        public FirstDrawListener(Android.Views.View view)
+        {
+            _view = view;
+        }
+
+        public bool OnPreDraw()
+        {
+            GHStartupTimeline.Current.Mark(GHStartupMilestone.FirstDraw);
+            try
+            {
+                ViewTreeObserver observer = _view.ViewTreeObserver;
+                if (observer != null && observer.IsAlive)
+                    observer.RemoveOnPreDrawListener(this);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("FirstDrawListener: " + ex.Message);
+            }
+            return true;
         }
     }
 }

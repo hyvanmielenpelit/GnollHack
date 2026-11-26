@@ -237,6 +237,7 @@ namespace GnollHackX
             InitBaseTypefaces();
             InitBaseCachedBitmaps();
             InitBaseButtonBitmaps();
+            GHStartupTimeline.Current.Mark(GHStartupMilestone.BaseAssets);
             InitializeSentryScopeDiagnostics();
 #if GNH_MAUI && ANDROID
             TagTranslatedProcess();
@@ -4304,13 +4305,15 @@ namespace GnollHackX
 #endif
         }
 
-        /* The milestones every platform passes through, latest first. AppCreate, Activity and Focused are
-           Android-only, and MainActivity marks Activity after MainPage, so they do not set the phase. */
+        /* The milestones every platform passes through after this handler is subscribed, latest first.
+           AppCreate, Runtime, NativeLoaded, Activity, FirstDraw and Focused are Android-only, MauiAppBuilt
+           comes before the subscription, and MainActivity marks Activity after MainPage, so they do not
+           set the phase. */
         private static readonly GHStartupMilestone[] _startupPhaseOrder =
         {
             GHStartupMilestone.MainMenu, GHStartupMilestone.StartUpTasks, GHStartupMilestone.MainPage,
             GHStartupMilestone.AppReady, GHStartupMilestone.CredentialsDone, GHStartupMilestone.Credentials,
-            GHStartupMilestone.AppInit
+            GHStartupMilestone.BaseAssets, GHStartupMilestone.AppInit
         };
 
         /* The scope is persisted, so an ANR or crash during startup names the furthest phase it reached */
