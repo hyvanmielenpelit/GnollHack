@@ -276,8 +276,6 @@ namespace GnollHackX
         public const int MaxRefreshRate = 120;
         public const int PollingFrequency = 60;
         public const int PollingInterval = 15;
-        /* MENU_COUNT_STASH_TOGGLED_BASE: a select_menu count of -3 (all) or -3-n (n items) takes the opposite of the menu's stash default */
-        public const long MenuCountStashToggledBase = -3L;
         public const int FmodDrainTimeoutMs = 2000;
         /* Longest Suspend waits for its flushCommands passes; a healthy flush has taken up to 0.9 s */
         public const int FmodSuspendFlushTimeoutMs = 2000;

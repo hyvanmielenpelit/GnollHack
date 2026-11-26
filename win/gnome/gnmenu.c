@@ -255,6 +255,7 @@ ghack_menu_window_select_menu(GtkWidget *menuWin, MENU_ITEM_P **_selected, gint 
         item = (menuItem *) gtk_clist_get_row_data(GTK_CLIST(clist), idx);
         selected[i].item = item->identifier;
         selected[i].count = -1;
+        selected[i].itemflags = MENU_ITEMFLAGS_NONE;
         cur = g_list_next(cur);
         i++;
     }

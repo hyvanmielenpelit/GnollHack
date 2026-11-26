@@ -1303,6 +1303,7 @@ int and_select_menu_r(winid wid, int how, MENU_ITEM_P **selected, int reentry)
 		{
 			(*selected)[i].item.a_int = *p++;
 			(*selected)[i].count = *p++;
+			(*selected)[i].itemflags = MENU_ITEMFLAGS_NONE;
 		}
 		(*jEnv)->ReleaseIntArrayElements(jEnv, a, q, 0);
 	}

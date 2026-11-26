@@ -2103,6 +2103,7 @@ mac_select_menu(winid win, int how, menu_item **selected_list)
             mi = &(*aWin->menuInfo)[(*aWin->menuSelected)[c]];
             mp->item = mi->id;
             mp->count = -1L;
+            mp->itemflags = MENU_ITEMFLAGS_NONE;
             mp++;
         }
         HUnlock((char **) aWin->menuInfo);

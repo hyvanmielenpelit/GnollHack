@@ -205,11 +205,12 @@ make_menu_items(struct amii_WinDesc *cw, register menu_item **rmip)
     }
 
     if (idx) {
-        mmip = *rmip = (menu_item *) alloc(idx * sizeof(*mip));
+        mmip = *rmip = (menu_item *) alloc(idx * sizeof(*mmip));
         for (mip = cw->menu.items; mip; mip = mip->next) {
             if (mip->selected) {
                 mmip->item = mip->identifier;
                 mmip->count = mip->count;
+                mmip->itemflags = MENU_ITEMFLAGS_NONE;
                 mmip++;
             }
         }

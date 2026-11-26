@@ -2933,6 +2933,7 @@ int NetHackQtMenuWindow::SelectMenu(int h, MENU_ITEM_P **menu_list)
 		*menu_list=(MENU_ITEM_P*)malloc(sizeof(MENU_ITEM_P));
 		(*menu_list)[0].item=item[i].identifier;
 		(*menu_list)[0].count=item[i].count;
+		(*menu_list)[0].itemflags=MENU_ITEMFLAGS_NONE;
 		return 1;
 	    } else {
 		return 0;
@@ -2948,6 +2949,7 @@ int NetHackQtMenuWindow::SelectMenu(int h, MENU_ITEM_P **menu_list)
 		    if (item[i].selected) {
 			(*menu_list)[j].item=item[i].identifier;
 			(*menu_list)[j].count=item[i].count;
+			(*menu_list)[j].itemflags=MENU_ITEMFLAGS_NONE;
 			j++;
 		    }
 		}

@@ -250,6 +250,7 @@ mswin_menu_window_select_menu(HWND hWnd, int how, MENU_ITEM_P **_selected, BOOL 
                         selected[sel_ind].item =
                             data->menu.items[i].identifier;
                         selected[sel_ind].count = data->menu.items[i].count;
+                        selected[sel_ind].itemflags = MENU_ITEMFLAGS_NONE;
                         sel_ind++;
                     }
                 }

@@ -72,12 +72,13 @@ enum any_types {
 typedef struct mi {
     anything item; /* identifier */
     int64_t count;    /* count */
-    uint64_t itemflags; /* MENU_ITEMFLAGS_*; set only by query_objlist() and autopick() */
+    uint64_t itemflags; /* MENU_ITEMFLAGS_*; set by every window port's select_menu(), normalized by query_objlist() */
 } menu_item;
 #define MENU_ITEM_P struct mi
 
-#define MENU_ITEMFLAGS_NONE  0x00000000UL
-#define MENU_ITEMFLAGS_STASH 0x00000001UL /* auto-stash the item after picking it up or taking it out */
+#define MENU_ITEMFLAGS_NONE          0x00000000UL
+#define MENU_ITEMFLAGS_STASH         0x00000001UL /* auto-stash the item after picking it up or taking it out */
+#define MENU_ITEMFLAGS_STASH_TOGGLED 0x00000002UL /* from select_menu(): the row takes the opposite of the menu's stash default */
 
 /* select_menu() "how" argument types */
 /* [MINV_PICKMASK in monst.h assumes these have values of 0, 1, 2] */

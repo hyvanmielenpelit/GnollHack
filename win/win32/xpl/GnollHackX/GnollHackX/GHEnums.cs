@@ -178,6 +178,15 @@ namespace GnollHackX
         StashByDefault = 0x0000000000000004UL, /* the marks start on (GHMENU_START_FLAGS_STASH_BY_DEFAULT) */
     }
 
+    /* menu_item.itemflags (MENU_ITEMFLAGS_*) */
+    [Flags]
+    public enum MenuItemFlags : ulong
+    {
+        MENU_ITEMFLAGS_NONE =           0x00000000UL,
+        MENU_ITEMFLAGS_STASH =          0x00000001UL,
+        MENU_ITEMFLAGS_STASH_TOGGLED =  0x00000002UL, /* the row takes the opposite of the menu's stash default */
+    }
+
     [Flags]
     public enum MenuDataFlags : byte
     {

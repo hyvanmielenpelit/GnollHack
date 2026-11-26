@@ -861,6 +861,7 @@ curses_display_nhmenu(winid wid, int how, MENU_ITEM_P ** _selected)
                 }
                 selected[count].item = menu_item_ptr->identifier;
                 selected[count].count = menu_item_ptr->count;
+                selected[count].itemflags = MENU_ITEMFLAGS_NONE;
                 count++;
             }
             menu_item_ptr = menu_item_ptr->next_item;

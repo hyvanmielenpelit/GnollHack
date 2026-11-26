@@ -526,6 +526,13 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
         if (!picklist)
             return -1;
 
+        /* Three values per selected row: identifier, count and MENU_ITEMFLAGS_* */
+        if (picklistsize < cnt * 3)
+        {
+            lib_callbacks.callback_free_memory(picklist);
+            return -1;
+        }
+
         *selected = (MENU_ITEM_P*)malloc(sizeof(MENU_ITEM_P) * cnt);
         if (!*selected)
         {
@@ -534,8 +541,9 @@ int lib_select_menu(winid wid, int how, MENU_ITEM_P** selected)
         }
         for (i = 0; i < cnt; i++)
         {
-            (*selected)[i].item.a_int64 = picklist[2 * i];
-            (*selected)[i].count = picklist[2 * i + 1];
+            (*selected)[i].item.a_int64 = picklist[3 * i];
+            (*selected)[i].count = picklist[3 * i + 1];
+            (*selected)[i].itemflags = (uint64_t)picklist[3 * i + 2];
         }
     }
 

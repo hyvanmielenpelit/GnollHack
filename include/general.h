@@ -157,11 +157,6 @@ enum worm_tile_types
 #define GHMENU_START_FLAGS_STASH_TOGGLES        0x00000002UL /* query_objlist(ALLOW_STASH): per-row stash marks */
 #define GHMENU_START_FLAGS_STASH_BY_DEFAULT     0x00000004UL /* query_objlist(STASH_BY_DEFAULT): the marks start on */
 
-/* A select_menu count at or below this takes the opposite of the menu's stash default:
-   MENU_COUNT_STASH_TOGGLED_BASE - count items, 0 = all. A plain count takes the default;
-   -1 is all and -2 a long tap, as elsewhere. */
-#define MENU_COUNT_STASH_TOGGLED_BASE           ((int64_t)-3)
-
 #define MENU_DATAFLAGS_HAS_OBJECT_DATA          0x01
 #define MENU_DATAFLAGS_HAS_MONSTER_DATA         0x02
 #define MENU_DATAFLAGS_HALLUCINATED             0x04

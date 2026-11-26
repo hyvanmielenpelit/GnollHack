@@ -16,62 +16,65 @@ how to verify it. When an entry is done, keep it and set its status.
 RB-0001  Mirror menu_item in the select_menu interop and the window ports
 
 Target:   4.3.1 or later
-Status:   Open (recorded 2026-11-26)
+Status:   Done 2026-11-26, in the first release after commit f63aa17f2
+          (recorded 2026-11-26 the same day; it turned out not to break
+          replays, so it was not deferred)
 
-Current state
-  menu_item (include/wintype.h) has three fields: item, count and itemflags
-  (uint64_t, MENU_ITEMFLAGS_*). itemflags carries the per-row stash mark of
-  the Pick up, Pick & Stash and Take out menus.
+Before
+  menu_item (include/wintype.h) gained a third field, itemflags (uint64_t,
+  MENU_ITEMFLAGS_*), for the per-row stash mark of the Pick up, Pick & Stash
+  and Take out menus. ClientCallback_SelectMenu (GHGame.cs) returned two int64
+  values per selected row, [identifier, count], so the mark rode inside the
+  count: -3 / -3-n meant "the opposite of the menu's stash default", decoded by
+  query_objlist() (src/pickup.c).
 
-  The GUI cannot send itemflags directly. ClientCallback_SelectMenu (GHGame.cs)
-  returns two int64 values per selected row, [identifier, count], and
-  lib_select_menu (win/win32/xpl/libshare/libproc.c) copies them into
-  menu_item.item and menu_item.count only. The stash mark therefore rides
-  inside the count:
-
-    n, -1        the row takes the menu's stash default
-    -3, -3-n     the row takes the opposite of the default (all / n items)
-
-  MENU_COUNT_STASH_TOGGLED_BASE (include/general.h) and
-  GHConstants.MenuCountStashToggledBase name the -3. query_objlist()
-  (src/pickup.c) decodes the count against the menu's default
-  (STASH_BY_DEFAULT) into menu_item.itemflags, and also sets itemflags for
-  every other window port, which never fills it.
-
-Intended change
+Now
   1. Interop: ClientCallback_SelectMenu returns three int64 values per row,
-     [identifier, count, itemflags], with itemflags absolute (not relative to
-     the menu's default). lib_select_menu copies all three.
-  2. Window ports: every select_menu() fills menu_item.itemflags itself, at
-     least to 0, and to MENU_ITEMFLAGS_STASH where the menu was started with
-     GHMENU_START_FLAGS_STASH_BY_DEFAULT: tty (win/tty/wintty.c), curses
+     [identifier, count, itemflags], and lib_select_menu
+     (win/win32/xpl/libshare/libproc.c) copies all three. It cancels the menu
+     when the returned size is below three values per row.
+  2. The flag is relative to the menu's default:
+     MENU_ITEMFLAGS_STASH_TOGGLED means "this row takes the opposite of the
+     stash default". Every window port's select_menu() sets itemflags; ports
+     without stash marks set MENU_ITEMFLAGS_NONE, which means "the default",
+     so they keep their behavior in Pick up (default off) and Pick & Stash
+     (default on) without knowing start_menu_ex()'s mflags. An absolute flag
+     was rejected because every port would then have to apply the default.
+  3. query_objlist() turns STASH_TOGGLED and the default (STASH_BY_DEFAULT)
+     into the absolute MENU_ITEMFLAGS_STASH that pickup() and menu_loot()
+     read. The count is plain again; -1 (all) and -2 (long tap) keep their
+     meanings. MENU_COUNT_STASH_TOGGLED_BASE and MenuCountStashToggledBase are
+     gone.
+  4. Ports that set itemflags: libshare, tty (win/tty/wintty.c), curses
      (win/curses/cursdial.c), Win32 (win/win32/mhmenu.c), X11
-     (win/X11/winmenu.c), Qt (win/Qt/qt_win.cpp, win/Qt4/qt4menu.cpp), GEM
-     (win/gem/wingem.c), Mac (sys/mac/macwin.c), Windows CE
-     (sys/wince/mhmenu.c), Android (sys/android/winandroid.c) and libshare.
-  3. Engine: query_objlist() stops decoding counts at or below -3 and no
-     longer derives itemflags from the default; it keeps the -1 (all) fix-up.
-     Remove MENU_COUNT_STASH_TOGGLED_BASE and MenuCountStashToggledBase.
-     -1 (all) and -2 (long tap) keep their meanings.
-  4. Optional: per-row flags beyond stashing can then be added as new
-     MENU_ITEMFLAGS_* bits without touching the count.
+     (win/X11/winmenu.c), Qt (win/Qt/qt_win.cpp), Qt4 (win/Qt4/qt4menu.cpp),
+     GEM (win/gem/wingem.c), GNOME (win/gnome/gnmenu.c), Amiga
+     (sys/amiga/winmenu.c, which also now allocates with sizeof(menu_item)),
+     Mac (sys/mac/macwin.c), Windows CE (sys/wince/mhmenu.c) and the old
+     Android port (sys/android/winandroid.c). hup, dump and safe select_menu
+     return no items.
 
-What it changes or could break
-  - The C# and C sides of select_menu must change in the same release; a GUI
-    and an engine library from different versions would misread each other.
-  - Replays record the picklist (RecordFunctionCall(SelectMenu, winid, how,
-    picklist, listsize, cnt)); listsize becomes cnt * 3 and the recorded array
-    grows. The recorder writes the array length-prefixed and the replay player
-    (GHApp.cs) currently reads and discards the values, so existing players
-    may well read new replays unchanged. Anything that interprets the picklist
-    pairs, in this repository or in a replay tool or server, would need the
-    new layout. Verify before declaring it replay-safe.
+Why replays are not affected
+  - The recorder (GHGame.cs) writes a long[] argument as its length followed
+    by its values, and a null array as length 0. The SelectMenu record is
+    RecordFunctionCall(SelectMenu, winid, how, picklist, listsize, cnt); only
+    the array's length and listsize (cnt * 3) change.
+  - The only replay player (GHApp.cs, case RecordedFunctionID.SelectMenu)
+    reads the array length, skips that many values, reads listsize and count,
+    and uses only winid, how and count. Old and new apps run the same code, so
+    replays play across the change in both directions.
+  - GHReplayFiles scans for the GUI_CMD_LOAD_GLYPHS signature and does not
+    walk records by size. No test and no server code parses replay contents.
+  - ReplayVersionCompatibility (GHConstants.cs) is therefore unchanged.
+
+What it does change
+  - The C# and C sides of select_menu: the GUI and its engine library must
+    come from the same build, as they always do.
   - Saves are not affected: menu_item is never saved.
 
 Verify
   - Every window port's select_menu() sets itemflags (search for allocations
     of menu_item / MENU_ITEM_P).
-  - Pick up, Pick & Stash and Take out with stash marks behave as before, in
-    the GUI and in tty.
+  - Pick up and Pick & Stash in tty: nothing stashed / everything stashed.
   - A replay recorded before the change plays in the new version, and one
     recorded after it plays in the previous version, past a Pick up menu.

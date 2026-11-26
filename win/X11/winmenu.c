@@ -957,6 +957,7 @@ X11_select_menu(winid window, int how, menu_item **menu_list)
                 if (curr->selected) {
                     mi->item = curr->identifier;
                     mi->count = curr->pick_count;
+                    mi->itemflags = MENU_ITEMFLAGS_NONE;
                     if (!toomany)
                         mi++;
                     if (how == PICK_ONE && !curr->preselected)

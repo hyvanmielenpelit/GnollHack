@@ -851,6 +851,7 @@ Gem_select_menu(winid window, int how, menu_item **menu_list)
             if (Gmit->Gmi_selected) {
                 mi->item = (anything)(genericptr_t) Gmit->Gmi_identifier;
                 mi->count = Gmit->Gmi_count;
+                mi->itemflags = MENU_ITEMFLAGS_NONE;
                 mi++;
             }
     }

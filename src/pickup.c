@@ -1104,10 +1104,11 @@ loadstone_weight_shown_correctly(int show_weights)
  *      SIGNAL_ESCAPE     - Return -1 rather than 0 if player uses ESC to
  *                          pick nothing.
  *      FEEL_COCKATRICE   - touch corpse.
- *      ALLOW_STASH       - The GUI may mark rows to be auto-stashed; the
- *                          returned items carry MENU_ITEMFLAGS_STASH.
+ *      ALLOW_STASH       - The window port may mark rows with
+ *                          MENU_ITEMFLAGS_STASH_TOGGLED; the returned items
+ *                          carry MENU_ITEMFLAGS_STASH.
  *      STASH_BY_DEFAULT  - With ALLOW_STASH: rows are stashed unless the
- *                          GUI marks them otherwise.
+ *                          window port marks them toggled.
  */
 int
 query_objlist(const char *qstr, struct obj **olist_p, int qflags, menu_item **pick_list, int how, boolean (*allow)(struct obj*), int show_weights)
@@ -1289,30 +1290,15 @@ query_objlist(const char *qstr, struct obj **olist_p, int qflags, menu_item **pi
     if (n > 0) {
         menu_item *mi;
         int k;
-        boolean stash_toggled;
 
         /* fix up counts:  -1 means no count used => pick all;
            if fake_hero_object was picked, discard that choice */
         for (i = k = 0, mi = *pick_list; i < n; i++, mi++) {
             if (mi->item.a_obj == &fake_hero_object)
                 continue;
-            /* A count at or below MENU_COUNT_STASH_TOGGLED_BASE takes the opposite of the stash default */
-            stash_toggled = FALSE;
-            if (mi->count <= MENU_COUNT_STASH_TOGGLED_BASE)
-            {
-                if (allow_stash)
-                {
-                    stash_toggled = TRUE;
-                    mi->count = MENU_COUNT_STASH_TOGGLED_BASE - mi->count;
-                    if (mi->count == 0)
-                        mi->count = -1L;
-                }
-                else
-                {
-                    mi->count = -1L;
-                }
-            }
-            mi->itemflags = (allow_stash && stash_default != stash_toggled) ? MENU_ITEMFLAGS_STASH : MENU_ITEMFLAGS_NONE;
+            /* A row marked MENU_ITEMFLAGS_STASH_TOGGLED takes the opposite of the stash default */
+            mi->itemflags = (allow_stash && stash_default != ((mi->itemflags & MENU_ITEMFLAGS_STASH_TOGGLED) != 0))
+                ? MENU_ITEMFLAGS_STASH : MENU_ITEMFLAGS_NONE;
             if (mi->count == -1L || mi->count > mi->item.a_obj->quan)
                 mi->count = mi->item.a_obj->quan;
             if (k < i)

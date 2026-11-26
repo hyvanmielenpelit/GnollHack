@@ -2430,19 +2430,19 @@ namespace GnollHackX
                 else
                 {
                     cnt = _ghWindows[winid].SelectedMenuItems.Count;
-                    picklist = new long[cnt * 2];
+                    /* Three values per row, as menu_item: identifier, count and MENU_ITEMFLAGS_* */
+                    picklist = new long[cnt * 3];
                     ulong startFlags = _ghWindows[winid].MenuInfo != null ? _ghWindows[winid].MenuInfo.StartFlags : 0UL;
                     bool stashToggles = (startFlags & (ulong)GHMenuStartFlags.StashToggles) != 0;
                     bool stashDefault = (startFlags & (ulong)GHMenuStartFlags.StashByDefault) != 0;
                     for(int i = 0; i < cnt; i++)
                     {
                         GHMenuItem selectedItem = _ghWindows[winid].SelectedMenuItems[i];
-                        picklist[2 * i] = selectedItem.Identifier;
-                        /* A row whose stash mark differs from the menu's default returns -3 (all) or -3-n (n items) */
-                        if (stashToggles && selectedItem.IsStashMarked != stashDefault)
-                            picklist[2 * i + 1] = GHConstants.MenuCountStashToggledBase - (selectedItem.Count > 0 ? (long)selectedItem.Count : 0L);
-                        else
-                            picklist[2 * i + 1] = (long)selectedItem.Count;
+                        picklist[3 * i] = selectedItem.Identifier;
+                        picklist[3 * i + 1] = (long)selectedItem.Count;
+                        /* A row whose stash mark differs from the menu's default is marked toggled */
+                        picklist[3 * i + 2] = stashToggles && selectedItem.IsStashMarked != stashDefault
+                            ? (long)MenuItemFlags.MENU_ITEMFLAGS_STASH_TOGGLED : (long)MenuItemFlags.MENU_ITEMFLAGS_NONE;
                     }
                     AddSelectMenuBreadcrumb(_ghWindows[winid].SelectedMenuItems);
                 }
@@ -2459,7 +2459,7 @@ namespace GnollHackX
 
             picklistptr = arrayptr;
             _outGoingIntPtr = arrayptr;
-            listsize = cnt < 1 ? 1 : cnt * 2;
+            listsize = cnt < 1 ? 1 : cnt * 3;
 
             _abortShowMenuPage = false;
             if (IsRecording)
