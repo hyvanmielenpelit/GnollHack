@@ -5746,6 +5746,7 @@ namespace GnollHackX
         public static SKImage SimpleFrameTopHorizontalBitmap;
         public static SKImage SimpleFrameLeftVerticalBitmap;
         public static SKImage SimpleFrameTransformBitmap;
+        public static SKImage SimpleFrameStashAllBitmap;
 
         public static SKImage SimpleFrame2TopLeftCornerBitmap;
         public static SKImage SimpleFrame2SmallTopLeftCornerBitmap;
@@ -5758,6 +5759,7 @@ namespace GnollHackX
         public static SKImage DarkModeSimpleFrameTopHorizontalBitmap;
         public static SKImage DarkModeSimpleFrameLeftVerticalBitmap;
         public static SKImage DarkModeSimpleFrameTransformBitmap;
+        public static SKImage DarkModeSimpleFrameStashAllBitmap;
 
         public static SKImage DarkModeSimpleFrame2TopLeftCornerBitmap;
         public static SKImage DarkModeSimpleFrame2SmallTopLeftCornerBitmap;
@@ -5888,6 +5890,7 @@ namespace GnollHackX
             SimpleFrameTopHorizontalBitmap = LoadEmbeddedUIBitmap("frame-horizontal.png");
             SimpleFrameLeftVerticalBitmap = LoadEmbeddedUIBitmap("frame-vertical.png");
             SimpleFrameTransformBitmap = LoadEmbeddedUIBitmap("frame-transform.png");
+            SimpleFrameStashAllBitmap = LoadEmbeddedUIBitmap("frame-stashall.png");
 
             SimpleFrame2TopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-topleft.png");
             SimpleFrame2SmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-topleft-small.png");
@@ -5900,6 +5903,7 @@ namespace GnollHackX
             DarkModeSimpleFrameTopHorizontalBitmap = LoadEmbeddedUIBitmap("frame-darkmode-horizontal.png");
             DarkModeSimpleFrameLeftVerticalBitmap = LoadEmbeddedUIBitmap("frame-darkmode-vertical.png");
             DarkModeSimpleFrameTransformBitmap = LoadEmbeddedUIBitmap("frame-darkmode-transform.png");
+            DarkModeSimpleFrameStashAllBitmap = LoadEmbeddedUIBitmap("frame-darkmode-stashall.png");
 
             DarkModeSimpleFrame2TopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-topleft.png");
             DarkModeSimpleFrame2SmallTopLeftCornerBitmap = LoadEmbeddedUIBitmap("frame2-darkmode-topleft-small.png");
@@ -6018,6 +6022,7 @@ namespace GnollHackX
         public static SKImage _statusScoreBitmap;
         public static SKImage _statusXPPointsBitmap;
         public static SKImage _statusGoldBitmap;
+        public static SKImage _inventoryBitmap;
         public static SKImage _statusTurnsBitmap;
         public static SKImage _statusDungeonLevelBitmap;
         public static SKImage _statusSeparatorBitmap;
@@ -6745,6 +6750,7 @@ namespace GnollHackX
             _statusXPPointsBitmap = LoadEmbeddedUIBitmap("status-xp-points.png");
             _statusScoreBitmap = LoadEmbeddedUIBitmap("status-score.png");
             _statusGoldBitmap = LoadEmbeddedUIBitmap("status-gold.png");
+            _inventoryBitmap = LoadEmbeddedUIBitmap("inventory.png");
             _statusTurnsBitmap = LoadEmbeddedUIBitmap("status-turns.png");
             _statusDungeonLevelBitmap = LoadEmbeddedUIBitmap("status-dungeon-level.png");
             _statusQuickWandBitmap = LoadEmbeddedUIBitmap("status-quick-wand.png");

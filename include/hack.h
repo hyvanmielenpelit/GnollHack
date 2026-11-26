@@ -465,6 +465,8 @@ extern short tile2enlargement[MAX_TILES];
 #define OBJECT_COMPARISON 0x100     /* compare objects with currently worn ones */
 #define WORN_UNSELECTABLE 0x200     /* worn objects are not selectable */
 #define SHOW_QUICK 0x400      /* show quick items */
+#define ALLOW_STASH 0x800     /* GUI may mark rows to be auto-stashed */
+#define STASH_BY_DEFAULT 0x1000 /* with ALLOW_STASH: rows are stashed unless marked otherwise */
 
 /* Flags to control query_category() */
 /* BY_NEXTHERE used by query_category() too, so skip 0x01 */

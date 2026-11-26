@@ -1,0 +1,77 @@
+# GnollHack replay_breaking_todo_list.txt
+# GnollHack may be freely redistributed.  See license for details.
+
+Register of interface changes deliberately deferred because they would change
+the GUI interop contract or the replay recording format, or might break
+compatibility with replays recorded by earlier versions. They are collected
+here so that they can be made together in a release where such a break is
+acceptable, instead of each being worked around separately.
+
+Each entry has an ID (RB-nnnn, never reused), a target version, a status
+(Open, In progress, Done in <version>, or Dropped), the current state and its
+workaround, the intended change, the files involved, what it could break, and
+how to verify it. When an entry is done, keep it and set its status.
+
+==============================================
+RB-0001  Mirror menu_item in the select_menu interop and the window ports
+
+Target:   4.3.1 or later
+Status:   Open (recorded 2026-11-26)
+
+Current state
+  menu_item (include/wintype.h) has three fields: item, count and itemflags
+  (uint64_t, MENU_ITEMFLAGS_*). itemflags carries the per-row stash mark of
+  the Pick up, Pick & Stash and Take out menus.
+
+  The GUI cannot send itemflags directly. ClientCallback_SelectMenu (GHGame.cs)
+  returns two int64 values per selected row, [identifier, count], and
+  lib_select_menu (win/win32/xpl/libshare/libproc.c) copies them into
+  menu_item.item and menu_item.count only. The stash mark therefore rides
+  inside the count:
+
+    n, -1        the row takes the menu's stash default
+    -3, -3-n     the row takes the opposite of the default (all / n items)
+
+  MENU_COUNT_STASH_TOGGLED_BASE (include/general.h) and
+  GHConstants.MenuCountStashToggledBase name the -3. query_objlist()
+  (src/pickup.c) decodes the count against the menu's default
+  (STASH_BY_DEFAULT) into menu_item.itemflags, and also sets itemflags for
+  every other window port, which never fills it.
+
+Intended change
+  1. Interop: ClientCallback_SelectMenu returns three int64 values per row,
+     [identifier, count, itemflags], with itemflags absolute (not relative to
+     the menu's default). lib_select_menu copies all three.
+  2. Window ports: every select_menu() fills menu_item.itemflags itself, at
+     least to 0, and to MENU_ITEMFLAGS_STASH where the menu was started with
+     GHMENU_START_FLAGS_STASH_BY_DEFAULT: tty (win/tty/wintty.c), curses
+     (win/curses/cursdial.c), Win32 (win/win32/mhmenu.c), X11
+     (win/X11/winmenu.c), Qt (win/Qt/qt_win.cpp, win/Qt4/qt4menu.cpp), GEM
+     (win/gem/wingem.c), Mac (sys/mac/macwin.c), Windows CE
+     (sys/wince/mhmenu.c), Android (sys/android/winandroid.c) and libshare.
+  3. Engine: query_objlist() stops decoding counts at or below -3 and no
+     longer derives itemflags from the default; it keeps the -1 (all) fix-up.
+     Remove MENU_COUNT_STASH_TOGGLED_BASE and MenuCountStashToggledBase.
+     -1 (all) and -2 (long tap) keep their meanings.
+  4. Optional: per-row flags beyond stashing can then be added as new
+     MENU_ITEMFLAGS_* bits without touching the count.
+
+What it changes or could break
+  - The C# and C sides of select_menu must change in the same release; a GUI
+    and an engine library from different versions would misread each other.
+  - Replays record the picklist (RecordFunctionCall(SelectMenu, winid, how,
+    picklist, listsize, cnt)); listsize becomes cnt * 3 and the recorded array
+    grows. The recorder writes the array length-prefixed and the replay player
+    (GHApp.cs) currently reads and discards the values, so existing players
+    may well read new replays unchanged. Anything that interprets the picklist
+    pairs, in this repository or in a replay tool or server, would need the
+    new layout. Verify before declaring it replay-safe.
+  - Saves are not affected: menu_item is never saved.
+
+Verify
+  - Every window port's select_menu() sets itemflags (search for allocations
+    of menu_item / MENU_ITEM_P).
+  - Pick up, Pick & Stash and Take out with stash marks behave as before, in
+    the GUI and in tty.
+  - A replay recorded before the change plays in the new version, and one
+    recorded after it plays in the previous version, past a Pick up menu.

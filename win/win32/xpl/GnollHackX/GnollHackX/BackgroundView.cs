@@ -164,6 +164,13 @@ namespace GnollHackX
                             bordertlspecial = GHApp.DarkModeSimpleFrame2TransformBitmap;
                             borderspecialloc = 1;
                             break;
+                        case BorderStyles.SimpleStashTopRight:
+                            bordertl = GHApp.DarkModeSimpleFrameTopLeftCornerBitmap;
+                            borderhorizontal = GHApp.DarkModeSimpleFrameTopHorizontalBitmap;
+                            bordervertical = GHApp.DarkModeSimpleFrameLeftVerticalBitmap;
+                            bordertlspecial = GHApp.DarkModeSimpleFrameStashAllBitmap;
+                            borderspecialloc = 1;
+                            break;
                         case BorderStyles.Custom:
                             bordertl = CustomBorderTopLeftCorner;
                             borderhorizontal = CustomBorderTopHorizontal;
@@ -223,6 +230,13 @@ namespace GnollHackX
                             borderhorizontal = GHApp.SimpleFrame2TopHorizontalBitmap;
                             bordervertical = GHApp.SimpleFrame2LeftVerticalBitmap;
                             bordertlspecial = GHApp.SimpleFrame2TransformBitmap;
+                            borderspecialloc = 1;
+                            break;
+                        case BorderStyles.SimpleStashTopRight:
+                            bordertl = GHApp.SimpleFrameTopLeftCornerBitmap;
+                            borderhorizontal = GHApp.SimpleFrameTopHorizontalBitmap;
+                            bordervertical = GHApp.SimpleFrameLeftVerticalBitmap;
+                            bordertlspecial = GHApp.SimpleFrameStashAllBitmap;
                             borderspecialloc = 1;
                             break;
                         case BorderStyles.Custom:

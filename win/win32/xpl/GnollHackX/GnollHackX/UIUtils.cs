@@ -895,6 +895,7 @@ namespace GnollHackX
                 case BorderStyles.SimpleTransformTopLeft:
                 case BorderStyles.SimpleAlternativeTransformTopLeft:
                 case BorderStyles.SimpleTransformTopRight:
+                case BorderStyles.SimpleStashTopRight:
                 case BorderStyles.SimpleAlternativeTransformTopRight:
                     {
                         double bordermarginsmall = GetSmallBorderMargin(width, height);
@@ -926,6 +927,7 @@ namespace GnollHackX
                 case BorderStyles.SimpleTransformTopLeft:
                 case BorderStyles.SimpleAlternativeTransformTopLeft:
                 case BorderStyles.SimpleTransformTopRight:
+                case BorderStyles.SimpleStashTopRight:
                 case BorderStyles.SimpleAlternativeTransformTopRight:
                     {
                         double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
@@ -961,6 +963,7 @@ namespace GnollHackX
                 case BorderStyles.SimpleTransformTopLeft:
                 case BorderStyles.SimpleAlternativeTransformTopLeft:
                 case BorderStyles.SimpleTransformTopRight:
+                case BorderStyles.SimpleStashTopRight:
                 case BorderStyles.SimpleAlternativeTransformTopRight:
                     {
                         double bordermarginx = (width / GHConstants.BackgroundBorderDivisor);
@@ -1004,6 +1007,7 @@ namespace GnollHackX
                 case BorderStyles.Simple:
                 case BorderStyles.SimpleTransformTopLeft:
                 case BorderStyles.SimpleTransformTopRight:
+                case BorderStyles.SimpleStashTopRight:
                     cornerbitmap = GHApp.SimpleFrameTopLeftCornerBitmap;
                     break;
                 case BorderStyles.Small:
@@ -1042,6 +1046,7 @@ namespace GnollHackX
                 case BorderStyles.Simple:
                 case BorderStyles.SimpleTransformTopLeft:
                 case BorderStyles.SimpleTransformTopRight:
+                case BorderStyles.SimpleStashTopRight:
                     borderhorizontal = GHApp.SimpleFrameTopHorizontalBitmap;
                     bordervertical = GHApp.SimpleFrameLeftVerticalBitmap;
                     cornerbitmap = GHApp.SimpleFrameTopLeftCornerBitmap;

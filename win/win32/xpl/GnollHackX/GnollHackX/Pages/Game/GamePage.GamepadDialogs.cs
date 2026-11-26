@@ -1195,6 +1195,13 @@ namespace GnollHackX.Pages.Game
                         MenuTapGestureRecognizer_Tapped(null, null);
                     break;
                 case GHGamepadButton.View:
+                    /* View toggles the focused row's stash mark in a menu with stash marks */
+                    if (MenuShowsStashToggles && IsFocusedMenuItemStashRow(focus))
+                    {
+                        if (isPress)
+                            ToggleMenuItemStash(focus);
+                        break;
+                    }
                     /* View closes an inventory menu */
                     if (isPress && IsInventoryMenuStyle(MenuCanvas.MenuStyle) && MenuCancelButton.IsEnabled)
                     {
@@ -1209,10 +1216,20 @@ namespace GnollHackX.Pages.Game
                         break;
                     if (isPress && IsMenuGamepadFlipAvailable())
                         FlipMenuCanvas();
+                    /* Menu is Stash all in a menu with stash marks, which has no flip side */
+                    else if (isPress && MenuShowsStashToggles)
+                        ToggleMenuStashAll();
                     break;
                 default:
                     break;
             }
+        }
+
+        /* The focused menu row has a stash icon */
+        private bool IsFocusedMenuItemStashRow(int focus)
+        {
+            var items = MenuCanvas.MenuItems;
+            return items != null && focus >= 0 && focus < items.Count && items[focus].IsTapSelectable;
         }
 
         /* The menu's flip button is shown and not in the middle of a flip */
@@ -1232,7 +1249,8 @@ namespace GnollHackX.Pages.Game
                 case GHGamepadDialogContext.Menu:
                     signature = signature * 31 + MenuGamepadFocusIndex;
                     signature = signature * 31 + (MenuOKButton.IsEnabled ? 1 : 0) + (_unselectOnTap ? 2 : 0)
-                        + (MenuEquipmentSideShown ? 4 : 0) + (MenuFlipButton.IsVisible ? 8 : 0);
+                        + (MenuEquipmentSideShown ? 4 : 0) + (MenuFlipButton.IsVisible ? 8 : 0)
+                        + (MenuShowsStashToggles ? 16 : 0) + (_unstashAllOnTap ? 32 : 0);
                     break;
                 case GHGamepadDialogContext.Yn:
                     signature = signature * 31 + (FindYnGamepadAnswerButton('y') != null ? 1 : 0)
@@ -1342,6 +1360,12 @@ namespace GnollHackX.Pages.Game
                 hints.Add(new GHGamepadHint(GHGamepadButton.X, "OK", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.Y, _unselectOnTap ? "None" : "All", false));
                 hints.Add(new GHGamepadHint(GHGamepadButton.B, "Cancel", false));
+                if (MenuShowsStashToggles)
+                {
+                    if (focused != null && focused.IsTapSelectable)
+                        hints.Add(new GHGamepadHint(GHGamepadButton.View, "Stash", false));
+                    hints.Add(new GHGamepadHint(GHGamepadButton.Menu, _unstashAllOnTap ? "None" : "Stash all", false));
+                }
                 if (canCount)
                     hints.Add(new GHGamepadHint(GHGamepadButton.A, "Count", true));
                 else if (canSpecial)

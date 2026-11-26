@@ -136,6 +136,7 @@ namespace GnollHackX
         private int _selected = 0;
         private int _highlighted = 0;
         private int _count = 0;
+        private int _stashMarked = 0;
         private int _headingUnselectGroup = 0;
         private int _textRowCountsSet = 0;
         private int _mainTextRows = 1;
@@ -145,6 +146,8 @@ namespace GnollHackX
         public bool Selected { get { return Interlocked.CompareExchange(ref _selected, 0, 0) != 0; } set { Interlocked.Exchange(ref _selected, value ? 1 : 0); } }
         public bool Highlighted { get { return Interlocked.CompareExchange(ref _highlighted, 0, 0) != 0; } set { Interlocked.Exchange(ref _highlighted, value ? 1 : 0); } }
         public int Count { get { return Interlocked.CompareExchange(ref _count, 0, 0); } set { Interlocked.Exchange(ref _count, value); } }
+        /* Auto-stash the row's item; meaningful only while Selected in a menu with GHMenuStartFlags.StashToggles */
+        public bool IsStashMarked { get { return Interlocked.CompareExchange(ref _stashMarked, 0, 0) != 0; } set { Interlocked.Exchange(ref _stashMarked, value ? 1 : 0); } }
         public bool HeadingUnselectGroup { get { return Interlocked.CompareExchange(ref _headingUnselectGroup, 0, 0) != 0; } set { Interlocked.Exchange(ref _headingUnselectGroup, value ? 1 : 0); } }
         public bool TextRowCountsSet { get { return Interlocked.CompareExchange(ref _textRowCountsSet, 0, 0) != 0; } set { Interlocked.Exchange(ref _textRowCountsSet, value ? 1 : 0); } }
         public int MainTextRows { get { return Interlocked.CompareExchange(ref _mainTextRows, 0, 0); } set { Interlocked.Exchange(ref _mainTextRows, value); } }

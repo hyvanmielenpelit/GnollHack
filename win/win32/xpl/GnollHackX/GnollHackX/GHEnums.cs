@@ -174,6 +174,8 @@ namespace GnollHackX
     {
         None =          0x0000000000000000UL,
         SpellCast =     0x0000000000000001UL, /* the Cast menu (doaltspellmenu, SPELLMENU_CAST) */
+        StashToggles =  0x0000000000000002UL, /* per-row stash marks (GHMENU_START_FLAGS_STASH_TOGGLES) */
+        StashByDefault = 0x0000000000000004UL, /* the marks start on (GHMENU_START_FLAGS_STASH_BY_DEFAULT) */
     }
 
     [Flags]
@@ -1823,6 +1825,7 @@ namespace GnollHackX
         SimpleAlternativeTransformTopLeft,
         SimpleTransformTopRight,
         SimpleAlternativeTransformTopRight,
+        SimpleStashTopRight,
         Custom
     }
 

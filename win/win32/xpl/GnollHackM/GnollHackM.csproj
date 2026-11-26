@@ -480,6 +480,8 @@
     <None Remove="Assets\UI\frame-darkmode-transform.png" />
     <None Remove="Assets\UI\frame-darkmode-vertical.png" />
     <None Remove="Assets\UI\frame-transform.png" />
+    <None Remove="Assets\UI\frame-stashall.png" />
+    <None Remove="Assets\UI\frame-darkmode-stashall.png" />
     <None Remove="Assets\UI\frame2-darkmode-horizontal.png" />
     <None Remove="Assets\UI\frame2-darkmode-topleft-small.png" />
     <None Remove="Assets\UI\frame2-darkmode-topleft.png" />
@@ -1280,6 +1282,8 @@
     <EmbeddedResource Include="Assets\UI\engravequick.png" />
     <EmbeddedResource Include="Assets\UI\frame-darkmode-transform.png" />
     <EmbeddedResource Include="Assets\UI\frame-transform.png" />
+    <EmbeddedResource Include="Assets\UI\frame-stashall.png" />
+    <EmbeddedResource Include="Assets\UI\frame-darkmode-stashall.png" />
     <EmbeddedResource Include="Assets\UI\frame2-darkmode-transform.png" />
     <EmbeddedResource Include="Assets\UI\frame2-transform.png" />
     <EmbeddedResource Include="Assets\UI\inventory-icon-amulet.png" />

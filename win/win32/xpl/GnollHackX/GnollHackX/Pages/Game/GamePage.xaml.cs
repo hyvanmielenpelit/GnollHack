@@ -5357,6 +5357,8 @@ namespace GnollHackX.Pages.Game
 
             MenuFlipButton.IsEnabled = false;
             MenuFlipButton.IsVisible = false;
+            MenuStashAllButton.IsEnabled = false;
+            MenuStashAllButton.IsVisible = false;
             switch (menuinfo.Style)
             {
                 case ghmenu_styles.GHMENU_STYLE_START_GAME_MENU:
@@ -5519,6 +5521,19 @@ namespace GnollHackX.Pages.Game
                     break;
             }
 
+            /* Pick up and Take out menus: per-row stash marks and the Stash all corner */
+            MenuShowsStashToggles = (menuinfo.StartFlags & (ulong)GHMenuStartFlags.StashToggles) != 0 && menuinfo.SelectionHow == SelectionMode.Multiple;
+            MenuStashMarkDefault = MenuShowsStashToggles && (menuinfo.StartFlags & (ulong)GHMenuStartFlags.StashByDefault) != 0;
+            if (MenuShowsStashToggles)
+            {
+                foreach (GHMenuItem mi in menuinfo.MenuItems)
+                    mi.IsStashMarked = MenuStashMarkDefault;
+                MenuBackground.BorderStyle = BorderStyles.SimpleStashTopRight;
+                MenuStashAllButton.WidthRequest = UIUtils.GetBorderCornerWidth(MenuBackground.BorderStyle, CurrentPageWidth, CurrentPageHeight);
+                MenuStashAllButton.IsEnabled = true;
+                MenuStashAllButton.IsVisible = true;
+            }
+
             if (MenuCanvas.ClickOKOnSelection && !MenuCanvas.MenuButtonStyle)
             {
                 MenuOKButton.Text = "Auto";
@@ -5575,6 +5590,7 @@ namespace GnollHackX.Pages.Game
 
             RefreshMenuRowCounts = true;
             _unselectOnTap = false;
+            _unstashAllOnTap = false;
 
             MenuDrawOnlyClear = false;
             MenuRefresh = true;
@@ -16452,6 +16468,7 @@ namespace GnollHackX.Pages.Game
             double buttonSize = UIUtils.GetBorderCornerWidth(MenuBackground.BorderStyle, width, height);
             MenuFlipButton.WidthRequest = buttonSize;
             //MenuFlipButton.HeightRequest = buttonSize;
+            MenuStashAllButton.WidthRequest = buttonSize;
 
             lock (_statusOffsetLock)
             {
@@ -19506,6 +19523,7 @@ namespace GnollHackX.Pages.Game
         {
             public SKRect DrawBounds;
             public SKRect EquipmentDrawBounds;
+            public SKRect StashDrawBounds;
         }
 
         class DrawBoundInfos
@@ -20064,6 +20082,7 @@ namespace GnollHackX.Pages.Game
                         }
 
                         bool showHotbarSlots = MenuShowsHotbarSlots;
+                        bool showStashToggles = MenuShowsStashToggles;
                         //lock (_refreshMenuRowCountLock)
                         {
                             int idx = -1;
@@ -20092,15 +20111,22 @@ namespace GnollHackX.Pages.Game
                                 float minrowheight = mi.MinimumRowHeight(textPaint.FontSpacing, bottomPadding, topPadding, canvaswidth, canvasheight);
                                 /* A hotbar slot circle sits at the row's right end; the text wraps short of it */
                                 float rowrightpadding = rightmenupadding + (showHotbarSlots && mi.HotbarSlot > 0 ? minrowheight * 1.1f : 0f);
+                                /* The stash icon takes the worn icon's place at the row's right end; the count circle moves left of it */
+                                bool rowShowsStashIcon = showStashToggles && mi.IsTapSelectable;
+                                float stashSlotWidth = rowShowsStashIcon ? minrowheight * 1.1f : 0f;
                                 float paddingAdjustment = 0;
                                 if (firstMinRowHeight == -1)
                                     firstMinRowHeight = minrowheight;
-                                if (isInventory && !isEquipmentSideShown && firstMinRowHeight > 0 && leftmenupadding > firstMinRowHeight / 2 + scaledmenumarginx)
+                                if ((isInventory || showStashToggles) && !isEquipmentSideShown && firstMinRowHeight > 0 && leftmenupadding > firstMinRowHeight / 2 + scaledmenumarginx)
                                     paddingAdjustment += -firstMinRowHeight / 2;
                                 if (!isEquipmentSideShown || !isLandscape)
                                     x = leftmenupadding + paddingAdjustment;
                                 else
                                     x = leftmenupadding + innerleftpadding;
+                                /* Where the icon column right of the text does not fit, the text wraps short of the stash icon */
+                                if (rowShowsStashIcon
+                                    && !(x + (canvaswidth - leftmenupadding - rightmenupadding - (isEquipmentSideShown && isLandscape ? innerleftpadding * 2 : 0)) + minrowheight < canvaswidth - scaledmenumarginx))
+                                    rowrightpadding += stashSlotWidth;
 
                                 //mi.DrawBounds.Left = x;
                                 localMenuDrawBounds.DrawBoundList[idx].DrawBounds.Left = x;
@@ -20212,7 +20238,7 @@ namespace GnollHackX.Pages.Game
                                     /* Selection rectangle */
                                     bool isSelectable = selectionHow != SelectionMode.None && mi.IsTapSelectable;
                                     bool iconsFitRight = x + totalRowWidth + minrowheight < canvaswidth - scaledmenumarginx;
-                                    SKRect selectionrect = new SKRect(x, y, x + totalRowWidth + (isInventory && iconsFitRight ? minrowheight : 0), y + totalRowHeight);
+                                    SKRect selectionrect = new SKRect(x, y, x + totalRowWidth + ((isInventory || showStashToggles) && iconsFitRight ? minrowheight : 0), y + totalRowHeight);
                                     bool isFocused = gamepadFocusVisible && idx == gamepadFocusIndex && !isEquipmentSideShown;
 #if WINDOWS || GNH_AVALONIA
                                     bool isHover = false;
@@ -20449,11 +20475,29 @@ namespace GnollHackX.Pages.Game
                                     //    localMenuDrawBounds[localMenuDrawBounds.Length - 1].DrawBounds = localMenuDrawBounds[idx].DrawBounds;
                                     //}
 
+                                    /* Stash icon, in the worn icon's rectangle and over it if both are shown */
+                                    localMenuDrawBounds.DrawBoundList[idx].StashDrawBounds = new SKRect();
+                                    if (rowShowsStashIcon && GHApp._inventoryBitmap != null && !(drawbbottom <= 0 || drawbtop >= canvasheight))
+                                    {
+                                        float iconmargin = minrowheight * 0.025f + minrowheight / 10;
+                                        SKRect iconrect = new SKRect(selectionrect.Right - minrowheight - iconmargin, selectionrect.Top + (selectionrect.Height - minrowheight) / 2,
+                                            selectionrect.Right - iconmargin, selectionrect.Bottom - (selectionrect.Height - minrowheight) / 2);
+                                        bool stashlit = mi.Selected && mi.IsStashMarked;
+                                        _menuStashIconPaint.ColorFilter = stashlit ? null : UIUtils.GrayedColorFilter;
+                                        _menuStashIconPaint.Color = stashlit ? SKColors.White : SKColors.White.WithAlpha(140);
+                                        canvas.DrawImage(GHApp._inventoryBitmap, iconrect,
+#if GNH_MAUI
+                                            new SKSamplingOptions(SKFilterMode.Linear),
+#endif
+                                            _menuStashIconPaint);
+                                        localMenuDrawBounds.DrawBoundList[idx].StashDrawBounds = iconrect;
+                                    }
+
                                     /* Count circle */
                                     if (mi.Count > 0 && !(drawbbottom <= 0 || drawbtop >= canvasheight))
                                     {
                                         float circleradius = Math.Max(0.01f, minrowheight * 0.90f / 2); // mi.DrawBounds.Height * 0.90f
-                                        float circlex = drawbright - circleradius - minrowheight / 10;
+                                        float circlex = drawbright - circleradius - minrowheight / 10 - stashSlotWidth;
                                         float circley = (drawbtop + drawbbottom) / 2;
                                         textPaint.Color = SKColors.Red;
                                         canvas.DrawCircle(circlex, circley, circleradius, textPaint.Paint);
@@ -20590,6 +20634,14 @@ namespace GnollHackX.Pages.Game
            that the rows' cached text wrap matches */
         private int _menuShowsHotbarSlots = 0;
         private bool MenuShowsHotbarSlots { get { return Interlocked.CompareExchange(ref _menuShowsHotbarSlots, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuShowsHotbarSlots, value ? 1 : 0); } }
+        /* The menu shows per-row stash icons and the Stash all corner (GHMenuStartFlags.StashToggles) */
+        private int _menuShowsStashToggles = 0;
+        private bool MenuShowsStashToggles { get { return Interlocked.CompareExchange(ref _menuShowsStashToggles, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuShowsStashToggles, value ? 1 : 0); } }
+        /* The stash mark a row takes when its selection changes other than by its icon or Stash all (GHMenuStartFlags.StashByDefault) */
+        private int _menuStashMarkDefault = 0;
+        private bool MenuStashMarkDefault { get { return Interlocked.CompareExchange(ref _menuStashMarkDefault, 0, 0) != 0; } set { Interlocked.Exchange(ref _menuStashMarkDefault, value ? 1 : 0); } }
+        /* Used only from the menu canvas paint */
+        private readonly SKPaint _menuStashIconPaint = new SKPaint();
 
         private int CountTextSplitRows(string[] textsplit, float x_start, float canvaswidth, float rightmenupadding, float paddingAdjustment, GHSkiaFontPaint textPaint, bool usespecialsymbols, out List<float> rowWidths)
         {
@@ -21868,6 +21920,13 @@ namespace GnollHackX.Pages.Game
                     return;
 
                 GHApp.MaybeWriteScreenLog("MenuTouch: LongTap: first=" + localDrawBounds.FirstDrawnMenuItemIdx + ", last=" + localDrawBounds.LastDrawnMenuItemIdx);
+                /* A long tap on a stash icon toggles it, as a tap does */
+                int stashIdx = FindMenuStashIconAt(localDrawBounds, menuItems, e.Location);
+                if (stashIdx >= 0)
+                {
+                    ToggleMenuItemStash(stashIdx);
+                    return;
+                }
                 for (int idx = localDrawBounds.FirstDrawnMenuItemIdx; idx >= 0 && idx <= localDrawBounds.LastDrawnMenuItemIdx; idx++)
                 {
                     if (idx >= menuItems.Count)
@@ -22125,6 +22184,12 @@ namespace GnollHackX.Pages.Game
                     return new MenuClickResult(okClicked, clickIdx, identifier);
                 }
                 GHApp.MaybeWriteScreenLog(screenLogging, "MenuTouch: NormalClickRelease: first=" + localDrawBounds.FirstDrawnMenuItemIdx +", last=" + localDrawBounds.LastDrawnMenuItemIdx);
+                int stashIdx = FindMenuStashIconAt(localDrawBounds, menuItems, e.Location);
+                if (stashIdx >= 0)
+                {
+                    ToggleMenuItemStash(stashIdx);
+                    return new MenuClickResult(false, -1, 0);
+                }
                 for (int idx = localDrawBounds.FirstDrawnMenuItemIdx; idx >= 0 && idx <= localDrawBounds.LastDrawnMenuItemIdx; idx++)
                 {
                     if (idx >= menuItems.Count)
@@ -22182,6 +22247,12 @@ namespace GnollHackX.Pages.Game
                 //int sidx = SelectedEquipmentIndex;
                 bool foundItem = false;
                 GHApp.MaybeWriteScreenLog(screenLogging, "MenuTouch: EquipmentClickRelease: first=" + localDrawBounds.FirstDrawnMenuItemIdx + ", last=" + localDrawBounds.LastDrawnMenuItemIdx);
+                int stashIdx = FindMenuStashIconAt(localDrawBounds, menuItems, e.Location);
+                if (stashIdx >= 0)
+                {
+                    ToggleMenuItemStash(stashIdx);
+                    return new MenuClickResult(false, -1, 0);
+                }
                 for (int idx = localDrawBounds.FirstDrawnMenuItemIdx; idx >= 0 && idx <= localDrawBounds.LastDrawnMenuItemIdx; idx++)
                 {
                     if (idx >= menuItems.Count)
@@ -22219,6 +22290,98 @@ namespace GnollHackX.Pages.Game
             return new MenuClickResult(okClicked, clickIdx, identifier);
         }
 
+        /* The index of the drawn row whose stash icon contains location, or -1; call under _menuUIDrawBoundsLock */
+        private int FindMenuStashIconAt(DrawBoundInfos localDrawBounds, IList<GHMenuItem> menuItems, SKPoint location)
+        {
+            if (!MenuShowsStashToggles || MenuEquipmentSideShown || localDrawBounds == null || localDrawBounds.DrawBoundList == null || menuItems == null)
+                return -1;
+            for (int idx = localDrawBounds.FirstDrawnMenuItemIdx; idx >= 0 && idx <= localDrawBounds.LastDrawnMenuItemIdx; idx++)
+            {
+                if (idx >= menuItems.Count || idx >= localDrawBounds.DrawBoundList.Length)
+                    break;
+                if (localDrawBounds.DrawBoundList[idx].StashDrawBounds.Contains(location))
+                    return idx;
+            }
+            return -1;
+        }
+
+        /* A row's stash icon: turns a lit mark off and leaves the row selected, or marks the row and selects it */
+        private void ToggleMenuItemStash(int menuItemIdx)
+        {
+            if (PlayingReplay || !MenuShowsStashToggles)
+                return;
+            var menuItems = MenuCanvas.MenuItems;
+            if (menuItems == null || menuItemIdx < 0 || menuItemIdx >= menuItems.Count)
+                return;
+            GHMenuItem mi = menuItems[menuItemIdx];
+            if (!mi.IsTapSelectable)
+                return;
+            if (mi.Selected && mi.IsStashMarked)
+            {
+                mi.IsStashMarked = false;
+            }
+            else
+            {
+                mi.IsStashMarked = true;
+                if (!mi.Selected)
+                {
+                    mi.Selected = true;
+                    mi.Count = -1;
+                }
+                if (!MenuOKButton.IsEnabled)
+                    MenuOKButton.IsEnabled = true;
+            }
+            _menuCountNumber = -1;
+            MenuCanvas.InvalidateSurface();
+        }
+
+        /* Stash all: every row selected and marked, or every row unselected with its mark at the menu's default */
+        private void ToggleMenuStashAll()
+        {
+            if (PlayingReplay || !MenuShowsStashToggles)
+                return;
+            var menuItems = MenuCanvas.MenuItems;
+            if (menuItems == null)
+                return;
+            bool turnOn = !_unstashAllOnTap;
+            bool markDefault = MenuStashMarkDefault;
+            foreach (GHMenuItem o in menuItems)
+            {
+                if (!o.IsTapSelectable)
+                    continue;
+                if (turnOn)
+                {
+                    if (!o.Selected)
+                    {
+                        o.Selected = true;
+                        o.Count = -1;
+                    }
+                    o.IsStashMarked = true;
+                }
+                else
+                {
+                    o.Selected = false;
+                    o.Count = 0;
+                    o.IsStashMarked = markDefault;
+                }
+            }
+            _unstashAllOnTap = turnOn;
+            _unselectOnTap = turnOn;
+            _menuCountNumber = -1;
+            MenuCanvas.InvalidateSurface();
+        }
+
+        private void MenuStashAllButton_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                ToggleMenuStashAll();
+            }
+            catch (Exception ex)
+            {
+                GHApp.ReportCaughtException(ex);
+            }
+        }
 
         private bool ClickMenuItem(int menuItemIdx, bool isLongTap)
         {
@@ -22254,6 +22417,7 @@ namespace GnollHackX.Pages.Game
                                     o.Selected = false;
                                     o.Count = 0;
                                 }
+                                o.IsStashMarked = MenuStashMarkDefault;
                             }
                         }
                         mi.HeadingUnselectGroup = !mi.HeadingUnselectGroup;
@@ -22264,6 +22428,7 @@ namespace GnollHackX.Pages.Game
                     if (MenuCanvas.SelectionHow == SelectionMode.Multiple)
                     {
                         mi.Selected = !mi.Selected;
+                        mi.IsStashMarked = MenuStashMarkDefault;
                         if (mi.Selected)
                         {
                             mi.Count = _menuCountNumber > 0 && _menuCountNumber < mi.MaxCount ? _menuCountNumber : -1;
@@ -22901,6 +23066,8 @@ namespace GnollHackX.Pages.Game
         //        }
 
         private bool _unselectOnTap = false;
+        /* The next Stash all turns every row off */
+        private bool _unstashAllOnTap = false;
 
 #if GNH_MAUI
         private void MenuTapGestureRecognizer_Tapped(object sender, TappedEventArgs e)
@@ -22930,9 +23097,11 @@ namespace GnollHackX.Pages.Game
                                 o.Selected = false;
                                 o.Count = 0;
                             }
+                            o.IsStashMarked = MenuStashMarkDefault;
                         }
                     }
                     _unselectOnTap = !_unselectOnTap;
+                    _unstashAllOnTap = false;
                 }
                 MenuCanvas.InvalidateSurface();
             }
@@ -26114,6 +26283,11 @@ namespace GnollHackX.Pages.Game
                 else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && c == '.')
                 {
                     MenuTapGestureRecognizer_Tapped(null, null);
+                    handled = true;
+                }
+                else if (MenuCanvas.SelectionHow == SelectionMode.Multiple && c == ';' && MenuShowsStashToggles && !PlayingReplay)
+                {
+                    ToggleMenuStashAll();
                     handled = true;
                 }
                 else

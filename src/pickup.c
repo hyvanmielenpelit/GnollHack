@@ -582,6 +582,8 @@ pickup(int what, boolean do_auto_in_bag)
     struct obj* last_container = 0;
     int container_cnt = count_other_containers(invent, (struct obj*)0, &last_container, FALSE);
     struct obj* used_container = 0;
+    boolean allow_stash = FALSE;
+    int stash_qflags = 0;
 
     /* we might have arrived here while fainted or sleeping, via
        random teleport or levitation timeout; if so, skip check_here
@@ -651,6 +653,10 @@ pickup(int what, boolean do_auto_in_bag)
         objchain_p = &u.ustuck->minvent;
         traverse_how = 0; /* nobj */
     }
+    /* In Pick & Stash (do_auto_in_bag) the GUI's stash marks start on; a menu's marks replace do_auto_in_bag */
+    allow_stash = !autopickup && count_bags_for_stashing(invent, *objchain_p, FALSE, (traverse_how & BY_NEXTHERE) != 0) > 0;
+    if (allow_stash)
+        stash_qflags = ALLOW_STASH | (do_auto_in_bag ? STASH_BY_DEFAULT : 0);
     /*
      * Start the actual pickup process.  This is split into two main
      * sections, the newer menu and the older "traditional" methods.
@@ -683,8 +689,10 @@ pickup(int what, boolean do_auto_in_bag)
         else 
         {
             n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p,
-                              (traverse_how | FEEL_COCKATRICE | OBJECT_COMPARISON | SHOW_QUICK),
+                              (traverse_how | FEEL_COCKATRICE | OBJECT_COMPARISON | SHOW_QUICK | stash_qflags),
                               &pick_list, PICK_ANY, all_but_uchain, SHOWWEIGHTS_PICKUP);
+            if (allow_stash)
+                do_auto_in_bag = FALSE;
         }
 
     menu_pickup:
@@ -693,7 +701,7 @@ pickup(int what, boolean do_auto_in_bag)
         for (n_picked = i = 0; i < n; i++)
         {
             uchar obj_gone = FALSE;
-            res = pickup_object(pick_list[i].item.a_obj, pick_list[i].count, FALSE, do_auto_in_bag || (autopickup && flags.stash_on_autopickup && (!flags.pickup_thrown || !is_obj_was_thrown(pick_list[i].item.a_obj))), &obj_gone);
+            res = pickup_object(pick_list[i].item.a_obj, pick_list[i].count, FALSE, do_auto_in_bag || (pick_list[i].itemflags & MENU_ITEMFLAGS_STASH) != 0 || (autopickup && flags.stash_on_autopickup && (!flags.pickup_thrown || !is_obj_was_thrown(pick_list[i].item.a_obj))), &obj_gone);
             if (res < 0)
                 break; /* can't continue */
             n_picked += res;
@@ -744,10 +752,12 @@ pickup(int what, boolean do_auto_in_bag)
                     goto pickupdone;
                 if (selective)
                     traverse_how |= INVORDER_SORT;
-                n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p, traverse_how | OBJECT_COMPARISON | SHOW_QUICK,
+                n = query_objlist(do_auto_in_bag ? "Pick up and auto-stash what?" : "Pick up what?", objchain_p, traverse_how | OBJECT_COMPARISON | SHOW_QUICK | stash_qflags,
                                   &pick_list, PICK_ANY,
                                   (via_menu == -2) ? allow_all
                                                    : allow_category, SHOWWEIGHTS_PICKUP);
+                if (allow_stash)
+                    do_auto_in_bag = FALSE;
                 goto menu_pickup;
             }
         }
@@ -1039,6 +1049,7 @@ autopick(struct obj *olist, int follow, menu_item **pick_list)
             if (autopick_testobj(curr, FALSE)) {
                 pi[n].item.a_obj = curr;
                 pi[n].count = curr->quan;
+                pi[n].itemflags = MENU_ITEMFLAGS_NONE;
                 n++;
             }
         }
@@ -1093,6 +1104,10 @@ loadstone_weight_shown_correctly(int show_weights)
  *      SIGNAL_ESCAPE     - Return -1 rather than 0 if player uses ESC to
  *                          pick nothing.
  *      FEEL_COCKATRICE   - touch corpse.
+ *      ALLOW_STASH       - The GUI may mark rows to be auto-stashed; the
+ *                          returned items carry MENU_ITEMFLAGS_STASH.
+ *      STASH_BY_DEFAULT  - With ALLOW_STASH: rows are stashed unless the
+ *                          GUI marks them otherwise.
  */
 int
 query_objlist(const char *qstr, struct obj **olist_p, int qflags, menu_item **pick_list, int how, boolean (*allow)(struct obj*), int show_weights)
@@ -1111,6 +1126,8 @@ query_objlist(const char *qstr, struct obj **olist_p, int qflags, menu_item **pi
     Loot *sortedolist, *srtoli;
     int wtcount = 0;
     boolean loadstonecorrectly = loadstone_weight_shown_correctly(show_weights);
+    boolean allow_stash = (qflags & ALLOW_STASH) != 0;
+    boolean stash_default = allow_stash && (qflags & STASH_BY_DEFAULT) != 0;
 
     *pick_list = (menu_item *) 0;
     if (!olist && !engulfer)
@@ -1135,6 +1152,7 @@ query_objlist(const char *qstr, struct obj **olist_p, int qflags, menu_item **pi
         *pick_list = (menu_item *) alloc(sizeof (menu_item));
         (*pick_list)->item.a_obj = last;
         (*pick_list)->count = last->quan;
+        (*pick_list)->itemflags = stash_default ? MENU_ITEMFLAGS_STASH : MENU_ITEMFLAGS_NONE;
         return 1;
     }
 
@@ -1148,7 +1166,9 @@ query_objlist(const char *qstr, struct obj **olist_p, int qflags, menu_item **pi
                            (qflags & BY_NEXTHERE) ? TRUE : FALSE, allow);
 
     win = create_nhwindow(NHW_MENU);
-    start_menu_style(win, GHMENU_STYLE_PICK_ITEM_LIST);
+    start_menu_ex(win, GHMENU_STYLE_PICK_ITEM_LIST, 0,
+        (allow_stash ? GHMENU_START_FLAGS_STASH_TOGGLES : GHMENU_START_FLAGS_NONE)
+        | (stash_default ? GHMENU_START_FLAGS_STASH_BY_DEFAULT : GHMENU_START_FLAGS_NONE));
     any = zeroany;
     /*
      * Run through the list and add the objects to the menu.  If
@@ -1269,12 +1289,30 @@ query_objlist(const char *qstr, struct obj **olist_p, int qflags, menu_item **pi
     if (n > 0) {
         menu_item *mi;
         int k;
+        boolean stash_toggled;
 
         /* fix up counts:  -1 means no count used => pick all;
            if fake_hero_object was picked, discard that choice */
         for (i = k = 0, mi = *pick_list; i < n; i++, mi++) {
             if (mi->item.a_obj == &fake_hero_object)
                 continue;
+            /* A count at or below MENU_COUNT_STASH_TOGGLED_BASE takes the opposite of the stash default */
+            stash_toggled = FALSE;
+            if (mi->count <= MENU_COUNT_STASH_TOGGLED_BASE)
+            {
+                if (allow_stash)
+                {
+                    stash_toggled = TRUE;
+                    mi->count = MENU_COUNT_STASH_TOGGLED_BASE - mi->count;
+                    if (mi->count == 0)
+                        mi->count = -1L;
+                }
+                else
+                {
+                    mi->count = -1L;
+                }
+            }
+            mi->itemflags = (allow_stash && stash_default != stash_toggled) ? MENU_ITEMFLAGS_STASH : MENU_ITEMFLAGS_NONE;
             if (mi->count == -1L || mi->count > mi->item.a_obj->quan)
                 mi->count = mi->item.a_obj->quan;
             if (k < i)
@@ -1290,6 +1328,7 @@ query_objlist(const char *qstr, struct obj **olist_p, int qflags, menu_item **pi
             /* other stuff plus fake_hero; last slot is now unused */
             (*pick_list)[k].item = zeroany;
             (*pick_list)[k].count = 0L;
+            (*pick_list)[k].itemflags = MENU_ITEMFLAGS_NONE;
             n = k;
         }
     } else if (n < 0) {
@@ -4735,6 +4774,9 @@ menu_loot(int retry, int command_id, struct obj *applied_container, struct obj *
             mflags |= USE_INVLET;
         if (command_id == 6)
             mflags |= BY_NEXTHERE;
+        /* The same condition under which in_or_out_menu() offers taking out and auto-stashing */
+        if (command_id == 0 && container_cnt > 0 && current_container && !carried(current_container))
+            mflags |= ALLOW_STASH;
         if (command_id == 0 || command_id == 2)
             set_obj_cknown(current_container, 1);
 
@@ -4781,7 +4823,7 @@ menu_loot(int retry, int command_id, struct obj *applied_container, struct obj *
                 switch (command_id)
                 {
                 case 0:
-                    res = out_container_core(otmp, FALSE, do_auto_in_bag, &obj_gone);
+                    res = out_container_core(otmp, FALSE, do_auto_in_bag || (pick_list[i].itemflags & MENU_ITEMFLAGS_STASH) != 0, &obj_gone);
                     if (res == -2 && flags.knapsack_prompt)
                     {
                         bot();

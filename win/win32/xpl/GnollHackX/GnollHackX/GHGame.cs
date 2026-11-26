@@ -2431,10 +2431,18 @@ namespace GnollHackX
                 {
                     cnt = _ghWindows[winid].SelectedMenuItems.Count;
                     picklist = new long[cnt * 2];
+                    ulong startFlags = _ghWindows[winid].MenuInfo != null ? _ghWindows[winid].MenuInfo.StartFlags : 0UL;
+                    bool stashToggles = (startFlags & (ulong)GHMenuStartFlags.StashToggles) != 0;
+                    bool stashDefault = (startFlags & (ulong)GHMenuStartFlags.StashByDefault) != 0;
                     for(int i = 0; i < cnt; i++)
                     {
-                        picklist[2 * i] = _ghWindows[winid].SelectedMenuItems[i].Identifier;
-                        picklist[2 * i + 1] = (long)_ghWindows[winid].SelectedMenuItems[i].Count;
+                        GHMenuItem selectedItem = _ghWindows[winid].SelectedMenuItems[i];
+                        picklist[2 * i] = selectedItem.Identifier;
+                        /* A row whose stash mark differs from the menu's default returns -3 (all) or -3-n (n items) */
+                        if (stashToggles && selectedItem.IsStashMarked != stashDefault)
+                            picklist[2 * i + 1] = GHConstants.MenuCountStashToggledBase - (selectedItem.Count > 0 ? (long)selectedItem.Count : 0L);
+                        else
+                            picklist[2 * i + 1] = (long)selectedItem.Count;
                     }
                     AddSelectMenuBreadcrumb(_ghWindows[winid].SelectedMenuItems);
                 }

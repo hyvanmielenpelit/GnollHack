@@ -201,6 +201,8 @@
                         </Grid>
                         <gnh:NoTabStopButton x:Name="MenuFlipButton" Text="" BackgroundColor="Transparent" IsVisible="False" 
                                          HorizontalOptions="Start" VerticalOptions="Fill" Clicked="MenuFlipButton_Clicked" />
+                        <gnh:NoTabStopButton x:Name="MenuStashAllButton" Text="" BackgroundColor="Transparent" IsVisible="False"
+                                         HorizontalOptions="End" VerticalOptions="Fill" Clicked="MenuStashAllButton_Clicked" />
                     </Grid>
                     <Grid Grid.Row="1" HorizontalOptions="Fill" VerticalOptions="Fill">
                         <gnh:GHCachedImage x:Name="MenuWindowGlyphImage" HorizontalOptions="End" VerticalOptions="Start" Margin="15,15" WidthRequest="75" HeightRequest="75" Aspect="AspectFit" />
