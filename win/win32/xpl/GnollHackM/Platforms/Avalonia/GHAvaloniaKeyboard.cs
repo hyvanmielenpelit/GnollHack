@@ -101,6 +101,13 @@ namespace GnollHackM
             {
                 if (e.Key == Key.Tab || e.Key == Key.F4) /* Alt+Tab and Alt+F4 stay with the system */
                     return;
+                /* The key left of 1 by position; unhandled, it continues as before */
+                if (IsKeyLeftOfOne(e.PhysicalKey) && GHApp.SendSpecialKeyPress(GHSpecialKey.Backquote, false, true, shift))
+                {
+                    _keyDownRouted = true;
+                    e.Handled = true;
+                    return;
+                }
 #if MACOS
                 /* Avalonia's key follows the Option character, or the US position when that is not a letter */
                 char baseCharacter = GHMacKeyboardLayout.GetBaseCharacter(e.PhysicalKey);
@@ -257,6 +264,16 @@ namespace GnollHackM
         }
 
         /* The WinUI hook's WM_SYSKEYDOWN table */
+        /* The key left of 1, by position; Mac ISO keyboards report it as IntlBackslash */
+        private static bool IsKeyLeftOfOne(PhysicalKey physicalKey)
+        {
+#if MACOS
+            if (physicalKey == PhysicalKey.IntlBackslash)
+                return true;
+#endif
+            return physicalKey == PhysicalKey.Backquote;
+        }
+
         private static GHSpecialKey GetAltSpecialKey(Key key)
         {
             if (key >= Key.A && key <= Key.Z)

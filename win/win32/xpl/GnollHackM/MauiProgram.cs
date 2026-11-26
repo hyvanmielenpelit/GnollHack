@@ -1210,6 +1210,11 @@ public class KeyboardHook
                     return CallNextHookEx(_hookID, nCode, wParam, lParam);
                 }
 
+                /* Scan code 0x29 is the key left of 1 on every PC layout; unhandled, it continues as before */
+                int scanCode = Marshal.ReadInt32(lParam, 4);
+                if (scanCode == 0x29 && GHApp.SendSpecialKeyPress(GHSpecialKey.Backquote, false, true, isShiftDown))
+                    return 1;
+
                 GHSpecialKey spkey = GHSpecialKey.None;
                 if (vkCode >= 0x41 && vkCode <= 0x5A)
                     spkey = GHSpecialKey.A + vkCode - 0x41;

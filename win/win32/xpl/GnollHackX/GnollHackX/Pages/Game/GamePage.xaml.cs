@@ -22335,6 +22335,41 @@ namespace GnollHackX.Pages.Game
             MenuCanvas.InvalidateSurface();
         }
 
+        /* Toggles the stash mark of the first stash row whose menu letter is accelerator */
+        private void ToggleMenuItemStashByAccelerator(char accelerator)
+        {
+            var menuItems = MenuCanvas.MenuItems;
+            if (menuItems == null)
+                return;
+            for (int idx = 0; idx < menuItems.Count; idx++)
+            {
+                if (menuItems[idx].Accelerator == accelerator && menuItems[idx].IsTapSelectable)
+                {
+                    ToggleMenuItemStash(idx);
+                    return;
+                }
+            }
+        }
+
+        /* Toggles the stash mark of the first stash row whose menu letter is not a letter, such as gold's $; false if there is none */
+        private bool ToggleMenuItemStashOfFirstSymbolRow()
+        {
+            var menuItems = MenuCanvas.MenuItems;
+            if (menuItems == null)
+                return false;
+            for (int idx = 0; idx < menuItems.Count; idx++)
+            {
+                char accel = menuItems[idx].Accelerator;
+                if (menuItems[idx].IsTapSelectable && accel != '\0'
+                    && !((accel >= 'a' && accel <= 'z') || (accel >= 'A' && accel <= 'Z')))
+                {
+                    ToggleMenuItemStash(idx);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         /* Stash all: every row selected and marked, or every row unselected with its mark at the menu's default */
         private void ToggleMenuStashAll()
         {
@@ -26290,6 +26325,11 @@ namespace GnollHackX.Pages.Game
                     ToggleMenuStashAll();
                     handled = true;
                 }
+                else if (isMeta && MenuShowsStashToggles && ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')))
+                {
+                    ToggleMenuItemStashByAccelerator(c);
+                    handled = true;
+                }
                 else
                 {
                     int foundIdx = -1;
@@ -26489,6 +26529,18 @@ namespace GnollHackX.Pages.Game
                     else if (!PlayingReplay)
                         TextCanvasPressed();
                 }
+                handled = true;
+            }
+            else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && isMeta && MenuShowsStashToggles && key >= GHSpecialKey.A && key <= GHSpecialKey.Z)
+            {
+                /* Meta + a row's letter toggles its stash mark, as tapping its icon does */
+                ToggleMenuItemStashByAccelerator((char)((isShift ? 'A' : 'a') + (key - GHSpecialKey.A)));
+                handled = true;
+            }
+            else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && isMeta && MenuShowsStashToggles
+                && key == GHSpecialKey.Backquote && ToggleMenuItemStashOfFirstSymbolRow())
+            {
+                /* Meta + the key left of 1 toggles the gold row, whose menu letter is $; without one, the key falls back */
                 handled = true;
             }
             else if (MenuGrid.IsVisible && !MenuCountGrid.IsVisible && (key == GHSpecialKey.Tab || key == GHSpecialKey.Escape || key == GHSpecialKey.Enter || key == GHSpecialKey.Up || key == GHSpecialKey.Down || key == GHSpecialKey.Space || key == GHSpecialKey.PageUp || key == GHSpecialKey.PageDown || key == GHSpecialKey.Home || key == GHSpecialKey.End))

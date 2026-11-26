@@ -2021,6 +2021,7 @@ namespace GnollHackX
         NumberPad9,
         A,
         Z = A + 25,
+        Backquote, /* the key left of 1, by position; what it types depends on the layout */
     }
 
     public enum ForceBrowserOptions
