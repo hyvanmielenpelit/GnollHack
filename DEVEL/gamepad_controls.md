@@ -329,6 +329,8 @@ menu follow the same rules:
 | Y | Menus: All / None (select or unselect every item, in menus that select several). Count dialog: All. getline: reopen the Steam keyboard |
 | L1 / R1 | Menus: jump between sections |
 | L2 / R2 | Menus: first or last row |
+| Menu | Pick up, Pick & Stash and Take out menus: stash the focused item or not (toggle its stash mark) |
+| View | Pick up, Pick & Stash and Take out menus: Stash all / None (select every item to be stashed, or unselect every item). Inventory menus: close |
 
 A y/n prompt starts with the focus on its default answer, or on the leftmost button when it
 has none; Y answers Yes and X answers No when the prompt offers them. In an inventory or

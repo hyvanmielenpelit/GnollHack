@@ -1195,11 +1195,11 @@ namespace GnollHackX.Pages.Game
                         MenuTapGestureRecognizer_Tapped(null, null);
                     break;
                 case GHGamepadButton.View:
-                    /* View toggles the focused row's stash mark in a menu with stash marks */
-                    if (MenuShowsStashToggles && IsFocusedMenuItemStashRow(focus))
+                    /* View is Stash all in a menu with stash marks */
+                    if (MenuShowsStashToggles)
                     {
                         if (isPress)
-                            ToggleMenuItemStash(focus);
+                            ToggleMenuStashAll();
                         break;
                     }
                     /* View closes an inventory menu */
@@ -1216,9 +1216,9 @@ namespace GnollHackX.Pages.Game
                         break;
                     if (isPress && IsMenuGamepadFlipAvailable())
                         FlipMenuCanvas();
-                    /* Menu is Stash all in a menu with stash marks, which has no flip side */
-                    else if (isPress && MenuShowsStashToggles)
-                        ToggleMenuStashAll();
+                    /* Menu toggles the focused row's stash mark in a menu with stash marks, which has no flip side */
+                    else if (isPress && MenuShowsStashToggles && IsFocusedMenuItemStashRow(focus))
+                        ToggleMenuItemStash(focus);
                     break;
                 default:
                     break;
@@ -1363,8 +1363,8 @@ namespace GnollHackX.Pages.Game
                 if (MenuShowsStashToggles)
                 {
                     if (focused != null && focused.IsTapSelectable)
-                        hints.Add(new GHGamepadHint(GHGamepadButton.View, "Stash", false));
-                    hints.Add(new GHGamepadHint(GHGamepadButton.Menu, _unstashAllOnTap ? "None" : "Stash all", false));
+                        hints.Add(new GHGamepadHint(GHGamepadButton.Menu, "Stash", false));
+                    hints.Add(new GHGamepadHint(GHGamepadButton.View, _unstashAllOnTap ? "None" : "Stash all", false));
                 }
                 if (canCount)
                     hints.Add(new GHGamepadHint(GHGamepadButton.A, "Count", true));
