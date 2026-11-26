@@ -413,6 +413,12 @@ namespace GnollHackX
 
         public const string AzureBlobStorageDelimiter = "/";
         public const string AzureBlobStorageGeneralDirectoryName = "_Anonymous";
+        /* Game API server paths; each replaces the trailing /xlogfile of the xlog post address */
+        public const string CloudSaveTransferListPath = "/api/cloud/savetransfer/list";
+        public const string CloudSaveTransferAccessPath = "/api/cloud/savetransfer/access";
+        public const string CloudReplayListPath = "/api/cloud/replay/list";
+        public const string CloudReplayAccessPath = "/api/cloud/replay/access";
+        public const string ForumPostRelayPath = "/api/forumpost";
         public const bool GZipIsDefaultReplayCompression = true;
         public const int ReplayStandardDelay = 128; /* Milliseconds */
         public const int ReplayGetEventDelay = 16; /* Milliseconds */

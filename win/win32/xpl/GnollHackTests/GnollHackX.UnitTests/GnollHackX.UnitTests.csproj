@@ -96,6 +96,7 @@
     <Compile Include="..\..\GnollHackX\GnollHackX\FileDialog\GHFilePlaces.cs" Link="Shared\GHFilePlaces.cs" />
     <Compile Include="..\..\GnollHackX\GnollHackX\FileDialog\GHFileDialogBehavior.cs" Link="Shared\GHFileDialogBehavior.cs" />
     <Compile Include="..\..\GnollHackM\GHSentryOptionsInternals.cs" Link="Shared\GHSentryOptionsInternals.cs" />
+    <Compile Include="..\..\GnollHackX\GnollHackX\GHCloudRules.cs" Link="Shared\GHCloudRules.cs" />
   </ItemGroup>
 
 </Project>

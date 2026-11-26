@@ -683,6 +683,13 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
+            if (!GHApp.IsCloudStorageAvailable(GHCloudArea.SaveTransfer))
+            {
+                await ShowMessagePopupAsync("Save Transfer Unavailable", "Cloud save transfer is temporarily unavailable.", "OK");
+                VaultGrid.IsEnabled = true;
+                return;
+            }
+
             GHApp.PlayButtonClickedSound();
             var transferPage = new SaveTransferPage();
             await GHApp.PushModalPageAsync(transferPage);

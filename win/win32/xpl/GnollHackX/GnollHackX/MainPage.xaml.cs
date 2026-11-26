@@ -288,7 +288,7 @@ namespace GnollHackX
                 {
                     workingOnTasks = true;
                     bool dopostbones = GHApp.PostingBonesFiles && GHApp.AllowBones;
-                    bool dopostreplays = GHApp.AutoUploadReplays;
+                    bool dopostreplays = GHApp.AutoUploadReplaysEffective;
                     string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
                     string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
                     string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
@@ -384,7 +384,7 @@ namespace GnollHackX
         {
             bool hasinternet = GHApp.HasInternetAccess;
             bool dopostbones = GHApp.PostingBonesFiles && GHApp.AllowBones;
-            bool dopostreplays = GHApp.AutoUploadReplays;
+            bool dopostreplays = GHApp.AutoUploadReplaysEffective;
             string directory = Path.Combine(GHApp.GHPath, GHConstants.ForumPostQueueDirectory);
             string directory2 = Path.Combine(GHApp.GHPath, GHConstants.XlogPostQueueDirectory);
             string directory3 = Path.Combine(GHApp.GHPath, GHConstants.BonesPostQueueDirectory);
@@ -417,7 +417,7 @@ namespace GnollHackX
                 string[] filepaths = Directory.GetFiles(dir);
                 if (filepaths != null)
                 {
-                    bool firstReplay = true;
+                    bool stopReplays = false; /* Set by a rate limit or a credential refusal; the rest wait for the next tick */
                     GHApp.MaybeWriteGHLog("ProcessSavedPosts in " + dir + ": " + filepaths.Length);
                     foreach (string str in filepaths)
                     {
@@ -455,6 +455,19 @@ namespace GnollHackX
                                     UpdateGeneralTimerTasksLabel(false);
                                 }
 
+                                if (post != null && post_type == 3 && stopReplays)
+                                    post = null;
+
+                                if (post != null && post_type == 0 && post.is_game_status
+                                    && GHCloudRules.IsStaleQueuedGamePost(fileinfo.LastWriteTimeUtc, DateTime.UtcNow))
+                                {
+                                    GHApp.MaybeWriteGHLog("Stale game progress post discarded from the queue: " + filepath);
+                                    File.Delete(filepath);
+                                    PendingGeneralTimerTasks--;
+                                    UpdateGeneralTimerTasksLabel(false);
+                                    post = null;
+                                }
+
                                 if (post != null)
                                 {
                                     string typestr = "";
@@ -466,10 +479,9 @@ namespace GnollHackX
                                             case 3:
                                                 {
                                                     typestr = "Replay";
-                                                    if (firstReplay)
-                                                        await GHApp.CheckCreateReplayContainer(GHApp.GetAzureBlobStorageReplayContainerName());
-                                                    firstReplay = false;
                                                     res = await GHApp.SendReplayFile(post.status_string, post.status_type, post.status_datatype, true);
+                                                    if (!res.IsSuccess && res.HasHttpStatusCode && ((int)res.StatusCode == 429 || (int)res.StatusCode == 403))
+                                                        stopReplays = true;
                                                 }
                                                 break;
                                             case 2:

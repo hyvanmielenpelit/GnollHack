@@ -16,8 +16,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Azure;
 using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
-using Azure.Storage.Blobs.Specialized;
 
 #if GNH_MAUI
 using GnollHackX;
@@ -1462,13 +1460,6 @@ namespace GnollHackX.Pages.MainScreen
 
         private async Task UpdateServerRecordings()
         {
-            BlobServiceClient client = GHApp.GetBlobServiceClient();
-            if (client == null)
-                return;
-            BlobContainerClient containerClient = client.GetBlobContainerClient(GHApp.GetAzureBlobStorageReplayContainerName());
-            if (containerClient == null)
-                return;
-
             RecordingsLabel.Text = "(Loading...)";
             EmptyLabel.IsVisible = false;
             ReplayCollectionView.SelectedItem = null;
@@ -1502,63 +1493,67 @@ namespace GnollHackX.Pages.MainScreen
                     return;
                 }
 
-                // Call the listing operation and return pages of the specified size.
-                var resultSegment = containerClient.GetBlobsByHierarchyAsync(prefix: _subDirectoryServer, delimiter: GHConstants.AzureBlobStorageDelimiter)
-                    .AsPages(default, null);
+                if (!GHApp.IsCloudStorageAvailable(GHCloudArea.Replay))
+                {
+                    RecordingsLabel.Text = "Cloud replays are temporarily unavailable.";
+                    return;
+                }
 
-                var enumer = resultSegment.GetAsyncEnumerator();
+                IGHCloudContainer container = GHApp.GetCloudContainer(GHCloudArea.Replay);
 
                 try
                 {
-                    // Enumerate the blobs returned for each page.
-                    while (await enumer.MoveNextAsync())
+                    // A hierarchical listing may return both virtual directories and blobs.
+                    List<GHCloudItem> cloudItems = await container.ListAsync(_subDirectoryServer ?? "", true, CancellationToken.None);
+                    if (cloudItems != null)
                     {
-                        Page<BlobHierarchyItem> blobPage = enumer.Current;
-                        // A hierarchical listing may return both virtual directories and blobs.
-                        foreach (BlobHierarchyItem blobhierarchyItem in blobPage.Values)
+                        foreach (GHCloudItem cloudItem in cloudItems)
                         {
-                            if (blobhierarchyItem.IsPrefix)
+                            if (cloudItem == null)
+                                continue;
+
+                            if (cloudItem.IsPrefix)
                             {
                                 // Write out the prefix of the virtual directory.
-                                Debug.WriteLine(i + ": Virtual directory prefix: " + blobhierarchyItem.Prefix);
-                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Prefix, blobhierarchyItem.Prefix, "", true, 0, 1, DateTime.Now, DateTime.Now));
+                                Debug.WriteLine(i + ": Virtual directory prefix: " + cloudItem.Name);
+                                gHRecordedGameFiles.Add(new GHRecordedGameFile(i, cloudItem.Name, cloudItem.Name, "", true, 0, 1, DateTime.Now, DateTime.Now));
                             }
-                            else if(blobhierarchyItem.Blob != null)
+                            else if (cloudItem.Name != null)
                             {
-                                Debug.WriteLine(i + ": Item name without prefix: " + blobhierarchyItem.Blob.Name);
-                                if(!string.IsNullOrWhiteSpace(blobhierarchyItem.Blob.Name))
+                                Debug.WriteLine(i + ": Item name without prefix: " + cloudItem.Name);
+                                if(!string.IsNullOrWhiteSpace(cloudItem.Name))
                                 {
                                     string nameWithoutPrefix;
                                     if(string.IsNullOrWhiteSpace(_subDirectoryServer))
                                     {
-                                        nameWithoutPrefix = blobhierarchyItem.Blob.Name;
+                                        nameWithoutPrefix = cloudItem.Name;
                                     }
                                     else
                                     {
-                                        if (blobhierarchyItem.Blob.Name.Length > _subDirectoryServer.Length && blobhierarchyItem.Blob.Name.StartsWith(_subDirectoryServer))
-                                            nameWithoutPrefix = blobhierarchyItem.Blob.Name.Substring(_subDirectoryServer.Length);
+                                        if (cloudItem.Name.Length > _subDirectoryServer.Length && cloudItem.Name.StartsWith(_subDirectoryServer))
+                                            nameWithoutPrefix = cloudItem.Name.Substring(_subDirectoryServer.Length);
                                         else
-                                            nameWithoutPrefix = blobhierarchyItem.Blob.Name;
+                                            nameWithoutPrefix = cloudItem.Name;
                                     }
 
                                     if(nameWithoutPrefix.StartsWith(GHConstants.ReplayFileNamePrefix))
                                     {
                                         i++;
-                                        gHRecordedGameFiles.Add(new GHRecordedGameFile(i, blobhierarchyItem.Blob?.Name, blobhierarchyItem.Blob?.Name, "", false,
-                                            blobhierarchyItem.Blob?.Properties.ContentLength ?? 0, 1,
-                                              (blobhierarchyItem.Blob?.Properties.CreatedOn ?? DateTimeOffset.Now).DateTime,
-                                              (blobhierarchyItem.Blob?.Properties.LastModified ?? DateTimeOffset.Now).DateTime));
+                                        gHRecordedGameFiles.Add(new GHRecordedGameFile(i, cloudItem.Name, cloudItem.Name, "", false,
+                                            cloudItem.Length, 1,
+                                              (cloudItem.CreatedOn ?? DateTimeOffset.Now).DateTime,
+                                              (cloudItem.LastModified ?? DateTimeOffset.Now).DateTime));
                                     }
                                     else if (nameWithoutPrefix.StartsWith(GHConstants.ReplayContinuationFileNamePrefix))
                                     {
-                                        if(!string.IsNullOrWhiteSpace(blobhierarchyItem.Blob.Name))
-                                            contFiles.Add(new ContinuationFile(blobhierarchyItem.Blob.Name, blobhierarchyItem.Blob?.Properties.ContentLength ?? 0));
+                                        if(!string.IsNullOrWhiteSpace(cloudItem.Name))
+                                            contFiles.Add(new ContinuationFile(cloudItem.Name, cloudItem.Length));
                                     }
                                 }
                             }
                             else
                             {
-                                Debug.WriteLine(i + ": Blob is null");
+                                Debug.WriteLine(i + ": Item name is null");
                                 //i++;
                                 //gHRecordedGameFiles.Add(new GHRecordedGameFile(i, "?", "?", "", false, 0, 1, DateTime.Now, DateTime.Now));
 
@@ -1623,11 +1618,6 @@ namespace GnollHackX.Pages.MainScreen
                 catch (Exception e)
                 {
                     Debug.WriteLine(e.Message);
-                }
-                finally
-                {
-                    if (enumer != null)
-                        await enumer.DisposeAsync();
                 }
             }
             catch (Exception e)
@@ -1722,6 +1712,14 @@ namespace GnollHackX.Pages.MainScreen
                 return;
             }
 
+            if (!GHApp.CanUploadReplays)
+            {
+                await GHApp.DisplayMessageBox(this, "GnollHack Account Needed", "Uploading replays needs a GnollHack account under Settings > Server Posting.", "OK");
+                UploadButton.IsEnabled = true;
+                PopupCancelButton_Clicked(sender, e);
+                return;
+            }
+
             UploadDownloadTitleLabel.Text = "Uploading...";
             UploadDownloadFileLabel.Text = "Initializing...";
             UploadDownloadStatusLabel.Text = "Please wait...";
@@ -1730,12 +1728,6 @@ namespace GnollHackX.Pages.MainScreen
             if(_uploadDownloadCts == null)
                 _uploadDownloadCts = new CancellationTokenSource();
 
-            BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
-            string containerName = GHApp.GetAzureBlobStorageReplayContainerName();
-            await GHApp.CheckCreateReplayContainer(containerName);
-            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
-            string prefix = GHApp.XlogUserNameVerified ? GHApp.XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
-
             if (IsMultiSelect && ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count != 1)
             {
                 int noFiles = ReplayCollectionView.SelectedItems.Count;
@@ -1743,6 +1735,8 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     try
                     {
+                        IGHCloudContainer container = GHApp.GetCloudContainer(GHCloudArea.Replay);
+                        List<string> uploadNames = new List<string>();
                         int fileIdx = 0;
                         int noValidFiles = 0;
                         foreach (object selItem in ReplayCollectionView.SelectedItems)
@@ -1769,9 +1763,14 @@ namespace GnollHackX.Pages.MainScreen
                                 if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix) && Directory.Exists(dir))
                                 {
                                     noValidFiles++;
+                                    AddLocalReplayUploadNames(fileName, dir, uploadNames);
                                 }
                             }
                         }
+
+                        Dictionary<string, BlobClient> grants = uploadNames.Count > 0
+                            ? await container.GetBlobsAsync(uploadNames, GHCloudAccess.Write, _uploadDownloadCts.Token)
+                            : new Dictionary<string, BlobClient>();
 
                         foreach (object selItem in ReplayCollectionView.SelectedItems)
                         {
@@ -1802,7 +1801,7 @@ namespace GnollHackX.Pages.MainScreen
                                     UploadDownloadFileLabel.Text = fileName;
                                     UploadDownloadStatusLabel.Text = "Main replay file " + fileIdx + " of " + noValidFiles;
                                     GHApp.MaybeWriteGHLog("UploadButton_Clicked: UploadFromFileAsync, " + fileName + ", " + UploadDownloadStatusLabel.Text);
-                                    await GHApp.UploadFromFileAsync(blobContainerClient, prefix, filePath, _uploadDownloadCts.Token);
+                                    await GHApp.UploadFromFileAsync(container, GetCloudGrant(grants, fileName), fileName, filePath, _uploadDownloadCts.Token);
                                     recfile.Uploaded = true;
                                     if (UploadDownloadCancelled)
                                         break;
@@ -1851,7 +1850,7 @@ namespace GnollHackX.Pages.MainScreen
                                                             UploadDownloadFileLabel.Text = contFI.Name;
                                                             UploadDownloadStatusLabel.Text = "Continuation " + subFileIdx + " of " + noSubFiles + " for file " + fileIdx + " of " + noValidFiles;
                                                             GHApp.MaybeWriteGHLog("UploadButton_Clicked: UploadFromFileAsync, cont, " + contFI.Name + ", " + UploadDownloadStatusLabel.Text);
-                                                            await GHApp.UploadFromFileAsync(blobContainerClient, prefix, file, _uploadDownloadCts.Token);
+                                                            await GHApp.UploadFromFileAsync(container, GetCloudGrant(grants, contFI.Name), contFI.Name, file, _uploadDownloadCts.Token);
                                                         }
                                                     }
                                                 }
@@ -1864,7 +1863,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await GHApp.DisplayMessageBox(this, "Upload File Failure", "GnollHack failed to upload " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Upload File Failure", "GnollHack failed to upload " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + ": " + GetCloudErrorText(ex), "OK");
                     }
                 }
             }
@@ -1909,9 +1908,14 @@ namespace GnollHackX.Pages.MainScreen
                             int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
                             if (subLen > 0)
                             {
+                                IGHCloudContainer container = GHApp.GetCloudContainer(GHCloudArea.Replay);
+                                List<string> uploadNames = new List<string>();
+                                AddLocalReplayUploadNames(fileName, dir, uploadNames);
+                                Dictionary<string, BlobClient> grants = await container.GetBlobsAsync(uploadNames, GHCloudAccess.Write, _uploadDownloadCts.Token);
+
                                 UploadDownloadFileLabel.Text = fileName;
                                 UploadDownloadStatusLabel.Text = "Main replay file";
-                                await GHApp.UploadFromFileAsync(blobContainerClient, prefix, filePath, _uploadDownloadCts.Token);
+                                await GHApp.UploadFromFileAsync(container, GetCloudGrant(grants, fileName), fileName, filePath, _uploadDownloadCts.Token);
 
                                 string[] files = Directory.GetFiles(dir);
                                 if (files != null)
@@ -1949,7 +1953,7 @@ namespace GnollHackX.Pages.MainScreen
                                                     subFileIdx++;
                                                     UploadDownloadFileLabel.Text = contFI.Name;
                                                     UploadDownloadStatusLabel.Text = "Continuation " + subFileIdx + " of " + noSubFiles;
-                                                    await GHApp.UploadFromFileAsync(blobContainerClient, prefix, file, _uploadDownloadCts.Token);
+                                                    await GHApp.UploadFromFileAsync(container, GetCloudGrant(grants, contFI.Name), contFI.Name, file, _uploadDownloadCts.Token);
                                                 }
                                             }
                                         }
@@ -1960,7 +1964,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await GHApp.DisplayMessageBox(this, "Upload File Failure", "GnollHack failed to upload " + filePath + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Upload File Failure", "GnollHack failed to upload " + filePath + ": " + GetCloudErrorText(ex), "OK");
                     }
                 }
             }
@@ -2013,8 +2017,6 @@ namespace GnollHackX.Pages.MainScreen
             if (_uploadDownloadCts == null)
                 _uploadDownloadCts = new CancellationTokenSource();
 
-            BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
-            BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(GHApp.GetAzureBlobStorageReplayContainerName());
             string prefix = _subDirectoryServer;
 
             if (IsMultiSelect && ReplayCollectionView.SelectedItems != null && ReplayCollectionView.SelectedItems.Count != 1)
@@ -2025,6 +2027,8 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     try
                     {
+                        IGHCloudContainer container = GHApp.GetCloudContainer(GHCloudArea.Replay);
+                        List<string> downloadNames = new List<string>();
                         int noValidFiles = 0;
                         foreach (object selItem in ReplayCollectionView.SelectedItems)
                         {
@@ -2047,9 +2051,14 @@ namespace GnollHackX.Pages.MainScreen
                                 if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
                                 {
                                     noValidFiles++;
+                                    AddCloudReplayDownloadNames(filePath, recfile.ContinuationFiles, downloadNames);
                                 }
                             }
                         }
+
+                        Dictionary<string, BlobClient> grants = downloadNames.Count > 0
+                            ? await container.GetBlobsAsync(downloadNames, GHCloudAccess.Read, _uploadDownloadCts.Token)
+                            : new Dictionary<string, BlobClient>();
 
                         foreach (object selItem in ReplayCollectionView.SelectedItems)
                         {
@@ -2077,7 +2086,7 @@ namespace GnollHackX.Pages.MainScreen
                                     fileIdx++;
                                     UploadDownloadFileLabel.Text = fileName;
                                     UploadDownloadStatusLabel.Text = "Main replay file " + fileIdx + " of " + noValidFiles;
-                                    await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, recfile.BaseFileSize, _uploadDownloadCts.Token);
+                                    await GHApp.DownloadFileAsync(container, GetCloudGrant(grants, filePath), prefix, filePath, recfile.BaseFileSize, _uploadDownloadCts.Token);
                                     recfile.Downloaded = true;
                                     if (UploadDownloadCancelled)
                                         break;
@@ -2099,7 +2108,7 @@ namespace GnollHackX.Pages.MainScreen
                                                 string contFileName = string.IsNullOrWhiteSpace(prefix) || prefix.Length >= filename.Length ? filename : filename.Substring(prefix.Length);
                                                 UploadDownloadFileLabel.Text = contFileName;
                                                 UploadDownloadStatusLabel.Text = "Continuation " + subFileIdx + " of " + noOfSubFiles + " for file " + fileIdx + " of " + noValidFiles;
-                                                await GHApp.DownloadFileAsync(blobContainerClient, prefix, filename, cfile.FileSize, _uploadDownloadCts.Token);
+                                                await GHApp.DownloadFileAsync(container, GetCloudGrant(grants, filename), prefix, filename, cfile.FileSize, _uploadDownloadCts.Token);
                                             }
                                         }
                                     }
@@ -2109,7 +2118,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await GHApp.DisplayMessageBox(this, "Download File Failure", "GnollHack failed to download " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Download File Failure", "GnollHack failed to download " + noFiles + " replay" + (noFiles != 1 ? "s" : "") + ": " + GetCloudErrorText(ex), "OK");
                     }
                 }
             }
@@ -2145,9 +2154,14 @@ namespace GnollHackX.Pages.MainScreen
                         string fileName = string.IsNullOrWhiteSpace(prefix) || prefix.Length >= filePath.Length ? filePath : filePath.Substring(prefix.Length);
                         if (!string.IsNullOrWhiteSpace(fileName) && fileName.StartsWith(GHConstants.ReplayFileNamePrefix))
                         {
+                            IGHCloudContainer container = GHApp.GetCloudContainer(GHCloudArea.Replay);
+                            List<string> downloadNames = new List<string>();
+                            AddCloudReplayDownloadNames(filePath, recfile.ContinuationFiles, downloadNames);
+                            Dictionary<string, BlobClient> grants = await container.GetBlobsAsync(downloadNames, GHCloudAccess.Read, _uploadDownloadCts.Token);
+
                             UploadDownloadFileLabel.Text = fileName;
                             UploadDownloadStatusLabel.Text = "Main replay file";
-                            await GHApp.DownloadFileAsync(blobContainerClient, prefix, filePath, recfile.BaseFileSize, _uploadDownloadCts.Token);
+                            await GHApp.DownloadFileAsync(container, GetCloudGrant(grants, filePath), prefix, filePath, recfile.BaseFileSize, _uploadDownloadCts.Token);
                             List<ContinuationFile> files = recfile.ContinuationFiles;
                             if (files != null)
                             {
@@ -2165,7 +2179,7 @@ namespace GnollHackX.Pages.MainScreen
                                         string contFileName = string.IsNullOrWhiteSpace(prefix) || prefix.Length >= filename.Length ? filename : filename.Substring(prefix.Length);
                                         UploadDownloadFileLabel.Text = contFileName;
                                         UploadDownloadStatusLabel.Text = "Continuation " + subFileIdx + " of " + noOfSubFiles;
-                                        await GHApp.DownloadFileAsync(blobContainerClient, prefix, filename, cfile.FileSize, _uploadDownloadCts.Token);
+                                        await GHApp.DownloadFileAsync(container, GetCloudGrant(grants, filename), prefix, filename, cfile.FileSize, _uploadDownloadCts.Token);
                                     }
                                 }
                             }
@@ -2173,7 +2187,7 @@ namespace GnollHackX.Pages.MainScreen
                     }
                     catch (Exception ex)
                     {
-                        await GHApp.DisplayMessageBox(this, "Download File Failure", "GnollHack failed to download " + filePath + ": " + ex.Message, "OK");
+                        await GHApp.DisplayMessageBox(this, "Download File Failure", "GnollHack failed to download " + filePath + ": " + GetCloudErrorText(ex), "OK");
                     }
                 }
             }
@@ -2191,22 +2205,79 @@ namespace GnollHackX.Pages.MainScreen
             await UpdateRecordings();
         }
 
-        private async void ServerButton_Clicked(object sender, EventArgs e)
+        /* Adds the file names of a local main replay file and its continuation files in 'dir', as Write grant keys */
+        private static void AddLocalReplayUploadNames(string fileName, string dir, List<string> names)
         {
-            try
+            if (string.IsNullOrWhiteSpace(fileName) || names == null)
+                return;
+            if (!names.Contains(fileName))
+                names.Add(fileName);
+
+            bool isGZip = fileName.Length > GHConstants.ReplayGZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayGZipFileNameSuffix);
+            bool isNormalZip = fileName.Length > GHConstants.ReplayZipFileNameSuffix.Length && fileName.EndsWith(GHConstants.ReplayZipFileNameSuffix);
+            bool isZip = isGZip || isNormalZip;
+            string usedZipSuffix = isGZip ? GHConstants.ReplayGZipFileNameSuffix : GHConstants.ReplayZipFileNameSuffix;
+            int subLen = fileName.Length - GHConstants.ReplayFileNamePrefix.Length - GHConstants.ReplayFileNameSuffix.Length - (isZip ? usedZipSuffix.Length : 0);
+            if (subLen <= 0 || string.IsNullOrWhiteSpace(dir) || !Directory.Exists(dir))
+                return;
+
+            string subString = fileName.Substring(GHConstants.ReplayFileNamePrefix.Length, subLen);
+            string contStart = GHConstants.ReplayContinuationFileNamePrefix + subString;
+            string[] files = Directory.GetFiles(dir);
+            if (files == null)
+                return;
+
+            foreach (string file in files)
             {
-                BlobServiceClient client = GHApp.GetBlobServiceClient();
-                if (client == null)
-                    return;
-                BlobContainerClient containerClient = client.GetBlobContainerClient(GHApp.GetAzureBlobStorageReplayContainerName());
-                if (containerClient == null)
-                    return;
-                await GHApp.ListBlobsHierarchicalListing(containerClient, null, null);
+                if (string.IsNullOrWhiteSpace(file))
+                    continue;
+
+                FileInfo contFI = new FileInfo(file);
+                if (contFI != null && !string.IsNullOrWhiteSpace(contFI.Name))
+                {
+                    if (contFI.Name.StartsWith(contStart) && (!isZip || file.EndsWith(usedZipSuffix)) && File.Exists(file) && !names.Contains(contFI.Name))
+                        names.Add(contFI.Name);
+                }
             }
-            catch (Exception ex)
+        }
+
+        /* Adds the full blob names of a cloud main replay file and its continuation files, as Read grant keys */
+        private static void AddCloudReplayDownloadNames(string blobName, List<ContinuationFile> continuationFiles, List<string> names)
+        {
+            if (names == null)
+                return;
+            if (!string.IsNullOrWhiteSpace(blobName) && !names.Contains(blobName))
+                names.Add(blobName);
+            if (continuationFiles == null)
+                return;
+
+            foreach (ContinuationFile cfile in continuationFiles)
             {
-                GHApp.ReportCaughtException(ex);
+                if (!string.IsNullOrWhiteSpace(cfile.FileName) && !names.Contains(cfile.FileName))
+                    names.Add(cfile.FileName);
             }
+        }
+
+        /* The grant for 'key', or null, in which case the transfer helper requests its own */
+        private static BlobClient GetCloudGrant(Dictionary<string, BlobClient> grants, string key)
+        {
+            BlobClient granted;
+            if (grants != null && key != null && grants.TryGetValue(key, out granted))
+                return granted;
+            return null;
+        }
+
+        /* Text for a failed transfer that never contains a URL: the server's own refusal text, or the storage status and error code */
+        private static string GetCloudErrorText(Exception ex)
+        {
+            if (ex == null)
+                return "";
+            if (ex is GHCloudRefusedException || ex is GHCloudUnavailableException)
+                return ex.Message;
+            RequestFailedException rfe = ex as RequestFailedException;
+            if (rfe != null)
+                return "Cloud storage error " + rfe.Status + (string.IsNullOrWhiteSpace(rfe.ErrorCode) ? "" : " (" + rfe.ErrorCode + ")");
+            return ex.Message;
         }
 
         private void PopupCancelButton_Clicked(object sender, EventArgs e)

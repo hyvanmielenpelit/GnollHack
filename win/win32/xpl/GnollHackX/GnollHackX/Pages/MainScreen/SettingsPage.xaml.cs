@@ -146,7 +146,7 @@ namespace GnollHackX.Pages.MainScreen
             { "Save File Tracking", ("Track save files via the GnollHack Server.", "Determines whether the save files are tracked by the GnollHack Server.") },
             { "Record Game", ("Record a replay of your game.", "Determines whether the game records a replay of your game.") },
             { "Show Recording", ("Show a red dot indicating game recording is active.", "Determines whether a red dot appears on the status bar to indicate that game recording is on.") },
-            { "Auto-Upload to Cloud", ("Automatically upload replays to Azure cloud storage.", "Determines whether the saved replay is automatically uploaded to an Azure cloud storage.") },
+            { "Auto-Upload to Cloud", ("Automatically upload replays to cloud storage.", "Determines whether the saved replay is automatically uploaded to cloud storage. Needs a GnollHack account under Server Posting, or a custom Cloud Storage.") },
             { "Cloud Storage", ("Custom Azure connection string for uploading replays.", "Specifies a custom Azure cloud storage connection string to upload replays to.") },
             { "Developer Mode", ("Enable Wizard Mode and options file editing.", "Activates Developer Mode, which enables [[Wizard Mode]] and editing the options file.") },
             { "Debug Logging", ("Write debug info to the app log.", "Debug information is written in the app log.") },
@@ -252,6 +252,8 @@ namespace GnollHackX.Pages.MainScreen
             _mainPage = mainPage;
 
             InitializeComponent();
+            PostXlogUserNameEntry.TextChanged += PostXlogCredentialEntry_TextChanged;
+            PostXlogPasswordEntry.TextChanged += PostXlogCredentialEntry_TextChanged;
 //#if GNH_MAUI
 //            SafeAreaEdges = SafeAreaEdges.All;
 //#else
@@ -1065,6 +1067,9 @@ namespace GnollHackX.Pages.MainScreen
                store is unavailable they stay in memory for this session only, and the
                player is told below. */
             bool securestoreok = true;
+            bool cloudAccessChanged = GHApp.XlogUserName != PostXlogUserNameEntry.Text
+                || GHApp.XlogPassword != PostXlogPasswordEntry.Text
+                || GHApp.CustomCloudStorageConnectionString != _customCloudStorageConnectionString;
             GHApp.XlogUserName = PostXlogUserNameEntry.Text;
             securestoreok &= SetSecureCredential(GHConstants.SecureXlogUserNameKey, PostXlogUserNameEntry.Text);
             GHApp.XlogPassword = PostXlogPasswordEntry.Text;
@@ -1086,6 +1091,8 @@ namespace GnollHackX.Pages.MainScreen
 
             GHApp.CustomCloudStorageConnectionString = _customCloudStorageConnectionString;
             securestoreok &= SetSecureCredential(GHConstants.SecureCloudStorageConnectionStringKey, _customCloudStorageConnectionString);
+            if (cloudAccessChanged)
+                GHApp.ClearCloudGrantCache();
 
             GHApp.XlogCredentialsIncorrect = false;
             if (!GHApp.AreCredentialsVerified(PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text))
@@ -2299,6 +2306,7 @@ namespace GnollHackX.Pages.MainScreen
             _customCloudStorageConnectionString = customcloudstorage;
             CustomCloudStorageLabel.Text = customcloudstorage == "" ? "Default" : "Custom";
             CustomCloudStorageButton.Text = customcloudstorage == "" ? "Add" : "Edit";
+            UpdateAutoUploadReplaysEnabled();
 
             SimpleCommandBarButtonsLayout.IsVisible = simplecmdlayout;
             SimpleCommandBarButton1Picker.SelectedIndex = cmdidxs[0];
@@ -3199,6 +3207,7 @@ namespace GnollHackX.Pages.MainScreen
 
             if(_linkIndex != 1)
                 _linkButtonClicked.Text = isLinkEmpty ? "Add" : "Edit";
+            UpdateAutoUploadReplaysEnabled();
 
             TextGrid.IsVisible = false;
             TextEntry.Text = "";
@@ -3774,6 +3783,24 @@ namespace GnollHackX.Pages.MainScreen
             }
             GHApp.TournamentMode = e.Value;
             SetTournamentModeLabelColors(e.Value);
+            UpdateAutoUploadReplaysEnabled();
+        }
+
+        private void PostXlogCredentialEntry_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateAutoUploadReplaysEnabled();
+        }
+
+        /* Auto-Upload to Cloud is usable with a custom storage outside tournament mode, or with an account; the toggle itself is kept */
+        private void UpdateAutoUploadReplaysEnabled()
+        {
+            bool isTournament = TournamentSwitch.IsToggled;
+            bool canUpload = GHCloudRules.CanUploadReplays(_customCloudStorageConnectionString, isTournament,
+                PostXlogUserNameEntry.Text, PostXlogPasswordEntry.Text);
+            AutoUploadReplaysSwitch.IsEnabled = canUpload;
+            Color normalColor = GHApp.DarkMode ? GHColors.White : GHColors.Black;
+            Color onColor = GHApp.DarkMode ? GHColors.LightGreen : GHColors.Green;
+            AutoUploadReplaysLabel.TextColor = canUpload ? (isTournament ? onColor : normalColor) : GHColors.Gray;
         }
 
         private void PostDiagnosticDataSwitch_Toggled(object sender, ToggledEventArgs e)

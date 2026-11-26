@@ -411,6 +411,8 @@
     <None Remove="..\GnollHackX\GnollHackX\StoredManual.cs" />
     <None Remove="..\GnollHackX\GnollHackX\Achievement.cs" />
     <None Remove="..\GnollHackX\GnollHackX\UserSecrets.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHCloudRules.cs" />
+    <None Remove="..\GnollHackX\GnollHackX\GHCloudStorage.cs" />
     <None Remove="..\GnollHackX\GnollHackX.FMOD\fmod.cs" />
     <None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_studio.cs" />
     <None Remove="..\GnollHackX\GnollHackX.FMOD\fmod_errors.cs" />
@@ -739,6 +741,8 @@
     <Compile Include="..\GnollHackX\GnollHackX\StoredManual.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\Achievement.cs" />
     <Compile Include="..\GnollHackX\GnollHackX\UserSecrets.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHCloudRules.cs" />
+    <Compile Include="..\GnollHackX\GnollHackX\GHCloudStorage.cs" />
     <Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod.cs" />
     <Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_studio.cs" />
     <Compile Include="..\GnollHackX\GnollHackX.FMOD\fmod_errors.cs" />

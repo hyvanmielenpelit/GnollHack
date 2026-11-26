@@ -372,130 +372,102 @@ namespace GnollHackX.Pages.MainScreen
                         return;
                     }
 
-                    BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
-                    if (blobServiceClient != null)
-                    {
-                        string containerName = GHApp.GetAzureBlobStorageSaveTransferContainerName();
-                        BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+                    IGHCloudContainer containerClient = GHApp.GetCloudContainer(GHCloudArea.SaveTransfer);
 
-                        if (await containerClient.ExistsAsync())
+                    /* Listed names are relative to the player's folder: <playerName>-<guid>/<file> */
+                    List<GHCloudItem> listedBlobs = await containerClient.ListAsync("", false, CancellationToken.None);
+
+                    List<string> manifestNames = new List<string>();
+                    List<(string path, string folder)> unknownManifests = new List<(string, string)>();
+                    foreach (GHCloudItem blobItem in listedBlobs)
+                    {
+                        if (!blobItem.IsPrefix && blobItem.Name.EndsWith(".json"))
                         {
-                            string prefix = GHApp.XlogUserName + "/";
-                            var resultSegment = containerClient.GetBlobsAsync(prefix: prefix);
-                            
-                            List<string> manifestNames = new List<string>();
-                            List<(string path, string folder)> unknownManifests = new List<(string, string)>();
-                            var enumerator = resultSegment.GetAsyncEnumerator();
+                            manifestNames.Add(blobItem.Name);
+                        }
+                    }
+
+                    Dictionary<string, BlobClient> manifestClients = await containerClient.GetBlobsAsync(manifestNames, GHCloudAccess.Read, CancellationToken.None);
+                    foreach (var manifestPath in manifestNames)
+                    {
+                        BlobClient manifestClient;
+                        manifestClients.TryGetValue(manifestPath, out manifestClient);
+                        string manifestText = await DownloadCloudTextAsync(containerClient, manifestPath, manifestClient, CancellationToken.None);
+                        var manifest = JsonConvert.DeserializeObject<SaveManifest>(manifestText);
+                        if (manifest == null)
+                            continue;
+
+                        // Check manifest version; version 0 means old/unrecognized format
+                        if (manifest.ManifestVersion == 0)
+                        {
+                            string[] pathParts = manifestPath.Split('/');
+                            string folder = pathParts.Length > 1 ? pathParts[pathParts.Length - 2] : "";
+                            unknownManifests.Add((manifestPath, folder));
+                            continue;
+                        }
+
+                        string[] parts = manifestPath.Split('/');
+                        string directory = parts.Length > 1 ? parts[parts.Length - 2] : "";
+
+                        string baseName = manifest.SaveFile.FileName;
+                        string charName = baseName.StartsWith("1") ? baseName.Substring(1) : baseName;
+                        bool cloudValid = manifest.SaveVersion == GHApp.GHVersionNumber ? true :
+                            (GHApp.GHVersionNumber > manifest.SaveVersion ? GHApp.GHVersionCompatibility <= manifest.SaveVersion :
+                            manifest.SaveVersionCompatibility <= GHApp.GHVersionNumber);
+
+                        string verStr = GHApp.VersionNumberToString(manifest.SaveVersion).Replace(" (", " ").Replace(")", "");
+                        string compatStr = GHApp.VersionNumberToString(manifest.SaveVersionCompatibility).Replace(" (", " ").Replace(")", "");
+
+                        _saves.Add(new GHSaveTransferFile
+                        {
+                            Name = charName,
+                            SaveFileName = baseName,
+                            Description = $"Version: {verStr} (From {compatStr}) - " + (cloudValid ? "Valid" : "Invalid/Incompatible") + " and " + (manifest.HasTrackingFile ? "Tracked" : "Untracked"),
+                            CharacterDescription = manifest.CharacterDescription,
+                            LocationDescription = manifest.LocationDescription,
+                            ModeDescription = manifest.ModeDescription,
+                            IsCloud = true,
+                            IsTracked = manifest.HasTrackingFile,
+                            IsValid = cloudValid,
+                            FileName = manifestPath,
+                            ExtraInfo = "",
+                            CloudDirectory = directory,
+                            Glyph = manifest.Glyph,
+                            GuiGlyph = manifest.GuiGlyph,
+                            TurnCount = manifest.TurnCount,
+                            SaveFlags = manifest.SaveFlags
+                        });
+                        await Task.Yield();
+                    }
+
+                    // Prompt user about any unrecognized manifests
+                    foreach (var (blobPath, folder) in unknownManifests)
+                    {
+                        bool deleteIt = await GHApp.DisplayMessageBox(this,
+                            "Unrecognized Cloud Save",
+                            $"A cloud save file with an unrecognized format was found (path: {blobPath}). " +
+                            "This may be from an older version of the app that is no longer compatible. " +
+                            "Do you want to delete it from cloud storage?",
+                            "Delete", "Keep");
+                        if (deleteIt)
+                        {
                             try
                             {
-                                while (await enumerator.MoveNextAsync())
+                                if (!string.IsNullOrEmpty(folder))
                                 {
-                                    var blobItem = enumerator.Current;
-                                    if (blobItem.Name.EndsWith(".json"))
-                                    {
-                                        manifestNames.Add(blobItem.Name);
-                                    }
+                                    List<GHCloudItem> folderBlobs = await containerClient.ListAsync($"{folder}/", false, CancellationToken.None);
+                                    await DeleteCloudBlobsAsync(containerClient, GetBlobNames(folderBlobs), CancellationToken.None);
+                                }
+                                else
+                                {
+                                    // Fallback: delete just the manifest blob
+                                    await DeleteCloudBlobsAsync(containerClient, new List<string> { blobPath }, CancellationToken.None);
                                 }
                             }
-                            finally
+                            catch (Exception delEx)
                             {
-                                await enumerator.DisposeAsync();
-                            }
-
-                            foreach (var manifestPath in manifestNames)
-                            {
-                                BlobClient manifestClient = containerClient.GetBlobClient(manifestPath);
-                                using (MemoryStream ms = new MemoryStream())
-                                {
-                                    await manifestClient.DownloadToAsync(ms);
-                                    string manifestText = Encoding.UTF8.GetString(ms.ToArray());
-                                    var manifest = JsonConvert.DeserializeObject<SaveManifest>(manifestText);
-                                    if (manifest == null)
-                                        continue;
-
-                                    // Check manifest version; version 0 means old/unrecognized format
-                                    if (manifest.ManifestVersion == 0)
-                                    {
-                                        string[] pathParts = manifestPath.Split('/');
-                                        string folder = pathParts.Length > 1 ? pathParts[pathParts.Length - 2] : "";
-                                        unknownManifests.Add((manifestPath, folder));
-                                        continue;
-                                    }
-
-                                    string[] parts = manifestPath.Split('/');
-                                    string directory = parts.Length > 1 ? parts[parts.Length - 2] : "";
-
-                                    string baseName = manifest.SaveFile.FileName;
-                                    string charName = baseName.StartsWith("1") ? baseName.Substring(1) : baseName;
-                                    bool cloudValid = manifest.SaveVersion == GHApp.GHVersionNumber ? true :
-                                        (GHApp.GHVersionNumber > manifest.SaveVersion ? GHApp.GHVersionCompatibility <= manifest.SaveVersion :
-                                        manifest.SaveVersionCompatibility <= GHApp.GHVersionNumber);
-
-                                    string verStr = GHApp.VersionNumberToString(manifest.SaveVersion).Replace(" (", " ").Replace(")", "");
-                                    string compatStr = GHApp.VersionNumberToString(manifest.SaveVersionCompatibility).Replace(" (", " ").Replace(")", "");
-
-                                    _saves.Add(new GHSaveTransferFile
-                                    {
-                                        Name = charName,
-                                        SaveFileName = baseName,
-                                        Description = $"Version: {verStr} (From {compatStr}) - " + (cloudValid ? "Valid" : "Invalid/Incompatible") + " and " + (manifest.HasTrackingFile ? "Tracked" : "Untracked"),
-                                        CharacterDescription = manifest.CharacterDescription,
-                                        LocationDescription = manifest.LocationDescription,
-                                        ModeDescription = manifest.ModeDescription,
-                                        IsCloud = true,
-                                        IsTracked = manifest.HasTrackingFile,
-                                        IsValid = cloudValid,
-                                        FileName = manifestPath,
-                                        ExtraInfo = "",
-                                        CloudDirectory = directory,
-                                        Glyph = manifest.Glyph,
-                                        GuiGlyph = manifest.GuiGlyph,
-                                        TurnCount = manifest.TurnCount,
-                                        SaveFlags = manifest.SaveFlags
-                                    });
-                                    await Task.Yield();
-                                }
-                            }
-
-                            // Prompt user about any unrecognized manifests
-                            foreach (var (blobPath, folder) in unknownManifests)
-                            {
-                                bool deleteIt = await GHApp.DisplayMessageBox(this,
-                                    "Unrecognized Cloud Save",
-                                    $"A cloud save file with an unrecognized format was found (path: {blobPath}). " +
-                                    "This may be from an older version of the app that is no longer compatible. " +
-                                    "Do you want to delete it from cloud storage?",
-                                    "Delete", "Keep");
-                                if (deleteIt)
-                                {
-                                    try
-                                    {
-                                        if (!string.IsNullOrEmpty(folder))
-                                        {
-                                            string deletePrefix = $"{GHApp.XlogUserName}/{folder}/";
-                                            var deleteEnum = containerClient.GetBlobsAsync(prefix: deletePrefix).GetAsyncEnumerator();
-                                            try
-                                            {
-                                                while (await deleteEnum.MoveNextAsync())
-                                                    await containerClient.GetBlobClient(deleteEnum.Current.Name).DeleteIfExistsAsync();
-                                            }
-                                            finally
-                                            {
-                                                await deleteEnum.DisposeAsync();
-                                            }
-                                        }
-                                        else
-                                        {
-                                            // Fallback: delete just the manifest blob
-                                            await containerClient.GetBlobClient(blobPath).DeleteIfExistsAsync();
-                                        }
-                                    }
-                                    catch (Exception delEx)
-                                    {
-                                        await GHApp.DisplayMessageBox(this, "Deletion Failed",
-                                            "Could not delete the unrecognized cloud save: " + delEx.Message, "OK");
-                                    }
-                                }
+                                await GHApp.DisplayMessageBox(this, "Deletion Failed",
+                                    "Could not delete the unrecognized cloud save: " + GetCloudErrorText(delEx), "OK");
                             }
                         }
                     }
@@ -503,8 +475,9 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
-                StatusLabel.Text = "Error loading list";
+                Debug.WriteLine(GetCloudErrorText(ex));
+                /* A refusal from the game API server carries its own text for the player */
+                StatusLabel.Text = ex is GHCloudRefusedException || ex is GHCloudUnavailableException ? ex.Message : "Error loading list";
                 EmptyLabel.IsVisible = _saves.Count == 0;
                 SavesLayout.IsEnabled = true;
                 UpdateButtons();
@@ -689,31 +662,13 @@ namespace GnollHackX.Pages.MainScreen
             {
                 if (file.IsCloud)
                 {
-                    BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
-                    if (blobServiceClient != null)
-                    {
-                        string containerName = GHApp.GetAzureBlobStorageSaveTransferContainerName();
-                        BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+                    IGHCloudContainer containerClient = GHApp.GetCloudContainer(GHCloudArea.SaveTransfer);
 
-                        string cloudFolder = file.CloudDirectory;
-                        if (!string.IsNullOrEmpty(cloudFolder))
-                        {
-                            string prefix = $"{GHApp.XlogUserName}/{cloudFolder}/";
-                            var blobSegment = containerClient.GetBlobsAsync(prefix: prefix);
-                            var enumerator = blobSegment.GetAsyncEnumerator();
-                            try
-                            {
-                                while (await enumerator.MoveNextAsync())
-                                {
-                                    var item = enumerator.Current;
-                                    await containerClient.GetBlobClient(item.Name).DeleteIfExistsAsync();
-                                }
-                            }
-                            finally
-                            {
-                                await enumerator.DisposeAsync();
-                            }
-                        }
+                    string cloudFolder = file.CloudDirectory;
+                    if (!string.IsNullOrEmpty(cloudFolder))
+                    {
+                        List<GHCloudItem> folderBlobs = await containerClient.ListAsync($"{cloudFolder}/", false, CancellationToken.None);
+                        await DeleteCloudBlobsAsync(containerClient, GetBlobNames(folderBlobs), CancellationToken.None);
                     }
                 }
                 else
@@ -729,7 +684,7 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                await GHApp.DisplayMessageBox(this, "Deletion Failed", "Error during deletion: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Deletion Failed", "Error during deletion: " + GetCloudErrorText(ex), "OK");
             }
             finally
             {
@@ -830,7 +785,7 @@ namespace GnollHackX.Pages.MainScreen
             string trackedSaveSha256 = "";
             bool isTracked = false;
             long saveTimeStamp = 0;
-            BlobContainerClient containerClient = null;
+            IGHCloudContainer containerClient = null;
 
             try
             {
@@ -854,51 +809,45 @@ namespace GnollHackX.Pages.MainScreen
 
                 // 2. Target check & Lock Expiry checks
                 PopupStatusLabel.Text = "Checking existing files on Azure...";
-                BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
-                if (blobServiceClient == null) throw new Exception("Azure client not available.");
-                string containerName = GHApp.GetAzureBlobStorageSaveTransferContainerName();
-                containerClient = blobServiceClient.GetBlobContainerClient(containerName);
-                await GHApp.CheckCreateSaveTransferContainer(containerName);
+                containerClient = GHApp.GetCloudContainer(GHCloudArea.SaveTransfer);
 
                 // Look for active locks for this player. Other cloud saves of the same name are kept:
                 // each upload has its own folder, and a download asks before replacing a local save.
-                string prefix = $"{GHApp.XlogUserName}/";
-                var blobSegment = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: token);
-                var enumerator = blobSegment.GetAsyncEnumerator();
-                try
+                /* Listed names are relative to the player's folder: <playerName>-<guid>/<file> */
+                List<GHCloudItem> listedBlobs = await containerClient.ListAsync("", false, token);
+                List<string> lockPaths = new List<string>();
+                foreach (GHCloudItem item in listedBlobs)
                 {
-                    while (await enumerator.MoveNextAsync())
+                    if (!item.IsPrefix && item.Name.StartsWith($"{playerName}-", StringComparison.Ordinal) && item.Name.EndsWith(".lock"))
                     {
-                        var item = enumerator.Current;
-                        if (item.Name.Contains($"/{playerName}-") && item.Name.EndsWith(".lock"))
-                        {
-                            BlobClient lockClient = containerClient.GetBlobClient(item.Name);
-                            using (MemoryStream ms = new MemoryStream())
-                            {
-                                await lockClient.DownloadToAsync(ms, token);
-                                string lockJson = Encoding.UTF8.GetString(ms.ToArray());
-                                var existingLock = JsonConvert.DeserializeObject<SaveLock>(lockJson);
-                                if (existingLock != null)
-                                {
-                                    if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - existingLock.CreatedUtcUnix < 3600)
-                                    {
-                                        // Lock is active
-                                        bool overrideLock = await ShowMessagePopupAsync("Active Lock Found", "An active Save Transfer session is currently locked on another device for this save name. Force override?", "Yes", "No", titleColor: GHColors.Red);
-                                        if (!overrideLock)
-                                        {
-                                            throw new Exception("Transfer aborted: Another device has locked this save file.");
-                                        }
-                                    }
-                                    // Lock is expired (or user overrode); delete it
-                                    await lockClient.DeleteIfExistsAsync(cancellationToken: token);
-                                }
-                            }
-                        }
+                        lockPaths.Add(item.Name);
                     }
                 }
-                finally
+
+                if (lockPaths.Count > 0)
                 {
-                    await enumerator.DisposeAsync();
+                    Dictionary<string, BlobClient> lockReadClients = await containerClient.GetBlobsAsync(lockPaths, GHCloudAccess.Read, token);
+                    foreach (string lockPath in lockPaths)
+                    {
+                        BlobClient lockClient;
+                        lockReadClients.TryGetValue(lockPath, out lockClient);
+                        string lockJson = await DownloadCloudTextAsync(containerClient, lockPath, lockClient, token);
+                        var existingLock = JsonConvert.DeserializeObject<SaveLock>(lockJson);
+                        if (existingLock != null)
+                        {
+                            if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - existingLock.CreatedUtcUnix < 3600)
+                            {
+                                // Lock is active
+                                bool overrideLock = await ShowMessagePopupAsync("Active Lock Found", "An active Save Transfer session is currently locked on another device for this save name. Force override?", "Yes", "No", titleColor: GHColors.Red);
+                                if (!overrideLock)
+                                {
+                                    throw new Exception("Transfer aborted: Another device has locked this save file.");
+                                }
+                            }
+                            // Lock is expired (or user overrode); delete it
+                            await DeleteCloudBlobsAsync(containerClient, new List<string> { lockPath }, token);
+                        }
+                    }
                 }
 
                 // 3a. Cleanup before start â€” find a usable temp directory
@@ -966,18 +915,14 @@ namespace GnollHackX.Pages.MainScreen
                 File.WriteAllText(localLockPath, JsonConvert.SerializeObject(uploadLock));
 
                 // 5. Upload lock file to Azure
-                string cloudLockPath = $"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.lock";
-                BlobClient uploadLockClient = containerClient.GetBlobClient(cloudLockPath);
-                await uploadLockClient.UploadAsync(localLockPath, token);
+                string cloudLockPath = $"{cloudFolder}/{playerName}.lock";
+                Dictionary<string, BlobClient> lockCreateClients = await containerClient.GetBlobsAsync(new List<string> { cloudLockPath }, GHCloudAccess.Create, token);
+                await GHApp.WithCloudGrantRetryAsync(containerClient, cloudLockPath, GHCloudAccess.Create, lockCreateClients[cloudLockPath],
+                    c => c.UploadAsync(localLockPath, overwrite: false, cancellationToken: token), token);
 
                 // 6. Download and double-check GUID matches (in-memory â€” no disk write needed)
                 PopupStatusLabel.Text = "Verifying upload lock...";
-                SaveLock downloadedLock;
-                using (var verifyMs = new MemoryStream())
-                {
-                    await uploadLockClient.DownloadToAsync(verifyMs, token);
-                    downloadedLock = JsonConvert.DeserializeObject<SaveLock>(Encoding.UTF8.GetString(verifyMs.ToArray()));
-                }
+                SaveLock downloadedLock = JsonConvert.DeserializeObject<SaveLock>(await DownloadCloudTextAsync(containerClient, cloudLockPath, null, token));
                 if (downloadedLock == null || downloadedLock.Guid != guid)
                 {
                     throw new Exception("Upload lock verify failed. A concurrent session may have overwritten the lock.");
@@ -1182,42 +1127,60 @@ namespace GnollHackX.Pages.MainScreen
 
                 PopupProgressBar.Progress = 0.5;
 
+                string cloudManifestPath = $"{cloudFolder}/{playerName}.json";
+                string cloudSavePath = $"{cloudFolder}/{playerName}";
+                string cloudBupPath = $"{cloudFolder}/{playerName}.bup";
+                string cloudTokenPath = $"{cloudFolder}/{playerName}{GHConstants.SaveFileTrackingSuffix}";
+                bool uploadsToken = isTracked && File.Exists(uploadTokenFile);
+                List<string> cloudFilePaths = new List<string> { cloudManifestPath, cloudSavePath };
+                if (backupIsDifferent)
+                    cloudFilePaths.Add(cloudBupPath);
+                if (uploadsToken)
+                    cloudFilePaths.Add(cloudTokenPath);
+                Dictionary<string, BlobClient> writeClients = await containerClient.GetBlobsAsync(cloudFilePaths, GHCloudAccess.Write, token);
+
                 // Upload manifest
-                BlobClient manifestBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.json");
-                await manifestBlob.UploadAsync(manifestLocalPath, token);
+                await GHApp.WithCloudGrantRetryAsync(containerClient, cloudManifestPath, GHCloudAccess.Write, writeClients[cloudManifestPath],
+                    c => c.UploadAsync(manifestLocalPath, overwrite: false, cancellationToken: token), token);
 
                 // Upload save file
-                BlobClient saveBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}");
-                await saveBlob.UploadAsync(Path.Combine(uploadSessionDir, playerName), token);
+                string uploadSavePath = Path.Combine(uploadSessionDir, playerName);
+                await GHApp.WithCloudGrantRetryAsync(containerClient, cloudSavePath, GHCloudAccess.Write, writeClients[cloudSavePath],
+                    c => c.UploadAsync(uploadSavePath, overwrite: false, cancellationToken: token), token);
 
                 // Upload backup if different
                 if (backupIsDifferent)
                 {
-                    BlobClient bupBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.bup");
-                    await bupBlob.UploadAsync(Path.Combine(uploadSessionDir, playerName + ".bup"), token);
+                    string uploadBupPath = Path.Combine(uploadSessionDir, playerName + ".bup");
+                    await GHApp.WithCloudGrantRetryAsync(containerClient, cloudBupPath, GHCloudAccess.Write, writeClients[cloudBupPath],
+                        c => c.UploadAsync(uploadBupPath, overwrite: false, cancellationToken: token), token);
                 }
 
                 // Upload tracking token if exists
-                if (isTracked && File.Exists(uploadTokenFile))
+                if (uploadsToken)
                 {
-                    BlobClient tokenBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}{GHConstants.SaveFileTrackingSuffix}");
-                    await tokenBlob.UploadAsync(uploadTokenFile, token);
+                    await GHApp.WithCloudGrantRetryAsync(containerClient, cloudTokenPath, GHCloudAccess.Write, writeClients[cloudTokenPath],
+                        c => c.UploadAsync(uploadTokenFile, overwrite: false, cancellationToken: token), token);
                 }
 
                 // 11. Verify uploads with Azure Blob Properties
                 PopupStatusLabel.Text = "Verifying cloud file integrity...";
-                var saveProps = await saveBlob.GetPropertiesAsync(cancellationToken: token);
+                Dictionary<string, BlobClient> readClients = await containerClient.GetBlobsAsync(cloudFilePaths, GHCloudAccess.Read, token);
+                var saveProps = await GHApp.WithCloudGrantRetryAsync(containerClient, cloudSavePath, GHCloudAccess.Read, readClients[cloudSavePath],
+                    c => c.GetPropertiesAsync(cancellationToken: token), token);
                 if (saveProps.Value.ContentLength != fiSave.Length) throw new Exception("Cloud save file size mismatch.");
 
                 if (backupIsDifferent)
                 {
-                    var bupProps = await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.bup").GetPropertiesAsync(cancellationToken: token);
+                    var bupProps = await GHApp.WithCloudGrantRetryAsync(containerClient, cloudBupPath, GHCloudAccess.Read, readClients[cloudBupPath],
+                        c => c.GetPropertiesAsync(cancellationToken: token), token);
                     if (bupProps.Value.ContentLength != backupLen) throw new Exception("Cloud backup save file size mismatch.");
                 }
 
-                if (isTracked && File.Exists(uploadTokenFile))
+                if (uploadsToken)
                 {
-                    var tokProps = await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}{GHConstants.SaveFileTrackingSuffix}").GetPropertiesAsync(cancellationToken: token);
+                    var tokProps = await GHApp.WithCloudGrantRetryAsync(containerClient, cloudTokenPath, GHCloudAccess.Read, readClients[cloudTokenPath],
+                        c => c.GetPropertiesAsync(cancellationToken: token), token);
                     if (tokProps.Value.ContentLength != tokenLen) throw new Exception("Cloud tracking token size mismatch.");
                 }
 
@@ -1228,16 +1191,20 @@ namespace GnollHackX.Pages.MainScreen
                 string tempBup = Path.Combine(tempDir, playerName + ".bup");
                 string tempTok = Path.Combine(tempDir, playerName + GHConstants.SaveFileTrackingSuffix);
 
-                await manifestBlob.DownloadToAsync(tempManifest, token);
-                await saveBlob.DownloadToAsync(tempSave, token);
+                await GHApp.WithCloudGrantRetryAsync(containerClient, cloudManifestPath, GHCloudAccess.Read, readClients[cloudManifestPath],
+                    c => c.DownloadToAsync(tempManifest, token), token);
+                await GHApp.WithCloudGrantRetryAsync(containerClient, cloudSavePath, GHCloudAccess.Read, readClients[cloudSavePath],
+                    c => c.DownloadToAsync(tempSave, token), token);
 
                 if (backupIsDifferent)
                 {
-                    await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.bup").DownloadToAsync(tempBup, token);
+                    await GHApp.WithCloudGrantRetryAsync(containerClient, cloudBupPath, GHCloudAccess.Read, readClients[cloudBupPath],
+                        c => c.DownloadToAsync(tempBup, token), token);
                 }
-                if (isTracked && File.Exists(uploadTokenFile))
+                if (uploadsToken)
                 {
-                    await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}{GHConstants.SaveFileTrackingSuffix}").DownloadToAsync(tempTok, token);
+                    await GHApp.WithCloudGrantRetryAsync(containerClient, cloudTokenPath, GHCloudAccess.Read, readClients[cloudTokenPath],
+                        c => c.DownloadToAsync(tempTok, token), token);
                 }
 
                 // 13. Verify download
@@ -1280,7 +1247,7 @@ namespace GnollHackX.Pages.MainScreen
                 // we must NOT roll it back. Warn the user instead.
                 try
                 {
-                    await uploadLockClient.DeleteIfExistsAsync(cancellationToken: CancellationToken.None);
+                    await DeleteCloudBlobsAsync(containerClient, new List<string> { cloudLockPath }, CancellationToken.None);
                     if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
                     File.Delete(localSaveFile);
                     if (File.Exists(localBackupFile)) File.Delete(localBackupFile);
@@ -1309,7 +1276,7 @@ namespace GnollHackX.Pages.MainScreen
             {
                 PopupGrid.IsVisible = false;
                 await CleanUpUploadFailAsync(playerName, uploadSessionDir, isTracked && createdToken, trackedSaveLength, trackedSaveSha256, containerClient, cloudFolder, saveTimeStamp);
-                await GHApp.DisplayMessageBox(this, "Upload Failed", "Error during save file upload: " + ex.Message, "OK");
+                await GHApp.DisplayMessageBox(this, "Upload Failed", "Error during save file upload: " + GetCloudErrorText(ex), "OK");
             }
             finally
             {
@@ -1324,7 +1291,7 @@ namespace GnollHackX.Pages.MainScreen
             }
         }
 
-        private async Task CleanUpUploadFailAsync(string playerName, string uploadDir, bool consumeToken, long trackedSaveLength, string trackedSaveSha256, BlobContainerClient containerClient, string cloudFolder, long timeStamp)
+        private async Task CleanUpUploadFailAsync(string playerName, string uploadDir, bool consumeToken, long trackedSaveLength, string trackedSaveSha256, IGHCloudContainer containerClient, string cloudFolder, long timeStamp)
         {
             try
             {
@@ -1343,25 +1310,15 @@ namespace GnollHackX.Pages.MainScreen
                 }
 
                 // Delete remote lock and folder files
-                string prefix = $"{GHApp.XlogUserName}/{cloudFolder}/";
-                var blobSegment = containerClient.GetBlobsAsync(prefix: prefix);
-                var enumerator = blobSegment.GetAsyncEnumerator();
-                try
+                if (containerClient != null)
                 {
-                    while (await enumerator.MoveNextAsync())
-                    {
-                        var item = enumerator.Current;
-                        await containerClient.GetBlobClient(item.Name).DeleteIfExistsAsync();
-                    }
-                }
-                finally
-                {
-                    await enumerator.DisposeAsync();
+                    List<GHCloudItem> folderBlobs = await containerClient.ListAsync($"{cloudFolder}/", false, CancellationToken.None);
+                    await DeleteCloudBlobsAsync(containerClient, GetBlobNames(folderBlobs), CancellationToken.None);
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("CleanUpUploadFailAsync error: " + ex.Message);
+                Debug.WriteLine("CleanUpUploadFailAsync error: " + GetCloudErrorText(ex));
             }
         }
 
@@ -1388,8 +1345,8 @@ namespace GnollHackX.Pages.MainScreen
             // Each download session logs its manifest in a GUID-based subdirectory to avoid conflicts
             string downloadSessionDir = Path.Combine(downloadDir, "files-" + guid);
 
-            BlobContainerClient containerClient = null;
-            BlobClient cloudLockClient = null;
+            IGHCloudContainer containerClient = null;
+            string cleanupLockPath = null; /* The lock blob removed when the download fails */
             bool validationFailed = false;
 
             try
@@ -1448,38 +1405,35 @@ namespace GnollHackX.Pages.MainScreen
 
                 // 3. Check for cloud lock files
                 PopupStatusLabel.Text = "Checking cloud locks...";
-                BlobServiceClient blobServiceClient = GHApp.GetBlobServiceClient();
-                if (blobServiceClient == null) throw new Exception("Azure client not available.");
-                string containerName = GHApp.GetAzureBlobStorageSaveTransferContainerName();
-                containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+                containerClient = GHApp.GetCloudContainer(GHCloudArea.SaveTransfer);
 
-                string lockBlobPath = $"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.lock";
-                cloudLockClient = containerClient.GetBlobClient(lockBlobPath);
+                string lockBlobPath = $"{cloudFolder}/{playerName}.lock";
+                cleanupLockPath = lockBlobPath;
+                Dictionary<string, BlobClient> lockReadClients = await containerClient.GetBlobsAsync(new List<string> { lockBlobPath }, GHCloudAccess.Read, token);
+                BlobClient lockReadClient = lockReadClients[lockBlobPath];
 
-                if (await cloudLockClient.ExistsAsync(token))
+                var lockExists = await GHApp.WithCloudGrantRetryAsync(containerClient, lockBlobPath, GHCloudAccess.Read, lockReadClient,
+                    c => c.ExistsAsync(token), token);
+                if (lockExists.Value)
                 {
-                    using (MemoryStream ms = new MemoryStream())
+                    string lockJson = await DownloadCloudTextAsync(containerClient, lockBlobPath, lockReadClient, token);
+                    var existingLock = JsonConvert.DeserializeObject<SaveLock>(lockJson);
+                    if (existingLock != null)
                     {
-                        await cloudLockClient.DownloadToAsync(ms, token);
-                        string lockJson = Encoding.UTF8.GetString(ms.ToArray());
-                        var existingLock = JsonConvert.DeserializeObject<SaveLock>(lockJson);
-                        if (existingLock != null)
+                        if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - existingLock.CreatedUtcUnix < 3600)
                         {
-                            if (DateTimeOffset.UtcNow.ToUnixTimeSeconds() - existingLock.CreatedUtcUnix < 3600)
+                            // FIX-D3: Offer force override, mirroring upload behaviour
+                            bool overrideLock = await ShowMessagePopupAsync(
+                                "Download Locked",
+                                "An active download session is currently locked on another device for this save. This may be a stale lock from a crashed session. Force override?",
+                                "Yes", "No", titleColor: GHColors.Red);
+                            if (!overrideLock)
                             {
-                                // FIX-D3: Offer force override, mirroring upload behaviour
-                                bool overrideLock = await ShowMessagePopupAsync(
-                                    "Download Locked",
-                                    "An active download session is currently locked on another device for this save. This may be a stale lock from a crashed session. Force override?",
-                                    "Yes", "No", titleColor: GHColors.Red);
-                                if (!overrideLock)
-                                {
-                                    throw new OperationCanceledException("Download aborted: active lock on another device.");
-                                }
+                                throw new OperationCanceledException("Download aborted: active lock on another device.");
                             }
-                            // Lock is expired or user overrode; delete it
-                            await cloudLockClient.DeleteIfExistsAsync(cancellationToken: token);
                         }
+                        // Lock is expired or user overrode; delete it
+                        await DeleteCloudBlobsAsync(containerClient, new List<string> { lockBlobPath }, token);
                     }
                 }
 
@@ -1518,17 +1472,22 @@ namespace GnollHackX.Pages.MainScreen
                 string localLockPath = Path.Combine(downloadSessionDir, playerName + ".lock");
                 File.WriteAllText(localLockPath, JsonConvert.SerializeObject(downloadLock));
 
-                // 6. Upload lock file to Azure
-                await cloudLockClient.UploadAsync(localLockPath, token);
+                // 6. Upload lock file to Azure; the lock's path is fixed for this cloud save, so another device may hold it
+                try
+                {
+                    await GHApp.WithCloudGrantRetryAsync(containerClient, lockBlobPath, GHCloudAccess.Create, null,
+                        c => c.UploadAsync(localLockPath, overwrite: false, cancellationToken: token), token);
+                }
+                catch (RequestFailedException lockEx) when (GHCloudRules.IsLockHeld(lockEx.Status, lockEx.ErrorCode))
+                {
+                    cleanupLockPath = null; /* Held by another device */
+                    await ShowMessagePopupAsync("Download Locked", "An active Save Transfer session is currently locked on another device for this save name.", "OK", titleColor: GHColors.Red);
+                    throw new OperationCanceledException("Download aborted: active lock on another device.");
+                }
 
                 // 7. Download lock file and check GUID (in-memory â€” no disk write needed)
                 PopupStatusLabel.Text = "Verifying download lock...";
-                SaveLock downloadedLock;
-                using (var verifyMs = new MemoryStream())
-                {
-                    await cloudLockClient.DownloadToAsync(verifyMs, token);
-                    downloadedLock = JsonConvert.DeserializeObject<SaveLock>(Encoding.UTF8.GetString(verifyMs.ToArray()));
-                }
+                SaveLock downloadedLock = JsonConvert.DeserializeObject<SaveLock>(await DownloadCloudTextAsync(containerClient, lockBlobPath, lockReadClient, token));
                 if (downloadedLock == null || downloadedLock.Guid != guid)
                 {
                     throw new Exception("Download lock verification failed. Race condition detected.");
@@ -1538,13 +1497,21 @@ namespace GnollHackX.Pages.MainScreen
 
                 // 8. Check source files exist at Azure
                 PopupStatusLabel.Text = "Verifying cloud file existence...";
-                BlobClient manifestBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.json");
-                if (!await manifestBlob.ExistsAsync(token)) throw new Exception("Save manifest does not exist in the cloud.");
+                string cloudManifestPath = $"{cloudFolder}/{playerName}.json";
+                string cloudSavePath = $"{cloudFolder}/{playerName}";
+                string cloudBupPath = $"{cloudFolder}/{playerName}.bup";
+                string cloudTokenPath = $"{cloudFolder}/{playerName}{GHConstants.SaveFileTrackingSuffix}";
+                Dictionary<string, BlobClient> readClients = await containerClient.GetBlobsAsync(
+                    new List<string> { cloudManifestPath, cloudSavePath, cloudBupPath, cloudTokenPath }, GHCloudAccess.Read, token);
+                var manifestExists = await GHApp.WithCloudGrantRetryAsync(containerClient, cloudManifestPath, GHCloudAccess.Read, readClients[cloudManifestPath],
+                    c => c.ExistsAsync(token), token);
+                if (!manifestExists.Value) throw new Exception("Save manifest does not exist in the cloud.");
 
                 // 9. Download and verify manifest
                 PopupStatusLabel.Text = "Downloading manifest...";
                 string tempManifestPath = Path.Combine(tempDir, playerName + ".json");
-                await manifestBlob.DownloadToAsync(tempManifestPath, token);
+                await GHApp.WithCloudGrantRetryAsync(containerClient, cloudManifestPath, GHCloudAccess.Read, readClients[cloudManifestPath],
+                    c => c.DownloadToAsync(tempManifestPath, token), token);
                 var manifest = JsonConvert.DeserializeObject<SaveManifest>(File.ReadAllText(tempManifestPath));
                 if (manifest == null) throw new Exception("Could not parse cloud manifest.");
 
@@ -1568,23 +1535,23 @@ namespace GnollHackX.Pages.MainScreen
                 // 11. Download files
                 PopupStatusLabel.Text = "Downloading save files...";
                 string tempSavePath = Path.Combine(tempDir, playerName);
-                BlobClient saveBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}");
-                await saveBlob.DownloadToAsync(tempSavePath, token);
+                await GHApp.WithCloudGrantRetryAsync(containerClient, cloudSavePath, GHCloudAccess.Read, readClients[cloudSavePath],
+                    c => c.DownloadToAsync(tempSavePath, token), token);
 
                 if (manifest.HasBackupSaveFile)
                 {
                     PopupStatusLabel.Text = "Downloading backup save...";
                     string tempBupPath = Path.Combine(tempDir, playerName + ".bup");
-                    BlobClient bupBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.bup");
-                    await bupBlob.DownloadToAsync(tempBupPath, token);
+                    await GHApp.WithCloudGrantRetryAsync(containerClient, cloudBupPath, GHCloudAccess.Read, readClients[cloudBupPath],
+                        c => c.DownloadToAsync(tempBupPath, token), token);
                 }
 
                 if (manifest.HasTrackingFile)
                 {
                     PopupStatusLabel.Text = "Downloading tracking token...";
                     string tempTokPath = Path.Combine(tempDir, playerName + GHConstants.SaveFileTrackingSuffix);
-                    BlobClient tokBlob = containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}{GHConstants.SaveFileTrackingSuffix}");
-                    await tokBlob.DownloadToAsync(tempTokPath, token);
+                    await GHApp.WithCloudGrantRetryAsync(containerClient, cloudTokenPath, GHCloudAccess.Read, readClients[cloudTokenPath],
+                        c => c.DownloadToAsync(tempTokPath, token), token);
                 }
 
                 PopupProgressBar.Progress = 0.6;
@@ -1723,38 +1690,28 @@ namespace GnollHackX.Pages.MainScreen
                 {
                     // 16. Delete the files from Azure Blob Storage
                     PopupStatusLabel.Text = "Cleaning files in cloud...";
-                    await manifestBlob.DeleteIfExistsAsync(cancellationToken: token);
-                    await saveBlob.DeleteIfExistsAsync(cancellationToken: token);
+                    List<string> deletePaths = new List<string> { cloudManifestPath, cloudSavePath };
                     if (manifest.HasBackupSaveFile)
                     {
-                        await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}.bup").DeleteIfExistsAsync(cancellationToken: token);
+                        deletePaths.Add(cloudBupPath);
                     }
                     if (manifest.HasTrackingFile)
                     {
-                        await containerClient.GetBlobClient($"{GHApp.XlogUserName}/{cloudFolder}/{playerName}{GHConstants.SaveFileTrackingSuffix}").DeleteIfExistsAsync(cancellationToken: token);
+                        deletePaths.Add(cloudTokenPath);
                     }
+                    await DeleteCloudBlobsAsync(containerClient, deletePaths, token);
 
                     // 17. Verify deletion and delete lock
                     PopupStatusLabel.Text = "Confirming deletion and removing lock...";
                     bool clean = true;
-                    string prefix = $"{GHApp.XlogUserName}/{cloudFolder}/";
-                    var remBlobs = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: token);
-                    var enumerator = remBlobs.GetAsyncEnumerator();
-                    try
+                    List<GHCloudItem> remBlobs = await containerClient.ListAsync($"{cloudFolder}/", false, token);
+                    foreach (GHCloudItem remBlob in remBlobs)
                     {
-                        while (await enumerator.MoveNextAsync())
+                        if (!remBlob.IsPrefix && !remBlob.Name.EndsWith(".lock"))
                         {
-                            var remBlob = enumerator.Current;
-                            if (!remBlob.Name.EndsWith(".lock"))
-                            {
-                                clean = false;
-                                break;
-                            }
+                            clean = false;
+                            break;
                         }
-                    }
-                    finally
-                    {
-                        await enumerator.DisposeAsync();
                     }
 
                     if (!clean)
@@ -1762,7 +1719,7 @@ namespace GnollHackX.Pages.MainScreen
                         Debug.WriteLine("Cloud cleanup incomplete: some files remained in " + cloudFolder);
                     }
 
-                    await cloudLockClient.DeleteIfExistsAsync(cancellationToken: CancellationToken.None);
+                    await DeleteCloudBlobsAsync(containerClient, new List<string> { lockBlobPath }, CancellationToken.None);
 
                     // 18. Move manifest to the per-session download subdirectory as a log
                     try
@@ -1799,13 +1756,13 @@ namespace GnollHackX.Pages.MainScreen
             catch (OperationCanceledException)
             {
                 PopupGrid.IsVisible = false;
-                await CleanUpDownloadFailAsync(containerClient, cloudLockClient, tempDir, downloadSessionDir);
+                await CleanUpDownloadFailAsync(containerClient, cleanupLockPath, tempDir, downloadSessionDir);
                 await ShowMessagePopupAsync("Cancelled", "Save download was cancelled.", "OK");
             }
             catch (Exception ex)
             {
                 PopupGrid.IsVisible = false;
-                await CleanUpDownloadFailAsync(containerClient, cloudLockClient, tempDir, downloadSessionDir);
+                await CleanUpDownloadFailAsync(containerClient, cleanupLockPath, tempDir, downloadSessionDir);
                 if (validationFailed)
                 {
                     bool deleteCloudSave = await GHApp.DisplayMessageBox(
@@ -1822,7 +1779,7 @@ namespace GnollHackX.Pages.MainScreen
                 }
                 else
                 {
-                    await GHApp.DisplayMessageBox(this, "Download Failed", "Error during save file download: " + ex.Message, "OK");
+                    await GHApp.DisplayMessageBox(this, "Download Failed", "Error during save file download: " + GetCloudErrorText(ex), "OK");
                 }
             }
             finally
@@ -1904,13 +1861,13 @@ namespace GnollHackX.Pages.MainScreen
             return baseName;
         }
 
-        private async Task CleanUpDownloadFailAsync(BlobContainerClient containerClient, BlobClient cloudLockClient, string tempDir, string downloadSessionDir = null)
+        private async Task CleanUpDownloadFailAsync(IGHCloudContainer containerClient, string lockBlobPath, string tempDir, string downloadSessionDir = null)
         {
             try
             {
                 // Delete Azure lock
-                if (cloudLockClient != null)
-                    await cloudLockClient.DeleteIfExistsAsync();
+                if (containerClient != null && lockBlobPath != null)
+                    await DeleteCloudBlobsAsync(containerClient, new List<string> { lockBlobPath }, CancellationToken.None);
 
                 // Clean temp directory
                 if (Directory.Exists(tempDir)) Directory.Delete(tempDir, true);
@@ -1921,8 +1878,62 @@ namespace GnollHackX.Pages.MainScreen
             }
             catch (Exception ex)
             {
-                Debug.WriteLine("CleanUpDownloadFailAsync error: " + ex.Message);
+                Debug.WriteLine("CleanUpDownloadFailAsync error: " + GetCloudErrorText(ex));
             }
+        }
+
+        /* Names of the blobs in a listing, without virtual folder prefixes */
+        private static List<string> GetBlobNames(List<GHCloudItem> items)
+        {
+            List<string> names = new List<string>();
+            if (items == null)
+                return names;
+            foreach (GHCloudItem item in items)
+            {
+                if (!item.IsPrefix && !string.IsNullOrEmpty(item.Name))
+                    names.Add(item.Name);
+            }
+            return names;
+        }
+
+        /* Deletes the given blobs, if present, with one grant request for the group */
+        private static async Task DeleteCloudBlobsAsync(IGHCloudContainer container, List<string> paths, CancellationToken token)
+        {
+            if (paths == null || paths.Count == 0)
+                return;
+            Dictionary<string, BlobClient> deleteClients = await container.GetBlobsAsync(paths, GHCloudAccess.Delete, token);
+            foreach (string path in paths)
+            {
+                BlobClient granted;
+                deleteClients.TryGetValue(path, out granted);
+                await GHApp.WithCloudGrantRetryAsync(container, path, GHCloudAccess.Delete, granted,
+                    c => c.DeleteIfExistsAsync(cancellationToken: token), token);
+            }
+        }
+
+        /* Reads a small blob, such as a manifest or a lock, as UTF-8 text */
+        private static async Task<string> DownloadCloudTextAsync(IGHCloudContainer container, string path, BlobClient granted, CancellationToken token)
+        {
+            return await GHApp.WithCloudGrantRetryAsync(container, path, GHCloudAccess.Read, granted, async c =>
+            {
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    await c.DownloadToAsync(ms, token);
+                    return Encoding.UTF8.GetString(ms.ToArray());
+                }
+            }, token);
+        }
+
+        /* Error text for the player; an Azure error is reduced to its status and error code, because its full text may carry a SAS URL */
+        private static string GetCloudErrorText(Exception ex)
+        {
+            RequestFailedException requestFailed = ex as RequestFailedException;
+            if (requestFailed != null)
+            {
+                return "Cloud storage request failed (status " + requestFailed.Status
+                    + (string.IsNullOrEmpty(requestFailed.ErrorCode) ? "" : ", " + requestFailed.ErrorCode) + ").";
+            }
+            return ex.Message;
         }
 
         /// <summary>

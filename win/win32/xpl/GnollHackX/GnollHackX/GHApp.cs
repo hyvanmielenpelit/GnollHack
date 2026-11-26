@@ -8129,10 +8129,7 @@ namespace GnollHackX
                 }
                 else
                 {
-                    if (UseDebugPostChannel)
-                        return CurrentUserSecrets?.DefaultDiagnosticDataPostAddress;
-                    else
-                        return CurrentUserSecrets?.DefaultGamePostAddress;
+                    return ForumPostRelayAddress ?? "";
                 }
             }
         }
@@ -8140,26 +8137,66 @@ namespace GnollHackX
         {
             get
             {
-                string address = CurrentUserSecrets?.DefaultDiagnosticDataPostAddress;
-                if (address == null)
-                    return "";
-                else
-                    return address;
+                return ForumPostRelayAddress ?? "";
             }
         }
-        public static string CloudStorageConnectionString
+
+        /* The game API server's Discord relay; null when the xlog post address does not end with /xlogfile */
+        public static string ForumPostRelayAddress
         {
-            get
+            get { return GHCloudRules.TryDeriveEndpoint(XlogPostAddress, GHConstants.ForumPostRelayPath); }
+        }
+
+        private static bool HasUsableCustomCloudStorage
+        {
+            get { return !string.IsNullOrWhiteSpace(CustomCloudStorageConnectionString) && !TournamentMode; }
+        }
+
+        public static bool IsCloudStorageAvailable(GHCloudArea area)
+        {
+            if (HasUsableCustomCloudStorage)
+                return true;
+            if (GHCloudRules.TryDeriveEndpoint(XlogPostAddress, GHConstants.CloudReplayListPath) == null)
+                return false;
+            return area != GHCloudArea.SaveTransfer || HasXlogCredentials;
+        }
+
+        /* A custom connection string outside tournament mode, otherwise the game API server; may throw on a malformed custom string */
+        public static IGHCloudContainer GetCloudContainer(GHCloudArea area)
+        {
+            if (HasUsableCustomCloudStorage)
             {
-                if (!string.IsNullOrWhiteSpace(CustomCloudStorageConnectionString) && !TournamentMode)
-                {
-                    return CustomCloudStorageConnectionString;
-                }
-                else
-                {
-                    return CurrentUserSecrets?.DefaultAzureBlobStorageConnectionString;
-                }
+                string containerName = area == GHCloudArea.SaveTransfer ? GetAzureBlobStorageSaveTransferContainerName() : GetAzureBlobStorageReplayContainerName();
+                return new ConnectionStringCloudContainer(area, CustomCloudStorageConnectionString, containerName, XlogUserName);
             }
+            return new ServerGrantCloudContainer(area, area == GHCloudArea.SaveTransfer ? GHVersionCompatibility : GHReplayCompatibility);
+        }
+
+        public static bool CanUploadReplays
+        {
+            get { return GHCloudRules.CanUploadReplays(CustomCloudStorageConnectionString, TournamentMode, XlogUserName, XlogPassword); }
+        }
+
+        public static bool AutoUploadReplaysEffective
+        {
+            get { return AutoUploadReplays && CanUploadReplays; }
+        }
+
+        public static void ClearCloudGrantCache()
+        {
+            ServerGrantCloudContainer.ClearCache();
+        }
+
+        public static Task<T> WithCloudGrantRetryAsync<T>(IGHCloudContainer container, string path, GHCloudAccess access,
+            BlobClient granted, Func<BlobClient, Task<T>> operation, CancellationToken token)
+        {
+            return GHCloudStorage.WithGrantRetryAsync(container, path, access, granted, operation, token);
+        }
+
+        public static Task WithCloudGrantRetryAsync(IGHCloudContainer container, string path, GHCloudAccess access,
+            BlobClient granted, Func<BlobClient, Task> operation, CancellationToken token)
+        {
+            return GHCloudStorage.WithGrantRetryAsync(container, path, access, granted, operation, token);
         }
 
         public static string OverseerAddress
@@ -9532,6 +9569,8 @@ namespace GnollHackX
             try
             {
                 string postaddress = is_game_status ? GHApp.GameStatusPostAddress : GHApp.DiagnosticDataPostAddress;
+                string relayaddress = ForumPostRelayAddress;
+                bool viaRelay = relayaddress != null && postaddress == relayaddress;
                 if (postaddress != null && postaddress.Length > 8 && postaddress.Substring(0, 8) == "https://" && Uri.IsWellFormedUriString(postaddress, UriKind.Absolute))
                 {
                     using (HttpClient client = new HttpClient { Timeout = TimeSpan.FromDays(1) })
@@ -9540,26 +9579,41 @@ namespace GnollHackX
                         StringContent content1 = null;
                         List<FileStream> filestreams = new List<FileStream>();
                         List<StreamContent> contents = new List<StreamContent>();
-                        if (forumpostattachments != null && forumpostattachments.Count > 0)
+                        bool hasAttachments = forumpostattachments != null && forumpostattachments.Count > 0;
+                        if (hasAttachments || viaRelay)
                         {
-                            DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message);
-                            foreach (GHPostAttachment attachment in forumpostattachments)
+                            string json;
+                            if (hasAttachments)
                             {
-                                string fullFilePath = attachment.FullPath;
-                                FileInfo fileinfo = new FileInfo(fullFilePath);
-                                string filename = fileinfo.Name;
-                                if (File.Exists(fullFilePath))
-                                    post.AddAttachment(attachment.Description, filename);
+                                DiscordWebHookPostWithAttachment post = new DiscordWebHookPostWithAttachment(message);
+                                foreach (GHPostAttachment attachment in forumpostattachments)
+                                {
+                                    string fullFilePath = attachment.FullPath;
+                                    FileInfo fileinfo = new FileInfo(fullFilePath);
+                                    string filename = fileinfo.Name;
+                                    if (File.Exists(fullFilePath))
+                                        post.AddAttachment(attachment.Description, filename);
+                                }
+                                json = JsonConvert.SerializeObject(post);
                             }
-                            string json = JsonConvert.SerializeObject(post);
+                            else
+                            {
+                                json = JsonConvert.SerializeObject(new DiscordWebHookPost(message));
+                            }
                             MultipartFormDataContent multicontent = new MultipartFormDataContent("-------------------boundary");
+                            if (viaRelay)
+                            {
+                                /* The relay takes no credentials */
+                                AddSaveFileTrackingFormField(multicontent, "Kind", is_game_status ? "game" : "diagnostic");
+                                AddSaveFileTrackingFormField(multicontent, "AntiForgeryToken", XlogAntiForgeryToken);
+                            }
                             content1 = new StringContent(json, Encoding.UTF8, "application/json");
                             ContentDispositionHeaderValue cdhv = new ContentDispositionHeaderValue("form-data");
                             cdhv.Name = "payload_json";
                             content1.Headers.ContentDisposition = cdhv;
                             multicontent.Add(content1);
                             int aidx = 0;
-                            foreach (GHPostAttachment attachment in forumpostattachments)
+                            foreach (GHPostAttachment attachment in hasAttachments ? forumpostattachments : new List<GHPostAttachment>())
                             {
                                 string fullFilePath = attachment.FullPath;
                                 bool fileexists = File.Exists(fullFilePath);
@@ -9638,6 +9692,12 @@ namespace GnollHackX
                         }
                         contents.Clear();
                     }
+                }
+                else if (is_from_queue)
+                {
+                    /* Without an address the post could never be sent, so the queue entry is dropped */
+                    MaybeWriteGHLog("Forum post dropped from the post queue: no post address is available.");
+                    res.IsSuccess = true;
                 }
             }
             catch (Exception e)
@@ -10253,120 +10313,57 @@ namespace GnollHackX
             return GHConstants.AzureBlobStorageSaveTransferContainerNamePrefix + "-" + verCompat.ToString();
         }
 
-        public static async Task CheckCreateSaveTransferContainer(string saveTransferContainerName)
-        {
-            BlobServiceClient blobServiceClient = GetBlobServiceClient();
-            if (blobServiceClient == null || string.IsNullOrEmpty(saveTransferContainerName))
-                return;
-
-            try
-            {
-                BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(saveTransferContainerName);
-                await containerClient.CreateIfNotExistsAsync();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-        }
-
-
-        public static async Task CheckCreateReplayContainer(string replayContainerName)
-        {
-            //MaybeWriteGHLog("CheckCreateReplayContainer: GetBlobServiceClient");
-            BlobServiceClient blobServiceClient = GetBlobServiceClient();
-            if (blobServiceClient == null || string.IsNullOrEmpty(replayContainerName))
-                return;
-
-            try
-            {
-                BlobContainerClient containerClient = blobServiceClient.GetBlobContainerClient(replayContainerName);
-                await containerClient.CreateIfNotExistsAsync();
-            }
-            catch (Exception ex)
-            {
-                MaybeWriteGHLog("CheckCreateReplayContainer: Exception: " + ex.Message);
-            }
-            //MaybeWriteGHLog("CheckCreateReplayContainer: Finished");
-
-            //try
-            //{
-            //    MaybeWriteGHLog("CheckCreateReplayContainer: GetBlobContainers");
-            //    AsyncPageable<BlobContainerItem> conts = blobServiceClient.GetBlobContainersAsync();
-            //    if(conts != null)
-            //    {
-            //        MaybeWriteGHLog("CheckCreateReplayContainer: BlobContainerItem cont");
-            //        bool found = false;
-            //        MaybeWriteGHLog("CheckCreateReplayContainer: GetEnumerator");
-            //        //var e = conts.GetAsyncEnumerator();
-            //        await foreach (BlobContainerItem cont in conts)
-            //        //while(await e.MoveNextAsync())
-            //        {
-            //            //MaybeWriteGHLog("CheckCreateReplayContainer: MoveNext");
-            //            //BlobContainerItem cont = e.Current;
-            //            //MaybeWriteGHLog("CheckCreateReplayContainer: cont");
-            //            MaybeWriteGHLog("CheckCreateReplayContainer: cont?.Name == replayContainerName, " + cont?.Name + ", " + replayContainerName);
-            //            if (cont?.Name == replayContainerName)
-            //            {
-            //                MaybeWriteGHLog("CheckCreateReplayContainer: found = true");
-            //                found = true;
-            //                break;
-            //            }
-            //        }
-            //        if (!found)
-            //        {
-            //            MaybeWriteGHLog("CheckCreateReplayContainer: CreateBlobContainerAsync, " + replayContainerName);
-            //            await blobServiceClient.CreateBlobContainerAsync(replayContainerName);
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MaybeWriteGHLog("CheckCreateReplayContainer: Exception: " + ex.Message);
-            //}
-        }
-
         private static CancellationTokenSource _uploadCts = null;
         public static async Task<SendResult> SendReplayFile(string replay_filename, int status_type, int status_datatype, bool is_from_queue)
         {
             SendResult res = new SendResult();
             try
             {
-                //MaybeWriteGHLog("SendReplayFile: GetBlobServiceClient");
-                BlobServiceClient blobServiceClient = GetBlobServiceClient();
-                if (blobServiceClient != null)
+                if (!CanUploadReplays)
                 {
-                    //MaybeWriteGHLog("SendReplayFile: GetAzureBlobStorageReplayContainerName");
-                    string replayContainerName = GetAzureBlobStorageReplayContainerName();
-                    //MaybeWriteGHLog("SendReplayFile: GetBlobContainerClient");
-                    BlobContainerClient blobContainerClient = blobServiceClient.GetBlobContainerClient(replayContainerName);
-                    if (blobContainerClient != null)
+                    /* Nothing can ever receive it, so the queue entry is dropped */
+                    MaybeWriteGHLog("SendReplayFile: No GnollHack account or custom cloud storage; not uploading " + replay_filename);
+                    res.IsSuccess = true;
+                    return res;
+                }
+
+                string full_filepath = replay_filename;
+                bool fileexists = File.Exists(full_filepath);
+                if (fileexists)
+                {
+                    IGHCloudContainer container = GetCloudContainer(GHCloudArea.Replay);
+                    string fileName = Path.GetFileName(full_filepath);
+                    if (_uploadCts == null)
+                        _uploadCts = new CancellationTokenSource();
+
+                    try
                     {
-                        string prefix = XlogUserNameVerified ? XlogUserName : GHConstants.AzureBlobStorageGeneralDirectoryName;
-                        string full_filepath = replay_filename;
-                        bool fileexists = File.Exists(full_filepath);
-                        if (fileexists)
-                        {
-                            if (_uploadCts == null)
-                                _uploadCts = new CancellationTokenSource();
+                        MaybeWriteGHLog("SendReplayFile: UploadFromFileAsync: " + full_filepath);
+                        await UploadFromFileAsync(container, null, fileName, full_filepath, _uploadCts.Token);
+                        res.IsSuccess = true;
+                    }
+                    catch (GHCloudRefusedException ex)
+                    {
+                        res.HasHttpStatusCode = true;
+                        res.StatusCode = (HttpStatusCode)ex.Status;
+                        res.Message = ex.Message;
+                        MaybeWriteGHLog("SendReplayFile: The server refused the upload (" + ex.Status + "): " + ex.Message);
+                    }
+                    catch (RequestFailedException ex)
+                    {
+                        res.HasHttpStatusCode = true;
+                        res.StatusCode = (HttpStatusCode)ex.Status;
+                        MaybeWriteGHLog("SendReplayFile: Storage request failed (" + ex.Status + ", " + ex.ErrorCode + ")");
+                    }
+                    catch (Exception ex)
+                    {
+                        MaybeWriteGHLog(ex.Message);
+                    }
 
-                            try
-                            {
-                                MaybeWriteGHLog("SendReplayFile: UploadFromFileAsync: " + prefix + ", " + full_filepath);
-                                await UploadFromFileAsync(blobContainerClient, prefix, full_filepath, _uploadCts.Token);
-                                res.IsSuccess = true;
-                            }
-                            catch (Exception ex)
-                            {
-                                MaybeWriteGHLog(ex.Message);
-                            }
-                        }
-
-                        if (_uploadCts != null)
-                        {
-                            _uploadCts.Dispose();
-                            _uploadCts = null;
-                        }
+                    if (_uploadCts != null)
+                    {
+                        _uploadCts.Dispose();
+                        _uploadCts = null;
                     }
                 }
             }
@@ -12302,30 +12299,6 @@ namespace GnollHackX
 
 
 
-        private static BlobServiceClient _blobServiceClient = null;
-
-        public static BlobServiceClient GetBlobServiceClient()
-        {
-            if (_blobServiceClient != null)
-                return _blobServiceClient;
-
-            string connectionString = CloudStorageConnectionString;
-            BlobServiceClient client = null;
-            if (string.IsNullOrWhiteSpace(connectionString))
-                return client;
-
-            try
-            {
-                client = new BlobServiceClient(connectionString);
-                _blobServiceClient = client;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-            }
-            return client;
-        }
-
         //public static async Task ListBlobPrefixes(BlobContainerClient container,
         //                                       string prefix,
         //                                       int? segmentSize)
@@ -12408,82 +12381,20 @@ namespace GnollHackX
         //    }
         //}
 
-        public static async Task ListBlobsHierarchicalListing(BlobContainerClient container,
-                                                       string prefix,
-                                                       int? segmentSize)
+        /* Uploads a replay file under the player's folder, replacing a blob of the same name; granted may be null */
+        public static async Task UploadFromFileAsync(IGHCloudContainer container, BlobClient granted, string fileName, string localFilePath, CancellationToken cancellationToken)
         {
-            try
-            {
-                // Call the listing operation and return pages of the specified size.
-                var resultSegment = container.GetBlobsByHierarchyAsync(prefix: prefix, delimiter: GHConstants.AzureBlobStorageDelimiter)
-                    .AsPages(default, segmentSize);
-
-                var enumer = resultSegment.GetAsyncEnumerator();
-
-                try
-                {
-                    // Enumerate the blobs returned for each page.
-                    while (await enumer.MoveNextAsync())
-                    {
-                        Page<BlobHierarchyItem> blobPage = enumer.Current;
-                        // A hierarchical listing may return both virtual directories and blobs.
-                        foreach (BlobHierarchyItem blobhierarchyItem in blobPage.Values)
-                        {
-                            if (blobhierarchyItem.IsPrefix)
-                            {
-                                // Write out the prefix of the virtual directory.
-                                Debug.WriteLine("Virtual directory prefix: " + blobhierarchyItem.Prefix);
-
-                                // Call recursively with the prefix to traverse the virtual directory.
-                                await ListBlobsHierarchicalListing(container, blobhierarchyItem.Prefix, null);
-                            }
-                            else
-                            {
-                                // Write out the name of the blob.
-                                Debug.WriteLine("Blob name: " + blobhierarchyItem.Blob.Name);
-                            }
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message);
-                }
-                finally
-                {
-                    if (enumer != null)
-                        await enumer.DisposeAsync();
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine(e.Message);
-            }
+            MaybeWriteGHLog("UploadFromFileAsync: UploadAsync: " + fileName + ", " + localFilePath);
+            await WithCloudGrantRetryAsync(container, fileName, GHCloudAccess.Write, granted,
+                c => c.UploadAsync(localFilePath, true, cancellationToken), cancellationToken);
         }
 
-        public static async Task UploadFromFileAsync(BlobContainerClient containerClient, string prefix, string localFilePath, CancellationToken cancellationToken)
-        {
-            string blobName;
-            if (string.IsNullOrEmpty(prefix))
-            {
-                blobName = Path.GetFileName(localFilePath);
-            }
-            else
-            {
-                blobName = prefix + GHConstants.AzureBlobStorageDelimiter + Path.GetFileName(localFilePath);
-            }
-
-            BlobClient blobClient = containerClient.GetBlobClient(blobName);
-            MaybeWriteGHLog("UploadFromFileAsync: UploadAsync: " + prefix + ", " + localFilePath);
-            await blobClient.UploadAsync(localFilePath, true, cancellationToken);
-        }
-
-        public static async Task DownloadFileAsync(BlobContainerClient containerClient, string prefix, string blobName, long fileLength, CancellationToken cancellationToken)
+        /* Downloads a replay blob by its full name into the cloud download directory; granted may be null */
+        public static async Task DownloadFileAsync(IGHCloudContainer container, BlobClient granted, string prefix, string blobName, long fileLength, CancellationToken cancellationToken)
         {
             if (string.IsNullOrWhiteSpace(blobName))
                 return;
 
-            BlobClient blobClient = containerClient.GetBlobClient(blobName);
             string baseDir = Path.Combine(GHApp.GHPath, GHConstants.ReplayDownloadFromCloudDirectory);
             if (!Directory.Exists(baseDir))
                 GHApp.CheckCreateDirectory(baseDir);
@@ -12510,7 +12421,8 @@ namespace GnollHackX
                     return;
             }
             MaybeWriteGHLog("DownloadFileAsync: DownloadToAsync: " + targetPath);
-            await blobClient.DownloadToAsync(targetPath, cancellationToken);
+            await WithCloudGrantRetryAsync(container, blobName, GHCloudAccess.Read, granted,
+                c => c.DownloadToAsync(targetPath, cancellationToken), cancellationToken);
         }
 
         private static int _isSystemBrowserOpen = 0;

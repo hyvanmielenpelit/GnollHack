@@ -37,20 +37,17 @@ These files are **not** in the GnollHack repository. Without them the app has no
 |-------|--------|-----------|
 | 3 tileset PNGs (`gnollhack_64x96_transparent_32bits*.png`) | [GnollHackTileSet](https://github.com/hyvanmielenpelit/GnollHackTileSet) releases or build from source with [TileSetCompiler](https://github.com/hyvanmielenpelit/TileSetCompiler) | `win/win32/tileset/` |
 | 12 FMOD `.bank` files (6 Desktop + 6 Mobile) | [GnollHackSoundSet](https://github.com/hyvanmielenpelit/GnollHackSoundSet) releases or build with FMOD Studio | `win/win32/bank/` (must contain `Desktop/` and `Mobile/` subdirs) |
-| `ghsecrets.sjson` (webhook URLs, Azure keys) | Create from template with empty values | `win/win32/xpl/GnollHackM/Assets/` and `win/win32/xpl/GnollHackX/GnollHackX/Assets/` |
+| `ghsecrets.sjson` (server addresses, Sentry DSN) | Create from template with empty values | `win/win32/xpl/GnollHackM/Assets/` and `win/win32/xpl/GnollHackX/GnollHackX/Assets/` |
 
 Tilesets reach the app via `copytilesetdroid.proj`; sound banks via `update-wsl-in-{debug,release}.bat`. Both run as part of `makedefsdroid`. If the banks/tilesets directories are empty, those steps fail. The Avalonia port does not use the staged copies: it reads `win/win32/tileset/*.png` and `win/win32/bank/Desktop/*.bank` directly.
 
-`ghsecrets.sjson` template (all seven keys, empty values are fine for a local build):
+`ghsecrets.sjson` template (all four keys, empty values are fine for a local build):
 
 ```json
 {
-   "EncodedDefaultGamePostAddress": "",
-   "EncodedDefaultDiagnosticDataPostAddress": "",
    "EncodedDefaultXlogRegisterationAddress": "",
    "EncodedDefaultXlogPostAddress": "",
    "EncodedDefaultXlogAntiForgeryToken": "",
-   "EncodedDefaultAzureBlobStorageConnectionString": "",
    "EncodedDefaultSentryDSN": ""
 }
 ```
