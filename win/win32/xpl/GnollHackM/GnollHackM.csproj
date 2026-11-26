@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -26,8 +26,8 @@
     <ApplicationIdGuid>77f64670-4eb4-432e-aa6a-b02d3d035d80</ApplicationIdGuid>
 
     <!-- Versions -->
-    <ApplicationDisplayVersion>3.44</ApplicationDisplayVersion>
-    <ApplicationVersion>444</ApplicationVersion>
+    <ApplicationDisplayVersion>3.45</ApplicationDisplayVersion>
+    <ApplicationVersion>445</ApplicationVersion>
     <!-- WORKAROUND(WA-BUILD-0008): Visual Studio restore needs one PackageVersion across target frameworks -->
     <!-- On Windows MAUI sets this from a restored package only; here it holds before any restore -->
     <Version>$(ApplicationDisplayVersion)</Version>
