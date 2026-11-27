@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <!-- BASE PROPERTIES -->
   <PropertyGroup>
@@ -1653,7 +1653,7 @@
        its osx libsentry-native.a, and libsentry.so is built from the same sentry-native version; GnhSentryNative.targets
        checks that all three were built from this version -->
   <PropertyGroup>
-    <GnhSentryVersion>7.0.1</GnhSentryVersion>
+    <GnhSentryVersion>7.1.0</GnhSentryVersion>
   </PropertyGroup>
 
   <ItemGroup Condition="$(DefineConstants.Contains('SENTRY')) And '$(GnhAvalonia)' != 'true'">
