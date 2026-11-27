@@ -630,6 +630,7 @@ struct instance_flags {
     boolean save_file_tracking_needed; /* Does GUI need save file tracking (= is desktop) */
     boolean save_file_tracking_on; /* Is save file tracking turned on in GUI settings */
     boolean spell_hotbar_autoadd; /* learn() puts a newly learned spell in the first empty hotbar slot */
+    boolean spell_hotbar_autoadd_initial; /* u_init() puts a new character's starting spells in the first empty hotbar slots */
 };
 
 /*
@@ -847,6 +848,8 @@ struct startup_flags {
     boolean autodig_value;
     boolean spell_hotbar_autoadd_set;
     boolean spell_hotbar_autoadd_value;
+    boolean spell_hotbar_autoadd_initial_set;
+    boolean spell_hotbar_autoadd_initial_value;
     boolean ignore_stopping_set;
     boolean ignore_stopping_value;
     boolean vi_keys_set;

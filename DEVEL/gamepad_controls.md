@@ -163,11 +163,13 @@ repeat delay. R1 + A, or L3 and then A, runs once. Releasing the stick ends the 
 with the stick centered A is the context button as usual. The D-pad and position and direction prompts
 are unchanged.
 
-**Add New Spells to Favorites.** With **Settings, Controller, Add New Spells to Favorites** on (the
-default) and Use Controller on, a newly learned spell goes to the first empty slot of the Hotbar, which the
-Spells radial and the lists call Favorites, and a new caster's starting spells are placed there at
-character creation. After the learn message, the game says the spell has been added to your Favorites,
-or that it is in Known Spells when the Hotbar is full. The setting reaches the game when it starts and again whenever it or Use Controller changes. The
+**Spells to Favorites.** With **Settings, Behavior, New Spells to Favorites** on, a spell learned during
+play goes to the first empty slot of the Hotbar, which the Spells radial and the lists call Favorites.
+**Initial Spells to Favorites** does the same for a new caster's starting spells at character creation.
+Both default to on and do not depend on Use Controller. After the learn message, the game says the spell
+has been added to your Favorites, or that it is in Known Spells when the Hotbar is full. Each setting
+reaches the game when it starts and again whenever it changes; Initial Spells to Favorites matters only
+when a new character is created. The
 Hotbar is saved with the character, in the spells' hotkey field: slots 1-10 are also the spell table's
 hotkeys `1`..`0` when `spell_table_format` is on. The game sends it to the GUI inside the Cast menu: each
 spell row on the Hotbar carries `MENU_FLAGS_HOTBAR_SLOT` with its slot in the row's `style`, and the

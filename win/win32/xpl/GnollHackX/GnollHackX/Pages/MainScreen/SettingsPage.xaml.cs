@@ -197,7 +197,8 @@ namespace GnollHackX.Pages.MainScreen
             { "Hide Command Bar", ("Hide the command bar while playing with the controller.", "**On:** The command bar and the menus' OK and Cancel buttons are hidden while you play with the controller. Touch, the mouse or a key brings them back.\n**Off:** They stay, the controller hints show above the bar and can cover the lowest messages, and Settings also shows Bar Commands.") },
             { "Hint Size", ("Size of the controller hints.", "The size of the controller button hints: the strip at the bottom of the game screen, the hints in the Wiki, Overseer and file dialogs, and the hints below radial menus. The rest of the game's text follows Screen Scale.") },
             { "Aim and Confirm", ("Aim with the left stick, then move with A.", "**On:** Tilting the left stick outlines the square next to you in that direction without moving, in red over a hostile monster. A moves there, and holding A keeps moving. R1 + A, or L3 and then A, runs. With the stick centered, A works as usual, and the D-pad still moves at once.\n**Off:** The left stick moves as soon as you tilt it.") },
-            { "Add New Spells to Favorites", ("New spells become favorites.", "**On:** A spell you learn goes to the first empty slot of Favorites, which is listed first in the spell menus and is the first tab of the controller's Cast radial. A message tells you so. A new character's starting spells are added too.\n**Off:** New spells appear only in Known Spells, and you add them to Favorites yourself.") },
+            { "Initial Spells to Favorites", ("Starting spells become favorites.", "**On:** A new character's starting spells go to Favorites, which is listed first in the spell menus and is the first tab of the controller's Cast radial.\n**Off:** A new character starts with no favorites; the starting spells are only in Known Spells.\nApplies when a new character is created. A saved game keeps its Favorites.") },
+            { "New Spells to Favorites", ("Learned spells become favorites.", "**On:** A spell you learn goes to the first empty slot of Favorites, which is listed first in the spell menus and is the first tab of the controller's Cast radial. A message tells you so.\n**Off:** New spells appear only in Known Spells, and you add them to Favorites yourself.") },
             { "Back Grip L4", GamepadGripDescription("L4", "F2") },
             { "Back Grip L5", GamepadGripDescription("L5", "F3") },
             { "Back Grip R4", GamepadGripDescription("R4", "F4") },
@@ -1000,6 +1001,13 @@ namespace GnollHackX.Pages.MainScreen
                 _gamePage.SetIgnoreStopping(IgnoreStoppingSwitch.IsToggled);
             else
                 Preferences.Set("IgnoreStopping", IgnoreStoppingSwitch.IsToggled);
+
+            bool spellFavoritesInitialAddWasOn = GHApp.SpellFavoritesInitialAdd;
+            GHApp.SpellFavoritesInitialAdd = SpellFavoritesInitialAddSwitch.IsToggled;
+            Preferences.Set("SpellFavoritesInitialAdd", SpellFavoritesInitialAddSwitch.IsToggled);
+            /* A running game gets the change at once */
+            if (_gamePage != null && spellFavoritesInitialAddWasOn != GHApp.SpellFavoritesInitialAdd)
+                _gamePage.SetSpellHotbarAutoAddInitial();
 
             bool spellFavoritesAutoAddWasOn = GHApp.SpellFavoritesAutoAdd;
             GHApp.SpellFavoritesAutoAdd = SpellFavoritesAutoAddSwitch.IsToggled;
@@ -2222,6 +2230,7 @@ namespace GnollHackX.Pages.MainScreen
             AutoDigSwitch.IsToggled = autodig;
             IgnoreStoppingSwitch.IsToggled = ignorestopping;
             SpellFavoritesAutoAddSwitch.IsToggled = GHApp.SpellFavoritesAutoAdd;
+            SpellFavoritesInitialAddSwitch.IsToggled = GHApp.SpellFavoritesInitialAdd;
             DoubleClickSwitch.IsToggled = doubleclick;
             GetPositionArrowsSwitch.IsToggled = getpositionarrows;
 

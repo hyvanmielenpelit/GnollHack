@@ -445,8 +445,12 @@ namespace GnollHackX
                         GHApp.GnollHackService?.SetIgnoreStopping(response.ResponseBoolValue);
                         break;
                     case GHRequestType.SetSpellHotbarAutoAdd:
-                        /* Add New Spells to Favorites */
+                        /* New Spells to Favorites */
                         GHApp.GnollHackService?.SetSpellHotbarAutoAdd(GHApp.SpellFavoritesAutoAdd);
+                        break;
+                    case GHRequestType.SetSpellHotbarAutoAddInitial:
+                        /* Initial Spells to Favorites */
+                        GHApp.GnollHackService?.SetSpellHotbarAutoAddInitial(GHApp.SpellFavoritesInitialAdd);
                         break;
                     case GHRequestType.SetRightMouseCommand:
                     case GHRequestType.SetMiddleMouseCommand:

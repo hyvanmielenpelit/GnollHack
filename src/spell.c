@@ -632,7 +632,7 @@ learn(void)
                 spl_book[i].sp_amount += addedamount;
             }
 
-            int hotbar_result = auto_add_spell_to_hotbar(i);
+            int hotbar_result = auto_add_spell_to_hotbar(i, FALSE);
 
             sortspells();
 
@@ -5367,11 +5367,12 @@ set_spell_hotbar_slot(int idx, int slot)
     spellhotkey(idx) = slot;
 }
 
-/* Puts spl_book[idx] in the first empty hotbar slot if iflags.spell_hotbar_autoadd is on; prints nothing */
+/* Puts spl_book[idx] in the first empty hotbar slot if the auto-add setting for a starting spell (initial) or a
+   learned one is on; prints nothing */
 int
-auto_add_spell_to_hotbar(int idx)
+auto_add_spell_to_hotbar(int idx, boolean initial)
 {
-    if (!iflags.spell_hotbar_autoadd)
+    if (!(initial ? iflags.spell_hotbar_autoadd_initial : iflags.spell_hotbar_autoadd))
         return SPELL_HOTBAR_NOT_ADDED;
     return add_spell_to_hotbar(idx);
 }

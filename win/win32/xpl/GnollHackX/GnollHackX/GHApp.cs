@@ -4443,6 +4443,7 @@ namespace GnollHackX
         private static int _gamepadHideCommandBar = 1;
         private static int _gamepadAimAndConfirm = 0;
         private static int _spellFavoritesAutoAdd = 1;
+        private static int _spellFavoritesInitialAdd = 1;
         private static int _gamepadGripL4Command = 0;
         private static int _gamepadGripL5Command = 0;
         private static int _gamepadGripR4Command = 0;
@@ -4476,15 +4477,18 @@ namespace GnollHackX
         }
         /* The Aim and Confirm setting: the left stick aims and A moves */
         public static bool GamepadAimAndConfirm { get { return Interlocked.CompareExchange(ref _gamepadAimAndConfirm, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadAimAndConfirm, value ? 1 : 0); } }
-        /* The Add New Spells to Favorites setting: a newly learned spell goes to the first empty Hotbar slot while Use Controller is on */
+        /* The New Spells to Favorites setting: a spell learned during play goes to the first empty Hotbar slot */
         public static bool SpellFavoritesAutoAdd { get { return Interlocked.CompareExchange(ref _spellFavoritesAutoAdd, 0, 0) != 0; } set { Interlocked.Exchange(ref _spellFavoritesAutoAdd, value ? 1 : 0); } }
+        /* The Initial Spells to Favorites setting: a new character's starting spells go to the first empty Hotbar slots */
+        public static bool SpellFavoritesInitialAdd { get { return Interlocked.CompareExchange(ref _spellFavoritesInitialAdd, 0, 0) != 0; } set { Interlocked.Exchange(ref _spellFavoritesInitialAdd, value ? 1 : 0); } }
         /* A controller can be used: see GHGamepadService.IsAvailable; independent of the setting */
         public static bool IsGamepadAvailable { get { return GHGamepadService.IsAvailable; } }
 
         public static readonly GHGamepadButton[] GamepadGrips = { GHGamepadButton.L4, GHGamepadButton.L5, GHGamepadButton.R4, GHGamepadButton.R5 };
 
-        /* Use Controller, Hide Command Bar, Hint Size, Aim and Confirm, Add New Spells to Favorites, the grips, the trigger
-           commands, the Quick radial slots and the quick commands from the preferences, each missing one at its default */
+        /* Use Controller, Hide Command Bar, Hint Size, Aim and Confirm, Initial Spells to Favorites, New Spells to Favorites,
+           the grips, the trigger commands, the Quick radial slots and the quick commands from the preferences, each missing
+           one at its default */
         public static void LoadGamepadSettings()
         {
             GamepadEnabled = Preferences.Get("GamepadEnabled", true);
@@ -4492,6 +4496,7 @@ namespace GnollHackX
             GamepadHintScale = Preferences.Get("GamepadHintScale", 1.0f);
             GamepadAimAndConfirm = Preferences.Get("GamepadAimAndConfirm", false);
             SpellFavoritesAutoAdd = Preferences.Get("GamepadSpellHotbarAutoAdd", true);
+            SpellFavoritesInitialAdd = Preferences.Get("SpellFavoritesInitialAdd", true);
             MigrateGamepadDefaultCommands();
             foreach (GHGamepadButton grip in GamepadGrips)
                 SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));

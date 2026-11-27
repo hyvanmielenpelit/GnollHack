@@ -113,13 +113,22 @@ namespace GnollHackX.Pages.Game
             return entry == null || entry.UpperSide;
         }
 
-        /* Sends Add New Spells to Favorites to the running game, which reads it from GHApp */
+        /* Sends New Spells to Favorites to the running game, which reads it from GHApp */
         public void SetSpellHotbarAutoAdd()
         {
             if (PlayingReplay)
                 return;
             GHGame curGame = GHApp.CurrentGHGame;
             curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetSpellHotbarAutoAdd));
+        }
+
+        /* Sends Initial Spells to Favorites to the running game, which reads it from GHApp */
+        public void SetSpellHotbarAutoAddInitial()
+        {
+            if (PlayingReplay)
+                return;
+            GHGame curGame = GHApp.CurrentGHGame;
+            curGame?.ResponseQueue.Enqueue(new GHResponse(curGame, GHRequestType.SetSpellHotbarAutoAddInitial));
         }
 
         /* Called from ShowMenuCanvas: true when the radial shows or has answered the menu, so that the canvas is not shown */

@@ -282,6 +282,7 @@ namespace GnollHackX
         MetricSystem =          0x00200000UL, /* Set metric_system to true by default */
         DamageFormula =         0x00400000UL, /* Set show_damage_formula to true by default */
         SpellHotbarAutoAdd =    0x00800000UL, /* Newly learned spells go to the first empty spell hotbar slot */
+        SpellHotbarAutoAddInitial = 0x01000000UL, /* A new character's starting spells go to the first empty spell hotbar slots */
     }
 
     [Flags]

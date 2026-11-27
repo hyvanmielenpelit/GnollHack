@@ -1506,7 +1506,7 @@ add_school_specific_spellbooks(void)
     }
 }
 
-/* Puts the known spell otyp in the first empty hotbar slot, silently, if the auto-add setting is on */
+/* Puts the known spell otyp in the first empty hotbar slot, silently, if the initial auto-add setting is on */
 static void
 add_initial_spell_to_hotbar(int otyp)
 {
@@ -1516,7 +1516,7 @@ add_initial_spell_to_hotbar(int otyp)
     {
         if (spellid(i) == otyp)
         {
-            (void)auto_add_spell_to_hotbar(i);
+            (void)auto_add_spell_to_hotbar(i, TRUE);
             break;
         }
     }

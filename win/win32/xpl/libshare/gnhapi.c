@@ -891,6 +891,12 @@ LibSetSpellHotbarAutoAdd(int on)
 }
 
 DLLEXPORT void
+LibSetSpellHotbarAutoAddInitial(int on)
+{
+    iflags.spell_hotbar_autoadd_initial = on != 0;
+}
+
+DLLEXPORT void
 LibSetMouseCommand(int new_value, int is_middle)
 {
     if (is_middle)
@@ -1118,6 +1124,8 @@ DLLEXPORT int RunGnollHack(char* gnhdir, char* cmdlineargs, char* engrave_quickt
     initial_flags.autodig_value = (runflags & GHRUNFLAGS_AUTO_DIG) != 0;
     initial_flags.spell_hotbar_autoadd_set = TRUE;
     initial_flags.spell_hotbar_autoadd_value = (runflags & GHRUNFLAGS_SPELL_HOTBAR_AUTOADD) != 0;
+    initial_flags.spell_hotbar_autoadd_initial_set = TRUE;
+    initial_flags.spell_hotbar_autoadd_initial_value = (runflags & GHRUNFLAGS_SPELL_HOTBAR_AUTOADD_INITIAL) != 0;
     initial_flags.ignore_stopping_set = TRUE;
     initial_flags.ignore_stopping_value = (runflags & GHRUNFLAGS_IGNORE_STOPPING) != 0;
     initial_flags.vi_keys_set = TRUE;

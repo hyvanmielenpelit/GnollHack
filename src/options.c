@@ -979,6 +979,7 @@ init_options(void)
     flags.max_hint_difficulty = DEFAULT_MAX_HINT_DIFFICULTY;
     iflags.run_spot_distance = DEFAULT_RUN_SPOT_DISTANCE;
     iflags.spell_hotbar_autoadd = FALSE;
+    iflags.spell_hotbar_autoadd_initial = FALSE;
 
     if (initial_flags.click_action_set)
         flags.self_click_action = initial_flags.click_action_value;
@@ -1003,6 +1004,9 @@ init_options(void)
 
     if (initial_flags.spell_hotbar_autoadd_set)
         iflags.spell_hotbar_autoadd = initial_flags.spell_hotbar_autoadd_value;
+
+    if (initial_flags.spell_hotbar_autoadd_initial_set)
+        iflags.spell_hotbar_autoadd_initial = initial_flags.spell_hotbar_autoadd_initial_value;
 
     if (initial_flags.ignore_stopping_set)
         flags.ignore_stopping = initial_flags.ignore_stopping_value;

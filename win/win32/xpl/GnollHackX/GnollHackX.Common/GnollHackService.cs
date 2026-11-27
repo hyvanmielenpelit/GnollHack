@@ -357,6 +357,8 @@ namespace GnollHackX.Unknown
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetSpellHotbarAutoAdd(int on);
         [DllImport(PlatformConstants.dll)]
+        public static extern void LibSetSpellHotbarAutoAddInitial(int on);
+        [DllImport(PlatformConstants.dll)]
         public static extern int LibGetMouseCommand(int is_middle);
         [DllImport(PlatformConstants.dll)]
         public static extern void LibSetMouseCommand(int new_value, int is_middle);
@@ -1301,6 +1303,11 @@ namespace GnollHackX.Unknown
             LibSetSpellHotbarAutoAdd(on ? 1 : 0);
         }
 
+        public void SetSpellHotbarAutoAddInitial(bool on)
+        {
+            LibSetSpellHotbarAutoAddInitial(on ? 1 : 0);
+        }
+
         public int GetMouseCommand(bool isMiddle)
         {
             return LibGetMouseCommand(isMiddle ? 1 : 0);
@@ -1407,6 +1414,7 @@ namespace GnollHackX.Unknown
                 (ulong)(wornshowsequipment ? RunGnollHackFlags.WornShowsEquipment : 0) |
                 (ulong)(autodig ? RunGnollHackFlags.AutoDig : 0) | /* Use the default; GHApp.AutoDig may contain the option value from the last game */
                 (ulong)(GHApp.SpellFavoritesAutoAdd ? RunGnollHackFlags.SpellHotbarAutoAdd : 0) |
+                (ulong)(GHApp.SpellFavoritesInitialAdd ? RunGnollHackFlags.SpellHotbarAutoAddInitial : 0) |
                 (ulong)(ignorestopping ? RunGnollHackFlags.IgnoreStopping : 0) | /* Use the default; GHApp.IgnoreStopping may contain the option value from the last game */
                 (ulong)(defaultvikeys ? RunGnollHackFlags.DefaultVIKeys : 0) | /* Use the default */
                 (ulong)ghGame.StartFlags;

@@ -82,6 +82,7 @@ namespace GnollHackX
         void SetIgnoreStopping(bool newValue);
         /* Spell hotbar, game thread only */
         void SetSpellHotbarAutoAdd(bool on);
+        void SetSpellHotbarAutoAddInitial(bool on);
         int GetMouseCommand(bool isMiddle);
         void SetMouseCommand(int newValue, bool isMiddle);
         void SetEngraveQuickText(string newValue);
