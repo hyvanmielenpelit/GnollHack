@@ -400,7 +400,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/SFX/Level/Temple/Someone Praising God", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/Temple/Someone Beseeching", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/Temple/Animal Carcass Being Offered", 0.3f },
-    { SOUND_BANK_MASTER, "event:/SFX/Level/Temple/Plea For Donations", 0.3f },
+    { SOUND_BANK_MASTER, "event:/SFX/Level/Temple/Pea for Donations", 0.3f },
 
     { SOUND_BANK_MASTER, "event:/SFX/Level/Smithy/Iron Being Forged", 0.3f },
     { SOUND_BANK_MASTER, "event:/SFX/Level/Smithy/Loud Clanging", 1.0f },
@@ -1331,10 +1331,10 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Monster/Goblin/Female/Who", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Goblin/Female/Chat", 1.0f },
 
-    { SOUND_BANK_MASTER, "event:/Monster/Hoboblin/Male/Who", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Monster/Hoboblin/Male/Chat", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Monster/Hoboblin/Female/Who", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Monster/Hoboblin/Female/Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Hobgoblin/Male/Who", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Hobgoblin/Male/Chat", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Hobgoblin/Female/Who", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Monster/Hobgoblin/Female/Chat", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Monster/Goblin King/Male/Who", 1.0f },
     { SOUND_BANK_MASTER, "event:/Monster/Goblin King/Male/Chat", 1.0f },
@@ -1498,7 +1498,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/Candles/More Candles", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Thank You Scum", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Thank You for Your Contribution", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Thank You for Contribution", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Out of My Way Scum", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Get Your Junk Out of My Wall", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/I Was Looking for Someone Else", 1.0f },
@@ -1523,7 +1523,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Male/General/Welcome Back to My Store", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Thank You Scum", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Thank You for Your Contribution", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Thank You for Contribution", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Out of My Way Scum", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Get Your Junk Out of My Wall", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/I Was Looking for Someone Else", 1.0f },
@@ -1548,7 +1548,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Female/General/Welcome Back to My Store", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Thank You Scum", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Thank You for Your Contribution", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Thank You for Contribution", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Out of My Way Scum", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/Get Your Junk Out of My Wall", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Undead/General/I Was Looking for Someone Else", 1.0f },
@@ -2178,7 +2178,7 @@ NEARDATA const struct ghsound_eventmapping ghsound2event[MAX_GHSOUNDS] = {
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/Candles/More Candles", 1.0f },
 
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Thank You Scum", 1.0f },
-    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Thank You for Your Contribution", 1.0f },
+    { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Thank You for Contribution", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Out of My Way Scum", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/Get Your Junk Out of My Wall", 1.0f },
     { SOUND_BANK_MASTER, "event:/Voice Acting/Shopkeeper/Modron/General/I Was Looking for Someone Else", 1.0f },
