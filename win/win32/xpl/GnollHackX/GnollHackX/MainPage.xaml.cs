@@ -778,6 +778,16 @@ namespace GnollHackX
                 StartLocalGrid.IsEnabled = false;
                 GHApp.PlayButtonClickedSound();
 
+                if (!await GHApp.WaitForGameEngineThreadToEndAsync(GHConstants.GameStartEngineWaitTimeoutMs))
+                {
+                    GHApp.ReportRefusedGameStart("StartLocalGame");
+                    DisplayAlertGrid("Game Still Running",
+                        "Your previous game is still running in the background, so a new game cannot start. Please wait a moment and try again. If this keeps happening, close GnollHack and start it again.",
+                        "OK", GHColors.Orange);
+                    StartLocalGrid.IsEnabled = true;
+                    return;
+                }
+
                 if (GHApp.TournamentMode)
                 {
                     if (!GHApp.HasInternetAccess)
@@ -960,6 +970,11 @@ namespace GnollHackX
             GHGame curGame = GHApp.CurrentGHGame;
             if (_firsttime && (curGame != null || GHApp.MainPageConstructorRunNumber > 1)) // Restart
             {
+                GHApp.MaybeWriteGHLog("MainPage restart: game " + (curGame != null)
+                                      + ", engine thread active " + GHApp.IsGameEngineThreadActive
+                                      + ", page destroyed with game on " + GHApp.GamePageDestroyedWithGameOn
+                                      + ", allow existing game " + AllowStartExistingGame,
+                                      true, GHConstants.SentryGnollHackGeneralCategoryName);
                 _firsttime = false;
                 await _startUpBitmapsTask;
                 GHApp.SetWindowFocus();

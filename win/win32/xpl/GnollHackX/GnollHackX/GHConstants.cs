@@ -604,6 +604,8 @@ namespace GnollHackX
 
         /* iOS resume-freeze safety nets */
         public const int ParkAutoResumeTimeoutMs = 1500;    /* App verifiably active this long while parked → auto-resume */
+        public const int GameStartEngineWaitTimeoutMs = 2000; /* Longest wait for a previous engine thread before a game start is refused */
+        public const int GameStartEngineWaitLogThresholdMs = 100; /* A shorter wait for a previous engine thread is not logged */
         public const int LostResumeDetectTimeoutMs = 400;   /* Frames still arriving while IsSuspended → force HandleResume */
         public const long MaxResizingDurationTicks = TimeSpan.TicksPerSecond; /* _isResizing safety cap (1 s) */
         public const int PaintStallWarningMs = 3000;        /* Diagnostic only: warn if paint stalls this long */

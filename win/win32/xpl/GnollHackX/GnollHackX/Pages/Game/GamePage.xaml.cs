@@ -2548,56 +2548,80 @@ namespace GnollHackX.Pages.Game
 
         public async Task RestartGameAfterPageDestruction()
         {
-            GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0);
-            GHApp.FmodService?.ResetGameState();
-            //GHApp.GnollHackService?.SetExitHack((int)exit_hack_types.EXITHACK_RECOVER_NEW);
-            GHApp.CurrentGHGame = null;
-            await GHApp.PushModalPageAsync(this);
-            await StartResetGame();
+            GHApp.GameEngineRestartPending = true;
+            try
+            {
+                GHApp.FmodService?.StopAllGameSounds((uint)StopSoundFlags.All, 0);
+                GHApp.FmodService?.ResetGameState();
+                //GHApp.GnollHackService?.SetExitHack((int)exit_hack_types.EXITHACK_RECOVER_NEW);
+                GHApp.CurrentGHGame = null;
+                await GHApp.PushModalPageAsync(this);
+                await StartResetGame();
+            }
+            finally
+            {
+                GHApp.GameEngineRestartPending = false;
+            }
         }
 
         public async Task RestartGame()
         {
-            Thread gnhThread = GHApp.GnhThread;
-            if (gnhThread != null)
+            GHApp.GameEngineRestartPending = true;
+            try
             {
-                /* Game thread may have outstanding things to do, but wait for up to 1 second to let them finish */
-                for (int i = 0; i < 20 && gnhThread.IsAlive; i++)
+                Thread gnhThread = GHApp.GnhThread;
+                if (gnhThread != null)
                 {
-                    await Task.Delay(50);
+                    /* Game thread may have outstanding things to do, but wait for up to 1 second to let them finish */
+                    for (int i = 0; i < 20 && gnhThread.IsAlive; i++)
+                    {
+                        await Task.Delay(50);
+                    }
                 }
+                //CurrentGame = null;
+                GHApp.CurrentGHGame = null;
+                GHApp.GnhThread = null;
+
+                /* Collect garbage at this point */
+                GHApp.CollectGarbage();
+                await Task.Delay(50);
+
+                Thread t = new Thread(new ThreadStart(GNHThreadProcForRestart));
+                GHApp.GnhThread = t;
+                t.Start();
             }
-            //CurrentGame = null;
-            GHApp.CurrentGHGame = null;
-            GHApp.GnhThread = null;
-
-            /* Collect garbage at this point */
-            GHApp.CollectGarbage();
-            await Task.Delay(50);
-
-            Thread t = new Thread(new ThreadStart(GNHThreadProcForRestart));
-            GHApp.GnhThread = t;
-            t.Start();
+            finally
+            {
+                GHApp.GameEngineRestartPending = false;
+            }
         }
 
         public async Task RestartReplay()
         {
-            /* Replay thread should have finished by now since it does not have any outstanding things to do, but wait for 50 millisecs just in case if this is not the case */
-            
-            if (GHApp.GnhThread?.IsAlive ?? false)
+            GHApp.GameEngineRestartPending = true;
+            try
+            {
+                /* Replay thread should have finished by now since it does not have any outstanding things to do, but wait for 50 millisecs just in case if this is not the case */
+
+                if (GHApp.GnhThread?.IsAlive ?? false)
+                    await Task.Delay(50);
+
+                //CurrentGame = null;
+                GHApp.CurrentGHGame = null;
+                GHApp.GnhThread = null;
+
+                /* Collect garbage at this point */
+                GHApp.CollectGarbage();
                 await Task.Delay(50);
 
-            //CurrentGame = null;
-            GHApp.CurrentGHGame = null;
-            GHApp.GnhThread = null;
-
-            /* Collect garbage at this point */
-            GHApp.CollectGarbage();
-            await Task.Delay(50);
-
-            Thread t = new Thread(new ThreadStart(GNHThreadProcForReplay));
-            GHApp.GnhThread = t;
-            t.Start();
+                Thread t = new Thread(new ThreadStart(GNHThreadProcForReplay));
+                GHApp.GnhThread = t;
+                t.Start();
+            }
+            finally
+            {
+                GHApp.GameEngineRestartPending = false;
+            }
         }
 
         public void UpdateMainCanvas(int refreshRateStyle)
@@ -3685,6 +3709,7 @@ namespace GnollHackX.Pages.Game
         {
             try
             {
+                GHApp.GamePageDestroyedWithGameOn = false;
                 GHApp.ClearReplayRestartHandover();
                 GHGame curGame = new GHGame(RunGnollHackFlags.None);
                 GHApp.CurrentGHGame = curGame;
@@ -3719,6 +3744,7 @@ namespace GnollHackX.Pages.Game
         {
             try
             {
+                GHApp.GamePageDestroyedWithGameOn = false;
                 GHGame curGame = new GHGame(RunGnollHackFlags.ForceLastPlayerName);
                 curGame.AdoptReplayRestartHandover(GHApp.TakeReplayRestartHandover());
                 GHApp.CurrentGHGame = curGame;

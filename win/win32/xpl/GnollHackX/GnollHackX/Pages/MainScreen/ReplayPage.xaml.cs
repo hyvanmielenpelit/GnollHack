@@ -890,14 +890,24 @@ namespace GnollHackX.Pages.MainScreen
                 string outstr;
                 if(GHApp.ValidateReplayFile(filePath, out outstr))
                 {
-                    var gamePage = new GamePage(_mainPage);
-                    if (await GHApp.TryPushModalPageAsync(gamePage))
+                    if (!await GHApp.WaitForGameEngineThreadToEndAsync(GHConstants.GameStartEngineWaitTimeoutMs))
                     {
-                        await gamePage.StartReplay(filePath, -1);
+                        GHApp.ReportRefusedGameStart("StartReplay");
+                        await GHApp.DisplayMessageBox(this, "Game Still Running",
+                            "Your previous game is still running in the background, so a new game cannot start. Please wait a moment and try again. If this keeps happening, close GnollHack and start it again.",
+                            "OK");
                     }
                     else
                     {
-                        await GHApp.DisplayMessageBox(this, "Replay Failed", "The game screen could not be opened.", "OK");
+                        var gamePage = new GamePage(_mainPage);
+                        if (await GHApp.TryPushModalPageAsync(gamePage))
+                        {
+                            await gamePage.StartReplay(filePath, -1);
+                        }
+                        else
+                        {
+                            await GHApp.DisplayMessageBox(this, "Replay Failed", "The game screen could not be opened.", "OK");
+                        }
                     }
                 }
                 else

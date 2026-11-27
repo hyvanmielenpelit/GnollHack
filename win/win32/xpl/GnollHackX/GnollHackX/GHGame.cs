@@ -3912,21 +3912,36 @@ namespace GnollHackX
                     GHApp.AddSentryBreadcrumb("GUI_CMD_WAIT_FOR_RESUME: Parking game thread",
                                               GHConstants.SentryGnollHackGeneralCategoryName);
                     long activeSinceTicks = 0;
+                    bool heldForPageRecovery = false;
                     int savedKeyWait = BeginKeyWait(GHKeyWaitKind.UiWait);
                     try
                     {
-                        while (!_restoreRequested)
+                        while (!_restoreRequested || GHApp.GamePageDestroyedWithGameOn)
                         {
                             Thread.Sleep(GHConstants.PollingInterval);
                             _saveRequested = false; //Should be the case. but just in case there is some sort of a mixup going on so that we do not save and restore again in PollResponseQueue
                             PollResponseQueue();
+
+                            if (GHApp.GamePageDestroyedWithGameOn)
+                            {
+                                /* The main page ends this thread with TerminateGnollHackAndRestartGameInNewGamePage, polled above; resume requests are dropped */
+                                _restoreRequested = false;
+                                activeSinceTicks = 0;
+                                if (!heldForPageRecovery)
+                                {
+                                    heldForPageRecovery = true;
+                                    GHApp.MaybeWriteGHLog("GUI_CMD_WAIT_FOR_RESUME: Game page destroyed; staying parked for the main page",
+                                                          true, GHConstants.SentryGnollHackGeneralCategoryName);
+                                }
+                                continue;
+                            }
 
                             /* Safety net: never stay parked while the app is verifiably
                              * foreground-active. PlatformAppActive is refreshed only by
                              * the render loop (main thread, and only while parked or
                              * suspended), so both conditions require the app to be on
                              * screen and active. */
-                            if (GHApp.PlatformAppActive && !GHApp.IsSuspended)
+                            if (GHApp.PlatformAppActive && !GHApp.IsSuspended && !GHApp.GamePageDestroyedWithGameOn)
                             {
                                 if (activeSinceTicks == 0)
                                     activeSinceTicks = DateTime.UtcNow.Ticks;
@@ -4911,6 +4926,8 @@ namespace GnollHackX
         public bool TryRequestResumeFromPark()
         {
             if (PlayingReplay || !IsWaitingForResume)
+                return false;
+            if (GHApp.GamePageDestroyedWithGameOn)
                 return false;
             if (Interlocked.CompareExchange(ref _resumeRequestSent, 1, 0) != 0)
                 return false; /* Already requested for this park episode */

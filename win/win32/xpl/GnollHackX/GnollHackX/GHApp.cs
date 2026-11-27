@@ -2956,6 +2956,31 @@ namespace GnollHackX
             set { Interlocked.Exchange(ref _gnhThread, value); }
         }
 
+        private static int _gamePageDestroyedWithGameOn = 0;
+        /* Android destroyed the activity during a game: a parked game thread stays parked until the main page restarts it in a new game page */
+        public static bool GamePageDestroyedWithGameOn
+        {
+            get { return Interlocked.CompareExchange(ref _gamePageDestroyedWithGameOn, 0, 0) != 0; }
+            set { Interlocked.Exchange(ref _gamePageDestroyedWithGameOn, value ? 1 : 0); }
+        }
+
+        private static int _gameEngineRestartPending = 0;
+        /* A restart has dropped the previous game and not yet started the next engine thread */
+        public static bool GameEngineRestartPending
+        {
+            get { return Interlocked.CompareExchange(ref _gameEngineRestartPending, 0, 0) != 0; }
+            set { Interlocked.Exchange(ref _gameEngineRestartPending, value ? 1 : 0); }
+        }
+
+        public static bool IsGameEngineThreadActive
+        {
+            get
+            {
+                Thread t = GnhThread;
+                return GameEngineRestartPending || (t != null && t.IsAlive);
+            }
+        }
+
         public static int GameSaveStatus = 0;
         public static bool InformAboutGameTermination = false;
         /* Whether the previous process was in the background when it ended */
@@ -3833,6 +3858,48 @@ namespace GnollHackX
             }
         }
 
+        public static void OnWindowDestroying()
+        {
+            if (!IsAndroid)
+                return;
+            GHGame game = CurrentGHGame;
+            if (game != null && !game.PlayingReplay && GameStarted && (game.ActiveGamePage?.IsGameOn ?? false))
+            {
+                GamePageDestroyedWithGameOn = true;
+                MaybeWriteGHLog("OnWindowDestroying: Game page destroyed during a game; a parked game stays parked for the main page",
+                                true, GHConstants.SentryGnollHackGeneralCategoryName);
+            }
+        }
+
+        /* True when no engine thread is active, at once or within timeoutMs */
+        public static async Task<bool> WaitForGameEngineThreadToEndAsync(int timeoutMs)
+        {
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            while (IsGameEngineThreadActive)
+            {
+                if (stopwatch.ElapsedMilliseconds >= timeoutMs)
+                    return false;
+                await Task.Delay(GHConstants.PollingInterval);
+            }
+            if (stopwatch.ElapsedMilliseconds >= GHConstants.GameStartEngineWaitLogThresholdMs)
+                MaybeWriteGHLog("WaitForGameEngineThreadToEndAsync: Previous engine thread ended after " + stopwatch.ElapsedMilliseconds + " ms",
+                                true, GHConstants.SentryGnollHackGeneralCategoryName);
+            return true;
+        }
+
+        public static void ReportRefusedGameStart(string source)
+        {
+            Thread t = GnhThread;
+            MaybeWriteGHLog("Game start refused (" + source + "): restart pending " + GameEngineRestartPending
+                            + ", thread alive " + (t != null && t.IsAlive)
+                            + ", current game " + (CurrentGHGame != null)
+                            + ", page destroyed with game on " + GamePageDestroyedWithGameOn,
+                            true, GHConstants.SentryGnollHackGeneralCategoryName);
+#if SENTRY
+            SentrySdk.CaptureMessage("Game start refused: game engine thread still active", SentryLevel.Warning);
+#endif
+        }
+
         /// <summary>
         /// Polls the platform for the real foreground-active state.
         /// On iOS this queries UIApplication.SharedApplication.ApplicationState, which is
@@ -4063,6 +4130,8 @@ namespace GnollHackX
             if (IsAutoSaveUponSwitchingAppsOn)
             {
                 CancelSaveGame = true;
+                if (GamePageDestroyedWithGameOn)
+                    return;
                 GHGame game = CurrentGHGame;
                 /* GameStarted is cleared when the game returns to the main menu, while IsGameOn and the game stay set until the game page has been popped */
                 if (game != null && !game.PlayingReplay && GameStarted && (game.ActiveGamePage?.IsGameOn ?? false))

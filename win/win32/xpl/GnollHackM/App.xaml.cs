@@ -461,6 +461,7 @@ public partial class App : Application
     private static void WindowDestroying(object sender, EventArgs e)
     {
         GHApp.MaybeWriteGHLog("MAUI Window's native window is being destroyed.", true, "Window Information");
+        GHApp.OnWindowDestroying();
         //Window window = sender as Window;
         //if (window != null)
         //{
