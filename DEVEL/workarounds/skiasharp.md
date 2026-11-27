@@ -317,7 +317,7 @@ Checks:
 - Upstream status when added: reported
 - Upstream status: released
 - Fixed upstream in: HarfBuzzSharp.NativeAssets.Linux 14.4.0.100 (SkiaSharp 4.156.0), https://github.com/mono/SkiaSharp/pull/5352
-- Last checked: 2026-11-15
+- Last checked: 2026-11-27
 - Code: `win/win32/xpl/GnollHackM/Platforms/Avalonia/AvaloniaDesktopProgram.cs` (`AvaloniaDesktopProgram.Main`); `win/win32/xpl/GnollHackM/Platforms/Avalonia/AvaloniaDesktopProgram.cs` (`AvaloniaDesktopProgram.PreloadHarfBuzzSharp`)
 - Remove when: GnollHack uses a SkiaSharp and HarfBuzzSharp release containing PR 5352, and Verify removal passes.
 
@@ -344,6 +344,7 @@ Checks:
 - 2026-11-09 | SkiaSharp.NativeAssets.Linux 4.155.0 | still-needed | PR 5352 (18300df2ab) is not in v4.155.0; the first tag containing it is v4.156.0-rc.1.26553.11, with no stable release yet.
 - 2026-11-11 | SkiaSharp.NativeAssets.Linux 4.156.0, HarfBuzzSharp.NativeAssets.Linux 14.2.1.102 | still-needed | v4.156.0 contains PR 5352 (`-Wl,-Bsymbolic-functions` on libHarfBuzzSharp), which ships in HarfBuzzSharp.NativeAssets.Linux 14.4.0.100, not in a SkiaSharp package. GnollHack has no HarfBuzzSharp reference of its own, and Avalonia.Controls.Maui 11.0.0-rc.3.26301.1434 brings in 14.2.1.102, which lacks the fix.
 - 2026-11-15 | SkiaSharp.NativeAssets.Linux 4.156.1, HarfBuzzSharp.NativeAssets.Linux 14.2.1.102 | still-needed | HarfBuzzSharp.NativeAssets.Linux 14.4.0.101 (SkiaSharp 4.156.1) also contains the fix. Adopting it needs explicit `HarfBuzzSharp` and `HarfBuzzSharp.NativeAssets.Linux` references under `GnhAvalonia`, then Verify removal.
+- 2026-11-27 | SkiaSharp.NativeAssets.Linux 4.158.0, HarfBuzzSharp.NativeAssets.Linux 14.2.1.102 | still-needed | HarfBuzzSharp.NativeAssets.Linux 15.0.0 (SkiaSharp 4.158.0) keeps `-Wl,-Bsymbolic-functions` in native/linux/build.cake. No SkiaSharp 4.158.0 package depends on HarfBuzzSharp, so Avalonia.Controls.Maui 11.0.0-rc.3.26301.1434 still brings in 14.2.1.102.
 
 ## WA-SKIASHARP-0010: Android touch cancel reaches only one pointer
 
