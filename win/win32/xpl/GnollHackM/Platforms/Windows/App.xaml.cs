@@ -25,6 +25,7 @@ public partial class App : MauiWinUIApplication
         Microsoft.UI.Xaml.Application.Current.UnhandledException += (s, e) =>
         {
             GHApp.MaybeWriteGHLog(e.Exception.Message);
+            GnollHackM.NativeLibraryPreflightWindows.HandleBlockedAssemblyLoad(e.Exception);
 
             if (e.Exception is InvalidOperationException ioe && ioe.Message != null &&
                 ((ioe.Message.Contains("already deactivated")) 
@@ -37,5 +38,18 @@ public partial class App : MauiWinUIApplication
     }
 
     protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+
+#if DEBUG
+    protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
+    {
+        base.OnLaunched(args);
+        /* A synthetic Smart App Control block for testing the blocked-file message, raised where GNOLLHACK-K0's was */
+        if (System.Environment.GetEnvironmentVariable("GNOLLHACK_TEST_BLOCKED_LOAD") == "1")
+            throw new System.IO.FileLoadException("Simulated application control block", System.IO.Path.Combine(System.AppContext.BaseDirectory, "SkiaSharp.Views.Windows.dll"))
+            {
+                HResult = unchecked((int)0x800711C7)
+            };
+    }
+#endif
 }
 

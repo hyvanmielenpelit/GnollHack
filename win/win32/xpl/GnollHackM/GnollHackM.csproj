@@ -1907,6 +1907,10 @@
     </ItemGroup>
     <Message Importance="high" Condition="'@(_GnhPdbToPublish)' != ''" Text="Excluded PDBs from publish: @(_GnhPdbToPublish->'%(Filename)%(Extension)', ', ')" />
   </Target>
+  <!-- A folder publish for Steam is not Authenticode-signed; Smart App Control may block unsigned files -->
+  <Target Name="GnhWarnUnsignedWindowsPublish" AfterTargets="Publish" Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows')) And '$(WindowsPackageType)' != 'MSIX' And '$(GNHWindowsPackageType)' != 'MSIX' And '$(PublishAppxPackage)' != 'true' And '$(GenerateAppxPackageOnBuild)' != 'true' And '$(DesignTimeBuild)' != 'true'">
+    <Warning Code="GNHSIGN001" Text="$(PublishDir) is not Authenticode-signed. Before uploading it to Steam, run Platforms\Windows\Packaging\Sign-WindowsPublish.ps1, which signs and verifies it." />
+  </Target>
 
   <!-- Print the value of IsMonoRuntime -->
   <Target Name="PrintMonoRuntimeStatus" BeforeTargets="BeforeBuild">

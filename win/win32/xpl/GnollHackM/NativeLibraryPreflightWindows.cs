@@ -15,13 +15,12 @@ namespace GnollHackM
     /* Diagnoses a native library that fails to load. The runtime's DllNotFoundException and
        BadImageFormatException do not carry the Win32 error in HResult, so the file is loaded again
        directly to recover it, and the failure is reported to Sentry. A failure of the game library
-       is fatal: the player gets a message box and the process exits. Every Windows Sentry event is
-       tagged with the Smart App Control state. */
+       is fatal: the player gets a message box and the process exits. A managed assembly that an
+       application control policy blocks at startup is reported and explained the same way. Every
+       Windows Sentry event is tagged with the Smart App Control state. */
     internal static class NativeLibraryPreflightWindows
     {
         private const int ERROR_MOD_NOT_FOUND = 126;
-        private const int ERROR_ACCESS_DISABLED_BY_POLICY = 1260;          /* AppLocker or Software Restriction Policies */
-        private const int ERROR_SYSTEM_INTEGRITY_POLICY_VIOLATION = 4551;  /* Smart App Control or App Control for Business */
         private const uint LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR = 0x00000100;
         private const uint LOAD_LIBRARY_SEARCH_DEFAULT_DIRS = 0x00001000;
         private const uint SEM_FAILCRITICALERRORS = 0x0001;
@@ -120,18 +119,20 @@ namespace GnollHackM
             }
         }
 
-        /* Sentry may not be initialized this early; must never throw */
-        private static void CaptureLoadFailure(Exception ex, string fileName, int win32Error)
+        /* kind is "native" or "assembly". Sentry may not be initialized this early; must never throw */
+        private static void CaptureLoadFailure(Exception ex, string fileName, int win32Error, string kind)
         {
 #if SENTRY
             try
             {
                 string errorText = win32Error.ToString(CultureInfo.InvariantCulture);
+                string fingerprint = kind == "assembly" ? "assembly-load-blocked" : "native-library-load-failure";
                 SentrySdk.CaptureException(ex, scope =>
                 {
-                    scope.SetFingerprint(new[] { "native-library-load-failure", fileName, errorText });
+                    scope.SetFingerprint(new[] { fingerprint, fileName, errorText });
                     scope.SetTag("native_load.win32_error", errorText);
                     scope.SetTag("native_load.file", fileName);
+                    scope.SetTag("native_load.kind", kind);
                     scope.SetTag(SmartAppControlStateTag, SmartAppControlState);
                 });
             }
@@ -150,7 +151,33 @@ namespace GnollHackM
             if (error == 0)
                 return;
 
-            CaptureLoadFailure(ex, PlatformConstants.dll, error);
+            CaptureLoadFailure(ex, PlatformConstants.dll, error, "native");
+            ExplainAndExit(GetFailureMessage(error, PlatformConstants.dll, true));
+        }
+
+        /* A managed assembly that an application control policy blocked: reports, explains and exits.
+           Returns if ex is no such block. Must never throw. */
+        public static void HandleBlockedAssemblyLoad(Exception ex)
+        {
+            string fileName;
+            int error;
+            try
+            {
+                if (!GHApplicationControlBlock.TryFind(ex, out fileName, out error))
+                    return;
+            }
+            catch (Exception findEx)
+            {
+                Debug.WriteLine(findEx.Message);
+                return;
+            }
+
+            CaptureLoadFailure(ex, fileName, error, "assembly");
+            ExplainAndExit(GetFailureMessage(error, fileName, false));
+        }
+
+        private static void ExplainAndExit(string message)
+        {
 #if SENTRY
             try
             {
@@ -161,8 +188,8 @@ namespace GnollHackM
                 Debug.WriteLine(flushEx.Message);
             }
 #endif
-            /* No XAML window exists yet; MessageBoxW runs its own message loop */
-            MessageBoxW(IntPtr.Zero, GetFailureMessage(error), "GnollHack", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
+            /* No XAML window may exist yet; MessageBoxW runs its own message loop */
+            MessageBoxW(IntPtr.Zero, message, "GnollHack", MB_OK | MB_ICONERROR | MB_SETFOREGROUND);
             Environment.Exit(1);
         }
 
@@ -179,7 +206,7 @@ namespace GnollHackM
                     int error = ProbeLoadError(fileName);
                     if (error != 0)
                     {
-                        CaptureLoadFailure(ex, fileName, error);
+                        CaptureLoadFailure(ex, fileName, error, "native");
                         return;
                     }
                 }
@@ -190,13 +217,14 @@ namespace GnollHackM
             }
         }
 
-        private static string GetFailureMessage(int error)
+        private static string GetFailureMessage(int error, string fileName, bool isGameLibrary)
         {
-            string library = PlatformConstants.dll;
+            string library = fileName;
             string reinstall = "Please reinstall GnollHack. If you installed it through Steam, you can also verify the integrity of its game files.";
-            if (error == ERROR_SYSTEM_INTEGRITY_POLICY_VIOLATION || error == ERROR_ACCESS_DISABLED_BY_POLICY)
+            if (GHApplicationControlBlock.IsPolicyError(error))
             {
-                string text = "Windows blocked GnollHack's game library (" + library + ") because of an application control policy."
+                string subject = isGameLibrary ? "GnollHack's game library (" + library + ")" : "one of GnollHack's files (" + library + ")";
+                string text = "Windows blocked " + subject + " because of an application control policy."
                     + "\n\nThis is usually Smart App Control (Windows Security > App & browser control) or a policy set by this computer's administrator.";
                 if (SmartAppControlState == "On")
                     text += "\n\nSmart App Control is enabled on this computer.";

@@ -246,6 +246,15 @@ in `win/win32/xpl/GnollHackM/Properties/PublishProfiles/` and publish self-conta
   From the command line, in `GnollHackM`: `dotnet publish GnollHackM.csproj -f net11.0-windows10.0.19041.0 -p:PublishProfile=Steam-win-x64`
   (add `-p:GnhSentryUpload=false` to skip the symbol upload). The build half of the same publish, in
   `bin\Release\net11.0-windows10.0.19041.0\win-x64\`, is the same code as IL, for comparisons.
+- **Sign the Steam folder before uploading it.** ReadyToRun rewrites every managed assembly it compiles and drops
+  its upstream Authenticode signature, and GnollHack's own files are unsigned, so Smart App Control can block them
+  (GNOLLHACK-K0). After the publish, run `& .\Platforms\Windows\Packaging\Sign-WindowsPublish.ps1` from `GnollHackM`
+  (after `az login`). It signs every unsigned `.dll` and `.exe` with Azure Artifact Signing (`GNOLLHACK_SIGN_METADATA`,
+  `GNOLLHACK_SIGN_DLIB`) or a certificate (`GNOLLHACK_SIGN_THUMBPRINT`, `GNOLLHACK_SIGN_TIMESTAMP`), then verifies; upload
+  only when it ends with every PE file `Valid` and exit code 0. `-VerifyOnly` checks without signing. A Steam publish
+  prints warning `GNHSIGN001` as a reminder. The MSIX profile needs no such step: the Store signs the package. At run
+  time, a startup assembly that an application control policy blocks shows GnollHack's message box and reaches Sentry
+  under the `assembly-load-blocked` fingerprint, tagged `native_load.kind` = `assembly`.
 
 The Avalonia flavors publish with ReadyToRun in Release too (`GnollHackM.csproj`).
 
