@@ -102,6 +102,7 @@ namespace GnollHackX
         public string HubTitle;                     /* the hub's title; null for Label */
         public int SliceTintNhColor = -1;           /* tints the slice's fill and border; -1 = none */
         public bool IconGrayed;                     /* the icon is drawn grayed, also when the item is enabled */
+        public bool DimmedWhenDisabled;             /* while disabled, the slice is darkened and the icon faded */
 
         public bool HasPreferredAngle { get { return PreferredAngle >= 0; } }
 

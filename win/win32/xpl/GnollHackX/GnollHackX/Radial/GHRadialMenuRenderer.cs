@@ -601,6 +601,13 @@ namespace GnollHackX
                 fill = TintColor(fill, tint, (float)GHRadialTuning.SliceTintOfFill * keep);
                 border = TintColor(border, tint, (float)GHRadialTuning.SliceTintOfBorder * keep);
             }
+            /* A dimmed disabled slice darkens, half as much while highlighted */
+            if (!enabled && item.DimmedWhenDisabled)
+            {
+                float darken = (float)GHRadialTuning.DisabledSliceDarken * (1f - 0.5f * e);
+                fill = TintColor(fill, SKColors.Black, darken);
+                border = TintColor(border, SKColors.Black, darken);
+            }
             _sliceFill.Color = fill;
             canvas.DrawPath(path, _sliceFill);
             /* A placeholder's outline is dashed */
@@ -699,7 +706,8 @@ namespace GnollHackX
             if (image == null)
                 return false;
             _iconPaint.ColorFilter = !enabled ? UIUtils.GrayedColorFilter : (highlighted ? UIUtils.HighlightColorFilter : null);
-            _iconPaint.Color = SKColors.White;
+            _iconPaint.Color = !item.IsEnabled && item.DimmedWhenDisabled
+                ? SKColors.White.WithAlpha(ToByte((float)GHRadialTuning.DisabledIconOpacity)) : SKColors.White;
             canvas.DrawImage(image, dest
 #if GNH_MAUI
                 , IconSampling

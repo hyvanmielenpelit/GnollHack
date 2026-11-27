@@ -4442,7 +4442,7 @@ namespace GnollHackX
         private static int _gamepadEnabled = 1;
         private static int _gamepadHideCommandBar = 1;
         private static int _gamepadAimAndConfirm = 0;
-        private static int _gamepadSpellHotbarAutoAdd = 1;
+        private static int _spellFavoritesAutoAdd = 1;
         private static int _gamepadGripL4Command = 0;
         private static int _gamepadGripL5Command = 0;
         private static int _gamepadGripR4Command = 0;
@@ -4477,7 +4477,7 @@ namespace GnollHackX
         /* The Aim and Confirm setting: the left stick aims and A moves */
         public static bool GamepadAimAndConfirm { get { return Interlocked.CompareExchange(ref _gamepadAimAndConfirm, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadAimAndConfirm, value ? 1 : 0); } }
         /* The Add New Spells to Favorites setting: a newly learned spell goes to the first empty Hotbar slot while Use Controller is on */
-        public static bool GamepadSpellHotbarAutoAdd { get { return Interlocked.CompareExchange(ref _gamepadSpellHotbarAutoAdd, 0, 0) != 0; } set { Interlocked.Exchange(ref _gamepadSpellHotbarAutoAdd, value ? 1 : 0); } }
+        public static bool SpellFavoritesAutoAdd { get { return Interlocked.CompareExchange(ref _spellFavoritesAutoAdd, 0, 0) != 0; } set { Interlocked.Exchange(ref _spellFavoritesAutoAdd, value ? 1 : 0); } }
         /* A controller can be used: see GHGamepadService.IsAvailable; independent of the setting */
         public static bool IsGamepadAvailable { get { return GHGamepadService.IsAvailable; } }
 
@@ -4491,7 +4491,7 @@ namespace GnollHackX
             GamepadHideCommandBar = Preferences.Get("GamepadHideCommandBar", true);
             GamepadHintScale = Preferences.Get("GamepadHintScale", 1.0f);
             GamepadAimAndConfirm = Preferences.Get("GamepadAimAndConfirm", false);
-            GamepadSpellHotbarAutoAdd = Preferences.Get("GamepadSpellHotbarAutoAdd", true);
+            SpellFavoritesAutoAdd = Preferences.Get("GamepadSpellHotbarAutoAdd", true);
             MigrateGamepadDefaultCommands();
             foreach (GHGamepadButton grip in GamepadGrips)
                 SetGamepadGripCommand(grip, Preferences.Get(GamepadGripPreferenceKey(grip), DefaultGamepadGripCommand(grip)));

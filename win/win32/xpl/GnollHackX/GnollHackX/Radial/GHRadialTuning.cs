@@ -145,5 +145,9 @@ namespace GnollHackX
         public static readonly double SliceTintOfFill = 0.2;               /* the fill's move toward the tint */
         public static readonly double SliceTintOfBorder = 0.45;            /* the border's move toward the tint */
         public static readonly double SliceTintHighlightKeep = 0.5;        /* of both, kept on a fully highlighted slice */
+
+        /* A disabled item with DimmedWhenDisabled */
+        public static readonly double DisabledSliceDarken = 0.35;          /* the fill's and border's move toward black at rest */
+        public static readonly double DisabledIconOpacity = 0.55;
     }
 }

@@ -1406,7 +1406,7 @@ namespace GnollHackX.Unknown
                 (ulong)(damageformula ? RunGnollHackFlags.DamageFormula : 0) |
                 (ulong)(wornshowsequipment ? RunGnollHackFlags.WornShowsEquipment : 0) |
                 (ulong)(autodig ? RunGnollHackFlags.AutoDig : 0) | /* Use the default; GHApp.AutoDig may contain the option value from the last game */
-                (ulong)(GHApp.GamepadSpellHotbarAutoAdd && GHApp.GamepadEnabled ? RunGnollHackFlags.SpellHotbarAutoAdd : 0) |
+                (ulong)(GHApp.SpellFavoritesAutoAdd ? RunGnollHackFlags.SpellHotbarAutoAdd : 0) |
                 (ulong)(ignorestopping ? RunGnollHackFlags.IgnoreStopping : 0) | /* Use the default; GHApp.IgnoreStopping may contain the option value from the last game */
                 (ulong)(defaultvikeys ? RunGnollHackFlags.DefaultVIKeys : 0) | /* Use the default */
                 (ulong)ghGame.StartFlags;

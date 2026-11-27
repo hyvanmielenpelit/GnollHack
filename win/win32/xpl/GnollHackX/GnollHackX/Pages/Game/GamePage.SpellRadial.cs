@@ -572,6 +572,7 @@ namespace GnollHackX.Pages.Game
             item.IconPath = GetGamepadUIIconPath("symbol-spell-" + name.ToLowerInvariant() + ".png");
             item.Kind = GHRadialItemKind.Command;
             item.IsEnabled = count > 0 && firstPage >= 0;
+            item.DimmedWhenDisabled = true;
             item.ShowsUnavailableText = false;
             item.ClosesOnActivate = false;
             item.Badge = count > 0 ? GHRadialBadge.Count : GHRadialBadge.None;
