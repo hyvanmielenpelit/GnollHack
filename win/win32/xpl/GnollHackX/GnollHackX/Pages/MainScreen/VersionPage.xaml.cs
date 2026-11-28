@@ -332,7 +332,7 @@ namespace GnollHackX.Pages.MainScreen
             if (readyToRunMode == "Full" || readyToRunMode == "Partial")
                 CompilerLabel.Text = "Crossgen2 R2R" + (readyToRunMode == "Partial" ? " P" : "")
                     + (GnollHackX.Performance.GHPerformanceEnvironment.ReadReadyToRunComposite() ? " C" : "")
-                    + (GHApp.IsiOS ? " + " + (GHApp.IsiOS ? "I" : "RJ") : "");
+                    + (GHApp.IsiOS ? "+" + (GHApp.IsiOS ? "I" : "RJ") : "");
             else if (readyToRunMode == "None")
                 CompilerLabel.Text = GHApp.IsiOS ? "Interpreter" : "RyuJIT";
             else
