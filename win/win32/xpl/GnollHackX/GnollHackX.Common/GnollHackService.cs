@@ -289,9 +289,17 @@ namespace GnollHackX.Unknown
         public static extern byte LibGlyphIsZap(int glyph);
         [DllImport(PlatformConstants.dll)]
         public static extern byte LibGlyphIsAnyDying(int glyph);
+#if GNH_MAUI
+        /* Pointer parameters keep the signature blittable, so ReadyToRun precompiles the call instead of the runtime
+           generating a marshalling stub, which iOS would interpret */
         [DllImport(PlatformConstants.dll)]
-        public static extern int LibMaybeGetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter, 
+        private static extern unsafe int LibMaybeGetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,
+            int* frame_idx_ptr, int* main_tile_idx_ptr, sbyte* mapAnimated, int* autodraw_ptr);
+#else
+        [DllImport(PlatformConstants.dll)]
+        public static extern int LibMaybeGetAnimatedTile(int ntile, int tile_animation_idx, int play_type, long interval_counter,
             out int frame_idx_ptr, out int main_tile_idx_ptr, out sbyte mapAnimated, ref int autodraw_ptr);
+#endif
         [DllImport(PlatformConstants.dll)]
         public static extern int LibZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir);
         [DllImport(PlatformConstants.dll)]
@@ -981,8 +989,24 @@ namespace GnollHackX.Unknown
             //frame_idx_ptr = main_tile_idx_ptr = autodraw_ptr = 0;
             //mapAnimated = 0;
 
+#if GNH_MAUI
+            int frame_idx = 0, main_tile_idx = 0, autodraw = autodraw_ptr;
+            sbyte map_animated = 0; /* The engine reads this before writing it; every caller passes a new zero */
+            int res;
+            unsafe
+            {
+                res = LibMaybeGetAnimatedTile(ntile, tile_animation_idx, play_type, interval_counter,
+                    &frame_idx, &main_tile_idx, &map_animated, &autodraw);
+            }
+            frame_idx_ptr = frame_idx;
+            main_tile_idx_ptr = main_tile_idx;
+            mapAnimated = map_animated;
+            autodraw_ptr = autodraw;
+            return res;
+#else
             return LibMaybeGetAnimatedTile(ntile, tile_animation_idx, play_type, interval_counter,
                 out frame_idx_ptr, out main_tile_idx_ptr, out mapAnimated, ref autodraw_ptr);
+#endif
         }
 
         public int ZapGlyphToCornerGlyph(int adjglyph, ulong adjflags, int source_dir)
