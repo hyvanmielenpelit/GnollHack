@@ -221,13 +221,18 @@ public static extern int RunGnollHack(
     string cmdlineargs,
     // ... run flags, window caps ...
     InitWindowsCallback callback_init_nhwindows,
+#if GNH_MAUI
+    delegate* unmanaged[Stdcall]<int, int, int, int, int, int, int, ulong, IntPtr, void> callback_print_glyph,
+#else
     PrintGlyphCallback callback_print_glyph,
-    PlayImmediateSoundCallback callback_play_immediate_ghsound,
+#endif
     // ... 60+ more callbacks ...
 );
 ```
 
 Callback categories: window management, input handling, display/glyph rendering, menu system, sound/music playback, animation control, status updates, data transfer.
+
+**Hot callbacks are function pointers.** Under `GNH_MAUI` (MAUI and Avalonia), sixteen slots that the engine calls per map cell, object, status field, input, sound or game end take `delegate* unmanaged[Stdcall]<...>` pointers to static `[UnmanagedCallersOnly]` trampolines in `GnollHackService` (`NativePrintGlyph`, `NativePlayImmediateSound`, `NativeExitHack` and the others), which forward to the `GHGame.ClientCallback_*` methods through the static `_callbackGame`. ReadyToRun precompiles them; a delegate's reverse stub is generated at run time, and iOS, which has no JIT, interprets it on every call. The legacy Xamarin projects keep the delegates in the `#else` branches. Each trampoline catches exceptions, because an exception escaping an `[UnmanagedCallersOnly]` method terminates the process outside Windows, and reports only the first failure of each game. `NativeExitHack` clears `_callbackGame`, because the engine thread ends inside native code after `exit_hack` and `RunGnollHack` never returns. Changing one of these callbacks means keeping four places in step: the C typedef in `win/win32/xpl/libshare/callback.h`, the delegate in `GHDelegates.cs`, the function pointer type in `RunGnollHack`, and the trampoline. The compiler checks the last two against each other; nothing checks them against C.
 
 ### Replay Compatibility
 
@@ -311,8 +316,8 @@ All platforms delegate lifecycle to `GHApp.OnStart()`, `GHApp.OnResume()`, `GHAp
 
 ## P/Invoke Bridge (`GnollHackService.cs`)
 - All calls to the C engine pass through `GnollHackService`.
-- **Delegates**: C# callbacks reach C as the delegate parameters of `RunGnollHack` (for example `callback_init_nhwindows` and `callback_askname`).
-- **Strings crossing the bridge.** Engine text is UTF-8 on every platform: delegate parameters use `[MarshalAs(GHConstants.GHStringMarshallingType)]`, returned pointers are read with `GHUtils.PtrToEngineString`, and text written back to the engine uses `Encoding.UTF8`. File paths the engine opens are different: the narrow C runtime reads them in the process ANSI code page, so they stay `[MarshalAs(UnmanagedType.LPStr)]`, and on Windows the wrapper checks `GHWindowsCodePage.CanMarshalPath` first. Both executable manifests (`activeCodePage`) and both appx manifests (`uap8:ActiveCodePage`) set that code page to UTF-8, which works on Windows 10 1903 and later; the Version page's `Code Page:` row shows the code page in effect and the system's own in parentheses (`65001 (S 932)`), and the `ansi_code_page` and `system_code_page` Sentry tags carry the same two values. Two engine-text values remain ANSI, harmless wherever the manifests apply: `monst_info.name` (`ByValTStr` in `GHStructs.cs`) and `PlayImmediateSoundCallback.parameterNames` (`GHDelegates.cs`).
+- **Delegates**: C# callbacks reach C as the delegate parameters of `RunGnollHack` (for example `callback_init_nhwindows` and `callback_askname`), except the hot slots that are `[UnmanagedCallersOnly]` function pointers under `GNH_MAUI` (see RunGnollHack P/Invoke above).
+- **Strings crossing the bridge.** Engine text is UTF-8 on every platform: delegate parameters use `[MarshalAs(GHConstants.GHStringMarshallingType)]`, the `[UnmanagedCallersOnly]` trampolines and returned pointers read it with `GHUtils.PtrToEngineString`, and text written back to the engine uses `Encoding.UTF8`. File paths the engine opens are different: the narrow C runtime reads them in the process ANSI code page, so they stay `[MarshalAs(UnmanagedType.LPStr)]`, and on Windows the wrapper checks `GHWindowsCodePage.CanMarshalPath` first. Both executable manifests (`activeCodePage`) and both appx manifests (`uap8:ActiveCodePage`) set that code page to UTF-8, which works on Windows 10 1903 and later; the Version page's `Code Page:` row shows the code page in effect and the system's own in parentheses (`65001 (S 932)`), and the `ansi_code_page` and `system_code_page` Sentry tags carry the same two values. Engine-text values that remain ANSI, harmless wherever the manifests apply: `monst_info.name` (`ByValTStr` in `GHStructs.cs`), and in the Xamarin build only `PlayImmediateSoundCallback.parameterNames` (`GHDelegates.cs`); under `GNH_MAUI`, `NativePlayImmediateSound` decodes those names as UTF-8.
 
 ## Related Skills
 

@@ -6,6 +6,8 @@ using System.Reflection;
 using System.IO;
 #if GNH_MAUI
 using GnollHackM;
+using System.Runtime.CompilerServices;
+using System.Threading;
 #else
 using Xamarin.Forms;
 using Xamarin.Essentials;
@@ -79,7 +81,11 @@ namespace GnollHackX.Unknown
     class GnollHackService : IGnollHackService
     {
         [DllImport(PlatformConstants.dll)]
+#if GNH_MAUI
+        public static extern unsafe int RunGnollHack(
+#else
         public static extern int RunGnollHack(
+#endif
             [MarshalAs(UnmanagedType.LPStr)] string gnhdir,
             [MarshalAs(UnmanagedType.LPStr)] string cmdlineargs,
             [MarshalAs(GHConstants.GHStringMarshallingType)] string engrave_quicktext,
@@ -104,9 +110,15 @@ namespace GnollHackX.Unknown
             DisplayWindowCallback callback_display_nhwindow,
             VoidIntCallback callback_destroy_nhwindow,
             CursCallback callback_curs,
+#if GNH_MAUI
+            delegate* unmanaged[Stdcall]<int, IntPtr, int, int, int, void> callback_putstr_ex,
+            delegate* unmanaged[Stdcall]<int, IntPtr, IntPtr, IntPtr, int, int, int, void> callback_putstr_ex2,
+            delegate* unmanaged[Stdcall]<int, IntPtr, int, int, int, void> callback_putmixed_ex,
+#else
             PutStrExColorCallback callback_putstr_ex,
             PutStrEx2ColorCallback callback_putstr_ex2,
             PutStrExColorCallback callback_putmixed_ex,
+#endif
             DisplayFileCallback callback_display_file,
             StartMenuCallback callback_start_menu_ex,
             AddMenuCallback callback_add_menu,
@@ -121,8 +133,13 @@ namespace GnollHackX.Unknown
             ClipAroundCallback callback_cliparound,
             /* If positionbar is on */
             UpdatePositionBarCallback callback_update_positionbar,
+#if GNH_MAUI
+            delegate* unmanaged[Stdcall]<int, int, int, int, int, int, int, ulong, IntPtr, void> callback_print_glyph,
+            delegate* unmanaged[Stdcall]<int, int, int, IntPtr, void> callback_issue_gui_command,
+#else
             PrintGlyphCallback callback_print_glyph,
             IssueGuiCommandCallback callback_issue_gui_command,
+#endif
             VoidConstCharCallback callback_raw_print,
             VoidConstCharCallback callback_raw_print_bold,
             IntVoidCallback callback_nhgetch,
@@ -150,14 +167,23 @@ namespace GnollHackX.Unknown
             PutMsgHistoryCallback callback_putmsghistory,
             VoidIntCallback callback_status_init,
             VoidVoidCallback callback_status_finish,
+#if GNH_MAUI
+            delegate* unmanaged[Stdcall]<int, IntPtr, IntPtr, byte, void> callback_status_enablefield,
+            delegate* unmanaged[Stdcall]<int, IntPtr, long, int, int, int, IntPtr, void> callback_status_update,
+#else
             StatusEnableFieldCallback callback_status_enablefield,
             StatusUpdateCallback callback_status_update,
+#endif
             CanSuspendYesCallback callback_can_suspend_yes,
             VoidVoidCallback callback_stretch_window,
             VoidUlongCallback callback_set_animation_timer_interval,
             OpenSpecialViewCallback callback_open_special_view,
             StopAllSoundsCallback callback_stop_all_sounds,
+#if GNH_MAUI
+            delegate* unmanaged[Stdcall]<int, IntPtr, int, double, double, IntPtr, IntPtr, int, int, int, uint, uint, int> callback_play_immediate_ghsound,
+#else
             PlayImmediateSoundCallback callback_play_immediate_ghsound,
+#endif
             PlayOccupationAmbientCallback callback_play_ghsound_occupation_ambient,
             PlayEffectAmbientCallback callback_play_ghsound_effect_ambient,
             SetEffectAmbientVolumeCallback callback_set_effect_ambient_volume,
@@ -168,27 +194,288 @@ namespace GnollHackX.Unknown
             AddAmbientSoundCallback callback_add_ambient_ghsound,
             DeleteAmbientSoundCallback callback_delete_ambient_ghsound,
             SetAmbientSoundVolumeCallback callback_set_ambient_ghsound_volume,
+#if GNH_MAUI
+            delegate* unmanaged[Stdcall]<void> callback_clear_context_menu,
+            delegate* unmanaged[Stdcall]<int, int, int, int, IntPtr, IntPtr, int, int, void> callback_add_context_menu,
+#else
             VoidVoidCallback callback_clear_context_menu,
             AddContextMenuCallback callback_add_context_menu,
+#endif
             UpdateStatusButtonCallback callback_update_status_button,
+#if GNH_MAUI
+            delegate* unmanaged[Stdcall]<int, int, int, int, int, int, ulong, void> callback_toggle_animation_timer,
+            delegate* unmanaged[Stdcall]<int, int, IntPtr, int, int, int, ulong, void> callback_display_floating_text,
+#else
             ToggleAnimationTimerCallback callback_toggle_animation_timer,
             DisplayFloatingTextCallback callback_display_floating_text,
+#endif
             DisplayScreenTextCallback callback_display_screen_text,
             DisplayPopupTextCallback callback_display_popup_text,
             DisplayGUIEffectCallback callback_display_gui_effect,
             UpdateCursorCallback callback_update_cursor,
+#if GNH_MAUI
+            delegate* unmanaged[Stdcall]<int> callback_ui_has_input,
+#else
             UIHasInputCallback callback_ui_has_input,
+#endif
+#if GNH_MAUI
+            delegate* unmanaged[Stdcall]<int, void> callback_exit_hack,
+#else
             VoidIntCallback callback_exit_hack,
+#endif
             CharVoidCallback callback_getcwd,
             IntCharCharUintCallback callback_messagebox,
 
             FreeMemoryCallback callback_free_memory,
             ReportPlayerNameCallback callback_report_player_name,
             ReportPlayTimeCallback callback_report_play_time,
+#if GNH_MAUI
+            delegate* unmanaged[Stdcall]<int, int, IntPtr, int, int, IntPtr, ulong, void> callback_send_object_data,
+            delegate* unmanaged[Stdcall]<int, int, int, IntPtr, ulong, void> callback_send_monster_data,
+#else
             SendObjectDataCallback callback_send_object_data,
             SendMonsterDataCallback callback_send_monster_data,
+#endif
             SendEngravingDataCallback callback_send_engraving_data
         );
+
+#if GNH_MAUI
+        /* The game whose engine is running; the engine calls back only on that game's thread. Set by
+           StartGnollHack, cleared by NativeExitHack, and by StartGnollHack when RunGnollHack returns early */
+        private static GHGame _callbackGame;
+        private static int _callbackFailureReported;
+
+        /* Reports only the first callback failure of each game: a failing callback can fail on every map cell */
+        private static void ReportCallbackException(Exception ex, [CallerMemberName] string memberName = "")
+        {
+            if (Interlocked.Exchange(ref _callbackFailureReported, 1) == 0)
+                GHApp.ReportCaughtException(ex, memberName);
+        }
+
+        /* The last callback of a game: the engine thread then ends inside native code, so RunGnollHack does not return */
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeExitHack(int status)
+        {
+            GHGame game = _callbackGame;
+            try
+            {
+                game?.ClientCallback_ExitHack(status);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+            finally
+            {
+                if (game != null)
+                    Interlocked.CompareExchange(ref _callbackGame, null, game);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativePutStrEx(int win_id, IntPtr str, int attributes, int color, int append)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_PutStrEx(win_id, GHUtils.PtrToEngineString(str), attributes, color, append);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativePutStrEx2(int win_id, IntPtr str, IntPtr attributes_ptr, IntPtr colors_ptr, int attr, int color, int append)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_PutStrEx2(win_id, GHUtils.PtrToEngineString(str), attributes_ptr, colors_ptr, attr, color, append);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativePrintGlyph(int winHandle, int x, int y, int glyph, int bkglyph, int symbol, int ocolor, ulong special, IntPtr layers_ptr)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_PrintGlyph(winHandle, x, y, glyph, bkglyph, symbol, ocolor, special, layers_ptr);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeIssueGuiCommand(int cmd_id, int cmd_param, int cmd_param2, IntPtr cmd_str)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_IssueGuiCommand(cmd_id, cmd_param, cmd_param2, GHUtils.PtrToEngineString(cmd_str));
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeStatusEnable(int fieldidx, IntPtr nm, IntPtr fmt, byte enable)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_StatusEnable(fieldidx, GHUtils.PtrToEngineString(nm), GHUtils.PtrToEngineString(fmt), enable);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeStatusUpdate(int fieldidx, IntPtr text, long condbits, int cng, int percent, int color, IntPtr condcolorptr)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_StatusUpdate(fieldidx, GHUtils.PtrToEngineString(text), condbits, cng, percent, color, condcolorptr);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static int NativePlayImmediateSound(int ghsound, IntPtr eventPath, int bankid, double eventVolume, double soundVolume, IntPtr parameterNames, IntPtr parameterValues, int arraysize, int sound_type, int play_group, uint dialogue_mid, uint play_flags)
+        {
+            try
+            {
+                GHGame game = _callbackGame;
+                if (game == null)
+                    return 1;
+
+                /* Fresh arrays on every call: recordings keep them by reference */
+                string[] names = null;
+                float[] values = null;
+                if (parameterNames != IntPtr.Zero)
+                {
+                    names = new string[GHConstants.MaxSoundParameters];
+                    int i;
+                    for (i = 0; i < GHConstants.MaxSoundParameters; i++)
+                        names[i] = GHUtils.PtrToEngineString(Marshal.ReadIntPtr(parameterNames, i * IntPtr.Size));
+                }
+                if (parameterValues != IntPtr.Zero)
+                {
+                    values = new float[GHConstants.MaxSoundParameters];
+                    Marshal.Copy(parameterValues, values, 0, GHConstants.MaxSoundParameters);
+                }
+                return game.ClientCallback_PlayImmediateSound(ghsound, GHUtils.PtrToEngineString(eventPath), bankid, eventVolume, soundVolume, names, values, arraysize, sound_type, play_group, dialogue_mid, play_flags);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+                return 1;
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeClearContextMenu()
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_ClearContextMenu();
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeAddContextMenu(int cmd_def_char, int cmd_cur_char, int style, int glyph, IntPtr cmd_text, IntPtr target_text, int attr, int color)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_AddContextMenu(cmd_def_char, cmd_cur_char, style, glyph, GHUtils.PtrToEngineString(cmd_text), GHUtils.PtrToEngineString(target_text), attr, color);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeToggleAnimationTimer(int timertype, int timerid, int state, int x, int y, int layer, ulong tflags)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_ToggleAnimationTimer(timertype, timerid, state, x, y, layer, tflags);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeDisplayFloatingText(int x, int y, IntPtr text, int style, int attr, int color, ulong tflags)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_DisplayFloatingText(x, y, GHUtils.PtrToEngineString(text), style, attr, color, tflags);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static int NativeUIHasInput()
+        {
+            try
+            {
+                GHGame game = _callbackGame;
+                return game != null ? game.ClientCallback_UIHasInput() : 0;
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+                return 0;
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeSendObjectData(int x, int y, IntPtr otmp_ptr, int cmdtype, int where, IntPtr otypdata_ptr, ulong oflags)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_SendObjectData(x, y, otmp_ptr, cmdtype, where, otypdata_ptr, oflags);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+
+        [UnmanagedCallersOnly(CallConvs = new[] { typeof(CallConvStdcall) })]
+        private static void NativeSendMonsterData(int cmdtype, int x, int y, IntPtr monster_data_ptr, ulong oflags)
+        {
+            try
+            {
+                _callbackGame?.ClientCallback_SendMonsterData(cmdtype, x, y, monster_data_ptr, oflags);
+            }
+            catch (Exception ex)
+            {
+                ReportCallbackException(ex);
+            }
+        }
+#endif
 
         [DllImport(PlatformConstants.dll)]
         public static extern int LibInitializeTileData();
@@ -1445,6 +1732,14 @@ namespace GnollHackX.Unknown
             ulong foundManuals = GHApp.FoundManuals;
             string lastusedplname = GHApp.TournamentMode && !ghGame.PlayingReplay ? GHApp.LastUsedTournamentPlayerName : GHApp.LastUsedPlayerName;
 
+#if GNH_MAUI
+            _callbackGame = ghGame;
+            Interlocked.Exchange(ref _callbackFailureReported, 0);
+            try
+            {
+                unsafe
+                {
+#endif
             return RunGnollHack(
                 filesdir,
                 "",
@@ -1470,9 +1765,15 @@ namespace GnollHackX.Unknown
                 ghGame.ClientCallback_DisplayGHWindow,
                 ghGame.ClientCallback_DestroyGHWindow,
                 ghGame.ClientCallback_Curs,
+#if GNH_MAUI
+                &NativePutStrEx,
+                &NativePutStrEx2,
+                &NativePutStrEx,
+#else
                 ghGame.ClientCallback_PutStrEx,
                 ghGame.ClientCallback_PutStrEx2,
                 ghGame.ClientCallback_PutStrEx,
+#endif
                 ghGame.ClientCallback_VoidConstCharBooleanDummy,
                 ghGame.ClientCallback_StartMenu,
                 ghGame.ClientCallback_AddMenu,
@@ -1487,8 +1788,13 @@ namespace GnollHackX.Unknown
                 ghGame.ClientCallback_Cliparound,
                 /* If positionbar is on */
                 ghGame.ClientCallback_VoidCharDummy,
+#if GNH_MAUI
+                &NativePrintGlyph,
+                &NativeIssueGuiCommand,
+#else
                 ghGame.ClientCallback_PrintGlyph,
                 ghGame.ClientCallback_IssueGuiCommand,
+#endif
                 ghGame.ClientCallback_RawPrint,
                 ghGame.ClientCallback_RawPrintBold,
                 ghGame.ClientCallback_nhgetch,
@@ -1516,14 +1822,23 @@ namespace GnollHackX.Unknown
                 ghGame.ClientCallback_PutMsgHistory,
                 ghGame.ClientCallback_StatusInit,
                 ghGame.ClientCallback_StatusFinish,
+#if GNH_MAUI
+                &NativeStatusEnable,
+                &NativeStatusUpdate,
+#else
                 ghGame.ClientCallback_StatusEnable,
                 ghGame.ClientCallback_StatusUpdate,
+#endif
                 ghGame.ClientCallback_BooleanVoidDummy,
                 ghGame.ClientCallback_VoidVoidDummy,
                 ghGame.ClientCallback_VoidUlongDummy,
                 ghGame.ClientCallback_OpenSpecialView,
                 ghGame.ClientCallback_StopAllSounds,
+#if GNH_MAUI
+                &NativePlayImmediateSound,
+#else
                 ghGame.ClientCallback_PlayImmediateSound,
+#endif
                 ghGame.ClientCallback_PlayOccupationAmbient,
                 ghGame.ClientCallback_PlayEffectAmbient,
                 ghGame.ClientCallback_SetEffectAmbientVolume,
@@ -1534,26 +1849,57 @@ namespace GnollHackX.Unknown
                 ghGame.ClientCallback_AddAmbientSound,
                 ghGame.ClientCallback_DeleteAmbientSound,
                 ghGame.ClientCallback_SetAmbientSoundVolume,
+#if GNH_MAUI
+                &NativeClearContextMenu,
+                &NativeAddContextMenu,
+#else
                 ghGame.ClientCallback_ClearContextMenu,
                 ghGame.ClientCallback_AddContextMenu,
+#endif
                 ghGame.ClientCallback_UpdateStatusButton,
+#if GNH_MAUI
+                &NativeToggleAnimationTimer,
+                &NativeDisplayFloatingText,
+#else
                 ghGame.ClientCallback_ToggleAnimationTimer,
                 ghGame.ClientCallback_DisplayFloatingText,
+#endif
                 ghGame.ClientCallback_DisplayScreenText,
                 ghGame.ClientCallback_DisplayPopupText,
                 ghGame.ClientCallback_DisplayGUIEffect,
                 ghGame.ClientCallback_UpdateCursor,
+#if GNH_MAUI
+                &NativeUIHasInput,
+#else
                 ghGame.ClientCallback_UIHasInput,
+#endif
+#if GNH_MAUI
+                &NativeExitHack,
+#else
                 ghGame.ClientCallback_ExitHack,
+#endif
                 ghGame.ClientCallback_GetCwd,
                 ghGame.ClientCallback_MessageBox,
                 ghGame.ClientCallback_FreeMemory,
                 ghGame.ClientCallback_ReportPlayerName,
                 ghGame.ClientCallback_ReportPlayTime,
+#if GNH_MAUI
+                &NativeSendObjectData,
+                &NativeSendMonsterData,
+#else
                 ghGame.ClientCallback_SendObjectData,
                 ghGame.ClientCallback_SendMonsterData,
+#endif
                 ghGame.ClientCallback_SendEngravingData
                 );
+#if GNH_MAUI
+                }
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref _callbackGame, null, ghGame);
+            }
+#endif
 
         }
     }
